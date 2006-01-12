@@ -1,0 +1,7 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jparsec</groupId>
+  <artifactId>jparsec</artifactId>
+  <version>0.01</version>
+  <dependencies/>
+</project>
