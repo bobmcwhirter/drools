@@ -1,0 +1,7 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jci</groupId>
+  <artifactId>jci</artifactId>
+  <version>SNAPSHOT-2005</version>
+  <dependencies/>
+</project>
