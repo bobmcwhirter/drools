@@ -1,0 +1,7 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>drools-asm</groupId>
+  <artifactId>drools-asm</artifactId>
+  <version>2.2.1</version>
+  <dependencies/>
+</project>
