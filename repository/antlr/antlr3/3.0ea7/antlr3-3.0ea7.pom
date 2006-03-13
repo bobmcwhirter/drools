@@ -1,7 +1,0 @@
-<project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>antlr</groupId>
-  <artifactId>antlr3</artifactId>
-  <version>3.0ea7</version>
-  <dependencies/>
-</project>
