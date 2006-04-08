@@ -2,6 +2,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jci</groupId>
   <artifactId>jci</artifactId>
-  <version>SNAPSHOT-378493+patch2</version>
+  <version>SNAPSHOT-378493+patch3</version>
   <dependencies/>
 </project>
