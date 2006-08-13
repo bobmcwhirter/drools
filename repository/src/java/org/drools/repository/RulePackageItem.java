@@ -1,7 +1,3 @@
-/*
- * copyright Rackspace Manged Hosting 2006
- */
-
 package org.drools.repository;
 
 import java.util.ArrayList;
