@@ -144,6 +144,53 @@ public class RulePackageItem extends Item {
     }
     
     /**
+     * Removes the specified rule from the rule package node this object represents.  
+     * 
+     * @param ruleItem the ruleItem corresponding to the node to remove from the rule package 
+     *                 this object represents
+     * @throws RulesRepositoryException
+     */
+    public void removeRule(RuleItem ruleItem) throws RulesRepositoryException {                
+        try {
+            Value[] oldValueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
+            Value[] newValueArray = new Value[oldValueArray.length - 1];
+            
+            boolean wasThere = false;
+            
+            int j=0;
+            for(int i=0; i<oldValueArray.length; i++) {
+                Node ruleNode = this.node.getSession().getNodeByUUID(oldValueArray[i].getString());
+                RuleItem currentRuleItem = new RuleItem(this.rulesRepository, ruleNode);
+                if(currentRuleItem.equals(ruleItem)) {
+                    wasThere = true;
+                }
+                else {
+                    newValueArray[j] = oldValueArray[i];
+                    j++;
+                }
+            }
+                            
+            if(!wasThere) {
+                return;
+            }
+            else {
+                this.node.checkout();
+                this.node.setProperty(RULE_REFERENCE_PROPERTY_NAME, newValueArray);                
+                this.node.getSession().save();
+                this.node.checkin();
+            }
+        }
+        catch(PathNotFoundException e) {
+            //the property has not been created yet. 
+            return;
+        }  
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
      * Gets a list of RuleItem objects for each rule node in this rule package
      * 
      * @return the List object holding the RuleItem objects in this rule package

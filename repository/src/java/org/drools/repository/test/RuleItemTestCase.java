@@ -12,7 +12,7 @@ public class RuleItemTestCase extends TestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        this.rulesRepository = new RulesRepository();
+        this.rulesRepository = new RulesRepository(true);
     }
 
     protected void tearDown() throws Exception {

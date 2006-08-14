@@ -19,7 +19,7 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testRulesRepository() {
         RulesRepository rulesRepository = null;
         try {
-            rulesRepository = new RulesRepository();
+            rulesRepository = new RulesRepository(true);
         }
         catch(Exception e) {
             fail("Caught unexpected Exception: " + e);
@@ -51,7 +51,7 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testAddRuleFromFileFileDslItem() {
         RulesRepository rulesRepository = null;
         try {
-            rulesRepository = new RulesRepository();
+            rulesRepository = new RulesRepository(true);
             File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
             
             DslItem dslItem1 = rulesRepository.addDslFromFile(dslFile1);
@@ -90,7 +90,7 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testAddRuleFromFileFileDslItemBoolean() {
         RulesRepository rulesRepository = null;
         try {
-            rulesRepository = new RulesRepository();
+            rulesRepository = new RulesRepository(true);
             File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
             
             DslItem dslItem1 = rulesRepository.addDslFromFile(dslFile1);
@@ -113,7 +113,7 @@ public class RulesRepositoryTestCase extends TestCase {
             
             //now test not following the head revision
             rulesRepository.logout();
-            rulesRepository = new RulesRepository();
+            rulesRepository = new RulesRepository(true);
             
             dslItem1 = rulesRepository.addDslFromFile(dslFile1);
             assertNotNull(dslItem1);
@@ -153,7 +153,7 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testGetState() {
         RulesRepository rulesRepository = null;
         try {
-            rulesRepository = new RulesRepository();
+            rulesRepository = new RulesRepository(true);
             
             StateItem stateItem1 = rulesRepository.getState("TestState");
             assertNotNull(stateItem1);
@@ -182,7 +182,7 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testGetTag() {
         RulesRepository rulesRepository = null;
         try {
-            rulesRepository = new RulesRepository();
+            rulesRepository = new RulesRepository(true);
             
             TagItem tagItem1 = rulesRepository.getTag("TestTag");
             assertNotNull(tagItem1);

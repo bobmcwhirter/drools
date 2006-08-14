@@ -15,7 +15,7 @@ public class DslItemTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         
-        rulesRepository = new RulesRepository();
+        rulesRepository = new RulesRepository(true);
     }
 
     protected void tearDown() throws Exception {        

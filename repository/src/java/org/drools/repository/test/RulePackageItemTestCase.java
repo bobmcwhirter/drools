@@ -12,7 +12,7 @@ public class RulePackageItemTestCase extends TestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        this.rulesRepository = new RulesRepository();        
+        this.rulesRepository = new RulesRepository(true);        
     }
 
     protected void tearDown() throws Exception {
@@ -67,7 +67,7 @@ public class RulePackageItemTestCase extends TestCase {
             ruleItem1.updateContentFromFile(drlFile2);
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
-            assertEquals(rules.size(), 1);
+            assertEquals(1, rules.size());
             assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
             assertEquals("package org.drools.examples", ((RuleItem)rules.get(0)).getContent());
             
@@ -176,6 +176,77 @@ public class RulePackageItemTestCase extends TestCase {
             
             rulePackageItem1.addRule(ruleItem1);
             assertNotNull(rulePackageItem1.toString());                        
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testRemoveRule() {
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+            
+            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
+            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            
+            rulePackageItem1.addRule(ruleItem1);
+            
+            List rules = rulePackageItem1.getRules();
+            assertNotNull(rules);
+            assertEquals(1, rules.size());
+            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+                                    
+            File drlFile2 = new File("./src/java/org/drools/repository/test/test_data/drl3.drl");
+            ruleItem1.updateContentFromFile(drlFile2);
+            rules = rulePackageItem1.getRules();
+            assertNotNull(rules);
+            assertEquals(1, rules.size());
+            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+            assertEquals("package org.drools.examples", ((RuleItem)rules.get(0)).getContent());
+            
+            File drlFile3 = new File("./src/java/org/drools/repository/test/test_data/drl2.drl");
+            RuleItem ruleItem2 = this.rulesRepository.addRuleFromFile(drlFile3);
+            rulePackageItem1.addRule(ruleItem2);
+            
+            //remove the rule, make sure the other rule int the pacakge stays around
+            rulePackageItem1.removeRule(ruleItem1);
+            rules = rulePackageItem1.getRules();
+            assertEquals(1, rules.size());
+            assertEquals("drl2.drl", ((RuleItem)rules.get(0)).getName());
+            
+            //remove the rule that is following the head revision, make sure the pacakge is now empty
+            rulePackageItem1.removeRule(ruleItem2);
+            rules = rulePackageItem1.getRules();
+            assertNotNull(rules);
+            assertEquals(0, rules.size());
+                        
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testRemoveAllRules() {
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+            
+            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
+            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            
+            rulePackageItem1.addRule(ruleItem1);
+            
+            List rules = rulePackageItem1.getRules();
+            assertNotNull(rules);
+            assertEquals(1, rules.size());
+            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+            
+            rulePackageItem1.removeAllRules();
+            
+            rules = rulePackageItem1.getRules();
+            assertNotNull(rules);
+            assertEquals(0, rules.size());            
         }
         catch(Exception e) {
             e.printStackTrace();
