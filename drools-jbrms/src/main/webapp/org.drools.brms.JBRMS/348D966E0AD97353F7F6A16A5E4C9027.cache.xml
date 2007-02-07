@@ -19,8 +19,8 @@
 	<generated-type-hash class="org.drools.brms.client.rpc.RuleAsset_FieldSerializer" hash="22062E8B92CA37097FAA1E2970C4E49F"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.PackageConfigData_FieldSerializer" hash="5D91817323495B9045F4A83E4F244026"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment_FieldSerializer" hash="23294BEA0CD7A5A6A2B87DDD634F38C1"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="17C54753198693950DF545BF0BE12561"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brxml.FactPattern_FieldSerializer" hash="A865220B7F6D7B7F94E8AC1CD4CCA149"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="FF1805065B7F2B92FA895DC1EC829477"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.TableDataRow_FieldSerializer" hash="411D058D97408AAE2C3EBA1620048463"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_TypeSerializer" hash="D54A23ADACACAF69A422A131E3584A46"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint_FieldSerializer" hash="4F519951EEB3E87BE99778D3EBA96BBD"/>
