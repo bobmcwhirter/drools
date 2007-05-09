@@ -22,9 +22,9 @@
 	<generated-type-hash class="org.drools.brms.client.modeldriven.SuggestionCompletionEngine_FieldSerializer" hash="25F682D2A3B94E5B15AD33C20B2E4E4E"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RuleAsset_FieldSerializer" hash="3F18040FE6C73CF627E33A885E4F3055"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.PackageConfigData_FieldSerializer" hash="1C8237E912FA51556E3496683D32C8B5"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="348E26941F38BC52C5AB3112C6A151A0"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.TableDataRow_FieldSerializer" hash="411D058D97408AAE2C3EBA1620048463"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brxml.FactPattern_FieldSerializer" hash="A865220B7F6D7B7F94E8AC1CD4CCA149"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="348E26941F38BC52C5AB3112C6A151A0"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_TypeSerializer" hash="F28287ABF3631B474A1E006F078AAD28"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint_FieldSerializer" hash="D281B14AB198DEE578A6FCA000FD97BA"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RuleContentText_FieldSerializer" hash="9F5834F874613140D0BDEC4056C49928"/>
@@ -33,9 +33,9 @@
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImplOld"/>
 	<rebind-decision in="org.drools.brms.client.JBRMSEntryPoint" out="org.drools.brms.client.JBRMSEntryPoint"/>
 	<rebind-decision in="org.drools.brms.client.rpc.RepositoryService" out="org.drools.brms.client.rpc.RepositoryService_Proxy"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImpl"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplStandard"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImplSafari"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplSafari"/>
 	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImpl"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplMozilla"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplSafari"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImpl"/>
 </cache-entry>
