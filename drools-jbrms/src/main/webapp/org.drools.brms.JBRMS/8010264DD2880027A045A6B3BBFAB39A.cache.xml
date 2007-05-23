@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cache-entry>
 	<generated-type-hash class="org.drools.brms.client.rpc.SecurityService_TypeSerializer" hash="2E401ADF174E074267E30036F503DB1C"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.TableDataResult_FieldSerializer" hash="BFC3EC8D02BADBA251CA3B7A7F85C809"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.BuilderResult_FieldSerializer" hash="31FA4ADBFB94FFD9001BA8C2A4417504"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.TableDataResult_FieldSerializer" hash="BFC3EC8D02BADBA251CA3B7A7F85C809"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brxml.RuleAttribute_FieldSerializer" hash="1812592B0B2B2658FDD5142257E02EF6"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brxml.RuleModel_FieldSerializer" hash="000AFD7BE42B3B3A5BA0FA29E5DECDB1"/>
 	<generated-type-hash class="com.google.gwt.user.client.rpc.SerializableException_FieldSerializer" hash="1CB9B63ABEC9BE7E663F6C56AA395208"/>
