@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.antlr</groupId>
   <artifactId>antlr</artifactId>
-  <version>3.0b7</version>
+  <version>3.0</version>
   <dependencies>
     <dependency>
       <groupId>antlr</groupId>
