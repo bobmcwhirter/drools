@@ -61,5 +61,5 @@ def write_to(target, guts)
       target.close
 end
 
-do_dir("c:/temp/tryagain", IO.read ("c:/temp/copyright.txt")) 
+do_dir("/Users/fernandomeyer/projects/jbossrules/drools-jbrms", IO.read ("/Users/fernandomeyer/projects/jbossrules/lib/utility-scripts/copyright-headers/copyright.txt")) 
 
