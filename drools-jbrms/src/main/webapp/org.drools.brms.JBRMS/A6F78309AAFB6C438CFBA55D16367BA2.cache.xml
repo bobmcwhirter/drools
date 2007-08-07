@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cache-entry>
 	<generated-type-hash class="org.drools.brms.client.rpc.SecurityService_TypeSerializer" hash="20EDAA021429B839978E16E00117C5EF"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.BuilderResult_FieldSerializer" hash="31FA4ADBFB94FFD9001BA8C2A4417504"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.TableDataResult_FieldSerializer" hash="BFC3EC8D02BADBA251CA3B7A7F85C809"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.DSLSentence_FieldSerializer" hash="35AB7D23CC662D4F726060AA9938F6C6"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.BuilderResult_FieldSerializer" hash="31FA4ADBFB94FFD9001BA8C2A4417504"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.RuleAttribute_FieldSerializer" hash="7BF092FF4AE3E8CB784A96421E7BC6B4"/>
 	<generated-type-hash class="com.google.gwt.user.client.rpc.SerializableException_FieldSerializer" hash="1CB9B63ABEC9BE7E663F6C56AA395208"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.TableConfig_FieldSerializer" hash="68BF54922D06AC518871EB9FEFD7D68E"/>
@@ -24,14 +24,14 @@
 	<generated-type-hash class="org.drools.brms.client.rpc.PackageConfigData_FieldSerializer" hash="1C8237E912FA51556E3496683D32C8B5"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.FactPattern_FieldSerializer" hash="5535A6C88015EE51C5F4FA808DFAA8ED"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.TableDataRow_FieldSerializer" hash="411D058D97408AAE2C3EBA1620048463"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="D43ABD161B3682404A2F6D4B8B6FBB70"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="6DDD963CA2AA9341ED85DDD2AF4AC3A2"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionFieldList_FieldSerializer" hash="73DAB0917FEA7A2E484F4B12C200C868"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_TypeSerializer" hash="50CCE738A864BF63CEAAECAB34C7FD23"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionUpdateField_FieldSerializer" hash="53DAC10B208EAD97D6542560F2C8BAAD"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_TypeSerializer" hash="50CCE738A864BF63CEAAECAB34C7FD23"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RuleContentText_FieldSerializer" hash="9F5834F874613140D0BDEC4056C49928"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.SecurityService_Proxy" hash="EC3FAA0E88BD525D255B40D7A25E9A68"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ConnectiveConstraint_FieldSerializer" hash="BF0E8BCBA71D0333FD6536A3B7B09370"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.RuleModel_FieldSerializer" hash="2A44CFABD8B63D33EFAA2FF86226638A"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ConnectiveConstraint_FieldSerializer" hash="BF0E8BCBA71D0333FD6536A3B7B09370"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.TextBoxImpl" out="com.google.gwt.user.client.ui.impl.TextBoxImpl"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImpl"/>
 	<rebind-decision in="org.drools.brms.client.JBRMSEntryPoint" out="org.drools.brms.client.JBRMSEntryPoint"/>
