@@ -3009,7 +3009,7 @@ function Bof(Cof,Dof){yof();if(gXb(Cof.gDc.F1d,'brl')){return Eof(new Fof(),cld(
 function Aof(){yof();var cpf;cpf = gtb(new htb());cE(cpf,'drl','technical_rule_assets.gif');cE(cpf,'dsl','dsl.gif');cE(cpf,'function','function_assets.gif');cE(cpf,'jar','model_asset.gif');cE(cpf,'xls','spreadsheet_small.gif');cE(cpf,'brl','rule_asset.gif');cE(cpf,'dslr','rule_asset.gif');cE(cpf,'rf','ruleflow_small.gif');return cpf;}
 function dpf(epf){yof();var fpf;fpf = yc(dAb(zof,epf),9);if(fpf === null){return 'rule_asset.gif';}else{return fpf;}}
 function rTd(gpf,hpf,ipf,jpf){yof();var kpf;if(g3b(gpf,ipf)){if(uFb(hpf,yc(dAb(gpf,ipf),23)) == (-1)){kpf = xc(oFb(hpf,0),103)?'Rule Viewer':'Package Manager';oq('Asset already opened in ' + kpf);}else{cGb(hpf,uFb(hpf,yc(dAb(gpf,ipf),23)));}y$b();return ;}zee(uec(),ipf,lpf(new mpf(),gpf,hpf,ipf,jpf));}
-function npf(opf,ppf,qpf,rpf,spf){yof();var tpf,upf,vpf;tpf = wpf(new xpf(),spf,rpf);upf = spf.gDc.hDc;if(upf.nL() > 10){upf = upf.rL(0,7) + '...';}vpf = dpf(spf.gDc.F1d);DFb(ppf,tpf,"<img src='images/" + vpf + "'>" + upf,true);cE(opf,qpf,tpf);ypf(tpf,zpf(new Apf(),ppf,tpf,opf,qpf));cGb(ppf,uFb(ppf,tpf));}
+function npf(opf,ppf,qpf,rpf,spf){yof();var tpf,upf,vpf;tpf = wpf(new xpf(),spf,rpf);upf = spf.gDc.hDc;if(upf.nL() > 10){upf = upf.rL(0,7) + '...';}vpf = dpf(spf.gDc.F1d);DFb(ppf,tpf,"<img src='images/" + vpf + "'>" + upf,true);if(opf !== c2b().e2b){cE(opf,qpf,tpf);}ypf(tpf,zpf(new Apf(),ppf,tpf,opf,qpf));cGb(ppf,uFb(ppf,tpf));}
 function Bpf(Cpf){var Dpf,Epf;Dpf = yc(Cpf,104);Epf = hld().ild;FZd(Epf,Dpf.gDc.jld,Fpf(new aqf(),this,this.bqf,this.cqf,this.dqf,this.eqf,Dpf));}
 function lpf(fqf,gqf,hqf,iqf,jqf){fqf.bqf = gqf;fqf.cqf = hqf;fqf.dqf = iqf;fqf.eqf = jqf;return fqf;}
 function mpf(){}
@@ -3019,7 +3019,7 @@ function d0d(yqf){npf(yqf.tqf,yqf.uqf,yqf.vqf,yqf.wqf,yqf.xqf);}
 function aqf(){}
 _ = aqf.prototype = new i();_.an = kqf;_.g = 'org.drools.brms.client.ruleeditor.EditorLauncher$2';_.l = 515;function zqf(){Aqf(this);}
 function zpf(Bqf,Cqf,Dqf,Eqf,Fqf){Bqf.arf = Cqf;Bqf.brf = Dqf;Bqf.crf = Eqf;Bqf.drf = Fqf;return Bqf;}
-function Aqf(erf){fGb(erf.arf,uFb(erf.arf,erf.brf));cGb(erf.arf,0);m5b(erf.crf,erf.drf);}
+function Aqf(erf){fGb(erf.arf,uFb(erf.arf,erf.brf));cGb(erf.arf,0);if(erf.crf !== c2b().e2b){m5b(erf.crf,erf.drf);}}
 function Apf(){}
 _ = Apf.prototype = new i();_.an = zqf;_.g = 'org.drools.brms.client.ruleeditor.EditorLauncher$3';_.l = 516;function wkf(frf,grf){var hrf,irf,jrf;hrf = jn(new kn());for(irf = 0;irf < frf.qe;irf++){jrf = frf[irf];if(gXb(grf,'') || qYb(jrf.ALc,grf)){fo(hrf,jrf);}}return hrf;}
 function krf(){return this.lrf.mrc() || this.drc;}
