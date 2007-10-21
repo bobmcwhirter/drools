@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.mvel</groupId>
+
+  <artifactId>mvel</artifactId>
+
+  <name>mvel</name>
+
+  <version>1.2.8</version>
+
+  <description></description>
+
+  <inceptionYear>2005</inceptionYear>
+
+  <url>http://wiki.mvflex.org/index.php?title=MVFLEX_Expression_Language</url>
+
+  <issueManagement>
+    <url>http://jira.codehaus.org/browse/MVEL</url>
+  </issueManagement>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <mailingLists/>
+
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/mvel/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mvel/</developerConnection>
+    <url>http://svn.mvel.codehaus.org/</url>
+  </scm>
+
+  <organization>
+    <name>Codehaus</name>
+    <url>http://codehaus.org</url>
+  </organization>
+
+  <build>
+    <sourceDirectory></sourceDirectory>
+    <testSourceDirectory></testSourceDirectory>
+  </build>
+</project>
