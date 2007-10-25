@@ -1,0 +1,4 @@
+com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true
+java.lang.String, true
+java.util.HashSet, true
+org.drools.brms.client.rpc.UserSecurityContext, true
