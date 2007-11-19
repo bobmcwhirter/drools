@@ -27,36 +27,36 @@
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact_FieldSerializer" hash="8646F66FFEBDCE52535B8FBA9AE37830"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.SuggestionCompletionEngine_FieldSerializer" hash="1BED05A61D2EFBC600410686A3304B3E"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.RetractFact_FieldSerializer" hash="D5404935C6CA111BC069DEA43257ECF4"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.SingleFieldConstraint_FieldSerializer" hash="C2DB414BB43FE22A8E8CDBA910564AA6"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RuleAsset_FieldSerializer" hash="7D9F400F79A33BD99A5721E52B6EDBA7"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.SingleFieldConstraint_FieldSerializer" hash="C2DB414BB43FE22A8E8CDBA910564AA6"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.FactData_FieldSerializer" hash="7BA5DA67108E0D42598950EFF5A4EBE0"/>
 	<generated-type-hash class="com.google.gwt.user.client.ui.SuggestOracle_Response_FieldSerializer" hash="1C6D42E0AC1FE9CDD63B791E11BD9615"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.PackageConfigData_FieldSerializer" hash="1C8237E912FA51556E3496683D32C8B5"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.FactPattern_FieldSerializer" hash="5535A6C88015EE51C5F4FA808DFAA8ED"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.UserSecurityContext_FieldSerializer" hash="23BBE46A9DFC6B37AC0BCD8106566F17"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.SessionExpiredException_FieldSerializer" hash="0A173F0D6310FDB17BD90CBB1948DC75"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="5167CA062937CD0F332216B837E7D09B"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.TableDataRow_FieldSerializer" hash="411D058D97408AAE2C3EBA1620048463"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="5167CA062937CD0F332216B837E7D09B"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionFieldList_FieldSerializer" hash="73DAB0917FEA7A2E484F4B12C200C868"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.VerifyField_FieldSerializer" hash="5B2E78618646F5B68ACEAFD5B37083CF"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionUpdateField_FieldSerializer" hash="53DAC10B208EAD97D6542560F2C8BAAD"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_TypeSerializer" hash="FF74F19952E1AFD150A5D5D2500D5183"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionUpdateField_FieldSerializer" hash="53DAC10B208EAD97D6542560F2C8BAAD"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.VerifyField_FieldSerializer" hash="5B2E78618646F5B68ACEAFD5B37083CF"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.ExecutionTrace_FieldSerializer" hash="2D1EDB79D56367E162E7EA3516D6852B"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RuleContentText_FieldSerializer" hash="9F5834F874613140D0BDEC4056C49928"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.SecurityService_Proxy" hash="A7E82DD5A3F07E96C857DF68FE0D4FF5"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.RuleModel_FieldSerializer" hash="2A44CFABD8B63D33EFAA2FF86226638A"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ConnectiveConstraint_FieldSerializer" hash="BF0E8BCBA71D0333FD6536A3B7B09370"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.TextBoxImpl" out="com.google.gwt.user.client.ui.impl.TextBoxImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.TextBoxImpl" out="com.google.gwt.user.client.ui.impl.TextBoxImplIE6"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.ListBox.Impl" out="com.google.gwt.user.client.ui.ListBox.Impl"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImpl"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.ClippedImageImpl" out="com.google.gwt.user.client.ui.impl.ClippedImageImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImplIE6"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.ClippedImageImpl" out="com.google.gwt.user.client.ui.impl.ClippedImageImplIE6"/>
 	<rebind-decision in="org.drools.brms.client.JBRMSEntryPoint" out="org.drools.brms.client.JBRMSEntryPoint"/>
 	<rebind-decision in="org.drools.brms.client.rpc.RepositoryService" out="org.drools.brms.client.rpc.RepositoryService_Proxy"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplMozilla"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplMozilla"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImplMozilla"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplIE6"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplIE6"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImplIE6"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.TreeImages" out="com.google.gwt.user.client.ui.TreeImages_generatedBundle"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImpl"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImplIE6"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImplIE6"/>
 	<rebind-decision in="org.drools.brms.client.rpc.SecurityService" out="org.drools.brms.client.rpc.SecurityService_Proxy"/>
 </cache-entry>
