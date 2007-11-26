@@ -20,8 +20,8 @@
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionSetField_FieldSerializer" hash="7F0BA1987E3FB650C44049758B209A0E"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.VerifyRuleFired_FieldSerializer" hash="B516876556C97A0527025C3425DD79EA"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.VerifyFact_FieldSerializer" hash="CD74BB488256A8AAD4C6EB5783779DBC"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.CompositeFactPattern_FieldSerializer" hash="85DD7A29F613D6A493314730060FF12A"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint_FieldSerializer" hash="F30861DCB878C093201710AE55E3EF52"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.CompositeFactPattern_FieldSerializer" hash="85DD7A29F613D6A493314730060FF12A"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionFieldValue_FieldSerializer" hash="C12B27B0B8651B5CCA2358C044C74DD1"/>
 	<generated-type-hash class="com.google.gwt.user.client.ui.HorizontalSplitPanelImages_generatedBundle" hash="A4F3ACC572B03FED0F079F1357B03D6B"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.DetailedSerializableException_FieldSerializer" hash="CE21C342ABA475456EAAE97B0AE44393"/>
@@ -56,10 +56,10 @@
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.ClippedImageImpl" out="com.google.gwt.user.client.ui.impl.ClippedImageImpl"/>
 	<rebind-decision in="org.drools.brms.client.JBRMSEntryPoint" out="org.drools.brms.client.JBRMSEntryPoint"/>
 	<rebind-decision in="org.drools.brms.client.rpc.RepositoryService" out="org.drools.brms.client.rpc.RepositoryService_Proxy"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplStandard"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplMozilla"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.VerticalSplitPanelImages" out="com.google.gwt.user.client.ui.VerticalSplitPanelImages_generatedBundle"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplOpera"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplMozillaOld"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImplMozilla"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.TreeImages" out="com.google.gwt.user.client.ui.TreeImages_generatedBundle"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImpl"/>
 	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImpl"/>
