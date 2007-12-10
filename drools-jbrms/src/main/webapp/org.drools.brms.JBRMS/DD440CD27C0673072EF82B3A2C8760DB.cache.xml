@@ -19,9 +19,9 @@
 	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="D6186B9BC56EA8D608FB4990DD192C65"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_TypeSerializer" hash="BFD3964A3D73491798C893EF8D767180"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.VerifyField_FieldSerializer" hash="C0161C6203189819418B51BDDD8ED34C"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.RuleContentText_FieldSerializer" hash="9F5834F874613140D0BDEC4056C49928"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.Scenario_FieldSerializer" hash="1CC790A4F235EE27348F965F9C7485CD"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.FieldData_FieldSerializer" hash="F50BCD22089FF1E61D3232D7B5F9F664"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.Scenario_FieldSerializer" hash="1CC790A4F235EE27348F965F9C7485CD"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.RuleContentText_FieldSerializer" hash="9F5834F874613140D0BDEC4056C49928"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.RuleModel_FieldSerializer" hash="2A44CFABD8B63D33EFAA2FF86226638A"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.DSLSentence_FieldSerializer" hash="35AB7D23CC662D4F726060AA9938F6C6"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.SecurityService_TypeSerializer" hash="F5E8356E407A92D5A984E5458CC78B6D"/>
@@ -40,8 +40,8 @@
 	<generated-type-hash class="org.drools.brms.client.modeldriven.SuggestionCompletionEngine_FieldSerializer" hash="1BED05A61D2EFBC600410686A3304B3E"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.RetractFact_FieldSerializer" hash="D5404935C6CA111BC069DEA43257ECF4"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.SingleFieldConstraint_FieldSerializer" hash="C2DB414BB43FE22A8E8CDBA910564AA6"/>
-	<generated-type-hash class="com.google.gwt.user.client.ui.SuggestOracle_Response_FieldSerializer" hash="1C6D42E0AC1FE9CDD63B791E11BD9615"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.PackageConfigData_FieldSerializer" hash="1C8237E912FA51556E3496683D32C8B5"/>
+	<generated-type-hash class="com.google.gwt.user.client.ui.SuggestOracle_Response_FieldSerializer" hash="1C6D42E0AC1FE9CDD63B791E11BD9615"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.FactPattern_FieldSerializer" hash="5535A6C88015EE51C5F4FA808DFAA8ED"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.TableDataRow_FieldSerializer" hash="411D058D97408AAE2C3EBA1620048463"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ActionFieldList_FieldSerializer" hash="73DAB0917FEA7A2E484F4B12C200C868"/>
