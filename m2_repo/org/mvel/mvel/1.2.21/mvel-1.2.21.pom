@@ -4,7 +4,7 @@
     <groupId>org.codehaus.mvel</groupId>
     <artifactId>mvel</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.20-java1.5</version>
+    <version>1.2.21-java1.5</version>
     <name>mvel</name>
 
 	<description>MVFLEX Expression Language 1.2 for Java 1.4</description>
