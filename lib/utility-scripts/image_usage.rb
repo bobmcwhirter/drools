@@ -1,5 +1,5 @@
 #
-# This looks for unuses image in GWT code. 
+# This looks for unused images in GWT code. 
 # Gets a list of images, and looks to find if they are used. 
 #
 # Author: Michael Neale
@@ -9,7 +9,7 @@
 def mapdir(dir, predicate, action) 
     Dir.foreach(dir) do |d| 
       if d != "." && d != ".." then
-        sub = dir + "/" + d        
+        sub = "#{dir}/#{d}"        
         if not File.directory? sub and predicate.call(sub) then
           action.call(sub)
         else 
