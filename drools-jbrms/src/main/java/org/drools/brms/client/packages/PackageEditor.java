@@ -44,6 +44,20 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.form.ContainerConfig;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.Form;
+import com.gwtext.client.widgets.form.FormConfig;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.form.TextFieldConfig;
+import com.gwtext.client.widgets.form.event.FieldListener;
+import com.gwtext.client.widgets.form.event.FormListener;
+import com.gwtext.client.widgets.grid.ColumnConfig;
+import com.gwtext.client.widgets.grid.ColumnModel;
+import com.gwtext.client.widgets.grid.Grid;
+import com.gwtext.client.widgets.grid.event.GridRowListener;
 
 /**
  * This is the package editor and viewer for package configuration.
@@ -133,7 +147,6 @@ public class PackageEditor extends FormStyleLayout {
             show.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     ValidationMessageWidget wid = new ValidationMessageWidget(previousResponse.errorHeader, previousResponse.errorMessage);
-                    wid.setPopupPosition( Window.getClientWidth()/4, w.getAbsoluteTop()  );
                     wid.show();
                 }
             } );
@@ -231,8 +244,6 @@ public class PackageEditor extends FormStyleLayout {
             }
         } );
 
-        pop.setWidth( "40%" );
-        pop.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
         pop.show();
     }
 
@@ -251,10 +262,10 @@ public class PackageEditor extends FormStyleLayout {
 
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if (!PackageNameValidator.validatePackageName(name.getText())) {
-            		Window.alert("Not a valid package name.");
-            		return;
-            	}
+                if (!PackageNameValidator.validatePackageName(name.getText())) {
+                    Window.alert("Not a valid package name.");
+                    return;
+                }
                 RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
                         refreshCommand.execute();
@@ -265,8 +276,6 @@ public class PackageEditor extends FormStyleLayout {
             }
         } );
 
-        pop.setWidth( "40%" );
-        pop.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
         pop.show();
 
     }
@@ -394,7 +403,6 @@ public class PackageEditor extends FormStyleLayout {
         newFactTemplate.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 final FactTemplateWizard wiz = new FactTemplateWizard();
-                wiz.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() - 250 );
                 wiz.setOKClick( new Command() {
                     public void execute() {
                         area.setText( area.getText() + "\n" +
