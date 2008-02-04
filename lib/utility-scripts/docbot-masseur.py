@@ -13,8 +13,10 @@ def flatten(root, output) :
             if not name == ".svn":
                 flattenDir(root, name, output, sections)
         else:
-            if (name.endswith(".xml")) :
-                    top_files.append(name)
+            if name.endswith(".xml") :
+                top_files.append(name)
+            elif name != ".svn":
+                shutil.copyfile(os.path.join(root, name), os.path.join(output, name))
     for file in top_files:        
         contents = open(os.path.join(root, file), "r").read()
         for section in sections:
@@ -35,7 +37,7 @@ def flattenDir(root, dir, output, sections):
         if name.endswith(".xml"):
             docs.append(name)
         else:
-            if not name == ".svn":
+            if name != ".svn":
                 images.append(name)
                 shutil.copyfile(os.path.join(root, dir, name), os.path.join(output, "images", dir + "_" + name))
     for doc in docs: 
