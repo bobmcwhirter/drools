@@ -1,3 +1,11 @@
+#!/usr/bin/python
+
+#
+# This script will flatten out a folder based docbook manual into a docbot friendly "flat" structure
+# (and update links in files accordingly)
+# Author: Michael Neale
+#
+
 import os, sys, shutil
 
 def flatten(root, output) :  
@@ -52,6 +60,8 @@ def flattenDir(root, dir, output, sections):
         
 
 
-
-flatten(sys.argv[1], sys.argv[2])
+if len(sys.argv) < 2:
+    print "2 arguments required: <path to root of documentation> <output path>. eg: docbot-masseur.py ./something ./output"
+else:
+    flatten(sys.argv[1], sys.argv[2])
     
