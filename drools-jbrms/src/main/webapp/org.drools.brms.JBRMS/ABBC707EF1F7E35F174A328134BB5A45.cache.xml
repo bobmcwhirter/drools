@@ -25,20 +25,20 @@
 	<generated-type-hash class="org.drools.brms.client.rpc.ScenarioResultSummary_FieldSerializer" hash="750026C9858B63669EF361CAF268F052"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.UserSecurityContext_FieldSerializer" hash="23BBE46A9DFC6B37AC0BCD8106566F17"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.SessionExpiredException_FieldSerializer" hash="0A173F0D6310FDB17BD90CBB1948DC75"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="5931F64D4643C2369C979B67BDAD1BC6"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_Proxy" hash="93433ED6FE7925D1AD037BAC6376292C"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.dt.ActionRetractFactCol_FieldSerializer" hash="A6861A20B784988D2251CE7765B3A638"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.VerifyField_FieldSerializer" hash="C0161C6203189819418B51BDDD8ED34C"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RepositoryService_TypeSerializer" hash="757B0D75153B8BAC5D6F606D9244FAEC"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.FieldData_FieldSerializer" hash="F50BCD22089FF1E61D3232D7B5F9F664"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.Scenario_FieldSerializer" hash="1CC790A4F235EE27348F965F9C7485CD"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.VerifyField_FieldSerializer" hash="C0161C6203189819418B51BDDD8ED34C"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.RuleContentText_FieldSerializer" hash="9F5834F874613140D0BDEC4056C49928"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.AnalysisReport_FieldSerializer" hash="B299B9F03FDFB1D4EA6A31D305B34BCF"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.Scenario_FieldSerializer" hash="1CC790A4F235EE27348F965F9C7485CD"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.testing.FieldData_FieldSerializer" hash="F50BCD22089FF1E61D3232D7B5F9F664"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.RuleModel_FieldSerializer" hash="2A44CFABD8B63D33EFAA2FF86226638A"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.AnalysisReport_FieldSerializer" hash="B299B9F03FDFB1D4EA6A31D305B34BCF"/>
 	<generated-type-hash class="org.drools.brms.client.rpc.SecurityService_TypeSerializer" hash="F5E8356E407A92D5A984E5458CC78B6D"/>
-	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.DSLSentence_FieldSerializer" hash="35AB7D23CC662D4F726060AA9938F6C6"/>
 	<generated-type-hash class="com.google.gwt.i18n.client.constants.DateTimeConstants_" hash="60199A12D629C0197611025E36AA63EC"/>
-	<generated-type-hash class="org.drools.brms.client.rpc.AnalysisFieldUsage_FieldSerializer" hash="A4F79F2AD7D32F8D8D9B5AD825FE41D4"/>
+	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.DSLSentence_FieldSerializer" hash="35AB7D23CC662D4F726060AA9938F6C6"/>
 	<generated-type-hash class="com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException_FieldSerializer" hash="FF198044879E67E1ACF2E0C29CC58CB5"/>
+	<generated-type-hash class="org.drools.brms.client.rpc.AnalysisFieldUsage_FieldSerializer" hash="A4F79F2AD7D32F8D8D9B5AD825FE41D4"/>
 	<generated-type-hash class="com.google.gwt.user.client.ui.MultiWordSuggestOracle_MultiWordSuggestion_FieldSerializer" hash="1721A875793F79F044BA9AEC6543C8A2"/>
 	<generated-type-hash class="com.google.gwt.user.client.ui.TreeImages_generatedBundle" hash="C4DB9D53C840859028C6F483DB58A75C"/>
 	<generated-type-hash class="com.google.gwt.user.client.rpc.SerializableException_FieldSerializer" hash="1CB9B63ABEC9BE7E663F6C56AA395208"/>
@@ -69,22 +69,22 @@
 	<generated-type-hash class="org.drools.brms.client.rpc.SecurityService_Proxy" hash="A7E82DD5A3F07E96C857DF68FE0D4FF5"/>
 	<generated-type-hash class="org.drools.brms.client.modeldriven.brl.ConnectiveConstraint_FieldSerializer" hash="BF0E8BCBA71D0333FD6536A3B7B09370"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.TextBoxImpl" out="com.google.gwt.user.client.ui.impl.TextBoxImpl"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.ListBox.Impl" out="com.google.gwt.user.client.ui.ListBox.ImplSafari"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImplSafari"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.ListBox.Impl" out="com.google.gwt.user.client.ui.ListBox.Impl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImplOld"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.VerticalSplitPanel.Impl" out="com.google.gwt.user.client.ui.VerticalSplitPanel.Impl"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.HorizontalSplitPanelImages" out="com.google.gwt.user.client.ui.HorizontalSplitPanelImages_generatedBundle"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.ClippedImageImpl" out="com.google.gwt.user.client.ui.impl.ClippedImageImpl"/>
 	<rebind-decision in="org.drools.brms.client.JBRMSEntryPoint" out="org.drools.brms.client.JBRMSEntryPoint"/>
 	<rebind-decision in="org.drools.brms.client.rpc.RepositoryService" out="org.drools.brms.client.rpc.RepositoryService_Proxy"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplSafari"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplMozilla"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.VerticalSplitPanelImages" out="com.google.gwt.user.client.ui.VerticalSplitPanelImages_generatedBundle"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplSafari"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplMozillaOld"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImplMozilla"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.TreeImages" out="com.google.gwt.user.client.ui.TreeImages_generatedBundle"/>
 	<rebind-decision in="com.google.gwt.i18n.client.constants.DateTimeConstants" out="com.google.gwt.i18n.client.constants.DateTimeConstants_"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImpl"/>
 	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImpl"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.DisclosurePanelImages" out="com.google.gwt.user.client.ui.DisclosurePanelImages_generatedBundle"/>
 	<rebind-decision in="org.drools.brms.client.rpc.SecurityService" out="org.drools.brms.client.rpc.SecurityService_Proxy"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.HorizontalSplitPanel.Impl" out="com.google.gwt.user.client.ui.HorizontalSplitPanel.ImplSafari"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.HorizontalSplitPanel.Impl" out="com.google.gwt.user.client.ui.HorizontalSplitPanel.Impl"/>
 </cache-entry>
