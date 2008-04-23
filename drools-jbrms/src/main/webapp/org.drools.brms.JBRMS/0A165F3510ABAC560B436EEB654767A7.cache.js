@@ -3486,7 +3486,7 @@ _=cfc.prototype=new trb();_.qe=ffc;_.tN=ohd+'ActionSetFieldWidget$2';_.tI=548;fu
 function jfc(c){var a,b;a=wA(this.b,xA(this.b));b=j7b(this.a.a,this.a.f,a);E7b(this.a.d,g8b(new f8b(),a,'',b));epc(this.a.e);AKb(this.c);}
 function gfc(){}
 _=gfc.prototype=new trb();_.oe=jfc;_.tN=ohd+'ActionSetFieldWidget$3';_.tI=549;function qgc(b,c,a){if(msb(c.b,'Boolean')){b.a=Eb('[Ljava.lang.String;',926,1,['true','false']);}else{b.a=a;}b.b=zF(new rF());b.c=c;ugc(b);fr(b,b.b);return b;}
-function rgc(c,b){var a;a=mJ(new CI());a.ri('constraint-value-Editor');if(b.c===null){hJ(a,'');}else{hJ(a,b.c);}if(b.c===null||rsb(b.c)<5){oJ(a,3);}else{oJ(a,rsb(b.c)-1);}FI(a,xfc(new wfc(),c,b,a));aJ(a,fKb(new eKb(),Bfc(new Afc(),c,a)));if(msb(c.c.b,'Numeric')){aJ(a,xgc(a));}return a;}
+function rgc(c,b){var a;a=mJ(new CI());a.ri('constraint-value-Editor');if(b.c===null){hJ(a,'');}else{hJ(a,b.c);}if(b.c===null||rsb(b.c)<5){oJ(a,6);}else{oJ(a,rsb(b.c)-1);}FI(a,xfc(new wfc(),c,b,a));aJ(a,fKb(new eKb(),Bfc(new Afc(),c,a)));if(msb(c.c.b,'Numeric')){aJ(a,xgc(a));}return a;}
 function sgc(b){var a;a=iz(new sy(),'images/edit.gif');jz(a,fgc(new egc(),b));return a;}
 function ugc(b){var a;b.b.gb();if(b.a!==null&&b.a.a>0){BF(b.b,Aic(b.c.c,tfc(new sfc(),b),b.a));}else{if(b.c.c===null||msb('',b.c.c)){BF(b.b,sgc(b));}else{a=rgc(b,b.c);BF(b.b,a);}}}
 function vgc(d,e){var a,b,c;a=vKb(new tKb(),'images/newex_wiz.gif','Field value');c=tp(new mp(),'Literal value');c.w(jgc(new igc(),d,a));xKb(a,'Literal value:',wgc(d,c,oLb(new jLb(),'Literal','A literal value means the constraint is directly against the value that you type (ie. what you see on screen).')));yKb(a,sx(new ev(),'<hr/>'));yKb(a,xMb(new vMb(),'<i>Advanced<\/i>'));b=tp(new mp(),'Formula');b.w(ngc(new mgc(),d,a));xKb(a,'Formula:',wgc(d,b,oLb(new jLb(),'Formula','A formula is used when values are calculated, or a variable is used.')));DKb(a);}
@@ -3528,7 +3528,7 @@ _=zgc.prototype=new trb();_.qe=Cgc;_.tN=ohd+'CompositeFactPatternWidget$1';_.tI=
 function ahc(a){v9b(this.a.d,t$b(new s$b(),wA(this.b,xA(this.b))));epc(this.a.c);AKb(this.c);}
 function Dgc(){}
 _=Dgc.prototype=new trb();_.oe=ahc;_.tN=ohd+'CompositeFactPatternWidget$2';_.tI=560;function qic(f,d,b,a,c,g){var e;f.a=a;if(msb(g,'Numeric')){f.d=true;}else{f.d=false;}if(msb(g,'Boolean')){f.b=Eb('[Ljava.lang.String;',926,1,['true','false']);}f.c=c.c;e=c.a;f.b=g7b(e,d,b);f.e=zF(new rF());vic(f);fr(f,f.e);return f;}
-function ric(c,b){var a;a=mJ(new CI());a.ri('constraint-value-Editor');if(b.f===null){hJ(a,'');}else{hJ(a,b.f);}if(b.f===null||rsb(b.f)<5){oJ(a,3);}else{oJ(a,rsb(b.f)-1);}FI(a,bic(new aic(),c,b,a));aJ(a,fKb(new eKb(),fic(new eic(),c,a)));return a;}
+function ric(c,b){var a;a=mJ(new CI());a.ri('constraint-value-Editor');if(b.f===null){hJ(a,'');}else{hJ(a,b.f);}if(b.f===null||rsb(b.f)<5){oJ(a,6);}else{oJ(a,rsb(b.f)-1);}FI(a,bic(new aic(),c,b,a));aJ(a,fKb(new eKb(),fic(new eic(),c,a)));return a;}
 function tic(b,a){vic(b);AKb(a);}
 function uic(b){var a;if(b.b!==null){return Aic(b.a.f,uhc(new thc(),b),b.b);}else{a=ric(b,b.a);if(b.d){aJ(a,new xhc());}a.ti('This is a literal value. What is shown is what the field is checked against.');return a;}}
 function vic(b){var a;b.e.gb();if(b.a.e==0){a=iz(new sy(),'images/edit.gif');jz(a,mhc(new hhc(),b));BF(b.e,a);}else{switch(b.a.e){case 1:BF(b.e,uic(b));break;case 3:BF(b.e,wic(b));break;case 2:BF(b.e,yic(b));break;default:break;}}}
@@ -3591,7 +3591,7 @@ function slc(j,b){var a,c,d,e,f,g,h,i;f=ly(new jy());d=null;e=fLb(new eLb(),'ima
 function tlc(g,b,c){var a,d,e,f;f=d7b(g.b,g.e.c,c);a=nA(new fA());qA(a,'--- please choose ---');for(d=0;d<f.a;d++){e=f[d];rA(a,C6b(e),e);if(msb(e,b.a)){EA(a,d+1);}}pA(a,Djc(new Cjc(),g,b,a));return a;}
 function ulc(d,a,b,c){var e;e=j7b(d.d.a,b,c);return qic(new ghc(),d.e,c,a,d.d,e);}
 function vlc(f,a,c){var b,d,e;if(a.a!==null&&a.a.a>0){d=vJb(new uJb());for(e=0;e<a.a.a;e++){b=a.a[e];my(d,tlc(f,b,a.c));my(d,ulc(f,b,c,a.c));}return d;}else{return null;}}
-function wlc(c,b){var a,d,e;if(c.a&& !A_b(c.d.c,c.e.a)){d=ly(new jy());e=mJ(new CI());if(c.e.a===null){hJ(e,'');}else{hJ(e,c.e.a);}oJ(e,3);my(d,e);a=tp(new mp(),'Set');a.w(zjc(new yjc(),c,e,b));my(d,a);xKb(b,'Variable name',d);}}
+function wlc(c,b){var a,d,e;if(c.a&& !A_b(c.d.c,c.e.a)){d=ly(new jy());e=mJ(new CI());if(c.e.a===null){hJ(e,'');}else{hJ(e,c.e.a);}oJ(e,6);my(d,e);a=tp(new mp(),'Set');a.w(zjc(new yjc(),c,e,b));my(d,a);xKb(b,'Variable name',d);}}
 function xlc(e,c,d){var a,b;a=ly(new jy());a.ri('modeller-field-Label');if(!hac(c)){if(e.a&&d){b=gLb(new eLb(),'images/add_field_to_fact.gif','Give this field a variable name that can be used elsewhere.');jz(b,fkc(new ekc(),e,c));my(a,b);}}else{my(a,xMb(new vMb(),'['+c.b+']'));}my(a,xMb(new vMb(),c.c));return a;}
 function ylc(c){var a,b;b=ly(new jy());a=fLb(new eLb(),'images/add_field_to_fact.gif');a.ti('Add a field to this condition, or bind a varible to this fact.');jz(a,alc(new Fkc(),c));if(c.e.a!==null){my(b,xMb(new vMb(),'['+c.e.a+'] '+c.e.c));}else{my(b,xMb(new vMb(),c.e.c));}my(b,a);return b;}
 function zlc(f,b){var a,c,d,e;e=l7b(f.b,f.e.c,b.c);a=nA(new fA());qA(a,'--- please choose ---');for(c=0;c<e.a;c++){d=e[c];rA(a,C6b(d),d);if(msb(d,b.d)){EA(a,c+1);}}pA(a,bkc(new akc(),f,b,a));return a;}
