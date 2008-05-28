@@ -1,13 +1,17 @@
 package org.drools.osworkflow;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.osworkflow.core.node.StepNode;
+import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
+import org.drools.osworkflow.instance.node.StepNodeInstance;
 import org.drools.rule.Package;
+import org.drools.workflow.instance.NodeInstance;
 
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.FactoryException;
@@ -45,17 +49,27 @@ public class DroolsWorkflow implements Workflow {
 			ruleBase.addPackage(newPackage);
 		}
 		// TODO initialAction
-		return workingMemory.startProcess(workflowName, inputs).getId();
+		OSWorkflowProcessInstance processInstance = (OSWorkflowProcessInstance)
+		    workingMemory.startProcess(workflowName);
+		processInstance.doInitialAction(initialAction, inputs);
+		return processInstance.getId();
 	}
 
 	public void doAction(long id, int actionId, Map inputs)
 			throws InvalidInputException, WorkflowException {
-		ProcessInstance processInstance = findProcessInstance(id);
-		
+		OSWorkflowProcessInstance processInstance = findProcessInstance(id);
+		for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
+		    StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
+		    if (stepNodeInstance.isAvailableAction(actionId)) {
+		        stepNodeInstance.doAction(actionId, inputs);
+		        break;
+		    }
+		}
 	}
 	
-	private ProcessInstance findProcessInstance(long id) {
-		ProcessInstance processInstance = workingMemory.getProcessInstance(id);
+	private OSWorkflowProcessInstance findProcessInstance(long id) {
+	    OSWorkflowProcessInstance processInstance = (OSWorkflowProcessInstance)
+	        workingMemory.getProcessInstance(id);
 		if (processInstance == null) {
 			throw new IllegalArgumentException(
 				"Could not find process instance with id " + id);
@@ -64,18 +78,26 @@ public class DroolsWorkflow implements Workflow {
 	}
 	
 	public int[] getAvailableActions(long id) {
-		// TODO
-		return null;
+	    return getAvailableActions(id, null);
 	}
 
 	public int[] getAvailableActions(long id, Map inputs) {
-		// TODO
-		return null;
+        List<Integer> ids = new ArrayList<Integer>();
+        OSWorkflowProcessInstance processInstance = findProcessInstance(id);
+        for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
+            StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
+            ids.addAll(stepNodeInstance.getAvailableActions());
+        }
+        int[] result = new int[ids.size()];
+        int i = 0;
+        for (int actionId : ids) {
+            result[i++] = actionId;
+        }
+        return result;
 	}
 
 	public boolean canInitialize(String workflowName, int initialStep) {
-		// TODO
-		return false;
+		return canInitialize(workflowName, initialStep, null);
 	}
 
 	public boolean canInitialize(String workflowName, int initialAction, Map inputs) {
@@ -97,8 +119,14 @@ public class DroolsWorkflow implements Workflow {
 	}
 
 	public List getCurrentSteps(long id) {
-		// TODO
-		return null;
+	    List<StepNodeInstance> result = new ArrayList<StepNodeInstance>();
+	    OSWorkflowProcessInstance processInstance = findProcessInstance(id);
+	    for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
+	        if (nodeInstance instanceof StepNodeInstance) {
+	            result.add((StepNodeInstance) nodeInstance);
+	        }
+	    }
+		return result;
 	}
 
 	public int getEntryState(long id) {
