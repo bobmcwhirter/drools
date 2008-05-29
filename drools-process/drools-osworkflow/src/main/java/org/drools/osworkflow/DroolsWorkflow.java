@@ -85,8 +85,10 @@ public class DroolsWorkflow implements Workflow {
         List<Integer> ids = new ArrayList<Integer>();
         OSWorkflowProcessInstance processInstance = findProcessInstance(id);
         for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
-            StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
-            ids.addAll(stepNodeInstance.getAvailableActions());
+            if (nodeInstance instanceof StepNodeInstance) {
+                StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
+                ids.addAll(stepNodeInstance.getAvailableActions());
+            }
         }
         int[] result = new int[ids.size()];
         int i = 0;

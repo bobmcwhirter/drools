@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/propertyset-1.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/drools-compiler"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/drools-core"/>
+	<classpathentry kind="lib" path="lib/bsh-1.2b7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

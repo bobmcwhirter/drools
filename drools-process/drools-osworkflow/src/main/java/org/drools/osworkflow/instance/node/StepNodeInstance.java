@@ -13,6 +13,7 @@ import com.opensymphony.workflow.loader.ActionDescriptor;
 import com.opensymphony.workflow.loader.ConditionDescriptor;
 import com.opensymphony.workflow.loader.ConditionsDescriptor;
 import com.opensymphony.workflow.loader.RestrictionDescriptor;
+import com.opensymphony.workflow.loader.ResultDescriptor;
 import com.opensymphony.workflow.spi.Step;
 import com.opensymphony.workflow.util.StatusCondition;
 
@@ -40,8 +41,14 @@ public class StepNodeInstance extends NodeInstanceImpl implements Step {
             throw new IllegalArgumentException(
                 "Unknown action id " + actionId);
         }
+        ResultDescriptor result = action.getUnconditionalResult();
         // TODO check stuff
-        triggerCompleted(actionId + "", true);
+        if (result.getStep() == -1 || result.getStep() == getNodeId()) {
+            setStatus(result.getStatus());
+        } else {
+            setStatus(result.getOldStatus());
+            triggerCompleted(actionId + "", true);
+        }
     }
     
     public String getStatus() {

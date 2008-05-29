@@ -23,7 +23,7 @@ import com.opensymphony.workflow.loader.WorkflowDescriptor;
 public class OSWorkflowParser {
     
     private OSWorkflowProcess process;
-    private Map<StepDescriptor, StepNode> stepsMap;
+    private Map<Integer, StepNode> stepsMap;
     private Map<Integer, Split> splitsMap;
     private Map<Integer, Join> joinsMap;
 	
@@ -34,21 +34,22 @@ public class OSWorkflowParser {
 		process.setPackageName("org.drools.osworkflow");
 		process.setInitialActions(descriptor.getInitialActions());
 
-        stepsMap = new HashMap<StepDescriptor, StepNode>();
+        stepsMap = new HashMap<Integer, StepNode>();
+        int nodeCounter = 0;
 		List<StepDescriptor> steps = descriptor.getSteps();
 		for (StepDescriptor step: steps) {
 			StepNode stepNode = new StepNode();
-			stepNode.setId(step.getId());
+			stepNode.setId(++nodeCounter);
 			stepNode.setName(step.getName());
 			stepNode.setActions(step.getActions());
 			process.addNode(stepNode);
-			stepsMap.put(step, stepNode);
+			stepsMap.put(step.getId(), stepNode);
 		}
 		splitsMap = new HashMap<Integer, Split>();
         List<SplitDescriptor> splits = descriptor.getSplits();
         for (SplitDescriptor split: splits) {
             Split splitNode = new Split();
-            splitNode.setId(split.getId());
+            splitNode.setId(++nodeCounter);
             splitNode.setName("split");
             splitNode.setType(Split.TYPE_AND);
             process.addNode(splitNode);
@@ -62,7 +63,7 @@ public class OSWorkflowParser {
         List<JoinDescriptor> joins = descriptor.getJoins();
         for (JoinDescriptor join: joins) {
             Join joinNode = new Join();
-            joinNode.setId(join.getId());
+            joinNode.setId(++nodeCounter);
             joinNode.setName("join");
             // TODO conditions
             List<ConditionDescriptor> conditions = join.getConditions();
@@ -73,12 +74,12 @@ public class OSWorkflowParser {
             createConnection(joinNode, Node.CONNECTION_DEFAULT_TYPE, result);
         }
 		
-		for (Map.Entry<StepDescriptor, StepNode> entry: stepsMap.entrySet()) {
-		    StepDescriptor step = entry.getKey();
+        steps = descriptor.getSteps();
+        for (StepDescriptor step: steps) {
 		    List<ActionDescriptor> actions = step.getActions();
 		    for (ActionDescriptor action: actions) {
                 ResultDescriptor result = action.getUnconditionalResult();
-		        createConnection(entry.getValue(), action.getId() + "", result);
+		        createConnection(stepsMap.get(step.getId()), action.getId() + "", result);
 		    }
 		}
 		return process;
@@ -91,11 +92,13 @@ public class OSWorkflowParser {
         } else if (result.getJoin() != 0) {
             Join join = joinsMap.get(result.getJoin());
             new ConnectionImpl(node, type, join, Node.CONNECTION_DEFAULT_TYPE);
+        } else if (result.getStep() == -1 || result.getStep() == node.getId()) {
+            // Do nothing, this is an internal connection
         } else {
             new ConnectionImpl(
                 node,
                 type,
-                process.getNode(result.getStep() == -1 ? node.getId() : result.getStep()),
+                process.getNode(result.getStep()),
                 result.getStatus()
             );
         }
