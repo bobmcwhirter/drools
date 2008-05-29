@@ -19,7 +19,11 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl {
     }
     
     protected void internalStart() {
-        // Do nothing
+        for (ActionDescriptor action: getOSWorkflowProcess().getInitialActions()) {
+            if (action.getAutoExecute()) {
+                executeAction(action);
+            }
+        }
     }
 
     public void doInitialAction(int actionId, Map inputs) {
@@ -28,7 +32,12 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl {
             throw new IllegalArgumentException(
                 "Unknown initial action id " + actionId);
         }
-        ResultDescriptor result = initialAction.getUnconditionalResult();
+        executeAction(initialAction);
+    }
+    
+    protected void executeAction(ActionDescriptor action) {
+        // TODO check conditional results first
+        ResultDescriptor result = action.getUnconditionalResult();
         int step = result.getStep();
         String status = result.getStatus();
         StepNode stepNode = (StepNode) getNodeContainer().getNode(step);

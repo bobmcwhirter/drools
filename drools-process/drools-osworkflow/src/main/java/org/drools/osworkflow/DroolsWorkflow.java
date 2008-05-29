@@ -7,7 +7,6 @@ import java.util.Map;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.osworkflow.core.node.StepNode;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
 import org.drools.rule.Package;
@@ -29,6 +28,7 @@ import com.opensymphony.workflow.query.WorkflowQuery;
 
 public class DroolsWorkflow implements Workflow {
 
+    private OSWorkflowParser parser = new OSWorkflowParser();
 	private WorkingMemory workingMemory;
 	private Configuration configuration;
 	
@@ -45,7 +45,7 @@ public class DroolsWorkflow implements Workflow {
 					"Could not find process with name " + workflowName);
 			}
 			Package newPackage = new Package("org.drools.osworkflow");
-			newPackage.addRuleFlow(OSWorkflowParser.parseOSWorkflow(descriptor));
+			newPackage.addRuleFlow(parser.parseOSWorkflow(descriptor));
 			ruleBase.addPackage(newPackage);
 		}
 		// TODO initialAction
