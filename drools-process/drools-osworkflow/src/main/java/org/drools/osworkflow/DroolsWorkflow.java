@@ -1,14 +1,17 @@
 package org.drools.osworkflow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.osworkflow.core.OSWorkflowProcess;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
 import org.drools.workflow.instance.NodeInstance;
 
@@ -25,18 +28,21 @@ import com.opensymphony.workflow.config.DefaultConfiguration;
 import com.opensymphony.workflow.loader.WorkflowDescriptor;
 import com.opensymphony.workflow.query.WorkflowExpressionQuery;
 import com.opensymphony.workflow.query.WorkflowQuery;
+import com.opensymphony.workflow.spi.Step;
+import com.opensymphony.workflow.spi.WorkflowEntry;
 
 public class DroolsWorkflow implements Workflow {
 
     private OSWorkflowParser parser = new OSWorkflowParser();
 	private WorkingMemory workingMemory;
 	private Configuration configuration;
+	private Map<Long, OSWorkflowProcessInstance> processInstances = new HashMap<Long, OSWorkflowProcessInstance>();
 	
 	public long initialize(String workflowName, int initialAction, Map inputs)
 			throws InvalidRoleException, InvalidInputException,
 			WorkflowException, InvalidEntryStateException,
 			InvalidActionException {
-		RuleBase ruleBase = workingMemory.getRuleBase();
+		RuleBase ruleBase = getWorkingMemory().getRuleBase();
 		Package p = ruleBase.getPackage("org.drools.osworkflow");
 		if (p.getRuleFlows().get(workflowName) == null) {
 			WorkflowDescriptor descriptor = getConfiguration().getWorkflow(workflowName);
@@ -45,31 +51,27 @@ public class DroolsWorkflow implements Workflow {
 					"Could not find process with name " + workflowName);
 			}
 			Package newPackage = new Package("org.drools.osworkflow");
-			newPackage.addRuleFlow(parser.parseOSWorkflow(descriptor));
+			if (descriptor.getName() == null) {
+			    descriptor.setName(workflowName);
+			}
+			OSWorkflowProcess process = parser.parseOSWorkflow(descriptor);
+			newPackage.addProcess(process);
 			ruleBase.addPackage(newPackage);
 		}
-		// TODO initialAction
 		OSWorkflowProcessInstance processInstance = (OSWorkflowProcessInstance)
-		    workingMemory.startProcess(workflowName);
+		    getWorkingMemory().startProcess(workflowName);
 		processInstance.doInitialAction(initialAction, inputs);
+		processInstances.put(processInstance.getId(), processInstance);
 		return processInstance.getId();
 	}
 
 	public void doAction(long id, int actionId, Map inputs)
 			throws InvalidInputException, WorkflowException {
-		OSWorkflowProcessInstance processInstance = findProcessInstance(id);
-		for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
-		    StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
-		    if (stepNodeInstance.isAvailableAction(actionId)) {
-		        stepNodeInstance.doAction(actionId, inputs);
-		        break;
-		    }
-		}
+		findProcessInstance(id).doAction(actionId, inputs);
 	}
 	
 	private OSWorkflowProcessInstance findProcessInstance(long id) {
-	    OSWorkflowProcessInstance processInstance = (OSWorkflowProcessInstance)
-	        workingMemory.getProcessInstance(id);
+	    OSWorkflowProcessInstance processInstance = processInstances.get(id);
 		if (processInstance == null) {
 			throw new IllegalArgumentException(
 				"Could not find process instance with id " + id);
@@ -120,25 +122,31 @@ public class DroolsWorkflow implements Workflow {
 		// TODO
 	}
 
-	public List getCurrentSteps(long id) {
-	    List<StepNodeInstance> result = new ArrayList<StepNodeInstance>();
-	    OSWorkflowProcessInstance processInstance = findProcessInstance(id);
-	    for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
-	        if (nodeInstance instanceof StepNodeInstance) {
-	            result.add((StepNodeInstance) nodeInstance);
-	        }
-	    }
-		return result;
+	public List<Step> getCurrentSteps(long id) {
+	    return findProcessInstance(id).getCurrentSteps();
 	}
 
 	public int getEntryState(long id) {
-		// TODO
-		return 0;
+	    int state = findProcessInstance(id).getState();
+	    switch (state) {
+        case ProcessInstance.STATE_PENDING:
+            return WorkflowEntry.CREATED;
+        case ProcessInstance.STATE_ACTIVE:
+            return WorkflowEntry.ACTIVATED;
+        case ProcessInstance.STATE_COMPLETED:
+            return WorkflowEntry.COMPLETED;
+        case ProcessInstance.STATE_ABORTED:
+            return WorkflowEntry.KILLED;
+        case ProcessInstance.STATE_SUSPENDED:
+            return WorkflowEntry.SUSPENDED;
+        default:
+            return WorkflowEntry.UNKNOWN;
+        }
 	}
 
 	public List getHistorySteps(long id) {
-		// TODO
-		return null;
+	    OSWorkflowProcessInstance processInstance = findProcessInstance(id);
+		return processInstance.getHistorySteps();
 	}
 
 	public PropertySet getPropertySet(long id) {
@@ -192,13 +200,19 @@ public class DroolsWorkflow implements Workflow {
 		// TODO
 		return false;
 	}
+	
+	protected WorkingMemory getWorkingMemory() {
+	    if (workingMemory == null) {
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            Package p = new Package("org.drools.osworkflow");
+            ruleBase.addPackage(p);
+            workingMemory = ruleBase.newStatefulSession();
+	    }
+	    return workingMemory;
+	}
 
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        Package p = new Package("org.drools.osworkflow");
-        ruleBase.addPackage(p);
-        workingMemory = ruleBase.newStatefulSession();
 	}
 	
 	private Configuration getConfiguration() {

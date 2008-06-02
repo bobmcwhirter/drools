@@ -8,11 +8,14 @@ import java.util.Map;
 import org.drools.workflow.core.impl.NodeImpl;
 
 import com.opensymphony.workflow.loader.ActionDescriptor;
+import com.opensymphony.workflow.loader.FunctionDescriptor;
 
 public class StepNode extends NodeImpl {
 
-    public Map<Integer, ActionDescriptor> actions = 
+    private Map<Integer, ActionDescriptor> actions = 
         new HashMap<Integer, ActionDescriptor>();
+    private List<FunctionDescriptor> preFunctions;
+    private List<FunctionDescriptor> postFunctions;
     
     private static final long serialVersionUID = 1L;
     
@@ -32,6 +35,22 @@ public class StepNode extends NodeImpl {
     
     public ActionDescriptor getAction(int id) {
         return actions.get(id);
+    }
+
+    public List<FunctionDescriptor> getPreFunctions() {
+        return preFunctions;
+    }
+
+    public void setPreFunctions(List<FunctionDescriptor> preFunctions) {
+        this.preFunctions = preFunctions;
+    }
+
+    public List<FunctionDescriptor> getPostFunctions() {
+        return postFunctions;
+    }
+
+    public void setPostFunctions(List<FunctionDescriptor> postFunctions) {
+        this.postFunctions = postFunctions;
     }
 
 }

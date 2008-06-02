@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 
 import com.opensymphony.workflow.loader.ActionDescriptor;
@@ -20,6 +21,9 @@ public class OSWorkflowProcess extends WorkflowProcessImpl {
     
     public OSWorkflowProcess() {
         setType(OSWORKFLOW_TYPE);
+        VariableScope variableScope = new VariableScope();
+        addContext(variableScope);
+        setDefaultContext(variableScope);
     }
 
     public void addInitialAction(ActionDescriptor action) {

@@ -6,11 +6,13 @@ import java.util.Collections;
 import junit.framework.TestCase;
 
 import org.drools.osworkflow.DroolsWorkflow;
-import org.drools.osworkflow.instance.node.StepNodeInstance;
 
+import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.Workflow;
+import com.opensymphony.workflow.WorkflowException;
 import com.opensymphony.workflow.config.DefaultConfiguration;
 import com.opensymphony.workflow.spi.Step;
+import com.opensymphony.workflow.spi.WorkflowEntry;
 
 public class SimpleProcessTest extends TestCase {
 	
@@ -50,19 +52,21 @@ public class SimpleProcessTest extends TestCase {
             
             workflow.doAction(workflowId, 3, null);
             currentSteps = workflow.getCurrentSteps(workflowId);
-            //verify we only have one current step
-            assertEquals("Unexpected number of current steps", 1, currentSteps.size());
-            //verify it's step 2
-            currentStep = currentSteps.iterator().next();
-            assertEquals("Unexpected current step", 2, currentStep.getStepId());
+            //verify we only have no more current steps
+            assertEquals("Unexpected number of current steps", 0, currentSteps.size());
+            //verify process completed
+            assertEquals("Unexpected state", WorkflowEntry.COMPLETED, workflow.getEntryState(workflowId));
 
             availableActions = workflow.getAvailableActions(workflowId, Collections.EMPTY_MAP);
             //verify we only have no available action
             assertEquals("Unexpected number of available actions", 0, availableActions.length);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			fail(t.getMessage());
-		}
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (WorkflowException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
 	}
 
 }

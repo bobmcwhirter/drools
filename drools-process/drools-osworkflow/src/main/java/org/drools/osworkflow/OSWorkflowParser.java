@@ -1,12 +1,12 @@
 package org.drools.osworkflow;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.osworkflow.core.OSWorkflowProcess;
 import org.drools.osworkflow.core.node.StepNode;
-import org.drools.process.core.Process;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.node.Join;
@@ -27,7 +27,7 @@ public class OSWorkflowParser {
     private Map<Integer, Split> splitsMap;
     private Map<Integer, Join> joinsMap;
 	
-	public Process parseOSWorkflow(WorkflowDescriptor descriptor) {
+	public OSWorkflowProcess parseOSWorkflow(WorkflowDescriptor descriptor) {
 		process = new OSWorkflowProcess();
 		process.setName(descriptor.getName());
 		process.setId(descriptor.getName());
@@ -35,13 +35,14 @@ public class OSWorkflowParser {
 		process.setInitialActions(descriptor.getInitialActions());
 
         stepsMap = new HashMap<Integer, StepNode>();
-        int nodeCounter = 0;
 		List<StepDescriptor> steps = descriptor.getSteps();
 		for (StepDescriptor step: steps) {
 			StepNode stepNode = new StepNode();
-			stepNode.setId(++nodeCounter);
+			stepNode.setId(step.getId());
 			stepNode.setName(step.getName());
 			stepNode.setActions(step.getActions());
+			stepNode.setPreFunctions(step.getPreFunctions());
+			stepNode.setPostFunctions(step.getPostFunctions());
 			process.addNode(stepNode);
 			stepsMap.put(step.getId(), stepNode);
 		}
@@ -49,7 +50,8 @@ public class OSWorkflowParser {
         List<SplitDescriptor> splits = descriptor.getSplits();
         for (SplitDescriptor split: splits) {
             Split splitNode = new Split();
-            splitNode.setId(++nodeCounter);
+            // TODO: this is not fail safe
+            splitNode.setId(split.getId() + 1000);
             splitNode.setName("split");
             splitNode.setType(Split.TYPE_AND);
             process.addNode(splitNode);
@@ -63,7 +65,8 @@ public class OSWorkflowParser {
         List<JoinDescriptor> joins = descriptor.getJoins();
         for (JoinDescriptor join: joins) {
             Join joinNode = new Join();
-            joinNode.setId(++nodeCounter);
+            // TODO: this is not fail safe
+            joinNode.setId(join.getId() + 2000);
             joinNode.setName("join");
             // TODO conditions
             List<ConditionDescriptor> conditions = join.getConditions();
@@ -73,6 +76,7 @@ public class OSWorkflowParser {
             ResultDescriptor result = join.getResult();
             createConnection(joinNode, Node.CONNECTION_DEFAULT_TYPE, result);
         }
+        postProcessActions(process.getInitialActions());
 		
         steps = descriptor.getSteps();
         for (StepDescriptor step: steps) {
@@ -81,6 +85,7 @@ public class OSWorkflowParser {
                 ResultDescriptor result = action.getUnconditionalResult();
 		        createConnection(stepsMap.get(step.getId()), action.getId() + "", result);
 		    }
+            postProcessActions(actions);
 		}
 		return process;
 	}
@@ -98,9 +103,32 @@ public class OSWorkflowParser {
             new ConnectionImpl(
                 node,
                 type,
-                process.getNode(result.getStep()),
+                stepsMap.get(result.getStep()),
                 result.getStatus()
             );
+        }
+	}
+	
+	private void postProcessActions(Collection<ActionDescriptor> actions) {
+	    if (actions != null) {
+	        for (ActionDescriptor action: actions) {
+	            postProcessResult(action.getUnconditionalResult());
+	            List<ResultDescriptor> conditionalResults =
+	                action.getConditionalResults();
+	            if (conditionalResults != null) {
+	                for (ResultDescriptor result: conditionalResults) {
+	                    postProcessResult(result);
+	                }
+	            }
+	        }
+	    }
+	}
+	
+	private void postProcessResult(ResultDescriptor result) {
+        if (result.getSplit() != 0) {
+            result.setSplit(1000 + result.getSplit());
+        } else if (result.getJoin() != 0) {
+            result.setJoin(2000 + result.getJoin());
         }
 	}
 
