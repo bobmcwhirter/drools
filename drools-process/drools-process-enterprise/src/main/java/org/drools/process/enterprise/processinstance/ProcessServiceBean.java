@@ -3,6 +3,7 @@ package org.drools.process.enterprise.processinstance;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -10,9 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.enterprise.repository.ProcessInfo;
@@ -21,7 +21,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.impl.ProcessInstanceImpl;
+import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.drools.rule.Package;
 
@@ -35,8 +35,10 @@ public class ProcessServiceBean implements ProcessService {
 		System.out.println("Starting process " + processId);
 		InternalWorkingMemory workingMemory = createWorkingMemory();
 		// start process
+		long start = System.nanoTime();
 		ProcessInstance processInstance = workingMemory.startProcess(processId);
-		persistProcessInstances(workingMemory);
+		persistProcessInstance(processInstance);
+		System.out.println("Time to execute: " + (System.nanoTime() - start));
 		return processInstance.getId();
 	}
 
@@ -47,20 +49,17 @@ public class ProcessServiceBean implements ProcessService {
 			throw new IllegalArgumentException(
 				"Could not find work item " + workItemId);
 		}
+		// TODO: should load other work items as well ?
+		WorkItemImpl workItem = new WorkItemImpl();
+		workItem.setId(workItemInfo.getWorkItemId());
+		workItem.setProcessInstanceId(workItemInfo.getProcessInstanceId());
+		workItem.setName(workItemInfo.getName());
+		workingMemory.getWorkItemManager().internalAddWorkItem(workItem);
 		manager.remove(workItemInfo);
 		// TODO: should load other process instances as well
-		long processInstanceId = workItemInfo.getProcessInstanceId();
-		ProcessInstanceInfo processInstanceInfo = manager.find(ProcessInstanceInfo.class, processInstanceId);
-		if (processInstanceInfo == null) {
-			throw new IllegalArgumentException(
-				"Could not find process instance " + processInstanceId);
-		}
-		ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstanceInfo.getProcessInstance();
-		processInstance.setProcess(((InternalRuleBase) workingMemory.getRuleBase()).getProcess(processInstance.getProcessId())); 
-		processInstance.setWorkingMemory(workingMemory);
-		processInstance.reconnect();
 		workingMemory.getWorkItemManager().completeWorkItem(workItemId, results);
-		persistProcessInstances(workingMemory);
+        System.out.println("Executed work item " + workItem.getName() + " [" + workItem.getId() + "]");
+		persistProcessInstance(workItemInfo.getProcessInstanceId());
 	}
 	
 	private InternalWorkingMemory createWorkingMemory() {
@@ -71,27 +70,62 @@ public class ProcessServiceBean implements ProcessService {
 			builder.addRuleFlow(new StringReader(processInfo.getProcessXML()));
 		}
 		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		Properties properties = new Properties();
+		properties.put(
+	        "processInstanceManager", 
+	        "org.drools.process.enterprise.processinstance.EJB3ProcessInstanceManager");
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
 		ruleBase.addPackage(pkg);
 		// create new working memory
 		InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 		// TODO auto-register work item handlers (e.g. based on config)
 		workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new SystemOutWorkItemHandler());
 		workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", new EnterpriseWorkItemHandler());
+//		workingMemory.addEventListener(new DefaultRuleFlowEventListener() {
+//            public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
+//                    WorkingMemory workingMemory) {
+//                System.out.println("Process instance completed: " + 
+//                    event.getProcessInstance().getProcessId() + 
+//                    "[" + event.getProcessInstance().getId() + "]");
+//            }
+//            public void afterRuleFlowNodeTriggered(
+//                    RuleFlowNodeTriggeredEvent event,
+//                    WorkingMemory workingMemory) {
+//                System.out.println("Node completed: " + 
+//                    event.getRuleFlowNodeInstance().getNode().getName() +
+//                    "[" + event.getRuleFlowNodeInstance().getNodeId() + "] for process instance " +
+//                    event.getProcessInstance().getProcessId() + 
+//                    "[" + event.getProcessInstance().getId() + "]");
+//            }
+//            public void afterRuleFlowStarted(RuleFlowStartedEvent event,
+//                    WorkingMemory workingMemory) {
+//                System.out.println("Process instance started: " + 
+//                    event.getProcessInstance().getProcessId() + 
+//                    "[" + event.getProcessInstance().getId() + "]");
+//            }
+//		});
+		// TODO
+		EJB3ProcessInstanceManager processInstanceManager = 
+		    (EJB3ProcessInstanceManager)((InternalWorkingMemory) workingMemory).getProcessInstanceManager();
+		processInstanceManager.setEntityManager(manager);
+		processInstanceManager.setWorkingMemory(workingMemory);
 		return workingMemory;
 	}
 	
-	private void persistProcessInstances(WorkingMemory workingMemory) {
-		for (ProcessInstance pi: workingMemory.getProcessInstances()) {
-			// persist process instance if necessary
-			ProcessInstanceInfo processInstanceInfo = manager.find(ProcessInstanceInfo.class, pi.getId());
-			if (processInstanceInfo == null) {
-				processInstanceInfo = new ProcessInstanceInfo();
-			}
-			processInstanceInfo.setProcessInstance(pi);
-			manager.persist(processInstanceInfo);
-			System.out.println("Persisted process instance" + pi.getId());
+	private void persistProcessInstance(long processInstanceId) {
+	    
+	}
+	
+	private void persistProcessInstance(ProcessInstance processInstance) {
+		ProcessInstanceInfo processInstanceInfo = manager.find(ProcessInstanceInfo.class, processInstance.getId());
+		if (processInstanceInfo == null) {
+			processInstanceInfo = new ProcessInstanceInfo();
 		}
+		processInstanceInfo.setProcessInstance(processInstance);
+        manager.merge(processInstanceInfo);
+        manager.flush();
+		System.out.println("Persisted process instance " + processInstanceInfo.getId());
 		// TODO remove process instances that are not longer there
 		// TODO make smarter, e.g. by registering a listener
 		// before starting execution and only updating changed instances

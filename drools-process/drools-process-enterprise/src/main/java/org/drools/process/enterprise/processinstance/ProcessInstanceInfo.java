@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
@@ -19,7 +21,7 @@ import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 @Entity
 public class ProcessInstanceInfo {
 
-	private @Id long processInstanceId;
+	private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long processInstanceId;
 	private String processId;
 	private @Lob byte[] processInstanceByteArray;
 	private @Transient ProcessInstance processInstance;
@@ -50,7 +52,7 @@ public class ProcessInstanceInfo {
 	
 	public void setProcessInstance(ProcessInstance processInstance) {
 		this.processInstance = processInstance;
-		this.processInstanceId = processInstance.getId();
+//		this.processInstanceId = processInstance.getId();
 		this.processId = processInstance.getProcessId();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
