@@ -1,5 +1,6 @@
 package org.drools;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,11 +9,18 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.osworkflow.DroolsWorkflow;
+import org.drools.osworkflow.OSWorkflowParser;
+import org.drools.osworkflow.core.OSWorkflowProcess;
+import org.drools.osworkflow.xml.OSWorkflowSemanticModule;
+import org.drools.osworkflow.xml.XmlOSWorkflowProcessDumper;
+import org.drools.xml.SemanticModules;
+import org.drools.xml.XmlProcessReader;
 
 import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.Workflow;
 import com.opensymphony.workflow.WorkflowException;
 import com.opensymphony.workflow.config.DefaultConfiguration;
+import com.opensymphony.workflow.loader.WorkflowDescriptor;
 import com.opensymphony.workflow.spi.Step;
 import com.opensymphony.workflow.spi.WorkflowEntry;
 
@@ -97,5 +105,22 @@ public class Simple2ProcessTest extends TestCase {
             fail(e.getMessage());
         }
 	}
+
+    public void testToXML() throws Exception {
+        DefaultConfiguration config = new DefaultConfiguration();
+        config.load(null);
+        WorkflowDescriptor workflowDescriptor = config.getWorkflow("simple2");
+        OSWorkflowProcess process = new OSWorkflowParser().parseOSWorkflow(workflowDescriptor);
+        
+        String processXML = XmlOSWorkflowProcessDumper.INSTANCE.dump(process);
+        System.out.println(processXML);
+        
+        SemanticModules semanticModules = new SemanticModules();
+        semanticModules.addSemanticModule(new OSWorkflowSemanticModule());
+        XmlProcessReader reader = new XmlProcessReader(semanticModules);
+        System.setProperty( "drools.schema.validating", "false" );
+        OSWorkflowProcess process2 = (OSWorkflowProcess) reader.read(new StringReader(processXML));
+        assertNotNull(process2);
+    }
 
 }

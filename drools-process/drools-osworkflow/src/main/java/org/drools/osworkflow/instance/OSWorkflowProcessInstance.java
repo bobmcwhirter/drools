@@ -23,7 +23,6 @@ import com.opensymphony.workflow.StoreException;
 import com.opensymphony.workflow.TypeResolver;
 import com.opensymphony.workflow.WorkflowContext;
 import com.opensymphony.workflow.WorkflowException;
-import com.opensymphony.workflow.basic.BasicWorkflowContext;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 import com.opensymphony.workflow.loader.ConditionDescriptor;
