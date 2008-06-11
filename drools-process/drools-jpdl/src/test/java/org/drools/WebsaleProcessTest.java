@@ -46,7 +46,7 @@ public class WebsaleProcessTest {
         
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package p = new Package("com.sample");
-        p.addRuleFlow(process);
+        p.addProcess(process);
         ruleBase.addPackage( p );
         
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
