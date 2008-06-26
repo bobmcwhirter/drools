@@ -155,7 +155,8 @@ public class JpdlParser {
             	    if (jPDLswimlane != null) {
             	        String swimlaneName = jPDLswimlane.getName();
             	        if (swimlaneContext.getSwimlane(swimlaneName) == null) {
-            	            Swimlane swimlane = new Swimlane(swimlaneName);
+            	            Swimlane swimlane = new Swimlane();
+            	            swimlane.setName(swimlaneName);
             	            swimlane.setActorId(jPDLswimlane.getActorIdExpression());
             	            // TODO support other types of actor expressions as well
             	            swimlaneContext.addSwimlane(swimlane);
