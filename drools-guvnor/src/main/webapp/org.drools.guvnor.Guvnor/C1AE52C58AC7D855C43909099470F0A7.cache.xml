@@ -12,8 +12,8 @@
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.testing.RetractFact_FieldSerializer" hash="3045A06B5BE1C800D8CDFF0A03D548AF"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.BulkTestRunResult_FieldSerializer" hash="EC6388AC39E390CEE72DEB987A6EDF76"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.BuilderResult_FieldSerializer" hash="80087E08C6A16918CB8475A882BAB3E6"/>
-	<generated-type-hash class="org.drools.guvnor.client.modeldriven.testing.VerifyFact_FieldSerializer" hash="F313DE630A00E07E0FB6993BE9A4091E"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.DSLSentence_FieldSerializer" hash="BA99C15ED385A4AF3288C4945EDEADEB"/>
+	<generated-type-hash class="org.drools.guvnor.client.modeldriven.testing.VerifyFact_FieldSerializer" hash="F313DE630A00E07E0FB6993BE9A4091E"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.ActionRetractFact_FieldSerializer" hash="FE1677A8963CF0A86D869F54C3EF14FC"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.RuleContentText_FieldSerializer" hash="3DE307A6FECFCFE9F5464ADA0B7F0A9C"/>
 	<generated-type-hash class="com.google.gwt.user.client.ui.HorizontalSplitPanelImages_generatedBundle" hash="A4F3ACC572B03FED0F079F1357B03D6B"/>
@@ -28,8 +28,8 @@
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern_FieldSerializer" hash="C7896D34833E9330D6719D7BA984805F"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.ActionUpdateField_FieldSerializer" hash="42B795327C5CA9C16EFA48F9946E64E4"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.RepositoryService_Proxy" hash="41C4FF697B6D650D1DC46C1A9F53C293"/>
-	<generated-type-hash class="org.drools.guvnor.client.factmodel.FieldMetaModel_FieldSerializer" hash="C1279FD78D5A8D9139CE966420C6072B"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint_FieldSerializer" hash="94CAFF81D750F8868D8529D298BFD779"/>
+	<generated-type-hash class="org.drools.guvnor.client.factmodel.FieldMetaModel_FieldSerializer" hash="C1279FD78D5A8D9139CE966420C6072B"/>
 	<generated-type-hash class="com.google.gwt.i18n.client.constants.DateTimeConstants_" hash="60199A12D629C0197611025E36AA63EC"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.ActionSetField_FieldSerializer" hash="434C0A40D635381FDAA137EE23D6D42F"/>
 	<generated-type-hash class="com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException_FieldSerializer" hash="FF198044879E67E1ACF2E0C29CC58CB5"/>
@@ -49,8 +49,8 @@
 	<generated-type-hash class="com.google.gwt.user.client.ui.VerticalSplitPanelImages_generatedBundle" hash="5511972AC798E2D4929A3B2A52FBFCA1"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.dt.DTColumnConfig_FieldSerializer" hash="1F3F340F300921A22C6F5D00ACBDECD7"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.UserSecurityContext_FieldSerializer" hash="48CE80A29C57B769516A8C65B5106F93"/>
-	<generated-type-hash class="org.drools.guvnor.client.modeldriven.dt.AttributeCol_FieldSerializer" hash="6838AAB49CD18015E85A03F3D6D132DD"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.dt.ActionRetractFactCol_FieldSerializer" hash="480CA5D14763BAE5501563120A35F10D"/>
+	<generated-type-hash class="org.drools.guvnor.client.modeldriven.dt.AttributeCol_FieldSerializer" hash="6838AAB49CD18015E85A03F3D6D132DD"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint_FieldSerializer" hash="31244F718ACE10620E47C36F1C10B232"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.AnalysisFactUsage_FieldSerializer" hash="1DB3D08E72B0C12C37988DCCE2CCC198"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.SecurityService_Proxy" hash="A8E35F621AA54FD365AC967994788AC8"/>
@@ -69,25 +69,25 @@
 	<generated-type-hash class="org.drools.guvnor.client.rpc.AnalysisReportLine_FieldSerializer" hash="34E56DF297D5CBC3012EAB212ADE1709"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.RuleAsset_FieldSerializer" hash="62D5AF673F9DC0B23DBDA96C57D1EDD8"/>
 	<generated-type-hash class="org.drools.guvnor.client.rpc.PackageConfigData_FieldSerializer" hash="A6BE90E13C2280A217A7E1BFA2DEE4FB"/>
-	<generated-type-hash class="org.drools.guvnor.client.factmodel.FactModels_FieldSerializer" hash="858A03AD1A8604E4D51D7ED9B71AF35A"/>
 	<generated-type-hash class="org.drools.guvnor.client.modeldriven.brl.RuleModel_FieldSerializer" hash="94B5F4748531BEBC4A786E92448482E3"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.TextBoxImpl" out="com.google.gwt.user.client.ui.impl.TextBoxImpl"/>
+	<generated-type-hash class="org.drools.guvnor.client.factmodel.FactModels_FieldSerializer" hash="858A03AD1A8604E4D51D7ED9B71AF35A"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.TextBoxImpl" out="com.google.gwt.user.client.ui.impl.TextBoxImplIE6"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.ListBox.Impl" out="com.google.gwt.user.client.ui.ListBox.Impl"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImpl"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.VerticalSplitPanel.Impl" out="com.google.gwt.user.client.ui.VerticalSplitPanel.Impl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.FocusImpl" out="com.google.gwt.user.client.ui.impl.FocusImplIE6"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.VerticalSplitPanel.Impl" out="com.google.gwt.user.client.ui.VerticalSplitPanel.ImplIE6"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.HorizontalSplitPanelImages" out="com.google.gwt.user.client.ui.HorizontalSplitPanelImages_generatedBundle"/>
 	<rebind-decision in="org.drools.guvnor.client.JBRMSEntryPoint" out="org.drools.guvnor.client.JBRMSEntryPoint"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.ClippedImageImpl" out="com.google.gwt.user.client.ui.impl.ClippedImageImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.ClippedImageImpl" out="com.google.gwt.user.client.ui.impl.ClippedImageImplIE6"/>
 	<rebind-decision in="org.drools.guvnor.client.rpc.SecurityService" out="org.drools.guvnor.client.rpc.SecurityService_Proxy"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplMozilla"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplIE6"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.VerticalSplitPanelImages" out="com.google.gwt.user.client.ui.VerticalSplitPanelImages_generatedBundle"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplMozilla"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImplMozilla"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplIE6"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImplIE6"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.TreeImages" out="com.google.gwt.user.client.ui.TreeImages_generatedBundle"/>
 	<rebind-decision in="com.google.gwt.i18n.client.constants.DateTimeConstants" out="com.google.gwt.i18n.client.constants.DateTimeConstants_"/>
 	<rebind-decision in="org.drools.guvnor.client.rpc.RepositoryService" out="org.drools.guvnor.client.rpc.RepositoryService_Proxy"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImpl"/>
-	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImplIE6"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImplIE6"/>
 	<rebind-decision in="com.google.gwt.user.client.ui.DisclosurePanelImages" out="com.google.gwt.user.client.ui.DisclosurePanelImages_generatedBundle"/>
-	<rebind-decision in="com.google.gwt.user.client.ui.HorizontalSplitPanel.Impl" out="com.google.gwt.user.client.ui.HorizontalSplitPanel.Impl"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.HorizontalSplitPanel.Impl" out="com.google.gwt.user.client.ui.HorizontalSplitPanel.ImplIE6"/>
 </cache-entry>
