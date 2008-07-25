@@ -10,7 +10,7 @@ import org.drools.workflow.core.impl.NodeImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELReceive extends NodeImpl implements BPELBasicActivity {
+public class BPELReceive extends NodeImpl implements BPELActivity {
 
     private static final long serialVersionUID = 400L;
 
@@ -19,12 +19,9 @@ public class BPELReceive extends NodeImpl implements BPELBasicActivity {
     private String operation;
     private String variable;
     private boolean createInstance;
-    private String[] sourceLinks;
-    private String[] targetLinks;
-    
-    
-    public BPELReceive() {
-    }
+    private SourceLink[] sourceLinks;
+    private TargetLink[] targetLinks;
+    private BPELCorrelation[] correlations;
     
     public String getPartnerLink() {
         return partnerLink;
@@ -66,19 +63,19 @@ public class BPELReceive extends NodeImpl implements BPELBasicActivity {
         this.createInstance = createInstance;
     }
 
-    public String[] getSourceLinks() {
+    public SourceLink[] getSourceLinks() {
         return sourceLinks;
     }
 
-    public void setSourceLinks(String[] sourceLinks) {
+    public void setSourceLinks(SourceLink[] sourceLinks) {
         this.sourceLinks = sourceLinks;
     }
 
-    public String[] getTargetLinks() {
+    public TargetLink[] getTargetLinks() {
         return targetLinks;
     }
 
-    public void setTargetLinks(String[] targetLinks) {
+    public void setTargetLinks(TargetLink[] targetLinks) {
         this.targetLinks = targetLinks;
     }
 
@@ -90,5 +87,13 @@ public class BPELReceive extends NodeImpl implements BPELBasicActivity {
         }
         return null;
     }
+
+	public BPELCorrelation[] getCorrelations() {
+		return correlations;
+	}
+
+	public void setCorrelations(BPELCorrelation[] correlations) {
+		this.correlations = correlations;
+	}
 
 }

@@ -13,15 +13,15 @@ import org.drools.workflow.core.node.Split;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELFlow extends CompositeNode implements BPELStructuredActivity {
+public class BPELFlow extends CompositeNode implements BPELActivity {
     
     private static final long serialVersionUID = 400L;
     
     private Split split;
     private Join join;
     private String[] links;
-    private String[] sourceLinks;
-    private String[] targetLinks;
+    private SourceLink[] sourceLinks;
+    private TargetLink[] targetLinks;
     
     public BPELFlow() {
         split = new Split();
@@ -74,19 +74,19 @@ public class BPELFlow extends CompositeNode implements BPELStructuredActivity {
         return links;
     }
     
-    public String[] getSourceLinks() {
+    public SourceLink[] getSourceLinks() {
         return sourceLinks;
     }
 
-    public void setSourceLinks(String[] sourceLinks) {
+    public void setSourceLinks(SourceLink[] sourceLinks) {
         this.sourceLinks = sourceLinks;
     }
 
-    public String[] getTargetLinks() {
+    public TargetLink[] getTargetLinks() {
         return targetLinks;
     }
 
-    public void setTargetLinks(String[] targetLinks) {
+    public void setTargetLinks(TargetLink[] targetLinks) {
         this.targetLinks = targetLinks;
     }
 

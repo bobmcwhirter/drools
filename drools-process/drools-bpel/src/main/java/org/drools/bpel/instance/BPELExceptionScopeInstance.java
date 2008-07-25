@@ -22,7 +22,7 @@ public class BPELExceptionScopeInstance extends ExceptionScopeInstance implement
 
 	public void handleException(ExceptionHandler handler, String exception, Object params) {
 		if (handler instanceof BPELFaultHandler) {
-			BPELExceptionHandlerInstance handlerInstance = new BPELExceptionHandlerInstance();
+			BPELFaultHandlerInstance handlerInstance = new BPELFaultHandlerInstance();
 	        handlerInstance.setExceptionHandler(handler);
 	        handlerInstance.setNodeInstanceContainer(nodeInstanceContainer);
 			handlerInstance.handleException(exception, params);

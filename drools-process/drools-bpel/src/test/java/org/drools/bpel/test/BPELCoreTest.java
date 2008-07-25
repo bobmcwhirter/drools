@@ -1,16 +1,11 @@
 package org.drools.bpel.test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELAssign;
@@ -21,7 +16,10 @@ import org.drools.bpel.core.BPELProcess;
 import org.drools.bpel.core.BPELReceive;
 import org.drools.bpel.core.BPELReply;
 import org.drools.bpel.core.BPELSequence;
+import org.drools.bpel.core.BPELActivity.SourceLink;
+import org.drools.bpel.core.BPELActivity.TargetLink;
 import org.drools.bpel.instance.BPELProcessInstance;
+import org.drools.bpel.test.BPELTestUtil.WebServiceInvocationHandler;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
@@ -32,10 +30,9 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.ReteooWorkingMemory;
 
-public class BPELTest {
+public class BPELCoreTest {
 
     public static BPELProcess getProcess() {
         BPELProcess process = new BPELProcess();
@@ -136,7 +133,7 @@ public class BPELTest {
             invoke1.setOperation("requestShipping");
             invoke1.setInputVariable("shippingRequest");
             invoke1.setOutputVariable("shippingInfo");
-            invoke1.setSourceLinks(new String[] { "ship-to-invoice" });
+            invoke1.setSourceLinks(new SourceLink[] { new SourceLink("ship-to-invoice") });
             sequence1Activities.add(invoke1);
         
             // receive1
@@ -148,7 +145,7 @@ public class BPELTest {
             receive1.setOperation("sendSchedule");
             receive1.setVariable("shippingSchedule");
             receive1.setCreateInstance(false);
-            receive1.setSourceLinks(new String[] { "ship-to-scheduling" });
+            receive1.setSourceLinks(new SourceLink[] { new SourceLink("ship-to-scheduling") });
             sequence1Activities.add(receive1);
             
             sequence1.setActivities(sequence1Activities);
@@ -178,7 +175,7 @@ public class BPELTest {
             invoke2b.setPortType("lns:computePricePT");
             invoke2b.setOperation("sendShippingPrice");
             invoke2b.setInputVariable("shippingInfo");
-            invoke2b.setTargetLinks(new String[] { "ship-to-invoice" });
+            invoke2b.setTargetLinks(new TargetLink[] { new TargetLink("ship-to-invoice") });
             sequence2Activities.add(invoke2b);
         
             // receive2
@@ -219,7 +216,7 @@ public class BPELTest {
             invoke3b.setPortType("lns:schedulingPT");
             invoke3b.setOperation("sendShippingSchedule");
             invoke3b.setInputVariable("shippingSchedule");
-            invoke3b.setTargetLinks(new String[] { "ship-to-scheduling" });
+            invoke3b.setTargetLinks(new TargetLink[] { new TargetLink("ship-to-scheduling") });
             sequence3Activities.add(invoke3b);
         
             sequence3.setActivities(sequence3Activities);
@@ -268,28 +265,28 @@ public class BPELTest {
         BPELProcessInstance processInstance = (BPELProcessInstance) workingMemory.startProcess("1");
         
         // start process
-        webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
+        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
 
         // reply to web service invocations
-        WorkItem workItem = findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "requestProductionScheduling");
-        replyWebServiceInvocation(workingMemory, workItem, null);
+        WorkItem workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "requestProductionScheduling");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
 
-        workItem = findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "initiatePriceCalculation");
-        replyWebServiceInvocation(workingMemory, workItem, null);
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "initiatePriceCalculation");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
-        workItem = findWebServiceInvocation(workingMemory, "shipping", "lns:shippingPT", "requestShipping");
-        replyWebServiceInvocation(workingMemory, workItem, "SHIPPING");
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "shipping", "lns:shippingPT", "requestShipping");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, "SHIPPING");
         
-        workItem = findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "sendShippingPrice");
-        replyWebServiceInvocation(workingMemory, workItem, null);
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "sendShippingPrice");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
         // invoke web service callbacks
-        webServiceInvocation(processInstance, "shipping", "lns:shippingCallbackPT", "sendSchedule", "SCHEDULE");
-        webServiceInvocation(processInstance, "invoicing", "lns:invoiceCallbackPT", "sendInvoice", "INVOICE");
+        BPELTestUtil.webServiceInvocation(processInstance, "shipping", "lns:shippingCallbackPT", "sendSchedule", "SCHEDULE");
+        BPELTestUtil.webServiceInvocation(processInstance, "invoicing", "lns:invoiceCallbackPT", "sendInvoice", "INVOICE");
 
         // reply to web service invocation
-        workItem = findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "sendShippingSchedule");
-        replyWebServiceInvocation(workingMemory, workItem, null);
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "sendShippingSchedule");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
 
         logger.writeToDisk();
     }
@@ -312,92 +309,20 @@ public class BPELTest {
         BPELProcessInstance processInstance = (BPELProcessInstance) workingMemory.startProcess("1");
         
         // start process
-        webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
+        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
 
         // reply to web service invocations
-        WorkItem workItem = findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "requestProductionScheduling");
-        replyWebServiceInvocation(workingMemory, workItem, null);
+        WorkItem workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "requestProductionScheduling");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
 
-        workItem = findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "initiatePriceCalculation");
-        replyWebServiceInvocation(workingMemory, workItem, null);
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "initiatePriceCalculation");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
-        workItem = findWebServiceInvocation(workingMemory, "shipping", "lns:shippingPT", "requestShipping");
-        replyWebServiceInvocationFault(workingMemory, workItem, "cannotCompleteOrder", "SHIPPING FAULT");
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "shipping", "lns:shippingPT", "requestShipping");
+        BPELTestUtil.replyWebServiceInvocationFault(workingMemory, workItem, "cannotCompleteOrder", "SHIPPING FAULT");
 
         logger.writeToDisk();
     }
-    
-    private static WorkItem findWebServiceInvocation(WorkingMemory workingMemory, String partnerLink, String portType, String operation) {
-        Set<WorkItem> workItems = workingMemory.getWorkItemManager().getWorkItems();
-        for (Iterator<WorkItem> iterator = workItems.iterator(); iterator.hasNext(); ) {
-            WorkItem workItem = iterator.next();
-            if ("WebServiceInvocation".equals(workItem.getName())
-                    && workItem.getParameter("PartnerLink").equals(partnerLink)
-                    && workItem.getParameter("PortType").equals(portType)
-                    && workItem.getParameter("Operation").equals(operation)) {
-                return workItem;
-            }
-        }
-        return null;
-    }
-    
-    private static void replyWebServiceInvocation(WorkingMemory workingMemory, WorkItem workItem, String result) {
-        System.out.println("Replying to web service invocation "
-                + workItem.getParameter("PartnerLink") + " "
-                + workItem.getParameter("PortType") + " "
-                + workItem.getParameter("Operation") + ", message = "
-                + workItem.getParameter("Message") + ": "
-                + result);
-        Map<String, Object> results = new HashMap<String, Object>();
-        results.put("Result", result);
-        workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), results);
-    }
-    
-    private static void replyWebServiceInvocationFault(WorkingMemory workingMemory, WorkItem workItem, String faultName, String result) {
-        System.out.println("Replying to web service invocation "
-                + workItem.getParameter("PartnerLink") + " "
-                + workItem.getParameter("PortType") + " "
-                + workItem.getParameter("Operation") + ", faultName = "
-                + workItem.getParameter("FaultName") + ", message = "
-                + workItem.getParameter("Message") + ": "
-                + result);
-        Map<String, Object> results = new HashMap<String, Object>();
-        results.put("Result", result);
-        results.put("FaultName", faultName);
-        workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), results);
-    }
-    
-    private static void webServiceInvocation(BPELProcessInstance processInstance, String partnerLink, String portType, String operation, String result) {
-        System.out.println("Web service invocation "
-                + partnerLink + " "
-                + portType + " "
-                + operation + ": "
-                + result);
-        processInstance.acceptMessage(partnerLink, portType, operation, result);
-    }
-    
-    public static class WebServiceInvocationHandler implements WorkItemHandler {
 
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-            System.out.println("Web service invoked "
-                + workItem.getParameter("PartnerLink") + " "
-                + workItem.getParameter("PortType") + " "
-                + (workItem.getParameter("FaultName") == null ? ""
-                		: "fault=" + workItem.getParameter("FaultName"))
-                + workItem.getParameter("Operation") + ", message = "
-                + workItem.getParameter("Message"));
-        }
-        
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-            System.out.println("Web service invocation aborted "
-                + workItem.getParameter("PartnerLink") + " "
-                + workItem.getParameter("PortType") + " "
-                + (workItem.getParameter("FaultName") == null ? ""
-            		: workItem.getParameter("FaultName"))
-                + workItem.getParameter("Operation") + ", message = "
-                + workItem.getParameter("Message"));
-        }
-
-    }
     
 }

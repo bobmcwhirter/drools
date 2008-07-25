@@ -43,8 +43,10 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
                 "The activity of this BPEL process has already been set!");
         }
         this.activity = activity;
+        activity.setId(1);
         addNode(activity);
         EndNode end = new EndNode();
+        end.setId(2);
         addNode(end);
         new ConnectionImpl(
             activity, Node.CONNECTION_DEFAULT_TYPE,
@@ -59,7 +61,9 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
         ExceptionScope exceptionScope = new ExceptionScope();
         addContext(exceptionScope);
         setDefaultContext(exceptionScope);
+        int i = 3;
         for (BPELFaultHandler faultHandler: faultHandlers) {
+        	faultHandler.getActivity().setId(i++);
             addNode(faultHandler.getActivity());
             exceptionScope.setExceptionHandler(faultHandler.getFaultName(), faultHandler);
         }

@@ -1,15 +1,27 @@
 package org.drools.bpel.core;
 
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELScope extends CompositeNode implements BPELActivity, BPELFaultHandlerContainer {
+public class BPELScope extends CompositeContextNode implements BPELActivity, BPELFaultHandlerContainer {
 
     private static final long serialVersionUID = 400L;
+
+    public BPELScope() {
+	    VariableScope variableScope = new VariableScope();
+	    addContext(variableScope);
+	    setDefaultContext(variableScope);
+	}
+	
+	public VariableScope getVariableScope() {
+	    return (VariableScope) getDefaultContext(VariableScope.VARIABLE_SCOPE);
+	}
 
     public void setActivity(BPELActivity activity) {
         addNode(activity);
@@ -23,19 +35,19 @@ public class BPELScope extends CompositeNode implements BPELActivity, BPELFaultH
             Node.CONNECTION_DEFAULT_TYPE);
     }
 
-    public String[] getSourceLinks() {
+    public SourceLink[] getSourceLinks() {
         throw new IllegalArgumentException("A scope does not support links!");
     }
 
-    public String[] getTargetLinks() {
+    public TargetLink[] getTargetLinks() {
         throw new IllegalArgumentException("A scope does not support links!");
     }
 
-    public void setSourceLinks(String[] sourceLinks) {
+    public void setSourceLinks(SourceLink[] sourceLinks) {
         throw new IllegalArgumentException("A scope does not support links!");
     }
 
-    public void setTargetLinks(String[] targetLinks) {
+    public void setTargetLinks(TargetLink[] targetLinks) {
         throw new IllegalArgumentException("A scope does not support links!");
     }
     

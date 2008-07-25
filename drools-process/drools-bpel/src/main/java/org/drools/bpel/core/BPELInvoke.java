@@ -8,7 +8,7 @@ import org.drools.workflow.core.node.WorkItemNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELInvoke extends WorkItemNode implements BPELBasicActivity, BPELFaultHandlerContainer {
+public class BPELInvoke extends WorkItemNode implements BPELActivity, BPELFaultHandlerContainer {
 
     private static final long serialVersionUID = 400L;
     
@@ -18,8 +18,12 @@ public class BPELInvoke extends WorkItemNode implements BPELBasicActivity, BPELF
     private static final String INPUT = "Message";
     private static final String OUTPUT = "Result";
     
-    private String[] sourceLinks;
-    private String[] targetLinks;
+    private SourceLink[] sourceLinks;
+    private TargetLink[] targetLinks;
+    private BPELFaultHandler[] catches;
+    private BPELFaultHandler catchAll;
+    private BPELCorrelation[] correlations;
+    private BPELCompensationHandler compensationHandler;
     
     public BPELInvoke() {
         Work work = new WorkImpl();
@@ -67,20 +71,52 @@ public class BPELInvoke extends WorkItemNode implements BPELBasicActivity, BPELF
         addOutMapping(OUTPUT, outputVariable);
     }
 
-    public String[] getSourceLinks() {
+    public SourceLink[] getSourceLinks() {
         return sourceLinks;
     }
 
-    public void setSourceLinks(String[] sourceLinks) {
+    public void setSourceLinks(SourceLink[] sourceLinks) {
         this.sourceLinks = sourceLinks;
     }
 
-    public String[] getTargetLinks() {
+    public TargetLink[] getTargetLinks() {
         return targetLinks;
     }
 
-    public void setTargetLinks(String[] targetLinks) {
+    public void setTargetLinks(TargetLink[] targetLinks) {
         this.targetLinks = targetLinks;
     }
+
+	public BPELFaultHandler[] getCatches() {
+		return catches;
+	}
+
+	public void setCatches(BPELFaultHandler[] catches) {
+		this.catches = catches;
+	}
+
+	public BPELFaultHandler getCatchAll() {
+		return catchAll;
+	}
+
+	public void setCatchAll(BPELFaultHandler catchAll) {
+		this.catchAll = catchAll;
+	}// TODO: BPELInvoke
+
+	public BPELCorrelation[] getCorrelations() {
+		return correlations;
+	}
+
+	public void setCorrelations(BPELCorrelation[] correlations) {
+		this.correlations = correlations;
+	}
+
+	public BPELCompensationHandler getCompensationHandler() {
+		return compensationHandler;
+	}
+
+	public void setCompensationHandler(BPELCompensationHandler compensationHandler) {
+		this.compensationHandler = compensationHandler;
+	}
 
 }

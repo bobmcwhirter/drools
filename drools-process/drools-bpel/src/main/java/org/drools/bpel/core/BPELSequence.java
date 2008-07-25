@@ -10,12 +10,12 @@ import org.drools.workflow.core.node.CompositeNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELSequence extends CompositeNode implements BPELStructuredActivity {
+public class BPELSequence extends CompositeNode implements BPELActivity {
     
     private static final long serialVersionUID = 400L;
 
-    private String[] sourceLinks;
-    private String[] targetLinks;
+    private SourceLink[] sourceLinks;
+    private TargetLink[] targetLinks;
     
     public void setActivities(List<BPELActivity> activities) {
         if (activities == null || activities.size() < 2) {
@@ -42,19 +42,19 @@ public class BPELSequence extends CompositeNode implements BPELStructuredActivit
             Node.CONNECTION_DEFAULT_TYPE);
     }
     
-    public String[] getSourceLinks() {
+    public SourceLink[] getSourceLinks() {
         return sourceLinks;
     }
 
-    public void setSourceLinks(String[] sourceLinks) {
+    public void setSourceLinks(SourceLink[] sourceLinks) {
         this.sourceLinks = sourceLinks;
     }
 
-    public String[] getTargetLinks() {
+    public TargetLink[] getTargetLinks() {
         return targetLinks;
     }
 
-    public void setTargetLinks(String[] targetLinks) {
+    public void setTargetLinks(TargetLink[] targetLinks) {
         this.targetLinks = targetLinks;
     }
 

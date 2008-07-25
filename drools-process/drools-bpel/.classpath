@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/drools-compiler"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/drools-core"/>
+	<classpathentry kind="lib" path="lib/ode-bpel-compiler.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/wsdl4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/ode-utils.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/ode-bpel-schemas.jar"/>
+	<classpathentry kind="lib" path="lib/xalan-2.7.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
