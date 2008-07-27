@@ -7,6 +7,8 @@ import java.util.List;
 import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELProcess;
 import org.drools.bpel.core.BPELReceive;
+import org.drools.common.EventSupport;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.instance.NodeInstance;
@@ -53,7 +55,10 @@ public class BPELProcessInstance extends WorkflowProcessInstanceImpl {
                 return;
             }
         }
-        ((BPELReceiveInstance) nodeInstanceContainer.getNodeInstance(receive)).triggerCompleted(message);
+        BPELReceiveInstance bpelReceiveInstance = (BPELReceiveInstance) nodeInstanceContainer.getNodeInstance(receive);
+        ((EventSupport) getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(bpelReceiveInstance, (InternalWorkingMemory) getWorkingMemory());
+        bpelReceiveInstance.triggerCompleted(message);
+        ((EventSupport) getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(bpelReceiveInstance, (InternalWorkingMemory) getWorkingMemory());
     }
     
     private BPELReceive findBPELReceive(String partnerLink, String portType, String operation) {

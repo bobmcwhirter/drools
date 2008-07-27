@@ -9,33 +9,74 @@ import org.apache.ode.bpel.compiler.bom.Activity;
 import org.apache.ode.bpel.compiler.bom.AssignActivity;
 import org.apache.ode.bpel.compiler.bom.BpelObjectFactory;
 import org.apache.ode.bpel.compiler.bom.Catch;
+import org.apache.ode.bpel.compiler.bom.EmptyActivity;
 import org.apache.ode.bpel.compiler.bom.FlowActivity;
 import org.apache.ode.bpel.compiler.bom.InvokeActivity;
 import org.apache.ode.bpel.compiler.bom.Link;
 import org.apache.ode.bpel.compiler.bom.LinkSource;
 import org.apache.ode.bpel.compiler.bom.LinkTarget;
+import org.apache.ode.bpel.compiler.bom.OnAlarm;
+import org.apache.ode.bpel.compiler.bom.OnMessage;
+import org.apache.ode.bpel.compiler.bom.PickActivity;
 import org.apache.ode.bpel.compiler.bom.Process;
 import org.apache.ode.bpel.compiler.bom.ReceiveActivity;
 import org.apache.ode.bpel.compiler.bom.ReplyActivity;
+import org.apache.ode.bpel.compiler.bom.ScopeActivity;
 import org.apache.ode.bpel.compiler.bom.SequenceActivity;
+import org.apache.ode.bpel.compiler.bom.SwitchActivity;
+import org.apache.ode.bpel.compiler.bom.ThrowActivity;
+import org.apache.ode.bpel.compiler.bom.WaitActivity;
+import org.apache.ode.bpel.compiler.bom.WhileActivity;
 import org.apache.ode.utils.StreamUtils;
+import org.drools.RuleBase;
 import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELAssign;
+import org.drools.bpel.core.BPELEmpty;
 import org.drools.bpel.core.BPELFaultHandler;
 import org.drools.bpel.core.BPELFlow;
 import org.drools.bpel.core.BPELInvoke;
+import org.drools.bpel.core.BPELPick;
 import org.drools.bpel.core.BPELProcess;
 import org.drools.bpel.core.BPELReceive;
 import org.drools.bpel.core.BPELReply;
+import org.drools.bpel.core.BPELScope;
 import org.drools.bpel.core.BPELSequence;
+import org.drools.bpel.core.BPELSwitch;
+import org.drools.bpel.core.BPELThrow;
+import org.drools.bpel.core.BPELWait;
+import org.drools.bpel.core.BPELWhile;
 import org.drools.bpel.core.BPELActivity.SourceLink;
 import org.drools.bpel.core.BPELActivity.TargetLink;
+import org.drools.common.AbstractRuleBase;
+import org.drools.compiler.DroolsError;
+import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.ProcessBuilder;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.xml.sax.InputSource;
 
 public class BPELCompiler {
+	
+	public void loadProcess(RuleBase ruleBase, String fileName) {
+		try {
+			BPELCompiler compiler = new BPELCompiler();
+			BPELProcess process = compiler.compileProcess(
+				BPELCompiler.class.getResource(fileName));
+			PackageBuilder packageBuilder = new PackageBuilder();
+			ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
+			processBuilder.buildProcess(process);
+	        if (!processBuilder.getErrors().isEmpty()) {
+	        	for (DroolsError error: processBuilder.getErrors()) {
+	        		System.err.println(error);
+	        	}
+	        	throw new IllegalArgumentException("Could not build process " + fileName);
+	        }
+	        ((AbstractRuleBase) ruleBase).addProcess(process);
+		} catch (Throwable t) {
+			throw new IllegalArgumentException("Could not load process " + fileName, t);
+		}
+	}
 
 	public BPELProcess compileProcess(URL bpelFile) throws Exception {
 		InputSource isrc = new InputSource(new ByteArrayInputStream(StreamUtils.read(bpelFile)));
@@ -62,15 +103,17 @@ public class BPELCompiler {
 		}
 		variableScope.setVariables(variables);
 		// fault handlers
-        List<BPELFaultHandler> faultHandlers = new ArrayList<BPELFaultHandler>();
-        for (Catch catcher: process.getFaultHandler().getCatches()) {
-            BPELFaultHandler faultHandler = new BPELFaultHandler();
-            faultHandler.setFaultName(catcher.getFaultName().toString());
-            faultHandler.setFaultVariable(catcher.getFaultVariable());
-            faultHandler.setActivity(compileActivity(catcher.getActivity()));
-            faultHandlers.add(faultHandler);
-        }
-        result.setFaultHandlers(faultHandlers);
+		if (process.getFaultHandler() != null) {
+	        List<BPELFaultHandler> faultHandlers = new ArrayList<BPELFaultHandler>();
+	        for (Catch catcher: process.getFaultHandler().getCatches()) {
+	            BPELFaultHandler faultHandler = new BPELFaultHandler();
+	            faultHandler.setFaultName(catcher.getFaultName().toString());
+	            faultHandler.setFaultVariable(catcher.getFaultVariable());
+	            faultHandler.setActivity(compileActivity(catcher.getActivity()));
+	            faultHandlers.add(faultHandler);
+	        }
+	        result.setFaultHandlers(faultHandlers);
+		}
 		return result;
 	}
 	
@@ -134,9 +177,79 @@ public class BPELCompiler {
 		} else if (activity instanceof AssignActivity) {
 			AssignActivity assignActivity = (AssignActivity) activity;
 			BPELAssign assign = new BPELAssign();
-			// TODO
+			// TODO assign copy
 			assign.setAction("");
 			result = assign;
+		} else if (activity instanceof EmptyActivity) {
+			result = new BPELEmpty();
+		} else if (activity instanceof ThrowActivity) {
+			ThrowActivity throwActivity = (ThrowActivity) activity;
+			BPELThrow bpelThrow = new BPELThrow();
+			bpelThrow.setFaultName(throwActivity.getFaultName().toString());
+			bpelThrow.setFaultVariable(throwActivity.getFaultVariable());
+			result = bpelThrow;
+		} else if (activity instanceof PickActivity) {
+			PickActivity pickActivity = (PickActivity) activity;
+			BPELPick pick = new BPELPick();
+			pick.setCreateInstance(pickActivity.isCreateInstance());
+			for (OnMessage onMessage: pickActivity.getOnMessages()) {
+				BPELPick.OnMessage bpelOnMessage = pick.new OnMessage();
+				bpelOnMessage.setPartnerLink(onMessage.getPartnerLink());
+				bpelOnMessage.setPortType(onMessage.getPortType().toString());
+				bpelOnMessage.setOperation(onMessage.getOperation());
+				bpelOnMessage.setVariable(onMessage.getVariable());
+				bpelOnMessage.setActivity(compileActivity(onMessage.getActivity()));
+				pick.addOnMessage(bpelOnMessage);
+			}
+			for (OnAlarm onAlarm: pickActivity.getOnAlarms()) {
+				BPELPick.OnAlarm bpelOnAlarm = pick.new OnAlarm();
+				if (onAlarm.getFor() != null) {
+					bpelOnAlarm.setForExpression(onAlarm.getFor().toString());
+				}
+				if (onAlarm.getUntil() != null) {
+					bpelOnAlarm.setUntilExpression(onAlarm.getUntil().toString());
+				}
+				pick.addOnAlarm(bpelOnAlarm);
+			}
+			result = pick;
+		} else if (activity instanceof ScopeActivity) {
+			ScopeActivity scopeActivity = (ScopeActivity) activity;
+			BPELScope scope = new BPELScope();
+			VariableScope variableScope = scope.getVariableScope();
+	        List<Variable> variables = new ArrayList<Variable>();
+			// TODO
+//			for (org.apache.ode.bpel.compiler.bom.Variable variable: scopeActivity.getVariables()) {
+//		        Variable bpelVariable =	new Variable();
+//		        bpelVariable.setName(variable.getName());
+//		        bpelVariable.setType(new StringDataType());
+//		        variables.add(bpelVariable);
+//			}
+			variableScope.setVariables(variables);
+			result = scope;
+		} else if (activity instanceof SwitchActivity) {
+			SwitchActivity switchActivity = (SwitchActivity) activity;
+			BPELSwitch bpelSwitch = new BPELSwitch();
+			for (SwitchActivity.Case bpelCase: switchActivity.getCases()) {
+				bpelSwitch.addCase(bpelCase.getCondition().toString(), compileActivity(bpelCase.getActivity()));
+			}
+			result = bpelSwitch;
+		} else if (activity instanceof WaitActivity) {
+			WaitActivity waitActivity = (WaitActivity) activity;
+			BPELWait wait = new BPELWait();
+			if (waitActivity.getFor() != null) {
+				wait.setForExpression(waitActivity.getFor().toString());
+			}
+			if (waitActivity.getUntil() != null) {
+				wait.setUntilExpression(waitActivity.getUntil().toString());
+			}
+			result = wait;
+		} else if (activity instanceof WhileActivity) {
+			WhileActivity whileActivity = (WhileActivity) activity;
+			BPELWhile bpelWhile = new BPELWhile();
+			bpelWhile.setActivity(
+				whileActivity.getCondition().toString(),
+				compileActivity(whileActivity.getActivity()));
+			result = bpelWhile;
 		} else {
 			throw new IllegalArgumentException("Unknown activity type " + activity.getClass());
 		}

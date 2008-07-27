@@ -47,6 +47,7 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
         addNode(activity);
         EndNode end = new EndNode();
         end.setId(2);
+        end.setMetaData("hidden", true);
         addNode(end);
         new ConnectionImpl(
             activity, Node.CONNECTION_DEFAULT_TYPE,

@@ -26,9 +26,11 @@ public class BPELFlow extends CompositeNode implements BPELActivity {
     public BPELFlow() {
         split = new Split();
         split.setType(Split.TYPE_AND);
+        split.setMetaData("hidden", true);
         addNode(split);
         join = new Join();
         join.setType(Join.TYPE_AND);
+        join.setMetaData("hidden", true);
         addNode(join);
         linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE,
@@ -38,12 +40,6 @@ public class BPELFlow extends CompositeNode implements BPELActivity {
             new CompositeNode.NodeAndType(
                 join, Node.CONNECTION_DEFAULT_TYPE),
             Node.CONNECTION_DEFAULT_TYPE);
-    }
-    
-    public void setName(String name) {
-        super.setName(name);
-        split.setName(name + " split");
-        join.setName(name + " join");
     }
     
     public void setActivities(List<BPELActivity> activities) {

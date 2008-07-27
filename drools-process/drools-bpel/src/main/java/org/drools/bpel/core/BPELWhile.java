@@ -23,11 +23,14 @@ public class BPELWhile extends CompositeNode implements BPELActivity {
     public BPELWhile() {
         join = new Join();
         join.setType(Join.TYPE_XOR);
+        join.setMetaData("hidden", true);
         addNode(join);
     	split = new Split();
         split.setType(Split.TYPE_XOR);
+        split.setMetaData("hidden", true);
         addNode(split);
         BPELEmpty empty = new BPELEmpty();
+        empty.setMetaData("hidden", true);
         addNode(empty);
         linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE,
@@ -46,14 +49,9 @@ public class BPELWhile extends CompositeNode implements BPELActivity {
         ConstraintImpl constraint = new ConstraintImpl();
         constraint.setConstraint("true");
         constraint.setType("code");
-        constraint.setPriority(Integer.MAX_VALUE);
+        constraint.setDialect("mvel");
+        constraint.setPriority(Integer.MAX_VALUE - 1);
         split.setConstraint(connection, constraint);
-    }
-    
-    public void setName(String name) {
-        super.setName(name);
-        split.setName(name + " split");
-        join.setName(name + " join");
     }
     
     public void setActivity(String condition, BPELActivity activity) {
@@ -65,9 +63,10 @@ public class BPELWhile extends CompositeNode implements BPELActivity {
             activity, Node.CONNECTION_DEFAULT_TYPE,
             join, Node.CONNECTION_DEFAULT_TYPE);
         ConstraintImpl constraint = new ConstraintImpl();
+        // TODO While constraint dialect
         constraint.setConstraint(condition);
         constraint.setType("code");
-        constraint.setDialect("XPath");
+        constraint.setDialect("mvel");
         constraint.setPriority(getNodes().length - 2);
         split.setConstraint(connection, constraint);
     }

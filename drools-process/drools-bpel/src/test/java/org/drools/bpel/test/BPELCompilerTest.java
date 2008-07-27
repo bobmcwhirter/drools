@@ -1,10 +1,7 @@
 package org.drools.bpel.test;
 
-import java.util.Properties;
-
 import junit.framework.TestCase;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.bpel.compiler.BPELCompiler;
@@ -14,7 +11,6 @@ import org.drools.bpel.test.BPELTestUtil.WebServiceInvocationHandler;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
@@ -30,20 +26,12 @@ public class BPELCompilerTest extends TestCase {
 			BPELCompilerTest.class.getResource("/purchaseOrderProcess.bpel"));
 		
 		// Build process
-		Properties properties = new Properties(); 
-        properties.put( "processNodeBuilderRegistry", "bpelNodeBuilderRegistry.conf" );
-        PackageBuilderConfiguration packageConf = new PackageBuilderConfiguration( properties );
-        PackageBuilder packageBuilder = new PackageBuilder(packageConf);
+        PackageBuilder packageBuilder = new PackageBuilder();
         ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
         processBuilder.buildProcess(process);
         
         // Load process
-        properties = new Properties(); 
-        properties.put( "processInstanceFactoryRegistry", "bpelProcessInstanceFactory.conf" );        
-        properties.put( "processNodeInstanceFactoryRegistry", "bpelProcessNodeInstanceFactory.conf" );        
-        properties.put( "processContextInstanceFactoryRegistry", "bpelProcessContextInstanceFactory.conf" );        
-        RuleBaseConfiguration ruleBaseConf = new RuleBaseConfiguration( properties );
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase(ruleBaseConf);
+        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
         ruleBase.addProcess(process);
         InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
         WorkItemHandler handler = new WebServiceInvocationHandler();

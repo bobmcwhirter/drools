@@ -24,24 +24,21 @@ public class BPELPick extends CompositeNode implements BPELActivity {
     private TargetLink[] targetLinks;
 
     public BPELPick() {
-    	EndNode endNode = new EndNode();
-    	endNode.setTerminate(false);
+    	EndNode end = new EndNode();
+    	end.setTerminate(false);
+    	end.setMetaData("hidden", true);
         join = new Join();
         join.setType(Join.TYPE_XOR);
+        join.setMetaData("hidden", true);
         addNode(join);
         linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE,
             new CompositeNode.NodeAndType(
-                endNode, Node.CONNECTION_DEFAULT_TYPE));
+                end, Node.CONNECTION_DEFAULT_TYPE));
         linkOutgoingConnections(
             new CompositeNode.NodeAndType(
                 join, Node.CONNECTION_DEFAULT_TYPE),
             Node.CONNECTION_DEFAULT_TYPE);
-    }
-    
-    public void setName(String name) {
-        super.setName(name);
-        join.setName(name + " join");
     }
     
     public boolean isCreateInstance() {
@@ -56,6 +53,7 @@ public class BPELPick extends CompositeNode implements BPELActivity {
     	EventNode eventNode = new EventNode();
     	eventNode.addEventFilter(new OnMessageEventFilter(
 			onMessage.getPartnerLink(), onMessage.getPortType(), onMessage.getOperation()));
+    	eventNode.setMetaData("hidden", true);
     	addNode(eventNode);
     	addNode(onMessage.getActivity());
         new ConnectionImpl(
