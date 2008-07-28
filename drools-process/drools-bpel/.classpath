@@ -9,6 +9,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/drools-core"/>
 	<classpathentry kind="lib" path="lib/ode-bpel-compiler.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/saxon-xpath-8.7.jar"/>
+	<classpathentry kind="lib" path="lib/saxon-8.7.jar"/>
+	<classpathentry kind="lib" path="lib/saxon-dom-8.7.jar"/>
 	<classpathentry kind="lib" path="lib/wsdl4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/ode-utils.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.9.0.jar"/>

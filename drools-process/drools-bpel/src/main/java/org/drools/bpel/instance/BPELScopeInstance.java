@@ -1,13 +1,13 @@
 package org.drools.bpel.instance;
 
 import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.node.CompositeNodeInstance;
+import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELScopeInstance extends CompositeNodeInstance {
+public class BPELScopeInstance extends CompositeContextNodeInstance {
 
     private static final long serialVersionUID = 400L;
 

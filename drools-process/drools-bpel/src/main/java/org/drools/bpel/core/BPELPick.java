@@ -27,6 +27,7 @@ public class BPELPick extends CompositeNode implements BPELActivity {
     	EndNode end = new EndNode();
     	end.setTerminate(false);
     	end.setMetaData("hidden", true);
+    	addNode(end);
         join = new Join();
         join.setType(Join.TYPE_XOR);
         join.setMetaData("hidden", true);

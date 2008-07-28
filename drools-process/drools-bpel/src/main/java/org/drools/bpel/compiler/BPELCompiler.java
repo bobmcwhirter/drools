@@ -9,8 +9,10 @@ import org.apache.ode.bpel.compiler.bom.Activity;
 import org.apache.ode.bpel.compiler.bom.AssignActivity;
 import org.apache.ode.bpel.compiler.bom.BpelObjectFactory;
 import org.apache.ode.bpel.compiler.bom.Catch;
+import org.apache.ode.bpel.compiler.bom.Copy;
 import org.apache.ode.bpel.compiler.bom.EmptyActivity;
 import org.apache.ode.bpel.compiler.bom.FlowActivity;
+import org.apache.ode.bpel.compiler.bom.From;
 import org.apache.ode.bpel.compiler.bom.InvokeActivity;
 import org.apache.ode.bpel.compiler.bom.Link;
 import org.apache.ode.bpel.compiler.bom.LinkSource;
@@ -25,6 +27,7 @@ import org.apache.ode.bpel.compiler.bom.ScopeActivity;
 import org.apache.ode.bpel.compiler.bom.SequenceActivity;
 import org.apache.ode.bpel.compiler.bom.SwitchActivity;
 import org.apache.ode.bpel.compiler.bom.ThrowActivity;
+import org.apache.ode.bpel.compiler.bom.To;
 import org.apache.ode.bpel.compiler.bom.WaitActivity;
 import org.apache.ode.bpel.compiler.bom.WhileActivity;
 import org.apache.ode.utils.StreamUtils;
@@ -47,9 +50,11 @@ import org.drools.bpel.core.BPELWait;
 import org.drools.bpel.core.BPELWhile;
 import org.drools.bpel.core.BPELActivity.SourceLink;
 import org.drools.bpel.core.BPELActivity.TargetLink;
+import org.drools.bpel.xpath.XPathDialectConfiguration;
 import org.drools.common.AbstractRuleBase;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
@@ -63,7 +68,9 @@ public class BPELCompiler {
 			BPELCompiler compiler = new BPELCompiler();
 			BPELProcess process = compiler.compileProcess(
 				BPELCompiler.class.getResource(fileName));
-			PackageBuilder packageBuilder = new PackageBuilder();
+			PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+			configuration.addDialect("XPath2.0", new XPathDialectConfiguration());
+			PackageBuilder packageBuilder = new PackageBuilder(configuration);
 			ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
 			processBuilder.buildProcess(process);
 	        if (!processBuilder.getErrors().isEmpty()) {
@@ -177,8 +184,28 @@ public class BPELCompiler {
 		} else if (activity instanceof AssignActivity) {
 			AssignActivity assignActivity = (AssignActivity) activity;
 			BPELAssign assign = new BPELAssign();
-			// TODO assign copy
-			assign.setAction("");
+			for (Copy copy: assignActivity.getCopies()) {
+				BPELAssign.Copy bpelCopy = assign.new Copy();
+				From from = copy.getFrom();
+				To to = copy.getTo();
+				if (from.isVariableVal()) {
+					BPELAssign.VariablePart bpelFrom = assign.new VariablePart(
+						from.getAsVariableVal().getVariable(), 
+						from.getAsVariableVal().getNamespaceContext().toString() + ":" + from.getAsVariableVal().getPart());
+					bpelCopy.setFrom(bpelFrom);
+				} else {
+					throw new UnsupportedOperationException("Assign from does not yet support non-variable values");
+				}
+				if (to.isVariableVal()) {
+					BPELAssign.VariablePart bpelTo = assign.new VariablePart(
+						to.getAsVariableVal().getVariable(), 
+						to.getAsVariableVal().getNamespaceContext().toString() + ":" + to.getAsVariableVal().getPart());
+					bpelCopy.setTo(bpelTo);
+				} else {
+					throw new UnsupportedOperationException("Assign to does not yet support non-variable values");
+				}
+				assign.addCopy(bpelCopy);
+			}
 			result = assign;
 		} else if (activity instanceof EmptyActivity) {
 			result = new BPELEmpty();
@@ -217,14 +244,23 @@ public class BPELCompiler {
 			BPELScope scope = new BPELScope();
 			VariableScope variableScope = scope.getVariableScope();
 	        List<Variable> variables = new ArrayList<Variable>();
-			// TODO
-//			for (org.apache.ode.bpel.compiler.bom.Variable variable: scopeActivity.getVariables()) {
-//		        Variable bpelVariable =	new Variable();
-//		        bpelVariable.setName(variable.getName());
-//		        bpelVariable.setType(new StringDataType());
-//		        variables.add(bpelVariable);
-//			}
+			for (org.apache.ode.bpel.compiler.bom.Variable variable: scopeActivity.getScope().getVariables()) {
+		        Variable bpelVariable =	new Variable();
+		        bpelVariable.setName(variable.getName());
+		        bpelVariable.setType(new StringDataType());
+		        variables.add(bpelVariable);
+			}
 			variableScope.setVariables(variables);
+			List<BPELFaultHandler> faultHandlers = new ArrayList<BPELFaultHandler>();
+	        for (Catch catcher: scopeActivity.getScope().getFaultHandler().getCatches()) {
+	            BPELFaultHandler faultHandler = new BPELFaultHandler();
+	            faultHandler.setFaultName(catcher.getFaultName().toString());
+	            faultHandler.setFaultVariable(catcher.getFaultVariable());
+	            faultHandler.setActivity(compileActivity(catcher.getActivity()));
+	            faultHandlers.add(faultHandler);
+	        }
+	        scope.setFaultHandlers(faultHandlers);
+			scope.setActivity(compileActivity(scopeActivity.getChildActivity()));
 			result = scope;
 		} else if (activity instanceof SwitchActivity) {
 			SwitchActivity switchActivity = (SwitchActivity) activity;
@@ -251,6 +287,9 @@ public class BPELCompiler {
 				compileActivity(whileActivity.getActivity()));
 			result = bpelWhile;
 		} else {
+			// TODO: compensate
+			// TODO: exit
+			// BPEL2.0: If, RepeatUntil, CompensateScope, Rethrow, Validate
 			throw new IllegalArgumentException("Unknown activity type " + activity.getClass());
 		}
 		result.setName(activity.getName());
@@ -263,13 +302,17 @@ public class BPELCompiler {
 			}
 			i++;
 		}
-		result.setSourceLinks(sourceLinks);
+		if (sourceLinks.length > 0) {
+			result.setSourceLinks(sourceLinks);
+		}
 		TargetLink[] targetLinks = new TargetLink[activity.getLinkTargets().size()];
 		i = 0;
 		for (LinkTarget linkTarget: activity.getLinkTargets()) {
 			targetLinks[i++] = new TargetLink(linkTarget.getLinkName());
 		}
-		result.setTargetLinks(targetLinks);
+		if (targetLinks.length > 0) {
+			result.setTargetLinks(targetLinks);
+		}
 		return result;
 	}
 

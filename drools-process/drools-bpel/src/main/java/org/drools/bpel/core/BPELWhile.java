@@ -66,7 +66,7 @@ public class BPELWhile extends CompositeNode implements BPELActivity {
         // TODO While constraint dialect
         constraint.setConstraint(condition);
         constraint.setType("code");
-        constraint.setDialect("mvel");
+        constraint.setDialect("XPath2.0");
         constraint.setPriority(getNodes().length - 2);
         split.setConstraint(connection, constraint);
     }

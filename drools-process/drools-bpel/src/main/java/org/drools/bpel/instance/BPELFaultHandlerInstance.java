@@ -55,7 +55,7 @@ public class BPELFaultHandlerInstance implements ExceptionHandlerInstance {
                 System.err.println("Continuing without setting variable.");
             }
         }
-        nodeInstance.trigger(null, null);
+        nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
         if (nodeInstanceContainer instanceof BPELProcessInstance) {
         	((BPELProcessInstance) nodeInstanceContainer).setState(ProcessInstance.STATE_ABORTED);
         } else {

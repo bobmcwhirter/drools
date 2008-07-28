@@ -27,6 +27,7 @@ public class BPELProcessInstance extends WorkflowProcessInstanceImpl {
         return (BPELProcess) getProcess();
     }
     
+    // TODO: unification with signalEvent
     public void acceptMessage(String partnerLink, String portType, String operation, String message) {
         if (getState() == STATE_PENDING) {
             setState(STATE_ACTIVE);

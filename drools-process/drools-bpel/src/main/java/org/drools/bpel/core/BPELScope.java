@@ -1,5 +1,8 @@
 package org.drools.bpel.core;
 
+import java.util.List;
+
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeContextNode;
@@ -12,6 +15,9 @@ import org.drools.workflow.core.node.CompositeNode;
 public class BPELScope extends CompositeContextNode implements BPELActivity, BPELFaultHandlerContainer {
 
     private static final long serialVersionUID = 400L;
+
+	private SourceLink[] sourceLinks;
+    private TargetLink[] targetLinks;
 
     public BPELScope() {
 	    VariableScope variableScope = new VariableScope();
@@ -35,20 +41,30 @@ public class BPELScope extends CompositeContextNode implements BPELActivity, BPE
             Node.CONNECTION_DEFAULT_TYPE);
     }
 
-    public SourceLink[] getSourceLinks() {
-        throw new IllegalArgumentException("A scope does not support links!");
+    public void setFaultHandlers(List<BPELFaultHandler> faultHandlers) {
+        ExceptionScope exceptionScope = new ExceptionScope();
+        addContext(exceptionScope);
+        setDefaultContext(exceptionScope);
+        for (BPELFaultHandler faultHandler: faultHandlers) {
+            addNode(faultHandler.getActivity());
+            exceptionScope.setExceptionHandler(faultHandler.getFaultName(), faultHandler);
+        }
     }
-
-    public TargetLink[] getTargetLinks() {
-        throw new IllegalArgumentException("A scope does not support links!");
+    
+    public SourceLink[] getSourceLinks() {
+        return sourceLinks;
     }
 
     public void setSourceLinks(SourceLink[] sourceLinks) {
-        throw new IllegalArgumentException("A scope does not support links!");
+        this.sourceLinks = sourceLinks;
+    }
+
+    public TargetLink[] getTargetLinks() {
+        return targetLinks;
     }
 
     public void setTargetLinks(TargetLink[] targetLinks) {
-        throw new IllegalArgumentException("A scope does not support links!");
+        this.targetLinks = targetLinks;
     }
-    
+
 }

@@ -120,8 +120,10 @@ public class BPELCoreTest {
             // assign1
             BPELAssign assign1 = new BPELAssign();
             assign1.setId(++nodeId);
-            // $shippingRequest.customerInfo <- $PO.customerInfo
-            assign1.setAction("");
+            BPELAssign.Copy copy = assign1.new Copy();
+            copy.setFrom(assign1.new VariablePart("PO", "customerInfo"));
+            copy.setTo(assign1.new VariablePart("shippingRequest", "customerInfo"));
+            assign1.addCopy(copy);
             sequence1Activities.add(assign1);
             
             // invoke1
@@ -265,7 +267,8 @@ public class BPELCoreTest {
         BPELProcessInstance processInstance = (BPELProcessInstance) workingMemory.startProcess("1");
         
         // start process
-        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
+        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", 
+    		"<POMessage><customerInfo>Jack</customerInfo><purchaseOrder>PURCHASE_ORDER</purchaseOrder></POMessage>");
 
         // reply to web service invocations
         WorkItem workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "requestProductionScheduling");
@@ -275,14 +278,14 @@ public class BPELCoreTest {
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "shipping", "lns:shippingPT", "requestShipping");
-        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, "SHIPPING");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, "<shippingInfoMessage><shippingInfo>SHIPPING_INFO</shippingInfo></shippingInfoMessage>");
         
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "sendShippingPrice");
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
         // invoke web service callbacks
-        BPELTestUtil.webServiceInvocation(processInstance, "shipping", "lns:shippingCallbackPT", "sendSchedule", "SCHEDULE");
-        BPELTestUtil.webServiceInvocation(processInstance, "invoicing", "lns:invoiceCallbackPT", "sendInvoice", "INVOICE");
+        BPELTestUtil.webServiceInvocation(processInstance, "shipping", "lns:shippingCallbackPT", "sendSchedule", "<scheduleMessage><schedule>SCHEDULE</schedule></scheduleMessage>");
+        BPELTestUtil.webServiceInvocation(processInstance, "invoicing", "lns:invoiceCallbackPT", "sendInvoice", "<InvMessage><IVC>INVOICE</IVC></InvMessage>");
 
         // reply to web service invocation
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "sendShippingSchedule");
