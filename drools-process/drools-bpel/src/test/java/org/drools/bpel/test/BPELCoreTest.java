@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELAssign;
 import org.drools.bpel.core.BPELFaultHandler;
@@ -28,11 +29,12 @@ import org.drools.compiler.ProcessBuilder;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.impl.type.StringDataType;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.reteoo.ReteooWorkingMemory;
 
-public class BPELCoreTest {
+public class BPELCoreTest extends TestCase {
 
     public static BPELProcess getProcess() {
         BPELProcess process = new BPELProcess();
@@ -74,7 +76,7 @@ public class BPELCoreTest {
         // faultHandler
         List<BPELFaultHandler> faultHandlers = new ArrayList<BPELFaultHandler>();
         BPELFaultHandler faultHandler = new BPELFaultHandler();
-        faultHandler.setFaultName("cannotCompleteOrder");
+        faultHandler.setFaultName("lns:cannotCompleteOrder");
         faultHandler.setFaultVariable("POFault");
         BPELReply reply = new BPELReply();
         reply.setId(++nodeId);
@@ -97,9 +99,7 @@ public class BPELCoreTest {
         BPELReceive receive = new BPELReceive();
         receive.setId(++nodeId);
         receive.setName("Receive Purchase Order");
-        receive.setPartnerLink("purchasing");
-        receive.setPortType("lns:purchaseOrderPT");
-        receive.setOperation("sendPurchaseOrder");
+        receive.setOperation("purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder");
         receive.setVariable("PO");
         receive.setCreateInstance(true);
         sequenceActivities.add(receive);
@@ -142,9 +142,7 @@ public class BPELCoreTest {
             BPELReceive receive1 = new BPELReceive();
             receive1.setId(++nodeId);
             receive1.setName("Arrange Logistics");
-            receive1.setPartnerLink("shipping");
-            receive1.setPortType("lns:shippingCallbackPT");
-            receive1.setOperation("sendSchedule");
+            receive1.setOperation("shipping", "lns:shippingCallbackPT", "sendSchedule");
             receive1.setVariable("shippingSchedule");
             receive1.setCreateInstance(false);
             receive1.setSourceLinks(new SourceLink[] { new SourceLink("ship-to-scheduling") });
@@ -184,9 +182,7 @@ public class BPELCoreTest {
             BPELReceive receive2 = new BPELReceive();
             receive2.setId(++nodeId);
             receive2.setName("Receive Invoice");
-            receive2.setPartnerLink("invoicing");
-            receive2.setPortType("lns:invoiceCallbackPT");
-            receive2.setOperation("sendInvoice");
+            receive2.setOperation("invoicing", "lns:invoiceCallbackPT", "sendInvoice");
             receive2.setVariable("Invoice");
             receive2.setCreateInstance(false);
             sequence2Activities.add(receive2);
@@ -250,7 +246,7 @@ public class BPELCoreTest {
     }
     
     // normal execution
-    public static void main(String[] args) {
+    public void testPurchaseOrderProcessNormalFlow() {
         BPELProcess process = getProcess();
         // execute
         Properties properties = new Properties(); 
@@ -263,7 +259,6 @@ public class BPELCoreTest {
         InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
         WorkItemHandler handler = new WebServiceInvocationHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("WebServiceInvocation", handler);
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
         BPELProcessInstance processInstance = (BPELProcessInstance) workingMemory.startProcess("1");
         
         // start process
@@ -291,11 +286,14 @@ public class BPELCoreTest {
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "sendShippingSchedule");
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
 
-        logger.writeToDisk();
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     // shipping returns fault
-    public static void main1(String[] args) {
+    public static void testPurchaseOrderProcessFault() {
         BPELProcess process = getProcess();
         // execute
         Properties properties = new Properties(); 
@@ -308,11 +306,11 @@ public class BPELCoreTest {
         InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
         WorkItemHandler handler = new WebServiceInvocationHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("WebServiceInvocation", handler);
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
         BPELProcessInstance processInstance = (BPELProcessInstance) workingMemory.startProcess("1");
         
         // start process
-        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
+        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", 
+    		"<POMessage><customerInfo>Jack</customerInfo><purchaseOrder>PURCHASE_ORDER</purchaseOrder></POMessage>");
 
         // reply to web service invocations
         WorkItem workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "requestProductionScheduling");
@@ -322,9 +320,9 @@ public class BPELCoreTest {
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "shipping", "lns:shippingPT", "requestShipping");
-        BPELTestUtil.replyWebServiceInvocationFault(workingMemory, workItem, "cannotCompleteOrder", "SHIPPING FAULT");
+        BPELTestUtil.replyWebServiceInvocationFault(workingMemory, workItem, "lns:cannotCompleteOrder", "SHIPPING FAULT");
 
-        logger.writeToDisk();
+        assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
     }
 
     

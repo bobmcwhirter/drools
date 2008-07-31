@@ -46,7 +46,8 @@ public class BPELCompilerTest extends TestCase {
         	workingMemory.startProcess("http://drools.jboss.org/example/bpel/purchase");
         
         // start process
-        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "{http://manufacturing.org/wsdl/purchase}purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
+        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "{http://manufacturing.org/wsdl/purchase}purchaseOrderPT", "sendPurchaseOrder", 
+    		"<POMessage><customerInfo>Jack</customerInfo><purchaseOrder>PURCHASE_ORDER</purchaseOrder></POMessage>");
 
         // reply to web service invocations
         WorkItem workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "{http://manufacturing.org/wsdl/purchase}schedulingPT", "requestProductionScheduling");
@@ -56,19 +57,19 @@ public class BPELCompilerTest extends TestCase {
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "shipping", "{http://manufacturing.org/wsdl/purchase}shippingPT", "requestShipping");
-        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, "SHIPPING");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, "<shippingInfoMessage><shippingInfo>SHIPPING_INFO</shippingInfo></shippingInfoMessage>");
         
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "invoicing", "{http://manufacturing.org/wsdl/purchase}computePricePT", "sendShippingPrice");
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
         // invoke web service callbacks
-        BPELTestUtil.webServiceInvocation(processInstance, "shipping", "{http://manufacturing.org/wsdl/purchase}shippingCallbackPT", "sendSchedule", "SCHEDULE");
-        BPELTestUtil.webServiceInvocation(processInstance, "invoicing", "{http://manufacturing.org/wsdl/purchase}invoiceCallbackPT", "sendInvoice", "INVOICE");
+        BPELTestUtil.webServiceInvocation(processInstance, "shipping", "{http://manufacturing.org/wsdl/purchase}shippingCallbackPT", "sendSchedule", "<scheduleMessage><schedule>SCHEDULE</schedule></scheduleMessage>");
+        BPELTestUtil.webServiceInvocation(processInstance, "invoicing", "{http://manufacturing.org/wsdl/purchase}invoiceCallbackPT", "sendInvoice", "<InvMessage><IVC>INVOICE</IVC></InvMessage>");
 
         // reply to web service invocation
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "{http://manufacturing.org/wsdl/purchase}schedulingPT", "sendShippingSchedule");
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
-        
+
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "purchasing", "{http://manufacturing.org/wsdl/purchase}purchaseOrderPT", "sendPurchaseOrder");
         BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
         
@@ -82,7 +83,8 @@ public class BPELCompilerTest extends TestCase {
         	workingMemory.startProcess("http://drools.jboss.org/example/bpel/purchase");
         
         // start process
-        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "{http://manufacturing.org/wsdl/purchase}purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
+        BPELTestUtil.webServiceInvocation(processInstance, "purchasing", "{http://manufacturing.org/wsdl/purchase}purchaseOrderPT", "sendPurchaseOrder", 
+    		"<POMessage><customerInfo>Jack</customerInfo><purchaseOrder>PURCHASE_ORDER</purchaseOrder></POMessage>");
 
         // reply to web service invocations
         WorkItem workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "scheduling", "{http://manufacturing.org/wsdl/purchase}schedulingPT", "requestProductionScheduling");

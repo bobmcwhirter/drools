@@ -13,6 +13,7 @@ import org.apache.ode.bpel.compiler.bom.Copy;
 import org.apache.ode.bpel.compiler.bom.EmptyActivity;
 import org.apache.ode.bpel.compiler.bom.FlowActivity;
 import org.apache.ode.bpel.compiler.bom.From;
+import org.apache.ode.bpel.compiler.bom.IfActivity;
 import org.apache.ode.bpel.compiler.bom.InvokeActivity;
 import org.apache.ode.bpel.compiler.bom.Link;
 import org.apache.ode.bpel.compiler.bom.LinkSource;
@@ -22,34 +23,40 @@ import org.apache.ode.bpel.compiler.bom.OnMessage;
 import org.apache.ode.bpel.compiler.bom.PickActivity;
 import org.apache.ode.bpel.compiler.bom.Process;
 import org.apache.ode.bpel.compiler.bom.ReceiveActivity;
+import org.apache.ode.bpel.compiler.bom.RepeatUntilActivity;
 import org.apache.ode.bpel.compiler.bom.ReplyActivity;
 import org.apache.ode.bpel.compiler.bom.ScopeActivity;
 import org.apache.ode.bpel.compiler.bom.SequenceActivity;
 import org.apache.ode.bpel.compiler.bom.SwitchActivity;
+import org.apache.ode.bpel.compiler.bom.TerminateActivity;
 import org.apache.ode.bpel.compiler.bom.ThrowActivity;
 import org.apache.ode.bpel.compiler.bom.To;
 import org.apache.ode.bpel.compiler.bom.WaitActivity;
 import org.apache.ode.bpel.compiler.bom.WhileActivity;
+import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.StreamUtils;
 import org.drools.RuleBase;
 import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELAssign;
 import org.drools.bpel.core.BPELEmpty;
+import org.drools.bpel.core.BPELExit;
 import org.drools.bpel.core.BPELFaultHandler;
 import org.drools.bpel.core.BPELFlow;
+import org.drools.bpel.core.BPELIf;
 import org.drools.bpel.core.BPELInvoke;
 import org.drools.bpel.core.BPELPick;
 import org.drools.bpel.core.BPELProcess;
 import org.drools.bpel.core.BPELReceive;
+import org.drools.bpel.core.BPELRepeatUntil;
 import org.drools.bpel.core.BPELReply;
 import org.drools.bpel.core.BPELScope;
 import org.drools.bpel.core.BPELSequence;
-import org.drools.bpel.core.BPELSwitch;
 import org.drools.bpel.core.BPELThrow;
 import org.drools.bpel.core.BPELWait;
 import org.drools.bpel.core.BPELWhile;
 import org.drools.bpel.core.BPELActivity.SourceLink;
 import org.drools.bpel.core.BPELActivity.TargetLink;
+import org.drools.bpel.xpath.XMLDataType;
 import org.drools.bpel.xpath.XPathDialectConfiguration;
 import org.drools.common.AbstractRuleBase;
 import org.drools.compiler.DroolsError;
@@ -58,7 +65,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.core.datatype.impl.type.StringDataType;
+import org.drools.process.core.datatype.DataType;
 import org.xml.sax.InputSource;
 
 public class BPELCompiler {
@@ -97,6 +104,7 @@ public class BPELCompiler {
 		result.setId(process.getTargetNamespace());
 		result.setPackageName("org.drools.bpel");
 		result.setVersion("1.0");
+		result.setNamespaceContext(process.getNamespaceContext());
 		BPELActivity activity = compileActivity(process.getRootActivity());
 		result.setActivity(activity);
 		// variables
@@ -105,7 +113,7 @@ public class BPELCompiler {
 		for (org.apache.ode.bpel.compiler.bom.Variable variable: process.getVariables()) {
 	        Variable bpelVariable =	new Variable();
 	        bpelVariable.setName(variable.getName());
-	        bpelVariable.setType(new StringDataType());
+	        bpelVariable.setType(getDataType(variable.getTypeName().toString()));
 	        variables.add(bpelVariable);
 		}
 		variableScope.setVariables(variables);
@@ -130,9 +138,10 @@ public class BPELCompiler {
 			ReceiveActivity receiveActivity = (ReceiveActivity) activity;
 			BPELReceive receive = new BPELReceive();
 			receive.setCreateInstance(receiveActivity.isCreateInstance());
-			receive.setPartnerLink(receiveActivity.getPartnerLink());
-			receive.setPortType(receiveActivity.getPortType().toString());
-			receive.setOperation(receiveActivity.getOperation());
+			receive.setOperation(
+				receiveActivity.getPartnerLink(),
+				receiveActivity.getPortType().toString(),
+				receiveActivity.getOperation());
 			receive.setVariable(receiveActivity.getVariable());
 			result = receive;
 		} else if (activity instanceof ReplyActivity) {
@@ -191,15 +200,20 @@ public class BPELCompiler {
 				if (from.isVariableVal()) {
 					BPELAssign.VariablePart bpelFrom = assign.new VariablePart(
 						from.getAsVariableVal().getVariable(), 
-						from.getAsVariableVal().getNamespaceContext().toString() + ":" + from.getAsVariableVal().getPart());
+						from.getAsVariableVal().getPart());
+					bpelCopy.setFrom(bpelFrom);
+				} else if (from.isLiteralVal()) {
+					BPELAssign.LiteralValue bpelFrom = assign.new LiteralValue(
+						DOMUtils.domToString(from.getAsLiteralVal().getLiteral().getFirstChild()));
 					bpelCopy.setFrom(bpelFrom);
 				} else {
-					throw new UnsupportedOperationException("Assign from does not yet support non-variable values");
+					BPELAssign.Expression bpelFrom = assign.new Expression(from.getAsExpression().toString());
+					bpelCopy.setFrom(bpelFrom);
 				}
 				if (to.isVariableVal()) {
 					BPELAssign.VariablePart bpelTo = assign.new VariablePart(
 						to.getAsVariableVal().getVariable(), 
-						to.getAsVariableVal().getNamespaceContext().toString() + ":" + to.getAsVariableVal().getPart());
+						to.getAsVariableVal().getPart());
 					bpelCopy.setTo(bpelTo);
 				} else {
 					throw new UnsupportedOperationException("Assign to does not yet support non-variable values");
@@ -247,7 +261,7 @@ public class BPELCompiler {
 			for (org.apache.ode.bpel.compiler.bom.Variable variable: scopeActivity.getScope().getVariables()) {
 		        Variable bpelVariable =	new Variable();
 		        bpelVariable.setName(variable.getName());
-		        bpelVariable.setType(new StringDataType());
+		        bpelVariable.setType(getDataType(variable.getTypeName().toString()));
 		        variables.add(bpelVariable);
 			}
 			variableScope.setVariables(variables);
@@ -264,9 +278,19 @@ public class BPELCompiler {
 			result = scope;
 		} else if (activity instanceof SwitchActivity) {
 			SwitchActivity switchActivity = (SwitchActivity) activity;
-			BPELSwitch bpelSwitch = new BPELSwitch();
+			BPELIf bpelSwitch = new BPELIf();
 			for (SwitchActivity.Case bpelCase: switchActivity.getCases()) {
 				bpelSwitch.addCase(bpelCase.getCondition().toString(), compileActivity(bpelCase.getActivity()));
+			}
+			result = bpelSwitch;
+		} else if (activity instanceof IfActivity) {
+			IfActivity ifActivity = (IfActivity) activity;
+			BPELIf bpelSwitch = new BPELIf();
+			bpelSwitch.addCase(ifActivity.getCondition().toString(), compileActivity(ifActivity.getActivity()));
+			for (IfActivity.Case bpelCase: ifActivity.getCases()) {
+				bpelSwitch.addCase(
+					bpelCase.getCondition() == null ? null : bpelCase.getCondition().toString(), 
+					compileActivity(bpelCase.getActivity()));
 			}
 			result = bpelSwitch;
 		} else if (activity instanceof WaitActivity) {
@@ -286,10 +310,17 @@ public class BPELCompiler {
 				whileActivity.getCondition().toString(),
 				compileActivity(whileActivity.getActivity()));
 			result = bpelWhile;
+		} else if (activity instanceof RepeatUntilActivity) {
+			RepeatUntilActivity repeatUntilActivity = (RepeatUntilActivity) activity;
+			BPELRepeatUntil bpelRepeatUntil = new BPELRepeatUntil();
+			bpelRepeatUntil.setActivity(compileActivity(repeatUntilActivity.getActivity()));
+			bpelRepeatUntil.setCondition(repeatUntilActivity.getCondition().toString());
+			result = bpelRepeatUntil;
+		} else if (activity instanceof TerminateActivity) {
+			result = new BPELExit();
 		} else {
 			// TODO: compensate
-			// TODO: exit
-			// BPEL2.0: If, RepeatUntil, CompensateScope, Rethrow, Validate
+			// BPEL2.0: ForEach, CompensateScope, Rethrow, Validate
 			throw new IllegalArgumentException("Unknown activity type " + activity.getClass());
 		}
 		result.setName(activity.getName());
@@ -313,6 +344,12 @@ public class BPELCompiler {
 		if (targetLinks.length > 0) {
 			result.setTargetLinks(targetLinks);
 		}
+		return result;
+	}
+	
+	private DataType getDataType(String typeName) {
+		XMLDataType result = new XMLDataType();
+		result.setTypeDefinition(typeName);
 		return result;
 	}
 

@@ -3,6 +3,8 @@ package org.drools.bpel.instance;
 import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELActivity.SourceLink;
 import org.drools.bpel.core.BPELActivity.TargetLink;
+import org.drools.bpel.xpath.XPathReturnValueEvaluator;
+import org.drools.spi.ProcessContext;
 import org.drools.util.ArrayUtils;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
@@ -50,7 +52,7 @@ public final class BPELLinkManager {
             for (int i = 0; i < outgoingLinks.length; i++) {
                 BPELFlowInstance flowInstance = getFlowInstance(activityInstance, outgoingLinks[i].getLinkName());
                 String transitionCondition = outgoingLinks[i].getTransitionCondition(); 
-                if (transitionCondition == null || evaluateTransitionCondition(transitionCondition)) {
+                if (transitionCondition == null || evaluateTransitionCondition(transitionCondition, activityInstance)) {
                 	flowInstance.activateLink(outgoingLinks[i].getLinkName());
                 }
             }
@@ -66,9 +68,16 @@ public final class BPELLinkManager {
         return (BPELFlowInstance) parent;
     }
     
-    private static boolean evaluateTransitionCondition(String transitionCondition) {
-    	// TODO SourceLink transitionCondition
-    	return true;
+    private static boolean evaluateTransitionCondition(String transitionCondition, NodeInstance activityInstance) {
+    	try {
+	    	XPathReturnValueEvaluator evaluator = new XPathReturnValueEvaluator();
+	    	evaluator.setExpression(transitionCondition);
+	    	ProcessContext processContext = new ProcessContext();
+	    	processContext.setNodeInstance(activityInstance);
+	    	return (Boolean) evaluator.evaluate(activityInstance.getProcessInstance().getWorkingMemory(), processContext);
+    	} catch (Throwable t) {
+    		throw new IllegalArgumentException("Could not evaluate transition condition " + transitionCondition, t);
+    	}
     }
 
 }

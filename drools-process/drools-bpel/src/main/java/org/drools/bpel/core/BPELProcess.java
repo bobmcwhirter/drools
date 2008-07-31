@@ -2,12 +2,15 @@ package org.drools.bpel.core;
 
 import java.util.List;
 
+import javax.xml.namespace.NamespaceContext;
+
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.StartNode;
 
 
 /**
@@ -21,6 +24,7 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
     public static final String BPEL_TYPE = "BPEL";
     
     private BPELActivity activity;
+    private NamespaceContext namespaceContext;
     
     public BPELProcess() {
         setType(BPEL_TYPE);
@@ -45,8 +49,15 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
         this.activity = activity;
         activity.setId(1);
         addNode(activity);
+        StartNode start = new StartNode();
+        start.setMetaData("hidden", true);
+        start.setId(2);
+        addNode(start);
+        new ConnectionImpl(
+            start, Node.CONNECTION_DEFAULT_TYPE,
+            activity, Node.CONNECTION_DEFAULT_TYPE);
         EndNode end = new EndNode();
-        end.setId(2);
+        end.setId(3);
         end.setMetaData("hidden", true);
         addNode(end);
         new ConnectionImpl(
@@ -70,5 +81,13 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
         }
         // TODO: process should end once fault handler has been executed
     }
+
+	public NamespaceContext getNamespaceContext() {
+		return namespaceContext;
+	}
+
+	public void setNamespaceContext(NamespaceContext namespaceContext) {
+		this.namespaceContext = namespaceContext;
+	}
     
 }

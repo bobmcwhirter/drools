@@ -4,13 +4,21 @@ import java.io.ByteArrayInputStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathConstants;
 
 import org.apache.ode.utils.DOMUtils;
 import org.drools.bpel.core.BPELAssign;
 import org.drools.bpel.core.BPELAssign.Copy;
+import org.drools.bpel.core.BPELAssign.Expression;
+import org.drools.bpel.core.BPELAssign.From;
+import org.drools.bpel.core.BPELAssign.LiteralValue;
 import org.drools.bpel.core.BPELAssign.VariablePart;
+import org.drools.bpel.xpath.XMLDataType;
+import org.drools.bpel.xpath.XPathReturnValueEvaluator;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.datatype.DataType;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -36,39 +44,97 @@ public class BPELAssignInstance extends NodeInstanceImpl {
         if (BPELLinkManager.checkActivityEnabled(this)) {
         	BPELAssign assign = getBPELAssign();
         	for (Copy copy: assign.getCopies()) {
-        		VariablePart fromPart = copy.getFrom();
-        		VariablePart toPart = copy.getTo();
-        		String fromValue = getVariableValue(fromPart.getVariable());
-        		String toValue = getVariableValue(toPart.getVariable());
-        		if (toValue == null) {
-        			toValue = initializeVariable(toPart.getVariable());
+        		From fromPart = copy.getFrom();
+        		VariablePart toPart = (VariablePart) copy.getTo();
+        		Object fromValue = getValue(fromPart);
+        		if (toPart.getPart() == null) {
+        			setVariableValue(toPart.getVariable(), fromValue);
+        		} else {
+            		String toValue = getVariableValue(toPart.getVariable());
+	        		if (toValue == null) {
+	        			toValue = initializeVariable(toPart.getVariable());
+	        		}
+	        		toValue = copy(fromValue, toValue, toPart.getPart());
+	        		setVariableValue(toPart.getVariable(), toValue);
         		}
-        		toValue = copy(fromValue, fromPart.getPart(), toValue, toPart.getPart());
-        		setVariableValue(toPart.getVariable(), toValue);
         	}
             triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
         }
     }
     
-    private String copy(String fromValue, String fromPart, String toValue, String toPart) {
+    private Object getValue(From from) {
+    	if (from instanceof VariablePart) {
+    		VariablePart fromPart = (VariablePart) from;
+    		String fromValue = getVariableValue(fromPart.getVariable());
+    		if (fromPart.getPart() == null) {
+    			return fromValue;
+    		}
+            try {
+	        	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    		Document fromDocument = factory.newDocumentBuilder().parse(new ByteArrayInputStream(fromValue.getBytes()));
+	        	return DOMUtils.findChildByName((Element) fromDocument.getDocumentElement(), new QName(fromPart.getPart()));
+            } catch (Throwable t) {
+            	throw new IllegalArgumentException("Could not get value", t);
+            }
+    	} else if (from instanceof LiteralValue) {
+    		return ((LiteralValue) from).getValue();
+    	} else if (from instanceof Expression) {
+    		String expression = ((Expression) from).getExpression();
+    		try {
+	    		XPathReturnValueEvaluator evaluator = new XPathReturnValueEvaluator();
+	    		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(expression.getBytes()));
+				org.w3c.dom.Node node = document.getFirstChild().getFirstChild();
+		        if (node == null) {
+		            throw new IllegalStateException();
+		        }
+		        if (node.getNodeType() != org.w3c.dom.Node.TEXT_NODE) {
+		            throw new IllegalArgumentException("Unexpected node type for XPath");
+		        }
+		        String xpathString = node.getNodeValue();
+	    		evaluator.setExpression(xpathString);
+	    		ProcessContext processContext = new ProcessContext();
+	    		processContext.setNodeInstance(this);
+    			return (String) evaluator.evaluate(getProcessInstance().getWorkingMemory(), processContext, XPathConstants.STRING);
+    		} catch (Throwable t) {
+    			throw new IllegalArgumentException("Could not evaluate expression " + expression, t);
+    		}
+    	} else {
+    		throw new UnsupportedOperationException();
+    	}
+    }
+    
+    private String copy(Object fromValue, String toValue, String toPart) {
         try {
         	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    		Document fromDocument = factory.newDocumentBuilder().parse(new ByteArrayInputStream(fromValue.getBytes()));
-        	Element from = DOMUtils.findChildByName((Element) fromDocument.getDocumentElement(), new QName(fromPart));
     		Document toDocument = factory.newDocumentBuilder().parse(new ByteArrayInputStream(toValue.getBytes()));
         	Element to = DOMUtils.findChildByName((Element) toDocument.getDocumentElement(), new QName(toPart));
-        	
-        	Element replacement = toDocument.createElementNS(from.getNamespaceURI(), from.getNodeName());
-            NodeList nl = from.getChildNodes();
-            for (int i = 0; i < nl.getLength(); ++i)
-                replacement.appendChild(toDocument.importNode(nl.item(i), true));
-            NamedNodeMap attrs = from.getAttributes();
-            for (int i = 0; i < attrs.getLength(); ++i) {
-                if (!((Attr)attrs.item(i)).getName().startsWith("xmlns")) {
-                    replacement.setAttributeNodeNS((Attr) toDocument.importNode(attrs.item(i), true));
-                }
-            }
-        	to.getParentNode().replaceChild(replacement, to);
+        	if (fromValue instanceof Element) {
+        		Element from = (Element) fromValue;
+	        	Element replacement = toDocument.createElementNS(from.getNamespaceURI(), from.getNodeName());
+	            NodeList nl = from.getChildNodes();
+	            for (int i = 0; i < nl.getLength(); ++i)
+	                replacement.appendChild(toDocument.importNode(nl.item(i), true));
+	            NamedNodeMap attrs = from.getAttributes();
+	            for (int i = 0; i < attrs.getLength(); ++i) {
+	                if (!((Attr)attrs.item(i)).getName().startsWith("xmlns")) {
+	                    replacement.setAttributeNodeNS((Attr) toDocument.importNode(attrs.item(i), true));
+	                }
+	            }
+	            if (to == null) {
+	            	toDocument.getDocumentElement().appendChild(replacement);
+	            } else {
+	            	to.getParentNode().replaceChild(replacement, to);
+	            }
+        	} else {
+        		Element replacement = toDocument.createElementNS(null, toPart);
+        		replacement.setTextContent((String) fromValue);
+        		if (to == null) {
+        			toDocument.getDocumentElement().appendChild(replacement);
+	            } else {
+	            	to.getParentNode().replaceChild(replacement, to);
+	            }
+        	}
         	return DOMUtils.domToString(toDocument.getDocumentElement());
         } catch (Throwable t) {
         	throw new IllegalArgumentException("Could not copy value", t);
@@ -76,8 +142,17 @@ public class BPELAssignInstance extends NodeInstanceImpl {
     }
     
     private String initializeVariable(String variable) {
-    	// TODO
-    	return "<shippingRequestMessage><customerInfo></customerInfo></shippingRequestMessage>";
+    	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+			resolveContextInstance(VariableScope.VARIABLE_SCOPE, variable);
+		if (variableScopeInstance != null) {
+			DataType dataType = ((VariableScope) variableScopeInstance.getContext()).findVariable(variable).getType();
+			if (dataType instanceof XMLDataType) {
+				String type = ((XMLDataType) dataType).getTypeDefinition();
+				type = type.substring(type.lastIndexOf("}") + 1);
+				return "<" + type + "></" + type + ">";
+			}
+		}
+        return "";
     }
     
     private String getVariableValue(String variable) {
@@ -93,7 +168,7 @@ public class BPELAssignInstance extends NodeInstanceImpl {
     	return null;
     }
     
-    private void setVariableValue(String variable, String value) {
+    private void setVariableValue(String variable, Object value) {
     	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
     		resolveContextInstance(VariableScope.VARIABLE_SCOPE, variable);
     	if (variableScopeInstance != null) {

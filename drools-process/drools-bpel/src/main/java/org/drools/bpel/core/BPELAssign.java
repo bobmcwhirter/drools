@@ -72,28 +72,34 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
     
     public class Copy {
 
-    	private VariablePart from;
-    	private VariablePart to;
+    	private From from;
+    	private To to;
     	
-		public VariablePart getFrom() {
+		public From getFrom() {
 			return from;
 		}
 		
-		public void setFrom(VariablePart from) {
+		public void setFrom(From from) {
 			this.from = from;
 		}
 		
-		public VariablePart getTo() {
+		public To getTo() {
 			return to;
 		}
 		
-		public void setTo(VariablePart to) {
+		public void setTo(To to) {
 			this.to = to;
 		}
 			
     }
     
-    public class VariablePart {
+    public interface From {
+    }
+    
+    public interface To {
+    }
+    
+    public class VariablePart implements From, To {
 
     	private String variable;
     	private String part;
@@ -109,6 +115,34 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
     	
     	public String getPart() {
     		return part;
+    	}
+    	
+    }
+    
+    public class LiteralValue implements From {
+    	
+    	private String value;
+    	
+    	public LiteralValue(String value) {
+    		this.value = value;
+    	}
+    	
+    	public String getValue() {
+    		return value;
+    	}
+    	
+    }
+
+    public class Expression implements From {
+    	
+    	private String expression;
+    	
+    	public Expression(String expression) {
+    		this.expression = expression;
+    	}
+    	
+    	public String getExpression() {
+    		return expression;
     	}
     	
     }

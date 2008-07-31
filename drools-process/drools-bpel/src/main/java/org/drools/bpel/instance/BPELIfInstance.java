@@ -7,7 +7,7 @@ import org.drools.workflow.instance.node.CompositeNodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELSwitchInstance extends CompositeNodeInstance {
+public class BPELIfInstance extends CompositeNodeInstance {
 
     private static final long serialVersionUID = 400L;
     

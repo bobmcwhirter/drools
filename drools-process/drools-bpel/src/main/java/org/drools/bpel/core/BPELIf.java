@@ -11,41 +11,35 @@ import org.drools.workflow.core.node.Split;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELWhile extends CompositeNode implements BPELActivity {
+public class BPELIf extends CompositeNode implements BPELActivity {
 
     private static final long serialVersionUID = 400L;
 
-    private Join join;
     private Split split;
+    private Join join;
     private SourceLink[] sourceLinks;
     private TargetLink[] targetLinks;
 
-    public BPELWhile() {
-        join = new Join();
-        join.setType(Join.TYPE_XOR);
-        join.setMetaData("hidden", true);
-        addNode(join);
+    public BPELIf() {
     	split = new Split();
         split.setType(Split.TYPE_XOR);
         split.setMetaData("hidden", true);
         addNode(split);
-        BPELEmpty empty = new BPELEmpty();
-        empty.setMetaData("hidden", true);
-        addNode(empty);
+        join = new Join();
+        join.setType(Join.TYPE_XOR);
+        join.setMetaData("hidden", true);
+        addNode(join);
         linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE,
             new CompositeNode.NodeAndType(
-                join, Node.CONNECTION_DEFAULT_TYPE));
+                split, Node.CONNECTION_DEFAULT_TYPE));
         linkOutgoingConnections(
             new CompositeNode.NodeAndType(
-                empty, Node.CONNECTION_DEFAULT_TYPE),
+                join, Node.CONNECTION_DEFAULT_TYPE),
             Node.CONNECTION_DEFAULT_TYPE);
-        new ConnectionImpl(
-            join, Node.CONNECTION_DEFAULT_TYPE,
-            split, Node.CONNECTION_DEFAULT_TYPE);
         ConnectionImpl connection = new ConnectionImpl(
             split, Node.CONNECTION_DEFAULT_TYPE,
-            empty, Node.CONNECTION_DEFAULT_TYPE);
+            join, Node.CONNECTION_DEFAULT_TYPE);
         ConstraintImpl constraint = new ConstraintImpl();
         constraint.setConstraint("true");
         constraint.setType("code");
@@ -54,7 +48,7 @@ public class BPELWhile extends CompositeNode implements BPELActivity {
         split.setConstraint(connection, constraint);
     }
     
-    public void setActivity(String condition, BPELActivity activity) {
+    public void addCase(String expression, BPELActivity activity) {
     	addNode(activity);
         ConnectionImpl connection = new ConnectionImpl(
             split, Node.CONNECTION_DEFAULT_TYPE,
@@ -63,9 +57,9 @@ public class BPELWhile extends CompositeNode implements BPELActivity {
             activity, Node.CONNECTION_DEFAULT_TYPE,
             join, Node.CONNECTION_DEFAULT_TYPE);
         ConstraintImpl constraint = new ConstraintImpl();
-        constraint.setConstraint(condition);
+        constraint.setConstraint(expression == null ? "true" : expression);
         constraint.setType("code");
-        constraint.setDialect("XPath2.0");
+        constraint.setDialect(expression == null ? "mvel" : "XPath2.0");
         constraint.setPriority(getNodes().length - 2);
         split.setConstraint(connection, constraint);
     }

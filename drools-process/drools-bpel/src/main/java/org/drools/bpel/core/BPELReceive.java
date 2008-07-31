@@ -5,12 +5,13 @@ import java.util.List;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.node.EventNodeInterface;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class BPELReceive extends NodeImpl implements BPELActivity {
+public class BPELReceive extends NodeImpl implements BPELActivity, EventNodeInterface {
 
     private static final long serialVersionUID = 400L;
 
@@ -23,36 +24,18 @@ public class BPELReceive extends NodeImpl implements BPELActivity {
     private TargetLink[] targetLinks;
     private BPELCorrelation[] correlations;
     
-    public String getPartnerLink() {
-        return partnerLink;
+    public void setOperation(String partnerLink, String portType, String operation) {
+    	this.partnerLink = partnerLink;
+    	this.portType = portType;
+    	this.operation = operation;
     }
-
-    public void setPartnerLink(String partnerLink) {
-        this.partnerLink = partnerLink;
-    }
-
-    public String getPortType() {
-        return portType;
-    }
-
-    public void setPortType(String portType) {
-        this.portType = portType;
-    }
-
-    public String getOperation() {
-        return operation;
-    }
-
-    public void setOperation(String operation) {
-        this.operation = operation;
-    }
-
-    public String getVariable() {
-        return variable;
-    }
-
+    
     public void setVariable(String variable) {
-        this.variable = variable;
+    	this.variable = variable;
+    }
+    
+    public String getVariable() {
+    	return variable;
     }
 
     public boolean isCreateInstance() {
@@ -96,4 +79,12 @@ public class BPELReceive extends NodeImpl implements BPELActivity {
 		this.correlations = correlations;
 	}
 
+	public boolean acceptsEvent(String type, Object event) {
+		if ("message".equals(type)) {
+			String[] message = (String[]) event;
+			return partnerLink.equals(message[0]) && portType.equals(message[1]) && operation.equals(message[2]);
+		}
+		return false;
+	}
+    	
 }

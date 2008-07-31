@@ -62,7 +62,7 @@ public class BPELTestUtil {
                 + portType + " "
                 + operation + ": "
                 + result);
-        processInstance.acceptMessage(partnerLink, portType, operation, result);
+        processInstance.signalEvent("message", new String[] { partnerLink, portType, operation, result } );
     }
     
     public static class WebServiceInvocationHandler implements WorkItemHandler {
