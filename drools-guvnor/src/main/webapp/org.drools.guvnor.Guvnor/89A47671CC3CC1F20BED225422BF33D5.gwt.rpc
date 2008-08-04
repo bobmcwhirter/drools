@@ -1,4 +1,3 @@
-[B, true
 com.google.gwt.i18n.client.impl.DateRecord, true
 com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true
 com.google.gwt.user.client.rpc.SerializableException, true
@@ -36,7 +35,6 @@ org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine, true
 org.drools.guvnor.client.modeldriven.brl.ActionCallMethod, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionCallMethod;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction, true
-[Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldList, false
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldList;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldValue, true
@@ -118,3 +116,4 @@ org.drools.guvnor.client.rpc.TableDataRow, true
 [Lorg.drools.guvnor.client.rpc.TableDataRow;, true
 org.drools.guvnor.client.rpc.UserSecurityContext, true
 org.drools.guvnor.client.rpc.ValidatedResponse, true
+org.drools.guvnor.client.security.Capabilities, true
