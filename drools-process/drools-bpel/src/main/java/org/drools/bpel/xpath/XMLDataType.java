@@ -10,16 +10,16 @@ public class XMLDataType implements DataType {
 
 	private String typeDefinition;
 	
+	public XMLDataType(String typeDefinition) {
+		this.typeDefinition = typeDefinition;
+	}
+	
 	public boolean verifyDataType(Object value) {
 		return value instanceof String;
 	}
 
 	public String getTypeDefinition() {
 		return typeDefinition;
-	}
-
-	public void setTypeDefinition(String typeDefinition) {
-		this.typeDefinition = typeDefinition;
 	}
 
 	public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {

@@ -18,8 +18,8 @@ public class BPELThrowInstance extends FaultNodeInstance {
         }
     }
     
-    protected void handleException(ExceptionScopeInstance exceptionScopeInstance) {
-        super.handleException(exceptionScopeInstance);
+    protected void handleException(String faultName, ExceptionScopeInstance exceptionScopeInstance) {
+        super.handleException(faultName, exceptionScopeInstance);
         BPELLinkManager.activateTargetLinks(this);
     }
 }

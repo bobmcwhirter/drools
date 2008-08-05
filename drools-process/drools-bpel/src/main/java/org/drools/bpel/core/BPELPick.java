@@ -1,14 +1,10 @@
 package org.drools.bpel.core;
 
-import org.drools.process.core.event.EventFilter;
-import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.node.CompositeNode;
-import org.drools.workflow.core.node.EndNode;
-import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.Join;
-import org.drools.workflow.core.node.TimerNode;
+import org.drools.workflow.core.node.Split;
 
 /**
  * 
@@ -19,23 +15,24 @@ public class BPELPick extends CompositeNode implements BPELActivity {
     private static final long serialVersionUID = 400L;
 
     private boolean createInstance;
+    private Split split;
     private Join join;
     private SourceLink[] sourceLinks;
     private TargetLink[] targetLinks;
 
     public BPELPick() {
-    	EndNode end = new EndNode();
-    	end.setTerminate(false);
-    	end.setMetaData("hidden", true);
-    	addNode(end);
-        join = new Join();
+    	split = new Split();
+    	split.setType(Split.TYPE_AND);
+        split.setMetaData("hidden", true);
+        addNode(split);
+		join = new Join();
         join.setType(Join.TYPE_XOR);
         join.setMetaData("hidden", true);
         addNode(join);
         linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE,
             new CompositeNode.NodeAndType(
-                end, Node.CONNECTION_DEFAULT_TYPE));
+                split, Node.CONNECTION_DEFAULT_TYPE));
         linkOutgoingConnections(
             new CompositeNode.NodeAndType(
                 join, Node.CONNECTION_DEFAULT_TYPE),
@@ -51,14 +48,17 @@ public class BPELPick extends CompositeNode implements BPELActivity {
 	}
 
 	public void addOnMessage(OnMessage onMessage) {
-    	EventNode eventNode = new EventNode();
-    	eventNode.addEventFilter(new OnMessageEventFilter(
-			onMessage.getPartnerLink(), onMessage.getPortType(), onMessage.getOperation()));
-    	eventNode.setMetaData("hidden", true);
-    	addNode(eventNode);
+    	BPELReceive receive = new BPELReceive();
+    	receive.setOperation(onMessage.getPartnerLink(), onMessage.getPortType(), onMessage.getOperation());
+    	receive.setMetaData("hidden", true);
+    	receive.setVariable(onMessage.getVariable());
+    	addNode(receive);
     	addNode(onMessage.getActivity());
         new ConnectionImpl(
-            eventNode, Node.CONNECTION_DEFAULT_TYPE,
+            split, Node.CONNECTION_DEFAULT_TYPE,
+            receive, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(
+            receive, Node.CONNECTION_DEFAULT_TYPE,
             onMessage.getActivity(), Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
     		onMessage.getActivity(), Node.CONNECTION_DEFAULT_TYPE,
@@ -66,34 +66,23 @@ public class BPELPick extends CompositeNode implements BPELActivity {
     }
     
 	public void addOnAlarm(OnAlarm onAlarm) {
-		TimerNode timerNode = new TimerNode();
-		Timer timer = new Timer();
-		if (onAlarm.getForExpression() != null) {
-			timer.setDelay(getDelayFor(onAlarm.getForExpression()));
-		} else {
-			timer.setDelay(getDelayUntil(onAlarm.getUntilExpression()));
-		}
-		timerNode.setTimer(timer);
-		addNode(timerNode);
+		BPELWait waitNode = new BPELWait();
+		waitNode.setForExpression(onAlarm.getForExpression());
+		waitNode.setUntilExpression(onAlarm.getUntilExpression());
+		waitNode.setMetaData("hidden", true);
+		addNode(waitNode);
     	addNode(onAlarm.getActivity());
         new ConnectionImpl(
-            timerNode, Node.CONNECTION_DEFAULT_TYPE,
+            split, Node.CONNECTION_DEFAULT_TYPE,
+            waitNode, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(
+            waitNode, Node.CONNECTION_DEFAULT_TYPE,
             onAlarm.getActivity(), Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
     		onAlarm.getActivity(), Node.CONNECTION_DEFAULT_TYPE,
             join, Node.CONNECTION_DEFAULT_TYPE);
     }
 	
-	private int getDelayFor(String forExpression) {
-		// TODO: BPELPick timer delay
-		return 1000;
-	}
-    
-	private int getDelayUntil(String untilExpression) {
-		// TODO: BPELPick timer until
-		return 1000;
-	}
-    
     public SourceLink[] getSourceLinks() {
         return sourceLinks;
     }
@@ -165,28 +154,6 @@ public class BPELPick extends CompositeNode implements BPELActivity {
 		
 		public void setActivity(BPELActivity activity) {
 			this.activity = activity;
-		}
-    	
-    }
-    
-    private class OnMessageEventFilter implements EventFilter {
-    	
-    	private String partnerLink;
-    	private String portType;
-    	private String operation;
-    	
-    	public OnMessageEventFilter(String partnerLink, String portType, String operation) {
-    		this.partnerLink = partnerLink;
-    		this.portType = portType;
-    		this.operation = operation;
-    	}
-
-		public boolean acceptsEvent(String type, Object event) {
-			if ("message".equals(type)) {
-				String[] message = (String[]) event;
-				return partnerLink.equals(message[0]) && portType.equals(message[1]) && operation.equals(message[2]);
-			}
-			return false;
 		}
     	
     }

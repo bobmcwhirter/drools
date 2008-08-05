@@ -1,16 +1,16 @@
 package org.drools.bpel.instance;
 
 import org.drools.bpel.core.BPELFaultHandler;
+import org.drools.bpel.core.BPELScope;
+import org.drools.bpel.core.BPELScope.BPELFaultHandlerScope;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionHandlerInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
-import org.drools.workflow.instance.node.CompositeNodeInstance;
+import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 
 public class BPELFaultHandlerInstance implements ExceptionHandlerInstance {
 
@@ -42,10 +42,15 @@ public class BPELFaultHandlerInstance implements ExceptionHandlerInstance {
             throw new IllegalArgumentException(
                 "Cannot handle exception: " + exception);
         }
-        NodeInstance nodeInstance = nodeInstanceContainer.getNodeInstance(faultHandler.getActivity());
+        CompositeContextNodeInstance nodeInstance = (CompositeContextNodeInstance)
+        	nodeInstanceContainer.getNodeInstance((BPELFaultHandlerScope)
+    			faultHandler.getActivity().getNodeContainer());
+        VariableScopeInstance variableScopeInstance = ((VariableScopeInstance) nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELScope.INTERNAL_FAULT_NAME_VARIABLE));
+    	variableScopeInstance.setVariable(BPELScope.INTERNAL_FAULT_NAME_VARIABLE, exception);
+    	variableScopeInstance.setVariable(BPELScope.INTERNAL_FAULT_DATA_VARIABLE, param);
         String faultVariable = faultHandler.getFaultVariable();
         if (faultVariable != null) {
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+            variableScopeInstance = (VariableScopeInstance)
                 ((NodeInstanceImpl) nodeInstance).resolveContextInstance(VariableScope.VARIABLE_SCOPE, faultHandler.getFaultVariable());
             if (variableScopeInstance != null) {
                 variableScopeInstance.setVariable(faultVariable, (String) param);
@@ -56,11 +61,6 @@ public class BPELFaultHandlerInstance implements ExceptionHandlerInstance {
             }
         }
         nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
-        if (nodeInstanceContainer instanceof BPELProcessInstance) {
-        	((BPELProcessInstance) nodeInstanceContainer).setState(ProcessInstance.STATE_ABORTED);
-        } else {
-        	((CompositeNodeInstance) nodeInstanceContainer).triggerCompleted(Node.CONNECTION_DEFAULT_TYPE);
-        }
     }
 
 }

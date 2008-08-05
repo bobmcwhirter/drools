@@ -47,19 +47,19 @@ public class BPELRepeatUntil extends CompositeNode implements BPELActivity {
             split, Node.CONNECTION_DEFAULT_TYPE,
             empty, Node.CONNECTION_DEFAULT_TYPE);
         ConstraintImpl constraint = new ConstraintImpl();
-        constraint.setConstraint("true");
+        constraint.setConstraint(condition);
         constraint.setType("code");
-        constraint.setDialect("mvel");
-        constraint.setPriority(Integer.MAX_VALUE - 1);
+        constraint.setDialect("XPath2.0");
+        constraint.setPriority(1);
         split.setConstraint(connection, constraint);
         connection = new ConnectionImpl(
             split, Node.CONNECTION_DEFAULT_TYPE,
             join, Node.CONNECTION_DEFAULT_TYPE);
         constraint = new ConstraintImpl();
-        constraint.setConstraint(condition);
+        constraint.setConstraint("true");
         constraint.setType("code");
-        constraint.setDialect("XPath2.0");
-        constraint.setPriority(getNodes().length - 2);
+        constraint.setDialect("mvel");
+        constraint.setPriority(2);
         split.setConstraint(connection, constraint);
     }
     

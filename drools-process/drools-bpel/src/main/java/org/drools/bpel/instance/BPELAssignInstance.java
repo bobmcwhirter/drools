@@ -11,8 +11,8 @@ import org.drools.bpel.core.BPELAssign;
 import org.drools.bpel.core.BPELAssign.Copy;
 import org.drools.bpel.core.BPELAssign.Expression;
 import org.drools.bpel.core.BPELAssign.From;
-import org.drools.bpel.core.BPELAssign.LiteralValue;
-import org.drools.bpel.core.BPELAssign.VariablePart;
+import org.drools.bpel.core.BPELAssign.Literal;
+import org.drools.bpel.core.BPELAssign.VariableRef;
 import org.drools.bpel.xpath.XMLDataType;
 import org.drools.bpel.xpath.XPathReturnValueEvaluator;
 import org.drools.process.core.context.variable.VariableScope;
@@ -45,10 +45,18 @@ public class BPELAssignInstance extends NodeInstanceImpl {
         	BPELAssign assign = getBPELAssign();
         	for (Copy copy: assign.getCopies()) {
         		From fromPart = copy.getFrom();
-        		VariablePart toPart = (VariablePart) copy.getTo();
+        		VariableRef toPart = (VariableRef) copy.getTo();
         		Object fromValue = getValue(fromPart);
         		if (toPart.getPart() == null) {
-        			setVariableValue(toPart.getVariable(), fromValue);
+        			if (fromValue instanceof String) {
+        				setVariableValue(toPart.getVariable(), (String) fromValue);
+        			} else if (fromValue instanceof Element) {
+        				String value = DOMUtils.domToString(((Element) fromValue).getFirstChild());
+        				setVariableValue(toPart.getVariable(), value);
+        			} else {
+        				throw new IllegalArgumentException(
+    						"Cannot set variable of this type " + fromValue);
+        			}
         		} else {
             		String toValue = getVariableValue(toPart.getVariable());
 	        		if (toValue == null) {
@@ -63,8 +71,8 @@ public class BPELAssignInstance extends NodeInstanceImpl {
     }
     
     private Object getValue(From from) {
-    	if (from instanceof VariablePart) {
-    		VariablePart fromPart = (VariablePart) from;
+    	if (from instanceof VariableRef) {
+    		VariableRef fromPart = (VariableRef) from;
     		String fromValue = getVariableValue(fromPart.getVariable());
     		if (fromPart.getPart() == null) {
     			return fromValue;
@@ -76,8 +84,20 @@ public class BPELAssignInstance extends NodeInstanceImpl {
             } catch (Throwable t) {
             	throw new IllegalArgumentException("Could not get value", t);
             }
-    	} else if (from instanceof LiteralValue) {
-    		return ((LiteralValue) from).getValue();
+    	} else if (from instanceof Literal) {
+    		String literal = ((Literal) from).getValue();
+    		if (literal.startsWith("<?xml")) {
+    			int index = literal.indexOf("?>");
+    			literal = "<message>" + literal.substring(index + 3) + "</message>";
+                try {
+    	        	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    	    		Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(literal.getBytes()));
+    	        	return document.getDocumentElement();
+                } catch (Throwable t) {
+                	throw new IllegalArgumentException("Could not get value", t);
+                }
+    		}
+    		return literal;
     	} else if (from instanceof Expression) {
     		String expression = ((Expression) from).getExpression();
     		try {
@@ -111,7 +131,7 @@ public class BPELAssignInstance extends NodeInstanceImpl {
         	Element to = DOMUtils.findChildByName((Element) toDocument.getDocumentElement(), new QName(toPart));
         	if (fromValue instanceof Element) {
         		Element from = (Element) fromValue;
-	        	Element replacement = toDocument.createElementNS(from.getNamespaceURI(), from.getNodeName());
+	        	Element replacement = toDocument.createElementNS(null, toPart);
 	            NodeList nl = from.getChildNodes();
 	            for (int i = 0; i < nl.getLength(); ++i)
 	                replacement.appendChild(toDocument.importNode(nl.item(i), true));
@@ -168,7 +188,7 @@ public class BPELAssignInstance extends NodeInstanceImpl {
     	return null;
     }
     
-    private void setVariableValue(String variable, Object value) {
+    private void setVariableValue(String variable, String value) {
     	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
     		resolveContextInstance(VariableScope.VARIABLE_SCOPE, variable);
     	if (variableScopeInstance != null) {

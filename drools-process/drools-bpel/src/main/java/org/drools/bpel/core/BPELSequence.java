@@ -18,9 +18,9 @@ public class BPELSequence extends CompositeNode implements BPELActivity {
     private TargetLink[] targetLinks;
     
     public void setActivities(List<BPELActivity> activities) {
-        if (activities == null || activities.size() < 2) {
+        if (activities == null || activities.size() < 1) {
             throw new IllegalArgumentException(
-                "A BPEL sequence must contain at least two sub activities!");
+                "A BPEL sequence must contain at least one activity!");
         }
         BPELActivity previous = activities.get(0);
         addNode(previous);

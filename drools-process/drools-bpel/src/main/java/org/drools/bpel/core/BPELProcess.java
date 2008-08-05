@@ -10,6 +10,8 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.Join;
+import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
 
 
@@ -73,13 +75,32 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
         ExceptionScope exceptionScope = new ExceptionScope();
         addContext(exceptionScope);
         setDefaultContext(exceptionScope);
-        int i = 3;
+        int i = 4;
+        Split split = new Split();
+        split.setId(i++);
+        addNode(split);
+        Join join = new Join();
+        join.setId(i++);
+        join.setType(Join.TYPE_XOR);
+        addNode(join);
+        EndNode endNode = new EndNode();
+        endNode.setId(i++);
+        addNode(endNode);
+        new ConnectionImpl(
+    		join, Node.CONNECTION_DEFAULT_TYPE,
+    		endNode, Node.CONNECTION_DEFAULT_TYPE);
         for (BPELFaultHandler faultHandler: faultHandlers) {
-        	faultHandler.getActivity().setId(i++);
-            addNode(faultHandler.getActivity());
+        	Node activity = faultHandler.getActivity(); 
+        	activity.setId(i++);
+            addNode(activity);
             exceptionScope.setExceptionHandler(faultHandler.getFaultName(), faultHandler);
+            new ConnectionImpl(
+        		split, Node.CONNECTION_DEFAULT_TYPE,
+        		activity, Node.CONNECTION_DEFAULT_TYPE);
+            new ConnectionImpl(
+        		activity, Node.CONNECTION_DEFAULT_TYPE,
+        		join, Node.CONNECTION_DEFAULT_TYPE);
         }
-        // TODO: process should end once fault handler has been executed
     }
 
 	public NamespaceContext getNamespaceContext() {

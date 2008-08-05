@@ -90,7 +90,8 @@ public class BPELProcessInstance extends WorkflowProcessInstanceImpl {
 
     @Override
     protected void internalStart() {
-        // do nothing, BPEL Processes are started by receiving a message
+    	NodeInstance nodeInstance = getNodeInstance(getBPELProcess().getActivity());
+        nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
     }
 
 }

@@ -1,7 +1,5 @@
 package org.drools.bpel.instance;
 
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.node.CompositeNodeInstance;
 

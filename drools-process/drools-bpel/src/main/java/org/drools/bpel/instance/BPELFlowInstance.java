@@ -48,13 +48,6 @@ public class BPELFlowInstance extends CompositeNodeInstance {
         }
     }
     
-	public void triggerEvent(String type, Object event) {
-		super.triggerEvent(type, event);
-		CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE);
-		NodeInstance nodeInstance = getNodeInstance(nodeAndType.getNode());
-        nodeInstance.trigger(null, nodeAndType.getType());
-	}
-
     public void triggerCompleted(String outType) {
         super.triggerCompleted(outType);
         BPELLinkManager.activateTargetLinks(this);

@@ -72,7 +72,7 @@ public class BPELTestUtil {
                 + workItem.getParameter("PartnerLink") + " "
                 + workItem.getParameter("PortType") + " "
                 + (workItem.getParameter("FaultName") == null ? ""
-                		: "fault=" + workItem.getParameter("FaultName"))
+                		: "fault=" + workItem.getParameter("FaultName")) + " "
                 + workItem.getParameter("Operation") + ", message = "
                 + workItem.getParameter("Message"));
         }

@@ -1,12 +1,18 @@
 package org.drools.bpel.core;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.process.core.context.exception.ExceptionScope;
+import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
+import org.drools.workflow.core.node.Join;
+import org.drools.workflow.core.node.Split;
 
 /**
  * 
@@ -14,16 +20,23 @@ import org.drools.workflow.core.node.CompositeNode;
  */
 public class BPELScope extends CompositeContextNode implements BPELActivity, BPELFaultHandlerContainer {
 
+	public static final String INTERNAL_FAULT_DATA_VARIABLE = "DroolsInternalFaultDataVariable";
+	public static final String INTERNAL_FAULT_NAME_VARIABLE = "DroolsInternalFaultNameVariable";
     private static final long serialVersionUID = 400L;
 
 	private SourceLink[] sourceLinks;
     private TargetLink[] targetLinks;
+    private Join join;
 
     public BPELScope() {
 	    VariableScope variableScope = new VariableScope();
 	    addContext(variableScope);
 	    setDefaultContext(variableScope);
-	}
+	    join = new Join();
+        join.setType(Join.TYPE_XOR);
+        join.setMetaData("hidden", true);
+        addNode(join);
+        linkOutgoingConnections(join.getId(), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);	}
 	
 	public VariableScope getVariableScope() {
 	    return (VariableScope) getDefaultContext(VariableScope.VARIABLE_SCOPE);
@@ -35,19 +48,33 @@ public class BPELScope extends CompositeContextNode implements BPELActivity, BPE
             Node.CONNECTION_DEFAULT_TYPE,
             new CompositeNode.NodeAndType(
                 activity, Node.CONNECTION_DEFAULT_TYPE));
-        linkOutgoingConnections(
-            new CompositeNode.NodeAndType(
-                activity, Node.CONNECTION_DEFAULT_TYPE),
-            Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(
+    		activity, Node.CONNECTION_DEFAULT_TYPE,
+    		join, Node.CONNECTION_DEFAULT_TYPE);
     }
 
     public void setFaultHandlers(List<BPELFaultHandler> faultHandlers) {
         ExceptionScope exceptionScope = new ExceptionScope();
         addContext(exceptionScope);
         setDefaultContext(exceptionScope);
+        Split split = new Split();
+        addNode(split);
         for (BPELFaultHandler faultHandler: faultHandlers) {
-            addNode(faultHandler.getActivity());
+        	BPELFaultHandlerScope faultHandlerScope = new BPELFaultHandlerScope();
+            addNode(faultHandlerScope);
+        	Node activity = faultHandler.getActivity();
+        	faultHandlerScope.addNode(activity);
+        	faultHandlerScope.linkIncomingConnections(
+    			Node.CONNECTION_DEFAULT_TYPE, activity.getId(), Node.CONNECTION_DEFAULT_TYPE);
+        	faultHandlerScope.linkOutgoingConnections(
+    			activity.getId(), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
             exceptionScope.setExceptionHandler(faultHandler.getFaultName(), faultHandler);
+            new ConnectionImpl(
+        		split, Node.CONNECTION_DEFAULT_TYPE,
+        		faultHandlerScope, Node.CONNECTION_DEFAULT_TYPE);
+            new ConnectionImpl(
+        		faultHandlerScope, Node.CONNECTION_DEFAULT_TYPE,
+        		join, Node.CONNECTION_DEFAULT_TYPE);
         }
     }
     
@@ -65,6 +92,27 @@ public class BPELScope extends CompositeContextNode implements BPELActivity, BPE
 
     public void setTargetLinks(TargetLink[] targetLinks) {
         this.targetLinks = targetLinks;
+    }
+    
+    public static class BPELFaultHandlerScope extends CompositeContextNode {
+
+		private static final long serialVersionUID = 4L;
+		
+		public BPELFaultHandlerScope() {
+			VariableScope variableScope = new VariableScope();
+			List<Variable> variables = new ArrayList<Variable>();
+			Variable variable = new Variable();
+			variable.setName(INTERNAL_FAULT_DATA_VARIABLE);
+			variables.add(variable);
+			variable = new Variable();
+			variable.setName(INTERNAL_FAULT_NAME_VARIABLE);
+			variable.setType(new StringDataType());
+			variables.add(variable);
+			variableScope.setVariables(variables);
+		    addContext(variableScope);
+		    setDefaultContext(variableScope);
+		}
+		
     }
 
 }

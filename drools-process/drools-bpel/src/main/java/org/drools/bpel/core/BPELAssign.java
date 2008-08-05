@@ -72,6 +72,7 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
     
     public class Copy {
 
+    	private boolean keepSrcElementName;
     	private From from;
     	private To to;
     	
@@ -90,6 +91,14 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
 		public void setTo(To to) {
 			this.to = to;
 		}
+
+		public boolean isKeepSrcElementName() {
+			return keepSrcElementName;
+		}
+
+		public void setKeepSrcElementName(boolean keepSrcElementName) {
+			this.keepSrcElementName = keepSrcElementName;
+		}
 			
     }
     
@@ -97,16 +106,23 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
     }
     
     public interface To {
+    	
+    	String getVariable();
+    	
     }
     
-    public class VariablePart implements From, To {
+    public class VariableRef implements From, To {
 
     	private String variable;
     	private String part;
+    	private String headerPart;
+    	private String location;
     	
-    	public VariablePart(String variable, String part) {
+    	public VariableRef(String variable, String part, String headerPart, String location) {
     		this.variable = variable;
     		this.part = part;
+    		this.headerPart = headerPart;
+    		this.location = location;
     	}
     	
     	public String getVariable() {
@@ -117,13 +133,21 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
     		return part;
     	}
     	
+    	public String getHeaderPart() {
+    		return headerPart;
+    	}
+    	
+    	public String getLocation() {
+    		return location;
+    	}
+    	
     }
     
-    public class LiteralValue implements From {
+    public class Literal implements From {
     	
     	private String value;
-    	
-    	public LiteralValue(String value) {
+
+    	public Literal(String value) {
     		this.value = value;
     	}
     	
@@ -133,7 +157,7 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
     	
     }
 
-    public class Expression implements From {
+    public class Expression implements From, To {
     	
     	private String expression;
     	
@@ -144,6 +168,66 @@ public class BPELAssign extends NodeImpl implements BPELActivity {
     	public String getExpression() {
     		return expression;
     	}
+
+		public String getVariable() {
+			return null;
+		}
+    	
+    }
+    
+    public class DirectRef implements To {
+
+    	private String variable;
+    	
+    	public DirectRef(String variable) {
+    		this.variable = variable;
+    	}
+    	
+		public String getVariable() {
+			return variable;
+		}
+    	
+    }
+    
+    public class PropertyRef implements To {
+    	
+    	private String variable;
+    	
+    	public PropertyRef(String variable) {
+    		this.variable = variable;
+    	}
+    	
+		public String getVariable() {
+			return variable;
+		}
+    	
+    }
+    
+    public class LValueExpression implements To {
+    	
+    	private String variable;
+    	
+    	public LValueExpression(String variable) {
+    		this.variable = variable;
+    	}
+    	
+		public String getVariable() {
+			return variable;
+		}
+    	
+    }
+    
+    public class PartnerLinkRef implements From, To {
+    	
+    	private String variable;
+    	
+    	public PartnerLinkRef(String variable) {
+    		this.variable = variable;
+    	}
+    	
+		public String getVariable() {
+			return variable;
+		}
     	
     }
 

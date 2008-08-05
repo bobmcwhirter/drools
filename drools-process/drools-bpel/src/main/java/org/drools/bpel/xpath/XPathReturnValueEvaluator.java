@@ -59,7 +59,28 @@ public class XPathReturnValueEvaluator implements ReturnValueEvaluator {
         });
         xpf.setXPathVariableResolver(new XPathVariableResolver() {
         	public Object resolveVariable(QName name) {
-        		return processContext.getVariable(name.getLocalPart());
+        		String varName;
+                String partName;
+                int dotloc = name.getLocalPart().indexOf('.');
+                if (dotloc == -1) {
+                    varName = name.getLocalPart();
+                    partName = null;
+                } else {
+                    varName = name.getLocalPart().substring(0, dotloc);
+                    partName = name.getLocalPart().substring(dotloc + 1);
+                }
+                String value = (String) processContext.getVariable(varName);
+                if (partName == null) {
+                	return value;
+                }
+                try {
+	                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		    		Document fromDocument = factory.newDocumentBuilder().parse(new ByteArrayInputStream(value.getBytes()));
+		        	return DOMUtils.findChildByName((Element) fromDocument.getDocumentElement(), new QName(partName));
+                } catch (Throwable t) {
+                	throw new IllegalArgumentException(
+            			"Could not get part of variable", t);
+                }
 			}
         });
         XPathEvaluator xpe = (XPathEvaluator) xpf.newXPath();

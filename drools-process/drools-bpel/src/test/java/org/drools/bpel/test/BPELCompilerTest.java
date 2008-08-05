@@ -96,7 +96,10 @@ public class BPELCompilerTest extends TestCase {
         workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "shipping", "{http://manufacturing.org/wsdl/purchase}shippingPT", "requestShipping");
         BPELTestUtil.replyWebServiceInvocationFault(workingMemory, workItem, "{http://manufacturing.org/wsdl/purchase}cannotCompleteOrder", "SHIPPING FAULT");
 
-        assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
+        workItem = BPELTestUtil.findWebServiceInvocation(workingMemory, "purchasing", "{http://manufacturing.org/wsdl/purchase}purchaseOrderPT", "sendPurchaseOrder");
+        BPELTestUtil.replyWebServiceInvocation(workingMemory, workItem, null);
+
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 	}
 	
 }

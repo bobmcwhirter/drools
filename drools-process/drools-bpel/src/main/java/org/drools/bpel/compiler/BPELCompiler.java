@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.ode.bpel.compiler.bom.Activity;
 import org.apache.ode.bpel.compiler.bom.AssignActivity;
 import org.apache.ode.bpel.compiler.bom.BpelObjectFactory;
@@ -25,6 +27,7 @@ import org.apache.ode.bpel.compiler.bom.Process;
 import org.apache.ode.bpel.compiler.bom.ReceiveActivity;
 import org.apache.ode.bpel.compiler.bom.RepeatUntilActivity;
 import org.apache.ode.bpel.compiler.bom.ReplyActivity;
+import org.apache.ode.bpel.compiler.bom.RethrowActivity;
 import org.apache.ode.bpel.compiler.bom.ScopeActivity;
 import org.apache.ode.bpel.compiler.bom.SequenceActivity;
 import org.apache.ode.bpel.compiler.bom.SwitchActivity;
@@ -49,6 +52,7 @@ import org.drools.bpel.core.BPELProcess;
 import org.drools.bpel.core.BPELReceive;
 import org.drools.bpel.core.BPELRepeatUntil;
 import org.drools.bpel.core.BPELReply;
+import org.drools.bpel.core.BPELRethrow;
 import org.drools.bpel.core.BPELScope;
 import org.drools.bpel.core.BPELSequence;
 import org.drools.bpel.core.BPELThrow;
@@ -66,6 +70,8 @@ import org.drools.compiler.ProcessBuilder;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 public class BPELCompiler {
@@ -122,7 +128,8 @@ public class BPELCompiler {
 	        List<BPELFaultHandler> faultHandlers = new ArrayList<BPELFaultHandler>();
 	        for (Catch catcher: process.getFaultHandler().getCatches()) {
 	            BPELFaultHandler faultHandler = new BPELFaultHandler();
-	            faultHandler.setFaultName(catcher.getFaultName().toString());
+	            faultHandler.setFaultName(
+            		catcher.getFaultName() == null ? null : catcher.getFaultName().toString());
 	            faultHandler.setFaultVariable(catcher.getFaultVariable());
 	            faultHandler.setActivity(compileActivity(catcher.getActivity()));
 	            faultHandlers.add(faultHandler);
@@ -198,25 +205,54 @@ public class BPELCompiler {
 				From from = copy.getFrom();
 				To to = copy.getTo();
 				if (from.isVariableVal()) {
-					BPELAssign.VariablePart bpelFrom = assign.new VariablePart(
+					BPELAssign.VariableRef bpelFrom = assign.new VariableRef(
 						from.getAsVariableVal().getVariable(), 
-						from.getAsVariableVal().getPart());
+						from.getAsVariableVal().getPart(),
+						from.getAsVariableVal().getHeader(),
+						from.getAsVariableVal().getLocation() == null ? null : from.getAsVariableVal().getLocation().toString());
 					bpelCopy.setFrom(bpelFrom);
 				} else if (from.isLiteralVal()) {
-					BPELAssign.LiteralValue bpelFrom = assign.new LiteralValue(
-						DOMUtils.domToString(from.getAsLiteralVal().getLiteral().getFirstChild()));
+					Element literal = from.getAsLiteralVal().getLiteral();
+					org.w3c.dom.Node child = literal.getFirstChild();
+					short type;
+					if (child.getNodeType() == org.w3c.dom.Node.TEXT_NODE && "".equals(child.getTextContent().trim())) {
+						child = child.getNextSibling();
+					}
+					BPELAssign.Literal bpelFrom = assign.new Literal(DOMUtils.domToString(child));
 					bpelCopy.setFrom(bpelFrom);
 				} else {
 					BPELAssign.Expression bpelFrom = assign.new Expression(from.getAsExpression().toString());
 					bpelCopy.setFrom(bpelFrom);
 				}
 				if (to.isVariableVal()) {
-					BPELAssign.VariablePart bpelTo = assign.new VariablePart(
+					BPELAssign.VariableRef bpelTo = assign.new VariableRef(
 						to.getAsVariableVal().getVariable(), 
-						to.getAsVariableVal().getPart());
+						to.getAsVariableVal().getPart(),
+						to.getAsVariableVal().getHeader(),
+						to.getAsVariableVal().getLocation() == null ? null : to.getAsVariableVal().getLocation().toString());
 					bpelCopy.setTo(bpelTo);
 				} else {
-					throw new UnsupportedOperationException("Assign to does not yet support non-variable values");
+					String expression = to.getAsExpression().toString();
+					try {
+						DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+						Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(expression.getBytes()));
+						expression = DOMUtils.domToString(document.getFirstChild().getFirstChild());
+						String varName;
+		                String partName;
+		                int dotloc = expression.indexOf('.');
+		                if (dotloc == -1) {
+		                    varName = expression;
+		                    partName = null;
+		                } else {
+		                    varName = expression.substring(1, dotloc);
+		                    partName = expression.substring(dotloc + 1);
+		                }
+						BPELAssign.VariableRef bpelTo = assign.new VariableRef(varName, partName, null, null);
+						bpelCopy.setTo(bpelTo);
+					} catch (Throwable t) {
+						throw new IllegalArgumentException(
+							"Could not parse expression " + expression, t);
+					}
 				}
 				assign.addCopy(bpelCopy);
 			}
@@ -229,6 +265,8 @@ public class BPELCompiler {
 			bpelThrow.setFaultName(throwActivity.getFaultName().toString());
 			bpelThrow.setFaultVariable(throwActivity.getFaultVariable());
 			result = bpelThrow;
+		} else if (activity instanceof RethrowActivity) {
+			result = new BPELRethrow();
 		} else if (activity instanceof PickActivity) {
 			PickActivity pickActivity = (PickActivity) activity;
 			BPELPick pick = new BPELPick();
@@ -245,11 +283,28 @@ public class BPELCompiler {
 			for (OnAlarm onAlarm: pickActivity.getOnAlarms()) {
 				BPELPick.OnAlarm bpelOnAlarm = pick.new OnAlarm();
 				if (onAlarm.getFor() != null) {
-					bpelOnAlarm.setForExpression(onAlarm.getFor().toString());
+					try {
+						DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+						Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(onAlarm.getFor().toString().getBytes()));
+						String expression = DOMUtils.domToString(document.getFirstChild().getFirstChild());
+						bpelOnAlarm.setForExpression(expression);
+					} catch (Throwable t) {
+						throw new IllegalArgumentException(
+							"Could not parse for expression", t);
+					}
 				}
 				if (onAlarm.getUntil() != null) {
-					bpelOnAlarm.setUntilExpression(onAlarm.getUntil().toString());
+					try {
+						DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+						Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(onAlarm.getUntil().toString().getBytes()));
+						String expression = DOMUtils.domToString(document.getFirstChild().getFirstChild());
+						bpelOnAlarm.setUntilExpression(expression);
+					} catch (Throwable t) {
+						throw new IllegalArgumentException(
+							"Could not parse for expression", t);
+					}
 				}
+				bpelOnAlarm.setActivity(compileActivity(onAlarm.getActivity()));
 				pick.addOnAlarm(bpelOnAlarm);
 			}
 			result = pick;
@@ -266,14 +321,17 @@ public class BPELCompiler {
 			}
 			variableScope.setVariables(variables);
 			List<BPELFaultHandler> faultHandlers = new ArrayList<BPELFaultHandler>();
-	        for (Catch catcher: scopeActivity.getScope().getFaultHandler().getCatches()) {
-	            BPELFaultHandler faultHandler = new BPELFaultHandler();
-	            faultHandler.setFaultName(catcher.getFaultName().toString());
-	            faultHandler.setFaultVariable(catcher.getFaultVariable());
-	            faultHandler.setActivity(compileActivity(catcher.getActivity()));
-	            faultHandlers.add(faultHandler);
-	        }
-	        scope.setFaultHandlers(faultHandlers);
+			if (scopeActivity.getScope().getFaultHandler() != null) {
+		        for (Catch catcher: scopeActivity.getScope().getFaultHandler().getCatches()) {
+		            BPELFaultHandler faultHandler = new BPELFaultHandler();
+		            faultHandler.setFaultName(
+	            		catcher.getFaultName() == null ? null : catcher.getFaultName().toString());
+		            faultHandler.setFaultVariable(catcher.getFaultVariable());
+		            faultHandler.setActivity(compileActivity(catcher.getActivity()));
+		            faultHandlers.add(faultHandler);
+		        }
+		        scope.setFaultHandlers(faultHandlers);
+			}
 			scope.setActivity(compileActivity(scopeActivity.getChildActivity()));
 			result = scope;
 		} else if (activity instanceof SwitchActivity) {
@@ -297,10 +355,26 @@ public class BPELCompiler {
 			WaitActivity waitActivity = (WaitActivity) activity;
 			BPELWait wait = new BPELWait();
 			if (waitActivity.getFor() != null) {
-				wait.setForExpression(waitActivity.getFor().toString());
+				try {
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(waitActivity.getFor().toString().getBytes()));
+					String expression = DOMUtils.domToString(document.getFirstChild().getFirstChild());
+					wait.setForExpression(expression);
+				} catch (Throwable t) {
+					throw new IllegalArgumentException(
+						"Could not parse for expression", t);
+				}
 			}
 			if (waitActivity.getUntil() != null) {
-				wait.setUntilExpression(waitActivity.getUntil().toString());
+				try {
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(waitActivity.getUntil().toString().getBytes()));
+					String expression = DOMUtils.domToString(document.getFirstChild().getFirstChild());
+					wait.setUntilExpression(expression);
+				} catch (Throwable t) {
+					throw new IllegalArgumentException(
+						"Could not parse for expression", t);
+				}
 			}
 			result = wait;
 		} else if (activity instanceof WhileActivity) {
@@ -348,9 +422,7 @@ public class BPELCompiler {
 	}
 	
 	private DataType getDataType(String typeName) {
-		XMLDataType result = new XMLDataType();
-		result.setTypeDefinition(typeName);
-		return result;
+		return new XMLDataType(typeName);
 	}
 
 }

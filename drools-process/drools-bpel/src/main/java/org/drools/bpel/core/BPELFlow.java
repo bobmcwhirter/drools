@@ -43,9 +43,9 @@ public class BPELFlow extends CompositeNode implements BPELActivity {
     }
     
     public void setActivities(List<BPELActivity> activities) {
-        if (activities == null || activities.size() < 2) {
+        if (activities == null || activities.size() < 1) {
             throw new IllegalArgumentException(
-                "A BPEL flow must contain at least two sub activities!");
+                "A BPEL flow must contain at least one activity!");
         }
         for (Iterator<BPELActivity> iterator = activities.iterator(); iterator.hasNext(); ) {
             addActivity(iterator.next());
