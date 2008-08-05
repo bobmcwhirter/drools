@@ -35,6 +35,7 @@ org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine, true
 org.drools.guvnor.client.modeldriven.brl.ActionCallMethod, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionCallMethod;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction, true
+[Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldList, false
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldList;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldValue, true
@@ -52,6 +53,7 @@ org.drools.guvnor.client.modeldriven.brl.ActionUpdateField, true
 org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern, true
 [Lorg.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;, true
 org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint, true
+[Lorg.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;, true
 org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;, true
 org.drools.guvnor.client.modeldriven.brl.DSLSentence, true
@@ -66,6 +68,7 @@ org.drools.guvnor.client.modeldriven.brl.RuleAttribute, true
 [Lorg.drools.guvnor.client.modeldriven.brl.RuleAttribute;, true
 org.drools.guvnor.client.modeldriven.brl.RuleModel, true
 org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint, true
+[Lorg.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;, true
 org.drools.guvnor.client.modeldriven.dt.ActionCol, true
 org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol, true
 org.drools.guvnor.client.modeldriven.dt.ActionRetractFactCol, true
