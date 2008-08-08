@@ -35,6 +35,7 @@ org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine, true
 org.drools.guvnor.client.modeldriven.brl.ActionCallMethod, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionCallMethod;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction, true
+[Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldList, false
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldList;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldValue, true
