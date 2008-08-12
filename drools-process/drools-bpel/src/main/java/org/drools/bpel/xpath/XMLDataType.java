@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.StringDataType;
 
-public class XMLDataType implements DataType {
+public class XMLDataType extends StringDataType {
 
 	private String typeDefinition;
 	
@@ -14,10 +14,6 @@ public class XMLDataType implements DataType {
 		this.typeDefinition = typeDefinition;
 	}
 	
-	public boolean verifyDataType(Object value) {
-		return value instanceof String;
-	}
-
 	public String getTypeDefinition() {
 		return typeDefinition;
 	}
