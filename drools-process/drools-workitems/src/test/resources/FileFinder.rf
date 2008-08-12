@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-4.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         type="RuleFlow" name="ruleflow" id="com.sample.ruleflow" package-name="com.sample" >
+
+  <header>
+    <variables>
+      <variable name="files" >
+        <type name="org.drools.process.core.datatype.impl.type.UndefinedDataType" />
+      </variable>
+    </variables>
+  </header>
+
+  <nodes>
+    <workItem id="4" name="Finder" x="128" y="16" width="80" height="40" >
+      <work name="Finder" >
+        <parameter name="Path" type="org.drools.process.core.datatype.impl.type.StringDataType" >/NotBackedUp/kverlaen/data</parameter>
+        <parameter name="Regex" type="org.drools.process.core.datatype.impl.type.StringDataType" >.*pdf</parameter>
+      </work>
+      <mapping type="out" from="Files" to="files" />
+    </workItem>
+    <workItem id="8" name="Exec" x="559" y="16" width="80" height="40" >
+      <work name="Exec" >
+        <parameter name="Command" type="org.drools.process.core.datatype.impl.type.StringDataType" >cp /NotBackedUp/kverlaen/data/pdfs.tar /NotBackedUp/kverlaen/data/newpdfs.tar</parameter>
+      </work>
+    </workItem>
+    <workItem id="6" name="Archive" x="462" y="16" width="80" height="40" >
+      <work name="Archive" >
+        <parameter name="Files" type="org.drools.process.core.datatype.impl.type.ListDataType" />
+        <parameter name="Archive" type="org.drools.process.core.datatype.impl.type.StringDataType" >/NotBackedUp/kverlaen/data/pdfs.tar</parameter>
+      </work>
+      <mapping type="in" from="files" to="Files" />
+    </workItem>
+    <start id="1" name="Start" x="16" y="16" width="80" height="40" />
+    <end id="3" name="End" x="671" y="77" width="80" height="40" />
+    <workItem id="7" name="Email" x="560" y="77" width="80" height="40" >
+      <work name="Email" >
+        <parameter name="To" type="org.drools.process.core.datatype.impl.type.StringDataType" >mymail@mail.com</parameter>
+        <parameter name="Text" type="org.drools.process.core.datatype.impl.type.StringDataType" >Archive has been created!</parameter>
+        <parameter name="From" type="org.drools.process.core.datatype.impl.type.StringDataType" >admin@example.org</parameter>
+        <parameter name="Subject" type="org.drools.process.core.datatype.impl.type.StringDataType" >Archive</parameter>
+      </work>
+    </workItem>
+    <forEach id="5" name="ForEach" x="238" y="16" width="200" height="150" variableName="file" collectionExpression="files" >
+      <nodes>
+    <actionNode id="1" name="Action" x="67" y="33" >
+        <action type="expression" dialect="java" >System.out.println("Found file " + ((java.io.File) context.getVariable("file")).getName());</action>
+    </actionNode>
+      </nodes>
+      <connections>
+      </connections>
+      <in-ports>
+        <in-port type="DROOLS_DEFAULT" nodeId="1" nodeInType="DROOLS_DEFAULT" />
+      </in-ports>
+      <out-ports>
+        <out-port type="DROOLS_DEFAULT" nodeId="1" nodeOutType="DROOLS_DEFAULT" />
+      </out-ports>
+    </forEach>
+  </nodes>
+
+  <connections>
+    <connection from="1" to="4" />
+    <connection from="6" to="8" />
+    <connection from="5" to="6" />
+    <connection from="7" to="3" />
+    <connection from="8" to="7" />
+    <connection from="4" to="5" />
+  </connections>
+
+</process>
