@@ -1,18 +1,18 @@
 [INFO] [hyperjaxb3:generate {execution: default}]
 [INFO] Removed old generateDirectory 'C:\dev\drools\trunk7\drools-process\drools-process-task\target\generated-sources\xjc'.
-[ERROR] Class [org.example.ws_ht.TQuery] declares an attribute wildcard. This is currently not supported. See issue #46.
+[ERROR] Class [org.drools.task.TQuery] declares an attribute wildcard. This is currently not supported. See issue #46.
         org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
 
-[ERROR] Class [org.example.ws_ht.TExtensibleElements] declares an attribute wildcard. This is currently not supported. See issue #46.
+[ERROR] Class [org.drools.task.TExtensibleElements] declares an attribute wildcard. This is currently not supported. See issue #46.
         org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
 
-[ERROR] Class [org.example.ws_ht.TLiteral] declares an attribute wildcard. This is currently not supported. See issue #46.
+[ERROR] Class [org.drools.task.TLiteral] declares an attribute wildcard. This is currently not supported. See issue #46.
         org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
 
-[ERROR] Class [org.example.ws_ht.TExpression] declares an attribute wildcard. This is currently not supported. See issue #46.
+[ERROR] Class [org.drools.task.TExpression] declares an attribute wildcard. This is currently not supported. See issue #46.
         org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
 
-[ERROR] Class [org.example.ws_ht.TExtensibleMixedContentElements] declares an attribute wildcard. This is currently not supported. See issue #46.
+[ERROR] Class [org.drools.task.TExtensibleMixedContentElements] declares an attribute wildcard. This is currently not supported. See issue #46.
         org.jvnet.hyperjaxb3.ejb.strategy.model.base.DefaultProcessPropertyInfos
 
 [INFO] Succesfully generated output to: C:\dev\drools\trunk7\drools-process\drools-process-task\target\generated-sources\xjc

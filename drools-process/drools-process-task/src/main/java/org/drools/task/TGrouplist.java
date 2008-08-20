@@ -49,7 +49,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{http://www.example.org/WS-HT}group" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}group" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -62,7 +62,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tGrouplist", propOrder = {
     "group"
 })
-@Entity(name = "org.example.ws_ht.TGrouplist")
+@Entity(name = "org.drools.task.TGrouplist")
 @Table(name = "TGROUPLIST")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TGrouplist
@@ -201,14 +201,14 @@ public class TGrouplist
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TGrouplist$GroupItem")
+    @Entity(name = "org.drools.task.TGrouplist$GroupItem")
     @Table(name = "TGROUPLISTGROUPITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class GroupItem
         implements Item<String> , Equals, HashCode
     {
 
-        @XmlElement(name = "group", namespace = "http://www.example.org/WS-HT")
+        @XmlElement(name = "group", namespace = "http://www.drools.org/WS-HT")
         protected String item;
         @XmlAttribute(name = "Hjid")
         protected Long hjid;

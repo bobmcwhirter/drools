@@ -40,7 +40,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tParameter">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleMixedContentElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleMixedContentElements">
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *       &lt;attribute name="type" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
  *     &lt;/extension>
@@ -55,7 +55,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlSeeAlso({
     TPresentationParameter.class
 })
-@Entity(name = "org.example.ws_ht.TParameter")
+@Entity(name = "org.drools.task.TParameter")
 @Table(name = "TPARAMETER")
 public class TParameter
     extends TExtensibleMixedContentElements

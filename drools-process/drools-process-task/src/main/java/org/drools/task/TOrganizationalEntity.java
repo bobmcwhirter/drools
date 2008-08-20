@@ -41,8 +41,8 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;choice>
- *         &lt;element ref="{http://www.example.org/WS-HT}users"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}groups"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}users"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}groups"/>
  *       &lt;/choice>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -56,7 +56,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "users",
     "groups"
 })
-@Entity(name = "org.example.ws_ht.TOrganizationalEntity")
+@Entity(name = "org.drools.task.TOrganizationalEntity")
 @Table(name = "TORGANIZATIONALENTITY")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TOrganizationalEntity

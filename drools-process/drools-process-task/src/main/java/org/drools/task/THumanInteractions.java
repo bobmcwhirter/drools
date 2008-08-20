@@ -40,13 +40,13 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tHumanInteractions">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="extensions" type="{http://www.example.org/WS-HT}tExtensions" minOccurs="0"/>
- *         &lt;element name="import" type="{http://www.example.org/WS-HT}tImport" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}logicalPeopleGroups" minOccurs="0"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}tasks" minOccurs="0"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}notifications" minOccurs="0"/>
+ *         &lt;element name="extensions" type="{http://www.drools.org/WS-HT}tExtensions" minOccurs="0"/>
+ *         &lt;element name="import" type="{http://www.drools.org/WS-HT}tImport" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}logicalPeopleGroups" minOccurs="0"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}tasks" minOccurs="0"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}notifications" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute name="targetNamespace" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *       &lt;attribute name="queryLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
@@ -66,7 +66,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "tasks",
     "notifications"
 })
-@Entity(name = "org.example.ws_ht.THumanInteractions")
+@Entity(name = "org.drools.task.THumanInteractions")
 @Table(name = "THUMANINTERACTIONS")
 public class THumanInteractions
     extends TExtensibleElements

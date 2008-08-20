@@ -29,7 +29,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tDuration-expr">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExpression">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExpression">
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -39,7 +39,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDuration-expr")
-@Entity(name = "org.example.ws_ht.TDurationExpr")
+@Entity(name = "org.drools.task.TDurationExpr")
 @Table(name = "TDURATIONEXPR")
 public class TDurationExpr
     extends TExpression

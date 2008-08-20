@@ -69,7 +69,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "tDocumentation", propOrder = {
     "content"
 })
-@Entity(name = "org.example.ws_ht.TDocumentation")
+@Entity(name = "org.drools.task.TDocumentation")
 @Table(name = "TDOCUMENTATION")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TDocumentation
@@ -242,7 +242,7 @@ public class TDocumentation
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TDocumentation$ContentItem")
+    @Entity(name = "org.drools.task.TDocumentation$ContentItem")
     @Table(name = "TDOCUMENTATIONCONTENTITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class ContentItem
@@ -358,8 +358,8 @@ public class TDocumentation
         @Column(name = "ITEMOBJECT")
         @Lob
         public String getItemObject() {
-            if (JAXBContextUtils.isElement("org.example.ws_ht", this.getItem())) {
-                return JAXBContextUtils.unmarshall("org.example.ws_ht", this.getItem());
+            if (JAXBContextUtils.isElement("org.drools.task", this.getItem())) {
+                return JAXBContextUtils.unmarshall("org.drools.task", this.getItem());
             } else {
                 return null;
             }
@@ -367,7 +367,7 @@ public class TDocumentation
 
         public void setItemObject(String target) {
             if (target!= null) {
-                setItem(JAXBContextUtils.marshall("org.example.ws_ht", target));
+                setItem(JAXBContextUtils.marshall("org.drools.task", target));
             }
         }
 

@@ -37,11 +37,11 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tDelegation">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="from" type="{http://www.example.org/WS-HT}tFrom" minOccurs="0"/>
+ *         &lt;element name="from" type="{http://www.drools.org/WS-HT}tFrom" minOccurs="0"/>
  *       &lt;/sequence>
- *       &lt;attribute name="potentialDelegatees" use="required" type="{http://www.example.org/WS-HT}tPotentialDelegatees" />
+ *       &lt;attribute name="potentialDelegatees" use="required" type="{http://www.drools.org/WS-HT}tPotentialDelegatees" />
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -53,7 +53,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tDelegation", propOrder = {
     "from"
 })
-@Entity(name = "org.example.ws_ht.TDelegation")
+@Entity(name = "org.drools.task.TDelegation")
 @Table(name = "TDELEGATION")
 public class TDelegation
     extends TExtensibleElements

@@ -81,7 +81,7 @@ import org.w3c.dom.Element;
     TDeadlineExpr.class,
     TDurationExpr.class
 })
-@Entity(name = "org.example.ws_ht.TExpression")
+@Entity(name = "org.drools.task.TExpression")
 @Table(name = "TEXPRESSION")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TExpression
@@ -276,7 +276,7 @@ public class TExpression
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TExpression$ContentItem")
+    @Entity(name = "org.drools.task.TExpression$ContentItem")
     @Table(name = "TEXPRESSIONCONTENTITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class ContentItem
@@ -392,8 +392,8 @@ public class TExpression
         @Column(name = "ITEMOBJECT")
         @Lob
         public String getItemObject() {
-            if (JAXBContextUtils.isElement("org.example.ws_ht", this.getItem())) {
-                return JAXBContextUtils.unmarshall("org.example.ws_ht", this.getItem());
+            if (JAXBContextUtils.isElement("org.drools.task", this.getItem())) {
+                return JAXBContextUtils.unmarshall("org.drools.task", this.getItem());
             } else {
                 return null;
             }
@@ -401,7 +401,7 @@ public class TExpression
 
         public void setItemObject(String target) {
             if (target!= null) {
-                setItem(JAXBContextUtils.marshall("org.example.ws_ht", target));
+                setItem(JAXBContextUtils.marshall("org.drools.task", target));
             }
         }
 

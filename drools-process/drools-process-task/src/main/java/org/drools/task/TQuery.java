@@ -75,7 +75,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "tQuery", propOrder = {
     "content"
 })
-@Entity(name = "org.example.ws_ht.TQuery")
+@Entity(name = "org.drools.task.TQuery")
 @Table(name = "TQUERY")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TQuery
@@ -301,7 +301,7 @@ public class TQuery
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TQuery$ContentItem")
+    @Entity(name = "org.drools.task.TQuery$ContentItem")
     @Table(name = "TQUERYCONTENTITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class ContentItem
@@ -417,8 +417,8 @@ public class TQuery
         @Column(name = "ITEMOBJECT")
         @Lob
         public String getItemObject() {
-            if (JAXBContextUtils.isElement("org.example.ws_ht", this.getItem())) {
-                return JAXBContextUtils.unmarshall("org.example.ws_ht", this.getItem());
+            if (JAXBContextUtils.isElement("org.drools.task", this.getItem())) {
+                return JAXBContextUtils.unmarshall("org.drools.task", this.getItem());
             } else {
                 return null;
             }
@@ -426,7 +426,7 @@ public class TQuery
 
         public void setItemObject(String target) {
             if (target!= null) {
-                setItem(JAXBContextUtils.marshall("org.example.ws_ht", target));
+                setItem(JAXBContextUtils.marshall("org.drools.task", target));
             }
         }
 

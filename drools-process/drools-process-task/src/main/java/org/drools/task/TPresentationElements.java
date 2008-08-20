@@ -35,12 +35,12 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tPresentationElements">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="name" type="{http://www.example.org/WS-HT}tText" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="presentationParameters" type="{http://www.example.org/WS-HT}tPresentationParameters" minOccurs="0"/>
- *         &lt;element name="subject" type="{http://www.example.org/WS-HT}tText" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="description" type="{http://www.example.org/WS-HT}tDescription" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="name" type="{http://www.drools.org/WS-HT}tText" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="presentationParameters" type="{http://www.drools.org/WS-HT}tPresentationParameters" minOccurs="0"/>
+ *         &lt;element name="subject" type="{http://www.drools.org/WS-HT}tText" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="description" type="{http://www.drools.org/WS-HT}tDescription" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -56,7 +56,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "subject",
     "description"
 })
-@Entity(name = "org.example.ws_ht.TPresentationElements")
+@Entity(name = "org.drools.task.TPresentationElements")
 @Table(name = "TPRESENTATIONELEMENTS")
 public class TPresentationElements
     extends TExtensibleElements

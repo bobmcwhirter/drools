@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="documentation" type="{http://www.example.org/WS-HT}tDocumentation" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="documentation" type="{http://www.drools.org/WS-HT}tDocumentation" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;any/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -85,14 +85,14 @@ import org.w3c.dom.Element;
     TToPart.class,
     TParameter.class
 })
-@Entity(name = "org.example.ws_ht.TExtensibleMixedContentElements")
+@Entity(name = "org.drools.task.TExtensibleMixedContentElements")
 @Table(name = "TEXTENSIBLEMIXEDCONTENTELEME_0")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TExtensibleMixedContentElements
     implements Equals, HashCode
 {
 
-    @XmlElementRef(name = "documentation", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class)
+    @XmlElementRef(name = "documentation", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class)
     @XmlMixed
     @XmlAnyElement
     protected List<Object> content;
@@ -250,14 +250,14 @@ public class TExtensibleMixedContentElements
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TExtensibleMixedContentElements$ContentItem")
+    @Entity(name = "org.drools.task.TExtensibleMixedContentElements$ContentItem")
     @Table(name = "TEXTENSIBLEMIXEDCONTENTELEME_1")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class ContentItem
         implements MixedItem<Object> , Equals, HashCode
     {
 
-        @XmlElementRef(name = "documentation", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class)
+        @XmlElementRef(name = "documentation", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class)
         @XmlAnyElement(lax = true)
         protected Object item;
         @XmlAttribute(name = "Text")
@@ -369,8 +369,8 @@ public class TExtensibleMixedContentElements
         @Column(name = "ITEMOBJECT")
         @Lob
         public String getItemObject() {
-            if ((!XmlAdapterUtils.isJAXBElement(org.drools.task.TDocumentation.class, new QName("http://www.example.org/WS-HT", "documentation"), TExtensibleMixedContentElements.class, this.getItem()))&&JAXBContextUtils.isElement("org.example.ws_ht", this.getItem())) {
-                return JAXBContextUtils.unmarshall("org.example.ws_ht", this.getItem());
+            if ((!XmlAdapterUtils.isJAXBElement(org.drools.task.TDocumentation.class, new QName("http://www.drools.org/WS-HT", "documentation"), TExtensibleMixedContentElements.class, this.getItem()))&&JAXBContextUtils.isElement("org.drools.task", this.getItem())) {
+                return JAXBContextUtils.unmarshall("org.drools.task", this.getItem());
             } else {
                 return null;
             }
@@ -378,7 +378,7 @@ public class TExtensibleMixedContentElements
 
         public void setItemObject(String target) {
             if (target!= null) {
-                setItem(JAXBContextUtils.marshall("org.example.ws_ht", target));
+                setItem(JAXBContextUtils.marshall("org.drools.task", target));
             }
         }
 
@@ -387,7 +387,7 @@ public class TExtensibleMixedContentElements
         })
         @JoinColumn(name = "ITEMDOCUMENTATION_TEXTENSIBL_0")
         public org.drools.task.TDocumentation getItemDocumentation() {
-            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TDocumentation.class, new QName("http://www.example.org/WS-HT", "documentation"), TExtensibleMixedContentElements.class, this.getItem())) {
+            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TDocumentation.class, new QName("http://www.drools.org/WS-HT", "documentation"), TExtensibleMixedContentElements.class, this.getItem())) {
                 return XmlAdapterUtils.unmarshallJAXBElement(((JAXBElement<? extends org.drools.task.TDocumentation> ) this.getItem()));
             } else {
                 return null;
@@ -396,7 +396,7 @@ public class TExtensibleMixedContentElements
 
         public void setItemDocumentation(org.drools.task.TDocumentation target) {
             if (target!= null) {
-                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TDocumentation.class, new QName("http://www.example.org/WS-HT", "documentation"), TExtensibleMixedContentElements.class, target));
+                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TDocumentation.class, new QName("http://www.drools.org/WS-HT", "documentation"), TExtensibleMixedContentElements.class, target));
             }
         }
 

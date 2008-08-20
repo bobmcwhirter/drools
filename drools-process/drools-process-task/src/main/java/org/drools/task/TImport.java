@@ -33,7 +33,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tImport">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;attribute name="namespace" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *       &lt;attribute name="location" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *       &lt;attribute name="importType" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
@@ -46,7 +46,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImport")
-@Entity(name = "org.example.ws_ht.TImport")
+@Entity(name = "org.drools.task.TImport")
 @Table(name = "TIMPORT")
 public class TImport
     extends TExtensibleElements

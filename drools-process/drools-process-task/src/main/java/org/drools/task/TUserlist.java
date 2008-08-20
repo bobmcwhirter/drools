@@ -49,7 +49,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{http://www.example.org/WS-HT}user" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}user" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -62,7 +62,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tUserlist", propOrder = {
     "user"
 })
-@Entity(name = "org.example.ws_ht.TUserlist")
+@Entity(name = "org.drools.task.TUserlist")
 @Table(name = "TUSERLIST")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TUserlist
@@ -201,14 +201,14 @@ public class TUserlist
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TUserlist$UserItem")
+    @Entity(name = "org.drools.task.TUserlist$UserItem")
     @Table(name = "TUSERLISTUSERITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class UserItem
         implements Item<String> , Equals, HashCode
     {
 
-        @XmlElement(name = "user", namespace = "http://www.example.org/WS-HT")
+        @XmlElement(name = "user", namespace = "http://www.drools.org/WS-HT")
         protected String item;
         @XmlAttribute(name = "Hjid")
         protected Long hjid;

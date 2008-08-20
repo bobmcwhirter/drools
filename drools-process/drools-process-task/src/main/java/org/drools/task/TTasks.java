@@ -35,9 +35,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tTasks">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element ref="{http://www.example.org/WS-HT}task" maxOccurs="unbounded"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}task" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -50,7 +50,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tTasks", propOrder = {
     "task"
 })
-@Entity(name = "org.example.ws_ht.TTasks")
+@Entity(name = "org.drools.task.TTasks")
 @Table(name = "TTASKS")
 public class TTasks
     extends TExtensibleElements

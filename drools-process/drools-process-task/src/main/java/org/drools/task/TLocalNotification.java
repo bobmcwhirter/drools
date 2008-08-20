@@ -39,11 +39,11 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tLocalNotification">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;choice>
  *         &lt;sequence>
- *           &lt;element ref="{http://www.example.org/WS-HT}priority" minOccurs="0"/>
- *           &lt;element ref="{http://www.example.org/WS-HT}peopleAssignments" minOccurs="0"/>
+ *           &lt;element ref="{http://www.drools.org/WS-HT}priority" minOccurs="0"/>
+ *           &lt;element ref="{http://www.drools.org/WS-HT}peopleAssignments" minOccurs="0"/>
  *         &lt;/sequence>
  *       &lt;/choice>
  *       &lt;attribute name="reference" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
@@ -59,7 +59,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "priority",
     "peopleAssignments"
 })
-@Entity(name = "org.example.ws_ht.TLocalNotification")
+@Entity(name = "org.drools.task.TLocalNotification")
 @Table(name = "TLOCALNOTIFICATION")
 public class TLocalNotification
     extends TExtensibleElements

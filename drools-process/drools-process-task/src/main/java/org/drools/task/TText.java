@@ -32,7 +32,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tText">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleMixedContentElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleMixedContentElements">
  *       &lt;attribute ref="{http://www.w3.org/XML/1998/namespace}lang"/>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -43,7 +43,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tText")
-@Entity(name = "org.example.ws_ht.TText")
+@Entity(name = "org.drools.task.TText")
 @Table(name = "TTEXT")
 public class TText
     extends TExtensibleMixedContentElements

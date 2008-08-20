@@ -39,13 +39,13 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tNotification">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="interface" type="{http://www.example.org/WS-HT}tNotificationInterface"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}priority" minOccurs="0"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}peopleAssignments"/>
- *         &lt;element name="presentationElements" type="{http://www.example.org/WS-HT}tPresentationElements"/>
- *         &lt;element name="renderings" type="{http://www.example.org/WS-HT}tRenderings" minOccurs="0"/>
+ *         &lt;element name="interface" type="{http://www.drools.org/WS-HT}tNotificationInterface"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}priority" minOccurs="0"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}peopleAssignments"/>
+ *         &lt;element name="presentationElements" type="{http://www.drools.org/WS-HT}tPresentationElements"/>
+ *         &lt;element name="renderings" type="{http://www.drools.org/WS-HT}tRenderings" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *     &lt;/extension>
@@ -63,7 +63,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "presentationElements",
     "renderings"
 })
-@Entity(name = "org.example.ws_ht.TNotification")
+@Entity(name = "org.drools.task.TNotification")
 @Table(name = "TNOTIFICATION")
 public class TNotification
     extends TExtensibleElements

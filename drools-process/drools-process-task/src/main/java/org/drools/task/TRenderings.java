@@ -35,9 +35,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tRenderings">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="rendering" type="{http://www.example.org/WS-HT}tRendering" maxOccurs="unbounded"/>
+ *         &lt;element name="rendering" type="{http://www.drools.org/WS-HT}tRendering" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -50,7 +50,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tRenderings", propOrder = {
     "rendering"
 })
-@Entity(name = "org.example.ws_ht.TRenderings")
+@Entity(name = "org.drools.task.TRenderings")
 @Table(name = "TRENDERINGS")
 public class TRenderings
     extends TExtensibleElements

@@ -29,7 +29,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tPresentationParameter">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tParameter">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tParameter">
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -39,7 +39,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPresentationParameter")
-@Entity(name = "org.example.ws_ht.TPresentationParameter")
+@Entity(name = "org.drools.task.TPresentationParameter")
 @Table(name = "TPRESENTATIONPARAMETER")
 public class TPresentationParameter
     extends TParameter

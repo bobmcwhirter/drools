@@ -35,7 +35,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tArgument">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleMixedContentElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleMixedContentElements">
  *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *       &lt;attribute name="expressionLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *     &lt;/extension>
@@ -47,7 +47,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArgument")
-@Entity(name = "org.example.ws_ht.TArgument")
+@Entity(name = "org.drools.task.TArgument")
 @Table(name = "TARGUMENT")
 public class TArgument
     extends TExtensibleMixedContentElements

@@ -5,5 +5,5 @@
 // Generated on: 2008.08.19 at 11:36:25 PM BST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.example.org/WS-HT", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.drools.org/WS-HT", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.drools.task;

@@ -33,9 +33,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tReassignment">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element ref="{http://www.example.org/WS-HT}potentialOwners"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}potentialOwners"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -48,7 +48,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tReassignment", propOrder = {
     "potentialOwners"
 })
-@Entity(name = "org.example.ws_ht.TReassignment")
+@Entity(name = "org.drools.task.TReassignment")
 @Table(name = "TREASSIGNMENT")
 public class TReassignment
     extends TExtensibleElements

@@ -35,7 +35,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tToPart">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleMixedContentElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleMixedContentElements">
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *       &lt;attribute name="expressionLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *     &lt;/extension>
@@ -47,7 +47,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tToPart")
-@Entity(name = "org.example.ws_ht.TToPart")
+@Entity(name = "org.drools.task.TToPart")
 @Table(name = "TTOPART")
 public class TToPart
     extends TExtensibleMixedContentElements

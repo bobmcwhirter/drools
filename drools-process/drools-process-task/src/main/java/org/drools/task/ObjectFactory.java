@@ -17,7 +17,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the org.example.ws_ht package. 
+ * generated in the org.drools.task package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -31,30 +31,30 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _LogicalPeopleGroups_QNAME = new QName("http://www.example.org/WS-HT", "logicalPeopleGroups");
-    private final static QName _Task_QNAME = new QName("http://www.example.org/WS-HT", "task");
-    private final static QName _HumanInteractions_QNAME = new QName("http://www.example.org/WS-HT", "humanInteractions");
-    private final static QName _BusinessAdministrators_QNAME = new QName("http://www.example.org/WS-HT", "businessAdministrators");
-    private final static QName _TaskInitiator_QNAME = new QName("http://www.example.org/WS-HT", "taskInitiator");
-    private final static QName _Priority_QNAME = new QName("http://www.example.org/WS-HT", "priority");
-    private final static QName _Notification_QNAME = new QName("http://www.example.org/WS-HT", "notification");
-    private final static QName _User_QNAME = new QName("http://www.example.org/WS-HT", "user");
-    private final static QName _Group_QNAME = new QName("http://www.example.org/WS-HT", "group");
-    private final static QName _ExcludedOwners_QNAME = new QName("http://www.example.org/WS-HT", "excludedOwners");
-    private final static QName _Import_QNAME = new QName("http://www.example.org/WS-HT", "import");
-    private final static QName _Recipients_QNAME = new QName("http://www.example.org/WS-HT", "recipients");
-    private final static QName _Notifications_QNAME = new QName("http://www.example.org/WS-HT", "notifications");
-    private final static QName _Tasks_QNAME = new QName("http://www.example.org/WS-HT", "tasks");
-    private final static QName _Users_QNAME = new QName("http://www.example.org/WS-HT", "users");
-    private final static QName _OrganizationalEntity_QNAME = new QName("http://www.example.org/WS-HT", "organizationalEntity");
-    private final static QName _PeopleAssignments_QNAME = new QName("http://www.example.org/WS-HT", "peopleAssignments");
-    private final static QName _PotentialOwners_QNAME = new QName("http://www.example.org/WS-HT", "potentialOwners");
-    private final static QName _TaskStakeholders_QNAME = new QName("http://www.example.org/WS-HT", "taskStakeholders");
-    private final static QName _Groups_QNAME = new QName("http://www.example.org/WS-HT", "groups");
-    private final static QName _TExtensibleMixedContentElementsDocumentation_QNAME = new QName("http://www.example.org/WS-HT", "documentation");
+    private final static QName _LogicalPeopleGroups_QNAME = new QName("http://www.drools.org/WS-HT", "logicalPeopleGroups");
+    private final static QName _Task_QNAME = new QName("http://www.drools.org/WS-HT", "task");
+    private final static QName _HumanInteractions_QNAME = new QName("http://www.drools.org/WS-HT", "humanInteractions");
+    private final static QName _BusinessAdministrators_QNAME = new QName("http://www.drools.org/WS-HT", "businessAdministrators");
+    private final static QName _TaskInitiator_QNAME = new QName("http://www.drools.org/WS-HT", "taskInitiator");
+    private final static QName _Priority_QNAME = new QName("http://www.drools.org/WS-HT", "priority");
+    private final static QName _Notification_QNAME = new QName("http://www.drools.org/WS-HT", "notification");
+    private final static QName _User_QNAME = new QName("http://www.drools.org/WS-HT", "user");
+    private final static QName _Group_QNAME = new QName("http://www.drools.org/WS-HT", "group");
+    private final static QName _ExcludedOwners_QNAME = new QName("http://www.drools.org/WS-HT", "excludedOwners");
+    private final static QName _Import_QNAME = new QName("http://www.drools.org/WS-HT", "import");
+    private final static QName _Recipients_QNAME = new QName("http://www.drools.org/WS-HT", "recipients");
+    private final static QName _Notifications_QNAME = new QName("http://www.drools.org/WS-HT", "notifications");
+    private final static QName _Tasks_QNAME = new QName("http://www.drools.org/WS-HT", "tasks");
+    private final static QName _Users_QNAME = new QName("http://www.drools.org/WS-HT", "users");
+    private final static QName _OrganizationalEntity_QNAME = new QName("http://www.drools.org/WS-HT", "organizationalEntity");
+    private final static QName _PeopleAssignments_QNAME = new QName("http://www.drools.org/WS-HT", "peopleAssignments");
+    private final static QName _PotentialOwners_QNAME = new QName("http://www.drools.org/WS-HT", "potentialOwners");
+    private final static QName _TaskStakeholders_QNAME = new QName("http://www.drools.org/WS-HT", "taskStakeholders");
+    private final static QName _Groups_QNAME = new QName("http://www.drools.org/WS-HT", "groups");
+    private final static QName _TExtensibleMixedContentElementsDocumentation_QNAME = new QName("http://www.drools.org/WS-HT", "documentation");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.example.ws_ht
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.drools.task
      * 
      */
     public ObjectFactory() {
@@ -424,7 +424,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TLogicalPeopleGroups }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "logicalPeopleGroups")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "logicalPeopleGroups")
     public JAXBElement<TLogicalPeopleGroups> createLogicalPeopleGroups(TLogicalPeopleGroups value) {
         return new JAXBElement<TLogicalPeopleGroups>(_LogicalPeopleGroups_QNAME, TLogicalPeopleGroups.class, null, value);
     }
@@ -433,7 +433,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TTask }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "task")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "task")
     public JAXBElement<TTask> createTask(TTask value) {
         return new JAXBElement<TTask>(_Task_QNAME, TTask.class, null, value);
     }
@@ -442,7 +442,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link THumanInteractions }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "humanInteractions")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "humanInteractions")
     public JAXBElement<THumanInteractions> createHumanInteractions(THumanInteractions value) {
         return new JAXBElement<THumanInteractions>(_HumanInteractions_QNAME, THumanInteractions.class, null, value);
     }
@@ -451,7 +451,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TGenericHumanRole }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "businessAdministrators")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "businessAdministrators")
     public JAXBElement<TGenericHumanRole> createBusinessAdministrators(TGenericHumanRole value) {
         return new JAXBElement<TGenericHumanRole>(_BusinessAdministrators_QNAME, TGenericHumanRole.class, null, value);
     }
@@ -460,7 +460,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TGenericHumanRole }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "taskInitiator")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "taskInitiator")
     public JAXBElement<TGenericHumanRole> createTaskInitiator(TGenericHumanRole value) {
         return new JAXBElement<TGenericHumanRole>(_TaskInitiator_QNAME, TGenericHumanRole.class, null, value);
     }
@@ -469,7 +469,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TPriority }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "priority")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "priority")
     public JAXBElement<TPriority> createPriority(TPriority value) {
         return new JAXBElement<TPriority>(_Priority_QNAME, TPriority.class, null, value);
     }
@@ -478,7 +478,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TNotification }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "notification")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "notification")
     public JAXBElement<TNotification> createNotification(TNotification value) {
         return new JAXBElement<TNotification>(_Notification_QNAME, TNotification.class, null, value);
     }
@@ -487,7 +487,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "user")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "user")
     public JAXBElement<String> createUser(String value) {
         return new JAXBElement<String>(_User_QNAME, String.class, null, value);
     }
@@ -496,7 +496,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "group")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "group")
     public JAXBElement<String> createGroup(String value) {
         return new JAXBElement<String>(_Group_QNAME, String.class, null, value);
     }
@@ -505,7 +505,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TGenericHumanRole }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "excludedOwners")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "excludedOwners")
     public JAXBElement<TGenericHumanRole> createExcludedOwners(TGenericHumanRole value) {
         return new JAXBElement<TGenericHumanRole>(_ExcludedOwners_QNAME, TGenericHumanRole.class, null, value);
     }
@@ -514,7 +514,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TImport }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "import")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "import")
     public JAXBElement<TImport> createImport(TImport value) {
         return new JAXBElement<TImport>(_Import_QNAME, TImport.class, null, value);
     }
@@ -523,7 +523,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TGenericHumanRole }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "recipients")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "recipients")
     public JAXBElement<TGenericHumanRole> createRecipients(TGenericHumanRole value) {
         return new JAXBElement<TGenericHumanRole>(_Recipients_QNAME, TGenericHumanRole.class, null, value);
     }
@@ -532,7 +532,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TNotifications }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "notifications")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "notifications")
     public JAXBElement<TNotifications> createNotifications(TNotifications value) {
         return new JAXBElement<TNotifications>(_Notifications_QNAME, TNotifications.class, null, value);
     }
@@ -541,7 +541,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TTasks }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "tasks")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "tasks")
     public JAXBElement<TTasks> createTasks(TTasks value) {
         return new JAXBElement<TTasks>(_Tasks_QNAME, TTasks.class, null, value);
     }
@@ -550,7 +550,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TUserlist }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "users")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "users")
     public JAXBElement<TUserlist> createUsers(TUserlist value) {
         return new JAXBElement<TUserlist>(_Users_QNAME, TUserlist.class, null, value);
     }
@@ -559,7 +559,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TOrganizationalEntity }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "organizationalEntity")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "organizationalEntity")
     public JAXBElement<TOrganizationalEntity> createOrganizationalEntity(TOrganizationalEntity value) {
         return new JAXBElement<TOrganizationalEntity>(_OrganizationalEntity_QNAME, TOrganizationalEntity.class, null, value);
     }
@@ -568,7 +568,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TPeopleAssignments }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "peopleAssignments")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "peopleAssignments")
     public JAXBElement<TPeopleAssignments> createPeopleAssignments(TPeopleAssignments value) {
         return new JAXBElement<TPeopleAssignments>(_PeopleAssignments_QNAME, TPeopleAssignments.class, null, value);
     }
@@ -577,7 +577,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TGenericHumanRole }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "potentialOwners")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "potentialOwners")
     public JAXBElement<TGenericHumanRole> createPotentialOwners(TGenericHumanRole value) {
         return new JAXBElement<TGenericHumanRole>(_PotentialOwners_QNAME, TGenericHumanRole.class, null, value);
     }
@@ -586,7 +586,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TGenericHumanRole }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "taskStakeholders")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "taskStakeholders")
     public JAXBElement<TGenericHumanRole> createTaskStakeholders(TGenericHumanRole value) {
         return new JAXBElement<TGenericHumanRole>(_TaskStakeholders_QNAME, TGenericHumanRole.class, null, value);
     }
@@ -595,7 +595,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TGrouplist }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "groups")
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "groups")
     public JAXBElement<TGrouplist> createGroups(TGrouplist value) {
         return new JAXBElement<TGrouplist>(_Groups_QNAME, TGrouplist.class, null, value);
     }
@@ -604,7 +604,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TDocumentation }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.example.org/WS-HT", name = "documentation", scope = TExtensibleMixedContentElements.class)
+    @XmlElementDecl(namespace = "http://www.drools.org/WS-HT", name = "documentation", scope = TExtensibleMixedContentElements.class)
     public JAXBElement<TDocumentation> createTExtensibleMixedContentElementsDocumentation(TDocumentation value) {
         return new JAXBElement<TDocumentation>(_TExtensibleMixedContentElementsDocumentation_QNAME, TDocumentation.class, TExtensibleMixedContentElements.class, value);
     }

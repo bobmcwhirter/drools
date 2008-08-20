@@ -36,7 +36,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tRendering">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;attribute name="type" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -47,7 +47,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRendering")
-@Entity(name = "org.example.ws_ht.TRendering")
+@Entity(name = "org.drools.task.TRendering")
 @Table(name = "TRENDERING")
 public class TRendering
     extends TExtensibleElements

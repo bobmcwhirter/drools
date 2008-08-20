@@ -39,9 +39,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tPresentationParameters">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="presentationParameter" type="{http://www.example.org/WS-HT}tPresentationParameter" maxOccurs="unbounded"/>
+ *         &lt;element name="presentationParameter" type="{http://www.drools.org/WS-HT}tPresentationParameter" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *       &lt;attribute name="expressionLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *     &lt;/extension>
@@ -55,7 +55,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tPresentationParameters", propOrder = {
     "presentationParameter"
 })
-@Entity(name = "org.example.ws_ht.TPresentationParameters")
+@Entity(name = "org.drools.task.TPresentationParameters")
 @Table(name = "TPRESENTATIONPARAMETERS")
 public class TPresentationParameters
     extends TExtensibleElements

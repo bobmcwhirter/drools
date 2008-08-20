@@ -35,9 +35,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tToParts">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="toPart" type="{http://www.example.org/WS-HT}tToPart" maxOccurs="unbounded"/>
+ *         &lt;element name="toPart" type="{http://www.drools.org/WS-HT}tToPart" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -50,7 +50,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tToParts", propOrder = {
     "toPart"
 })
-@Entity(name = "org.example.ws_ht.TToParts")
+@Entity(name = "org.drools.task.TToParts")
 @Table(name = "TTOPARTS")
 public class TToParts
     extends TExtensibleElements

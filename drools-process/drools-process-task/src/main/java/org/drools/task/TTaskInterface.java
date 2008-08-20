@@ -39,7 +39,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tTaskInterface">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;attribute name="portType" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
  *       &lt;attribute name="operation" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *       &lt;attribute name="responsePortType" type="{http://www.w3.org/2001/XMLSchema}QName" />
@@ -53,7 +53,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tTaskInterface")
-@Entity(name = "org.example.ws_ht.TTaskInterface")
+@Entity(name = "org.drools.task.TTaskInterface")
 @Table(name = "TTASKINTERFACE")
 public class TTaskInterface
     extends TExtensibleElements

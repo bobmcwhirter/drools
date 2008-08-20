@@ -72,7 +72,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "tLiteral", propOrder = {
     "content"
 })
-@Entity(name = "org.example.ws_ht.TLiteral")
+@Entity(name = "org.drools.task.TLiteral")
 @Table(name = "TLITERAL")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TLiteral
@@ -236,7 +236,7 @@ public class TLiteral
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TLiteral$ContentItem")
+    @Entity(name = "org.drools.task.TLiteral$ContentItem")
     @Table(name = "TLITERALCONTENTITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class ContentItem
@@ -352,8 +352,8 @@ public class TLiteral
         @Column(name = "ITEMOBJECT")
         @Lob
         public String getItemObject() {
-            if (JAXBContextUtils.isElement("org.example.ws_ht", this.getItem())) {
-                return JAXBContextUtils.unmarshall("org.example.ws_ht", this.getItem());
+            if (JAXBContextUtils.isElement("org.drools.task", this.getItem())) {
+                return JAXBContextUtils.unmarshall("org.drools.task", this.getItem());
             } else {
                 return null;
             }
@@ -361,7 +361,7 @@ public class TLiteral
 
         public void setItemObject(String target) {
             if (target!= null) {
-                setItem(JAXBContextUtils.marshall("org.example.ws_ht", target));
+                setItem(JAXBContextUtils.marshall("org.drools.task", target));
             }
         }
 

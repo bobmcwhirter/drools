@@ -34,10 +34,10 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tDeadlines">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="startDeadline" type="{http://www.example.org/WS-HT}tDeadline" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="completionDeadline" type="{http://www.example.org/WS-HT}tDeadline" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="startDeadline" type="{http://www.drools.org/WS-HT}tDeadline" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="completionDeadline" type="{http://www.drools.org/WS-HT}tDeadline" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -51,7 +51,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "startDeadline",
     "completionDeadline"
 })
-@Entity(name = "org.example.ws_ht.TDeadlines")
+@Entity(name = "org.drools.task.TDeadlines")
 @Table(name = "TDEADLINES")
 public class TDeadlines
     extends TExtensibleElements

@@ -29,7 +29,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tBoolean-expr">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExpression">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExpression">
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -39,7 +39,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tBoolean-expr")
-@Entity(name = "org.example.ws_ht.TBooleanExpr")
+@Entity(name = "org.drools.task.TBooleanExpr")
 @Table(name = "TBOOLEANEXPR")
 public class TBooleanExpr
     extends TExpression

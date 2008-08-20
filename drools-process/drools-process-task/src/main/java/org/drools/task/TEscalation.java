@@ -41,14 +41,14 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tEscalation">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="condition" type="{http://www.example.org/WS-HT}tBoolean-expr" minOccurs="0"/>
- *         &lt;element name="toParts" type="{http://www.example.org/WS-HT}tToParts" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="condition" type="{http://www.drools.org/WS-HT}tBoolean-expr" minOccurs="0"/>
+ *         &lt;element name="toParts" type="{http://www.drools.org/WS-HT}tToParts" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;choice>
- *           &lt;element ref="{http://www.example.org/WS-HT}notification"/>
- *           &lt;element name="localNotification" type="{http://www.example.org/WS-HT}tLocalNotification"/>
- *           &lt;element name="reassignment" type="{http://www.example.org/WS-HT}tReassignment"/>
+ *           &lt;element ref="{http://www.drools.org/WS-HT}notification"/>
+ *           &lt;element name="localNotification" type="{http://www.drools.org/WS-HT}tLocalNotification"/>
+ *           &lt;element name="reassignment" type="{http://www.drools.org/WS-HT}tReassignment"/>
  *         &lt;/choice>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
@@ -67,7 +67,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "localNotification",
     "reassignment"
 })
-@Entity(name = "org.example.ws_ht.TEscalation")
+@Entity(name = "org.drools.task.TEscalation")
 @Table(name = "TESCALATION")
 public class TEscalation
     extends TExtensibleElements

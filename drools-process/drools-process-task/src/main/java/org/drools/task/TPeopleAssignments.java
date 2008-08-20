@@ -51,9 +51,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tPeopleAssignments">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;group ref="{http://www.example.org/WS-HT}genericHumanRole" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;group ref="{http://www.drools.org/WS-HT}genericHumanRole" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -66,7 +66,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tPeopleAssignments", propOrder = {
     "genericHumanRole"
 })
-@Entity(name = "org.example.ws_ht.TPeopleAssignments")
+@Entity(name = "org.drools.task.TPeopleAssignments")
 @Table(name = "TPEOPLEASSIGNMENTS")
 public class TPeopleAssignments
     extends TExtensibleElements
@@ -74,12 +74,12 @@ public class TPeopleAssignments
 {
 
     @XmlElementRefs({
-        @XmlElementRef(name = "businessAdministrators", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-        @XmlElementRef(name = "taskStakeholders", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-        @XmlElementRef(name = "recipients", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-        @XmlElementRef(name = "excludedOwners", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-        @XmlElementRef(name = "potentialOwners", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-        @XmlElementRef(name = "taskInitiator", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class)
+        @XmlElementRef(name = "businessAdministrators", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+        @XmlElementRef(name = "taskStakeholders", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+        @XmlElementRef(name = "recipients", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+        @XmlElementRef(name = "excludedOwners", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+        @XmlElementRef(name = "potentialOwners", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+        @XmlElementRef(name = "taskInitiator", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class)
     })
     protected List<JAXBElement<org.drools.task.TGenericHumanRole>> genericHumanRole;
     @XmlTransient
@@ -191,7 +191,7 @@ public class TPeopleAssignments
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TPeopleAssignments$GenericHumanRoleItem")
+    @Entity(name = "org.drools.task.TPeopleAssignments$GenericHumanRoleItem")
     @Table(name = "TPEOPLEASSIGNMENTSGENERICHUM_0")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class GenericHumanRoleItem
@@ -199,12 +199,12 @@ public class TPeopleAssignments
     {
 
         @XmlElementRefs({
-            @XmlElementRef(name = "businessAdministrators", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-            @XmlElementRef(name = "taskStakeholders", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-            @XmlElementRef(name = "recipients", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-            @XmlElementRef(name = "excludedOwners", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-            @XmlElementRef(name = "potentialOwners", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class),
-            @XmlElementRef(name = "taskInitiator", namespace = "http://www.example.org/WS-HT", type = JAXBElement.class)
+            @XmlElementRef(name = "businessAdministrators", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+            @XmlElementRef(name = "taskStakeholders", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+            @XmlElementRef(name = "recipients", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+            @XmlElementRef(name = "excludedOwners", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+            @XmlElementRef(name = "potentialOwners", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class),
+            @XmlElementRef(name = "taskInitiator", namespace = "http://www.drools.org/WS-HT", type = JAXBElement.class)
         })
         protected JAXBElement<org.drools.task.TGenericHumanRole> item;
         @XmlAttribute(name = "Hjid")
@@ -277,7 +277,7 @@ public class TPeopleAssignments
         })
         @JoinColumn(name = "ITEMBUSINESSADMINISTRATORS_T_0")
         public org.drools.task.TGenericHumanRole getItemBusinessAdministrators() {
-            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "businessAdministrators"), JAXBElement.GlobalScope.class, this.getItem())) {
+            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "businessAdministrators"), JAXBElement.GlobalScope.class, this.getItem())) {
                 return XmlAdapterUtils.unmarshallJAXBElement(((JAXBElement<? extends org.drools.task.TGenericHumanRole> ) this.getItem()));
             } else {
                 return null;
@@ -286,7 +286,7 @@ public class TPeopleAssignments
 
         public void setItemBusinessAdministrators(org.drools.task.TGenericHumanRole target) {
             if (target!= null) {
-                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "businessAdministrators"), JAXBElement.GlobalScope.class, target));
+                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "businessAdministrators"), JAXBElement.GlobalScope.class, target));
             }
         }
 
@@ -295,7 +295,7 @@ public class TPeopleAssignments
         })
         @JoinColumn(name = "ITEMTASKSTAKEHOLDERS_TPEOPLE_0")
         public org.drools.task.TGenericHumanRole getItemTaskStakeholders() {
-            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "taskStakeholders"), JAXBElement.GlobalScope.class, this.getItem())) {
+            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "taskStakeholders"), JAXBElement.GlobalScope.class, this.getItem())) {
                 return XmlAdapterUtils.unmarshallJAXBElement(((JAXBElement<? extends org.drools.task.TGenericHumanRole> ) this.getItem()));
             } else {
                 return null;
@@ -304,7 +304,7 @@ public class TPeopleAssignments
 
         public void setItemTaskStakeholders(org.drools.task.TGenericHumanRole target) {
             if (target!= null) {
-                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "taskStakeholders"), JAXBElement.GlobalScope.class, target));
+                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "taskStakeholders"), JAXBElement.GlobalScope.class, target));
             }
         }
 
@@ -313,7 +313,7 @@ public class TPeopleAssignments
         })
         @JoinColumn(name = "ITEMRECIPIENTS_TPEOPLEASSIGN_0")
         public org.drools.task.TGenericHumanRole getItemRecipients() {
-            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "recipients"), JAXBElement.GlobalScope.class, this.getItem())) {
+            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "recipients"), JAXBElement.GlobalScope.class, this.getItem())) {
                 return XmlAdapterUtils.unmarshallJAXBElement(((JAXBElement<? extends org.drools.task.TGenericHumanRole> ) this.getItem()));
             } else {
                 return null;
@@ -322,7 +322,7 @@ public class TPeopleAssignments
 
         public void setItemRecipients(org.drools.task.TGenericHumanRole target) {
             if (target!= null) {
-                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "recipients"), JAXBElement.GlobalScope.class, target));
+                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "recipients"), JAXBElement.GlobalScope.class, target));
             }
         }
 
@@ -331,7 +331,7 @@ public class TPeopleAssignments
         })
         @JoinColumn(name = "ITEMEXCLUDEDOWNERS_TPEOPLEAS_0")
         public org.drools.task.TGenericHumanRole getItemExcludedOwners() {
-            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "excludedOwners"), JAXBElement.GlobalScope.class, this.getItem())) {
+            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "excludedOwners"), JAXBElement.GlobalScope.class, this.getItem())) {
                 return XmlAdapterUtils.unmarshallJAXBElement(((JAXBElement<? extends org.drools.task.TGenericHumanRole> ) this.getItem()));
             } else {
                 return null;
@@ -340,7 +340,7 @@ public class TPeopleAssignments
 
         public void setItemExcludedOwners(org.drools.task.TGenericHumanRole target) {
             if (target!= null) {
-                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "excludedOwners"), JAXBElement.GlobalScope.class, target));
+                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "excludedOwners"), JAXBElement.GlobalScope.class, target));
             }
         }
 
@@ -349,7 +349,7 @@ public class TPeopleAssignments
         })
         @JoinColumn(name = "ITEMPOTENTIALOWNERS_TPEOPLEA_0")
         public org.drools.task.TGenericHumanRole getItemPotentialOwners() {
-            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "potentialOwners"), JAXBElement.GlobalScope.class, this.getItem())) {
+            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "potentialOwners"), JAXBElement.GlobalScope.class, this.getItem())) {
                 return XmlAdapterUtils.unmarshallJAXBElement(((JAXBElement<? extends org.drools.task.TGenericHumanRole> ) this.getItem()));
             } else {
                 return null;
@@ -358,7 +358,7 @@ public class TPeopleAssignments
 
         public void setItemPotentialOwners(org.drools.task.TGenericHumanRole target) {
             if (target!= null) {
-                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "potentialOwners"), JAXBElement.GlobalScope.class, target));
+                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "potentialOwners"), JAXBElement.GlobalScope.class, target));
             }
         }
 
@@ -367,7 +367,7 @@ public class TPeopleAssignments
         })
         @JoinColumn(name = "ITEMTASKINITIATOR_TPEOPLEASS_0")
         public org.drools.task.TGenericHumanRole getItemTaskInitiator() {
-            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "taskInitiator"), JAXBElement.GlobalScope.class, this.getItem())) {
+            if (XmlAdapterUtils.isJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "taskInitiator"), JAXBElement.GlobalScope.class, this.getItem())) {
                 return XmlAdapterUtils.unmarshallJAXBElement(((JAXBElement<? extends org.drools.task.TGenericHumanRole> ) this.getItem()));
             } else {
                 return null;
@@ -376,7 +376,7 @@ public class TPeopleAssignments
 
         public void setItemTaskInitiator(org.drools.task.TGenericHumanRole target) {
             if (target!= null) {
-                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.example.org/WS-HT", "taskInitiator"), JAXBElement.GlobalScope.class, target));
+                setItem(XmlAdapterUtils.marshallJAXBElement(org.drools.task.TGenericHumanRole.class, new QName("http://www.drools.org/WS-HT", "taskInitiator"), JAXBElement.GlobalScope.class, target));
             }
         }
 

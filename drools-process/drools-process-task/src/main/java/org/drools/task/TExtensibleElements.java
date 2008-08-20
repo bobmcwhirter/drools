@@ -59,7 +59,7 @@ import org.w3c.dom.Element;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="documentation" type="{http://www.example.org/WS-HT}tDocumentation" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="documentation" type="{http://www.drools.org/WS-HT}tDocumentation" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;any/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -101,7 +101,7 @@ import org.w3c.dom.Element;
     TDelegation.class,
     TPresentationElements.class
 })
-@Entity(name = "org.example.ws_ht.TExtensibleElements")
+@Entity(name = "org.drools.task.TExtensibleElements")
 @Table(name = "TEXTENSIBLEELEMENTS")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TExtensibleElements
@@ -307,7 +307,7 @@ public class TExtensibleElements
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @Entity(name = "org.example.ws_ht.TExtensibleElements$AnyItem")
+    @Entity(name = "org.drools.task.TExtensibleElements$AnyItem")
     @Table(name = "TEXTENSIBLEELEMENTSANYITEM")
     @Inheritance(strategy = InheritanceType.JOINED)
     public static class AnyItem
@@ -394,8 +394,8 @@ public class TExtensibleElements
         @Column(name = "ITEMOBJECT")
         @Lob
         public String getItemObject() {
-            if (JAXBContextUtils.isElement("org.example.ws_ht", this.getItem())) {
-                return JAXBContextUtils.unmarshall("org.example.ws_ht", this.getItem());
+            if (JAXBContextUtils.isElement("org.drools.task", this.getItem())) {
+                return JAXBContextUtils.unmarshall("org.drools.task", this.getItem());
             } else {
                 return null;
             }
@@ -403,7 +403,7 @@ public class TExtensibleElements
 
         public void setItemObject(String target) {
             if (target!= null) {
-                setItem(JAXBContextUtils.marshall("org.example.ws_ht", target));
+                setItem(JAXBContextUtils.marshall("org.drools.task", target));
             }
         }
 

@@ -40,9 +40,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tLogicalPeopleGroup">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="parameter" type="{http://www.example.org/WS-HT}tParameter" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="parameter" type="{http://www.drools.org/WS-HT}tParameter" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *       &lt;attribute name="reference" type="{http://www.w3.org/2001/XMLSchema}NCName" />
@@ -57,7 +57,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tLogicalPeopleGroup", propOrder = {
     "parameter"
 })
-@Entity(name = "org.example.ws_ht.TLogicalPeopleGroup")
+@Entity(name = "org.drools.task.TLogicalPeopleGroup")
 @Table(name = "TLOGICALPEOPLEGROUP")
 public class TLogicalPeopleGroup
     extends TExtensibleElements

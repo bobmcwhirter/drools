@@ -33,9 +33,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tGenericHumanRole">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="from" type="{http://www.example.org/WS-HT}tFrom"/>
+ *         &lt;element name="from" type="{http://www.drools.org/WS-HT}tFrom"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -48,7 +48,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tGenericHumanRole", propOrder = {
     "from"
 })
-@Entity(name = "org.example.ws_ht.TGenericHumanRole")
+@Entity(name = "org.drools.task.TGenericHumanRole")
 @Table(name = "TGENERICHUMANROLE")
 public class TGenericHumanRole
     extends TExtensibleElements

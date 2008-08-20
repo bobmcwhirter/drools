@@ -37,11 +37,11 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tFrom">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleMixedContentElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleMixedContentElements">
  *       &lt;sequence>
  *         &lt;choice>
- *           &lt;element name="argument" type="{http://www.example.org/WS-HT}tArgument" minOccurs="0"/>
- *           &lt;element name="literal" type="{http://www.example.org/WS-HT}tLiteral" minOccurs="0"/>
+ *           &lt;element name="argument" type="{http://www.drools.org/WS-HT}tArgument" minOccurs="0"/>
+ *           &lt;element name="literal" type="{http://www.drools.org/WS-HT}tLiteral" minOccurs="0"/>
  *         &lt;/choice>
  *       &lt;/sequence>
  *       &lt;attribute name="expressionLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
@@ -55,7 +55,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tFrom")
-@Entity(name = "org.example.ws_ht.TFrom")
+@Entity(name = "org.drools.task.TFrom")
 @Table(name = "TFROM")
 public class TFrom
     extends TExtensibleMixedContentElements

@@ -35,9 +35,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tExtensions">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="extension" type="{http://www.example.org/WS-HT}tExtension" maxOccurs="unbounded"/>
+ *         &lt;element name="extension" type="{http://www.drools.org/WS-HT}tExtension" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -50,7 +50,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
 @XmlType(name = "tExtensions", propOrder = {
     "extension"
 })
-@Entity(name = "org.example.ws_ht.TExtensions")
+@Entity(name = "org.drools.task.TExtensions")
 @Table(name = "TEXTENSIONS")
 public class TExtensions
     extends TExtensibleElements

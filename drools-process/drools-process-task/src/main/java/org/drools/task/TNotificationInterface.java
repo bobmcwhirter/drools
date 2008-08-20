@@ -39,7 +39,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tNotificationInterface">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;attribute name="portType" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
  *       &lt;attribute name="operation" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *     &lt;/extension>
@@ -51,7 +51,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tNotificationInterface")
-@Entity(name = "org.example.ws_ht.TNotificationInterface")
+@Entity(name = "org.drools.task.TNotificationInterface")
 @Table(name = "TNOTIFICATIONINTERFACE")
 public class TNotificationInterface
     extends TExtensibleElements

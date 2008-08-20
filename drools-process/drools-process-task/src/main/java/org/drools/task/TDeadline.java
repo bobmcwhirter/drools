@@ -36,13 +36,13 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tDeadline">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
  *         &lt;choice>
- *           &lt;element name="for" type="{http://www.example.org/WS-HT}tDuration-expr"/>
- *           &lt;element name="until" type="{http://www.example.org/WS-HT}tDeadline-expr"/>
+ *           &lt;element name="for" type="{http://www.drools.org/WS-HT}tDuration-expr"/>
+ *           &lt;element name="until" type="{http://www.drools.org/WS-HT}tDeadline-expr"/>
  *         &lt;/choice>
- *         &lt;element name="escalation" type="{http://www.example.org/WS-HT}tEscalation" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="escalation" type="{http://www.drools.org/WS-HT}tEscalation" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -57,7 +57,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "until",
     "escalation"
 })
-@Entity(name = "org.example.ws_ht.TDeadline")
+@Entity(name = "org.drools.task.TDeadline")
 @Table(name = "TDEADLINE")
 public class TDeadline
     extends TExtensibleElements

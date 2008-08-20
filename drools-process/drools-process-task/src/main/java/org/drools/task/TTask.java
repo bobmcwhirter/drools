@@ -39,17 +39,17 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tTask">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;sequence>
- *         &lt;element name="interface" type="{http://www.example.org/WS-HT}tTaskInterface"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}priority" minOccurs="0"/>
- *         &lt;element ref="{http://www.example.org/WS-HT}peopleAssignments"/>
- *         &lt;element name="delegation" type="{http://www.example.org/WS-HT}tDelegation" minOccurs="0"/>
- *         &lt;element name="presentationElements" type="{http://www.example.org/WS-HT}tPresentationElements"/>
- *         &lt;element name="outcome" type="{http://www.example.org/WS-HT}tQuery" minOccurs="0"/>
- *         &lt;element name="searchBy" type="{http://www.example.org/WS-HT}tExpression" minOccurs="0"/>
- *         &lt;element name="renderings" type="{http://www.example.org/WS-HT}tRenderings" minOccurs="0"/>
- *         &lt;element name="deadlines" type="{http://www.example.org/WS-HT}tDeadlines" minOccurs="0"/>
+ *         &lt;element name="interface" type="{http://www.drools.org/WS-HT}tTaskInterface"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}priority" minOccurs="0"/>
+ *         &lt;element ref="{http://www.drools.org/WS-HT}peopleAssignments"/>
+ *         &lt;element name="delegation" type="{http://www.drools.org/WS-HT}tDelegation" minOccurs="0"/>
+ *         &lt;element name="presentationElements" type="{http://www.drools.org/WS-HT}tPresentationElements"/>
+ *         &lt;element name="outcome" type="{http://www.drools.org/WS-HT}tQuery" minOccurs="0"/>
+ *         &lt;element name="searchBy" type="{http://www.drools.org/WS-HT}tExpression" minOccurs="0"/>
+ *         &lt;element name="renderings" type="{http://www.drools.org/WS-HT}tRenderings" minOccurs="0"/>
+ *         &lt;element name="deadlines" type="{http://www.drools.org/WS-HT}tDeadlines" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *     &lt;/extension>
@@ -71,7 +71,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
     "renderings",
     "deadlines"
 })
-@Entity(name = "org.example.ws_ht.TTask")
+@Entity(name = "org.drools.task.TTask")
 @Table(name = "TTASK")
 public class TTask
     extends TExtensibleElements

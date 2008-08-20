@@ -11,139 +11,139 @@ Generated on: 2008.08.19 at 11:36:25 PM BST
   <bindings scd="x-schema::tns" xmlns:tns="http://www.example.org/WS-HT">
     <schemaBindings map="false"/>
     <bindings scd="~tns:tDeadlines">
-      <class ref="org.example.ws_ht.TDeadlines"/>
+      <class ref="org.drools.task.TDeadlines"/>
     </bindings>
     <bindings scd="~tns:tExtensions">
-      <class ref="org.example.ws_ht.TExtensions"/>
+      <class ref="org.drools.task.TExtensions"/>
     </bindings>
     <bindings scd="~tns:tBoolean-expr">
-      <class ref="org.example.ws_ht.TBooleanExpr"/>
+      <class ref="org.drools.task.TBooleanExpr"/>
     </bindings>
     <bindings scd="~tns:tLogicalPeopleGroup">
-      <class ref="org.example.ws_ht.TLogicalPeopleGroup"/>
+      <class ref="org.drools.task.TLogicalPeopleGroup"/>
     </bindings>
     <bindings scd="~tns:tRenderings">
-      <class ref="org.example.ws_ht.TRenderings"/>
+      <class ref="org.drools.task.TRenderings"/>
     </bindings>
     <bindings scd="~tns:tText">
-      <class ref="org.example.ws_ht.TText"/>
+      <class ref="org.drools.task.TText"/>
     </bindings>
     <bindings scd="~tns:tFrom">
-      <class ref="org.example.ws_ht.TFrom"/>
+      <class ref="org.drools.task.TFrom"/>
     </bindings>
     <bindings scd="~tns:tPriority">
-      <class ref="org.example.ws_ht.TPriority"/>
+      <class ref="org.drools.task.TPriority"/>
     </bindings>
     <bindings scd="~tns:tTask">
-      <class ref="org.example.ws_ht.TTask"/>
+      <class ref="org.drools.task.TTask"/>
     </bindings>
     <bindings scd="~tns:tUserlist">
-      <class ref="org.example.ws_ht.TUserlist"/>
+      <class ref="org.drools.task.TUserlist"/>
     </bindings>
     <bindings scd="~tns:tArgument">
-      <class ref="org.example.ws_ht.TArgument"/>
+      <class ref="org.drools.task.TArgument"/>
     </bindings>
     <bindings scd="~tns:tToPart">
-      <class ref="org.example.ws_ht.TToPart"/>
+      <class ref="org.drools.task.TToPart"/>
     </bindings>
     <bindings scd="~tns:tRendering">
-      <class ref="org.example.ws_ht.TRendering"/>
+      <class ref="org.drools.task.TRendering"/>
     </bindings>
     <bindings scd="~tns:tExpression">
-      <class ref="org.example.ws_ht.TExpression"/>
+      <class ref="org.drools.task.TExpression"/>
     </bindings>
     <bindings scd="~tns:tLogicalPeopleGroups">
-      <class ref="org.example.ws_ht.TLogicalPeopleGroups"/>
+      <class ref="org.drools.task.TLogicalPeopleGroups"/>
     </bindings>
     <bindings scd="~tns:tTaskInterface">
-      <class ref="org.example.ws_ht.TTaskInterface"/>
+      <class ref="org.drools.task.TTaskInterface"/>
     </bindings>
     <bindings scd="~tns:tExtensibleElements">
-      <class ref="org.example.ws_ht.TExtensibleElements"/>
+      <class ref="org.drools.task.TExtensibleElements"/>
     </bindings>
     <bindings scd="~tns:tPresentationParameters">
-      <class ref="org.example.ws_ht.TPresentationParameters"/>
+      <class ref="org.drools.task.TPresentationParameters"/>
     </bindings>
     <bindings scd="~tns:tToParts">
-      <class ref="org.example.ws_ht.TToParts"/>
+      <class ref="org.drools.task.TToParts"/>
     </bindings>
     <bindings scd="~tns:tQuery">
-      <class ref="org.example.ws_ht.TQuery"/>
+      <class ref="org.drools.task.TQuery"/>
     </bindings>
     <bindings scd="~tns:tLocalNotification">
-      <class ref="org.example.ws_ht.TLocalNotification"/>
+      <class ref="org.drools.task.TLocalNotification"/>
     </bindings>
     <bindings scd="~tns:tNotificationInterface">
-      <class ref="org.example.ws_ht.TNotificationInterface"/>
+      <class ref="org.drools.task.TNotificationInterface"/>
     </bindings>
     <bindings scd="~tns:tExtension">
-      <class ref="org.example.ws_ht.TExtension"/>
+      <class ref="org.drools.task.TExtension"/>
     </bindings>
     <bindings scd="~tns:tLiteral">
-      <class ref="org.example.ws_ht.TLiteral"/>
+      <class ref="org.drools.task.TLiteral"/>
     </bindings>
     <bindings scd="~tns:tReassignment">
-      <class ref="org.example.ws_ht.TReassignment"/>
+      <class ref="org.drools.task.TReassignment"/>
     </bindings>
     <bindings scd="~tns:tEscalation">
-      <class ref="org.example.ws_ht.TEscalation"/>
+      <class ref="org.drools.task.TEscalation"/>
     </bindings>
     <bindings scd="~tns:tNotifications">
-      <class ref="org.example.ws_ht.TNotifications"/>
+      <class ref="org.drools.task.TNotifications"/>
     </bindings>
     <bindings scd="~tns:tDuration-expr">
-      <class ref="org.example.ws_ht.TDurationExpr"/>
+      <class ref="org.drools.task.TDurationExpr"/>
     </bindings>
     <bindings scd="~tns:tTasks">
-      <class ref="org.example.ws_ht.TTasks"/>
+      <class ref="org.drools.task.TTasks"/>
     </bindings>
     <bindings scd="~tns:tOrganizationalEntity">
-      <class ref="org.example.ws_ht.TOrganizationalEntity"/>
+      <class ref="org.drools.task.TOrganizationalEntity"/>
     </bindings>
     <bindings scd="~tns:tGrouplist">
-      <class ref="org.example.ws_ht.TGrouplist"/>
+      <class ref="org.drools.task.TGrouplist"/>
     </bindings>
     <bindings scd="~tns:tPeopleAssignments">
-      <class ref="org.example.ws_ht.TPeopleAssignments"/>
+      <class ref="org.drools.task.TPeopleAssignments"/>
     </bindings>
     <bindings scd="~tns:tPresentationElements">
-      <class ref="org.example.ws_ht.TPresentationElements"/>
+      <class ref="org.drools.task.TPresentationElements"/>
     </bindings>
     <bindings scd="~tns:tNotification">
-      <class ref="org.example.ws_ht.TNotification"/>
+      <class ref="org.drools.task.TNotification"/>
     </bindings>
     <bindings scd="~tns:tDescription">
-      <class ref="org.example.ws_ht.TDescription"/>
+      <class ref="org.drools.task.TDescription"/>
     </bindings>
     <bindings scd="~tns:tParameter">
-      <class ref="org.example.ws_ht.TParameter"/>
+      <class ref="org.drools.task.TParameter"/>
     </bindings>
     <bindings scd="~tns:tPresentationParameter">
-      <class ref="org.example.ws_ht.TPresentationParameter"/>
+      <class ref="org.drools.task.TPresentationParameter"/>
     </bindings>
     <bindings scd="~tns:tDeadline">
-      <class ref="org.example.ws_ht.TDeadline"/>
+      <class ref="org.drools.task.TDeadline"/>
     </bindings>
     <bindings scd="~tns:tDocumentation">
-      <class ref="org.example.ws_ht.TDocumentation"/>
+      <class ref="org.drools.task.TDocumentation"/>
     </bindings>
     <bindings scd="~tns:tExtensibleMixedContentElements">
-      <class ref="org.example.ws_ht.TExtensibleMixedContentElements"/>
+      <class ref="org.drools.task.TExtensibleMixedContentElements"/>
     </bindings>
     <bindings scd="~tns:tGenericHumanRole">
-      <class ref="org.example.ws_ht.TGenericHumanRole"/>
+      <class ref="org.drools.task.TGenericHumanRole"/>
     </bindings>
     <bindings scd="~tns:tDeadline-expr">
-      <class ref="org.example.ws_ht.TDeadlineExpr"/>
+      <class ref="org.drools.task.TDeadlineExpr"/>
     </bindings>
     <bindings scd="~tns:tImport">
-      <class ref="org.example.ws_ht.TImport"/>
+      <class ref="org.drools.task.TImport"/>
     </bindings>
     <bindings scd="~tns:tHumanInteractions">
-      <class ref="org.example.ws_ht.THumanInteractions"/>
+      <class ref="org.drools.task.THumanInteractions"/>
     </bindings>
     <bindings scd="~tns:tDelegation">
-      <class ref="org.example.ws_ht.TDelegation"/>
+      <class ref="org.drools.task.TDelegation"/>
     </bindings>
   </bindings>
 </bindings>

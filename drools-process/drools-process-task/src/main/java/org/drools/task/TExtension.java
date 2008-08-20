@@ -35,9 +35,9 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  * <pre>
  * &lt;complexType name="tExtension">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.example.org/WS-HT}tExtensibleElements">
+ *     &lt;extension base="{http://www.drools.org/WS-HT}tExtensibleElements">
  *       &lt;attribute name="namespace" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;attribute name="mustUnderstand" use="required" type="{http://www.example.org/WS-HT}tBoolean" />
+ *       &lt;attribute name="mustUnderstand" use="required" type="{http://www.drools.org/WS-HT}tBoolean" />
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -47,7 +47,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBHashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExtension")
-@Entity(name = "org.example.ws_ht.TExtension")
+@Entity(name = "org.drools.task.TExtension")
 @Table(name = "TEXTENSION")
 public class TExtension
     extends TExtensibleElements
