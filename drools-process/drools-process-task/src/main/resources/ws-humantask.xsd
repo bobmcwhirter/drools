@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://www.example.org/WS-HT" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.example.org/WS-HT" elementFormDefault="qualified"
-	blockDefault="#all">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	        xmlns="http://www.drools.org/WS-HT" 
+	        targetNamespace="http://www.drools.org/WS-HT" 
+	        elementFormDefault="qualified" blockDefault="#all">
+	        
 	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"
 		schemaLocation="http://www.w3.org/2001/xml.xsd" />
+		
 <!-- base types for extensible elements -->
 	<xsd:complexType name="tExtensibleElements">
 		<xsd:sequence>
@@ -33,6 +36,7 @@
 		<xsd:anyAttribute namespace="##other"
 			processContents="lax" />
 	</xsd:complexType>
+	
 <!-- human task definition -->
 	<xsd:element name="humanInteractions" type="tHumanInteractions" />
 	<xsd:complexType name="tHumanInteractions">
@@ -107,6 +111,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+	
 <!-- generic human roles used in tasks and notifications -->
 	<xsd:group name="genericHumanRole">
 		<xsd:choice>
