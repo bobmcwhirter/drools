@@ -95,7 +95,7 @@ public class TestModelPersistence extends TestCase {
         return MVEL.executeExpression( compiler.compile( context ), vars );
     }
 
-    public void fullHibernateRoundtripWithAdditionalMVELCheck() throws Exception {
+    public void testfullHibernateRoundtripWithAdditionalMVELCheck() throws Exception {
         // Use persistence.xml configuration
         EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.task" );
         EntityManager em = emf.createEntityManager(); // Retrieve an application managed entity manager
