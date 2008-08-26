@@ -1,151 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <persistence version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/persistence">
-    <persistence-unit name="org.drools.ws_ht:org.drools.ws_ht.api.xsd:org.drools.ws_ht.api">
-        <class>org.drools.ws_ht.api.xsd.Nominate</class>
-        <class>org.drools.ws_ht.TNotification</class>
-        <class>org.drools.ws_ht.api.xsd.GetFault</class>
-        <class>org.drools.ws_ht.api.xsd.GetTaskDescription</class>
-        <class>org.drools.ws_ht.api.xsd.GetRenderingTypesResponse</class>
-        <class>org.drools.ws_ht.TNotifications</class>
-        <class>org.drools.ws_ht.api.xsd.Release</class>
-        <class>org.drools.ws_ht.api.xsd.GetFaultResponse</class>
-        <class>org.drools.ws_ht.api.xsd.SetPriority</class>
-        <class>org.drools.ws_ht.api.xsd.SetOutputResponse</class>
-        <class>org.drools.ws_ht.api.xsd.CompleteResponse</class>
-        <class>org.drools.ws_ht.api.xsd.Stop</class>
-        <class>org.drools.ws_ht.api.xsd.SuspendUntilResponse</class>
-        <class>org.drools.ws_ht.api.xsd.Query</class>
-        <class>org.drools.ws_ht.TText</class>
-        <class>org.drools.ws_ht.api.xsd.Fail</class>
-        <class>org.drools.ws_ht.TArgument</class>
-        <class>org.drools.ws_ht.api.xsd.Resume</class>
-        <class>org.drools.ws_ht.api.xsd.GetTaskInfoResponse</class>
-        <class>org.drools.ws_ht.TReassignment</class>
-        <class>org.drools.ws_ht.api.xsd.Forward</class>
-        <class>org.drools.ws_ht.TGrouplist$GroupItem</class>
-        <class>org.drools.ws_ht.TExtension</class>
-        <class>org.drools.ws_ht.api.xsd.GetRenderingTypesResponse$RenderingTypeItem</class>
-        <class>org.drools.ws_ht.api.xsd.Complete</class>
-        <class>org.drools.ws_ht.api.xsd.AddAttachment</class>
-        <class>org.drools.ws_ht.api.xsd.GetInput</class>
-        <class>org.drools.ws_ht.api.TTask</class>
-        <class>org.drools.ws_ht.THumanInteractions</class>
-        <class>org.drools.ws_ht.api.xsd.Activate</class>
-        <class>org.drools.ws_ht.api.xsd.Suspend</class>
-        <class>org.drools.ws_ht.TTaskInterface</class>
-        <class>org.drools.ws_ht.TPeopleAssignments$GenericHumanRoleItem</class>
-        <class>org.drools.ws_ht.api.xsd.ResumeResponse</class>
-        <class>org.drools.ws_ht.TToParts</class>
-        <class>org.drools.ws_ht.TPresentationElements</class>
-        <class>org.drools.ws_ht.api.xsd.Remove</class>
-        <class>org.drools.ws_ht.TDurationExpr</class>
-        <class>org.drools.ws_ht.api.xsd.SetOutput</class>
-        <class>org.drools.ws_ht.api.xsd.GetAttachmentInfos</class>
-        <class>org.drools.ws_ht.api.xsd.GetTaskDescriptionResponse</class>
-        <class>org.drools.ws_ht.api.xsd.GetRenderingResponse</class>
-        <class>org.drools.ws_ht.TExtensibleMixedContentElements$ContentItem</class>
-        <class>org.drools.ws_ht.api.xsd.DelegateResponse</class>
-        <class>org.drools.ws_ht.TDeadlines</class>
-        <class>org.drools.ws_ht.api.xsd.QueryResponse</class>
-        <class>org.drools.ws_ht.TDelegation</class>
-        <class>org.drools.ws_ht.api.xsd.GetOutput</class>
-        <class>org.drools.ws_ht.api.TTaskQueryResultRow</class>
-        <class>org.drools.ws_ht.api.xsd.GetTaskInfo</class>
-        <class>org.drools.ws_ht.TExtensibleElements$AnyItem</class>
-        <class>org.drools.ws_ht.TLogicalPeopleGroup</class>
-        <class>org.drools.ws_ht.api.xsd.ForwardResponse</class>
-        <class>org.drools.ws_ht.api.TTaskQueryResultSet</class>
-        <class>org.drools.ws_ht.api.xsd.GetMyTaskAbstracts$StatusItem</class>
-        <class>org.drools.ws_ht.TExpression</class>
-        <class>org.drools.ws_ht.api.xsd.AddCommentResponse</class>
-        <class>org.drools.ws_ht.TDocumentation$ContentItem</class>
-        <class>org.drools.ws_ht.api.xsd.Skip</class>
-        <class>org.drools.ws_ht.api.xsd.StartResponse</class>
-        <class>org.drools.ws_ht.api.xsd.AddComment</class>
-        <class>org.drools.ws_ht.TExpression$ContentItem</class>
-        <class>org.drools.ws_ht.TPresentationParameters</class>
-        <class>org.drools.ws_ht.TRenderings</class>
-        <class>org.drools.ws_ht.api.xsd.DeleteFaultResponse</class>
-        <class>org.drools.ws_ht.api.xsd.GetOutputResponse</class>
-        <class>org.drools.ws_ht.api.TComment</class>
-        <class>org.drools.ws_ht.TEscalation</class>
-        <class>org.drools.ws_ht.api.xsd.GetMyTasksResponse</class>
-        <class>org.drools.ws_ht.TDeadline</class>
-        <class>org.drools.ws_ht.api.xsd.ClaimResponse</class>
-        <class>org.drools.ws_ht.api.xsd.ActivateResponse</class>
-        <class>org.drools.ws_ht.TUserlist$UserItem</class>
-        <class>org.drools.ws_ht.TUserlist</class>
-        <class>org.drools.ws_ht.TPresentationParameter</class>
-        <class>org.drools.ws_ht.api.xsd.GetMyTaskAbstracts</class>
-        <class>org.drools.ws_ht.TLocalNotification</class>
-        <class>org.drools.ws_ht.api.xsd.StopResponse</class>
-        <class>org.drools.ws_ht.TTask</class>
-        <class>org.drools.ws_ht.api.xsd.Claim</class>
-        <class>org.drools.ws_ht.api.xsd.GetMyTasks</class>
-        <class>org.drools.ws_ht.TNotificationInterface</class>
-        <class>org.drools.ws_ht.api.xsd.Start</class>
-        <class>org.drools.ws_ht.api.TTaskAbstract$AnyItem</class>
-        <class>org.drools.ws_ht.api.TTaskQueryResultRow$IdOrTaskTypeOrNameItem</class>
-        <class>org.drools.ws_ht.api.xsd.NominateResponse</class>
-        <class>org.drools.ws_ht.api.xsd.DeleteOutputResponse</class>
-        <class>org.drools.ws_ht.TGenericHumanRole</class>
-        <class>org.drools.ws_ht.api.xsd.RemoveResponse</class>
-        <class>org.drools.ws_ht.api.xsd.GetInputResponse</class>
-        <class>org.drools.ws_ht.TTasks</class>
-        <class>org.drools.ws_ht.api.xsd.SetGenericHumanRoleResponse</class>
-        <class>org.drools.ws_ht.api.xsd.GetRenderingTypes</class>
-        <class>org.drools.ws_ht.api.TAttachmentInfo</class>
-        <class>org.drools.ws_ht.api.xsd.DeleteFault</class>
-        <class>org.drools.ws_ht.TLiteral$ContentItem</class>
-        <class>org.drools.ws_ht.api.xsd.DeleteAttachmentsResponse</class>
-        <class>org.drools.ws_ht.TFrom</class>
-        <class>org.drools.ws_ht.api.TAttachment</class>
-        <class>org.drools.ws_ht.TImport</class>
-        <class>org.drools.ws_ht.TExtensibleMixedContentElements</class>
-        <class>org.drools.ws_ht.TQuery$ContentItem</class>
-        <class>org.drools.ws_ht.api.xsd.ReleaseResponse</class>
-        <class>org.drools.ws_ht.api.xsd.IllegalState</class>
-        <class>org.drools.ws_ht.TToPart</class>
-        <class>org.drools.ws_ht.api.xsd.TTime</class>
-        <class>org.drools.ws_ht.api.TTask$AnyItem</class>
-        <class>org.drools.ws_ht.api.TAttachmentInfo$AnyItem</class>
-        <class>org.drools.ws_ht.TDocumentation</class>
-        <class>org.drools.ws_ht.api.xsd.SuspendResponse</class>
-        <class>org.drools.ws_ht.TGrouplist</class>
-        <class>org.drools.ws_ht.api.xsd.SetGenericHumanRole</class>
-        <class>org.drools.ws_ht.api.xsd.GetCommentsResposne</class>
-        <class>org.drools.ws_ht.TLiteral</class>
-        <class>org.drools.ws_ht.TLogicalPeopleGroups</class>
-        <class>org.drools.ws_ht.TPriority</class>
-        <class>org.drools.ws_ht.TQuery</class>
-        <class>org.drools.ws_ht.api.xsd.GetMyTaskAbstractsResponse</class>
-        <class>org.drools.ws_ht.api.xsd.DeleteAttachments</class>
-        <class>org.drools.ws_ht.TRendering</class>
-        <class>org.drools.ws_ht.api.xsd.AddAttachmentResponse</class>
-        <class>org.drools.ws_ht.api.TTaskAbstract</class>
-        <class>org.drools.ws_ht.TParameter</class>
-        <class>org.drools.ws_ht.api.xsd.SkipResponse</class>
-        <class>org.drools.ws_ht.TPeopleAssignments</class>
-        <class>org.drools.ws_ht.api.xsd.SuspendUntil</class>
-        <class>org.drools.ws_ht.TBooleanExpr</class>
-        <class>org.drools.ws_ht.api.xsd.GetMyTasks$StatusItem</class>
-        <class>org.drools.ws_ht.TDescription</class>
-        <class>org.drools.ws_ht.api.TComment$AnyItem</class>
-        <class>org.drools.ws_ht.api.xsd.FailResponse</class>
-        <class>org.drools.ws_ht.TExtensions</class>
-        <class>org.drools.ws_ht.api.xsd.GetAttachmentsResponse</class>
-        <class>org.drools.ws_ht.api.xsd.GetRendering</class>
-        <class>org.drools.ws_ht.api.xsd.SetFault</class>
-        <class>org.drools.ws_ht.api.xsd.GetAttachments</class>
-        <class>org.drools.ws_ht.TExtensibleElements</class>
-        <class>org.drools.ws_ht.api.xsd.SetFaultResponse</class>
-        <class>org.drools.ws_ht.api.xsd.GetAttachmentInfosResponse</class>
-        <class>org.drools.ws_ht.TOrganizationalEntity</class>
-        <class>org.drools.ws_ht.api.xsd.SetPriorityResponse</class>
-        <class>org.drools.ws_ht.api.xsd.Delegate</class>
-        <class>org.drools.ws_ht.api.xsd.GetComments</class>
-        <class>org.drools.ws_ht.api.xsd.DeleteOutput</class>
-        <class>org.drools.ws_ht.TDeadlineExpr</class>
+    <persistence-unit name="org.drools.task">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>org.drools.task.User</class>
+        <class>org.drools.task.Attachment</class>
+        <class>org.drools.task.BooleanExpression</class>        
+        <class>org.drools.task.Comment</class>
+        <class>org.drools.task.Deadline</class>
+        <class>org.drools.task.Comment</class>
+        <class>org.drools.task.Deadline</class>
+        <class>org.drools.task.Delegation</class>
+        <class>org.drools.task.Escalation</class>
+        <class>org.drools.task.Group</class>
+        <class>org.drools.task.IL8NText</class>
+        <class>org.drools.task.Notification</class>
+        <class>org.drools.task.PeopleAssignments</class>
+        <class>org.drools.task.Reassignment</class>
+        <class>org.drools.task.Status</class>
+        <class>org.drools.task.Task</class>
+        <class>org.drools.task.TaskData</class>
+
+	    <properties>
+	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+	        <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+	        <property name="hibernate.connection.username" value="sa"/>
+	        <property name="hibernate.connection.password" value=""/>
+	        <!--  property name="hibernate.connection.url" value="jdbc:h2:file:\dev\drools\trunk7\drools-process\drools-process-task\mydb"/ -->
+	        <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb"/>	        
+	        <property name="hibernate.max_fetch_depth" value="3"/>
+		    <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.show_sql" value="true" />		    
+	    </properties>        
     </persistence-unit>
+    
 </persistence>

@@ -10,63 +10,48 @@
 
   <artifactId>drools-process-task</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: Process :: Task</name>
-  
-    <repositories>
-    	<repository>
-    		<id>maven2-repository.dev.java.net</id>
-    		<url>http://download.java.net/maven/2</url>
-    	</repository>
-    	<repository>
-    		<id>maven-repository.dev.java.net</id>
-    		<url>http://download.java.net/maven/1</url>
-    		<layout>legacy</layout>
-    	</repository>
-    	<repository>
-    		<id>maven2-repository.jboss.com</id>
-    		<url>http://repository.jboss.com/maven2</url>
-    	</repository>
-    	<repository>
-    		<id>jfrog.org</id>
-    		<url>http://www.jfrog.org/artifactory/plugins-releases@repo</url>
-    	</repository>
-    </repositories>
-    <pluginRepositories>
-    	<pluginRepository>
-    		<id>maven2-repository.dev.java.net</id>
-    		<url>http://download.java.net/maven/2</url>
-    	</pluginRepository>
-    	<pluginRepository>
-    		<id>maven-repository.dev.java.net</id>
-    		<url>http://download.java.net/maven/1</url>
-    		<layout>legacy</layout>
-    	</pluginRepository>
-    </pluginRepositories>  
-  
-      <dependencies>
-         <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-core</artifactId>
-            <version>${project.version}</version>  
-         </dependency>                     
+  <name>Drools :: Process :: Task</name> 
+    
+      <dependencies> 	        
+    	
+    	<dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-jdk14</artifactId>
+    		<version>1.5.2</version>
+    	</dependency>     	       	
 
-         <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-compiler</artifactId>
-            <version>${project.version}</version>  
-            <scope>test</scope>
-         </dependency>   
-         
     	<dependency>
-    		<groupId>com.sun.xml.bind</groupId>
-    		<artifactId>jaxb-impl</artifactId>
-    		<version>2.1.6</version>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-api</artifactId>
+    		<version>1.5.2</version>
+    	</dependency>          	 
+   	
+    	<!-- Hibernate -->
+    	<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-entitymanager</artifactId>
+    		<version>3.4.0.GA</version>
+    		<scope>test</scope>
     	</dependency>
+    	<!-- HSQLDB -->
     	<dependency>
-    		<groupId>org.jvnet.hyperjaxb3</groupId>
-    		<artifactId>hyperjaxb3-ejb-runtime</artifactId>
-    		<version>0.3</version>
-    	</dependency>         
-      </dependencies>            
-         
+    		<groupId>com.h2database</groupId>
+    		<artifactId>h2</artifactId>
+    		<version>1.0.77</version>
+    		<scope>test</scope>
+    	</dependency>    	
+    	  
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <scope>test</scope>
+        </dependency>    
+        
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel</artifactId>
+            <scope>test</scope>
+        </dependency>              	  
+      </dependencies>              
+                  
 </project>
