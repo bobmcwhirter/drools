@@ -12,29 +12,30 @@ import javax.persistence.Table;
 
 @Entity
 public class Group extends OrganizationalEntity implements Serializable {    
-      private String name;
+      private String displayName;
       
       public Group() {
-          
+          super();
       }
       
-      public Group(String name) {
-          this.name = name;
+      public Group(String displayName) {
+          super();
+          this.displayName = displayName;
       }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((displayName == null) ? 0 : displayName.hashCode());
         return result;
     }
 
@@ -44,9 +45,9 @@ public class Group extends OrganizationalEntity implements Serializable {
         if ( obj == null ) return false;
         if ( !(obj instanceof Group) ) return false;
         Group other = (Group) obj;
-        if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
+        if ( displayName == null ) {
+            if ( other.displayName != null ) return false;
+        } else if ( !displayName.equals( other.displayName ) ) return false;
         return true;
     }
 

@@ -32,7 +32,7 @@ public class Task implements Serializable {
     private Delegation           delegation;
 
     @Embedded
-    private TaskPresentationElements presentationElements;
+    private TaskPresentationElements taskPresentationElements;
 
     @Embedded
     private TaskData             taskData;   
@@ -77,11 +77,11 @@ public class Task implements Serializable {
 
 
     public TaskPresentationElements getTaskPresentationElements() {
-        return presentationElements;
+        return taskPresentationElements;
     }
 
     public void setTaskPresentationElements(TaskPresentationElements presentationElements) {
-        this.presentationElements = presentationElements;
+        this.taskPresentationElements = presentationElements;
     }
 
     public TaskData getTaskData() {
@@ -107,7 +107,7 @@ public class Task implements Serializable {
         result = prime * result + ((deadlines == null) ? 0 : deadlines.hashCode());
         result = prime * result + ((delegation == null) ? 0 : delegation.hashCode());
         result = prime * result + ((peopleAssignments == null) ? 0 : peopleAssignments.hashCode());
-        result = prime * result + ((presentationElements == null) ? 0 : presentationElements.hashCode());
+        result = prime * result + ((taskPresentationElements == null) ? 0 : taskPresentationElements.hashCode());
         result = prime * result + priority;
         result = prime * result + ((taskData == null) ? 0 : taskData.hashCode());
         return result;
@@ -128,9 +128,9 @@ public class Task implements Serializable {
         if ( peopleAssignments == null ) {
             if ( other.peopleAssignments != null ) return false;
         } else if ( !peopleAssignments.equals( other.peopleAssignments ) ) return false;
-        if ( presentationElements == null ) {
-            if ( other.presentationElements != null ) return false;
-        } else if ( !presentationElements.equals( other.presentationElements ) ) return false;
+        if ( taskPresentationElements == null ) {
+            if ( other.taskPresentationElements != null ) return false;
+        } else if ( !taskPresentationElements.equals( other.taskPresentationElements ) ) return false;
         if ( priority != other.priority ) return false;
         if ( taskData == null ) {
             if ( other.taskData != null ) return false;

@@ -1,11 +1,11 @@
-users = [ 'darth'  : new User('Darth', 'Vader'),  
-          'bobba'  : new User( 'Bobba', 'Fet'),     'jabba'      : new User('Jabba', 'Hutt'),
-          'dalai'  : new User('Dalai', 'Lama'),     'christoper' : new User('Christoper', 'Columbus'),
-          'stuart' : new User('Stuart', 'Little'),  'jane'       : new User('Jane', 'Austin'),
-          'peter'  : new User('Peter', 'Parker'),   'steve'      : new User("Steve", "Rogers"),
-          'sly'    : new User('Sly', 'Stalone'),    'liz'        : new User("Elizabeth", "Windsor"),
-          'bruce'  : new User( "Bruce", "Wayne " ), 'tony'       : new User("Tony", "Stark"),
-          'luke'   : new User( "Luke", "Cage " )
+users = [ 'darth'  : new User('Darth Vader'),  
+          'bobba'  : new User( 'Bobba Fet'),     'jabba'      : new User('Jabba Hutt'),
+          'dalai'  : new User('Dalai Lama'),     'christoper' : new User('Christoper Columbus'),
+          'stuart' : new User('Stuart Little'),  'jane'       : new User('Jane Austin'),
+          'peter'  : new User('Peter Parker'),   'steve'      : new User('Steve Rogers'),
+          'sly'    : new User('Sly Stalone'),    'liz'        : new User('Elizabeth Windsor'),
+          'bruce'  : new User('Bruce Wayne' ),   'tony'       : new User('Tony Stark'),
+          'luke'   : new User('Luke Cage')
         ];
 groups = [ 'knightsTempler' : new Group( "Knights Templer" ),
            'crusaders' : new Group( "Crusaders" )
@@ -24,6 +24,8 @@ with ( new Task() ) {
         recipients = [users.get('sly'), users.get('liz')]
     }),
     taskData = (with ( new TaskData() ) {
+        actualOwner = users.get( 'liz' ),
+        createdBy = users.get( 'sly' ),
         activationTime = new Date( 10000000 ),
         createdOn = new Date( 10000000 ),
         expirationTime = new Date( 10000000 ),

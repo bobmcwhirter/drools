@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -21,7 +22,7 @@ public class Comment implements Serializable  {
     
     private Date addedDate;
     
-    @OneToOne
+    @ManyToOne()
     private User addedBy;
     
     public Long getId() {

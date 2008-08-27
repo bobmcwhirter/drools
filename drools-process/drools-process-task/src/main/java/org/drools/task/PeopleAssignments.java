@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -14,7 +15,7 @@ import org.drools.task.utils.CollectionUtils;
 
 @Embeddable
 public class PeopleAssignments implements Serializable {
-    @OneToOne
+    @ManyToOne()
     private User                       taskInitiator;
 
     @OneToMany

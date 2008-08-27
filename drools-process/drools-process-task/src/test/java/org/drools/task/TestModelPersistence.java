@@ -9,12 +9,14 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.drools.task.Attachment;
@@ -36,6 +38,8 @@ import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
+import org.drools.task.server.TaskService;
+import org.drools.task.utils.CollectionUtils;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.compiler.ExpressionCompiler;
@@ -47,20 +51,36 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import junit.framework.TestCase;
 
 public class TestModelPersistence extends TestCase {
+    EntityManagerFactory emf;
+    EntityManager em;
+    
+    private TaskService taskService;
+    
+    protected void setUp() throws Exception {
+        // Use persistence.xml configuration
+        emf = Persistence.createEntityManagerFactory( "org.drools.task" );
+        em = emf.createEntityManager(); // Retrieve an application managed entity manager
+        
+        taskService = new TaskService( em );
+    }
 
     public Object eval(Reader reader, Map vars) {
         try {
-            int charValue = 0;
-            StringBuffer sb = new StringBuffer( 1024 );
-            while ( (charValue = reader.read()) != -1 ) {
-                //result = result + (char) charValue;
-                sb.append( (char) charValue );
-            }
-            return eval( sb.toString(), vars );
+            return eval( toString( reader ), vars );
         } catch ( IOException e ) {
             throw new RuntimeException( "Exception Thrown",
                                         e );
         }
+    }
+    
+    public String toString(Reader reader) throws IOException {
+        int charValue = 0;
+        StringBuffer sb = new StringBuffer( 1024 );
+        while ( (charValue = reader.read()) != -1 ) {
+            //result = result + (char) charValue;
+            sb.append( (char) charValue );
+        }
+        return sb.toString();
     }
 
     public Object eval(String str, Map vars) {
@@ -96,11 +116,6 @@ public class TestModelPersistence extends TestCase {
     }
 
     public void testfullHibernateRoundtripWithAdditionalMVELCheck() throws Exception {
-        // Use persistence.xml configuration
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.task" );
-        EntityManager em = emf.createEntityManager(); // Retrieve an application managed entity manager
-
-        em.getTransaction().begin();
 
         Task task1 = new Task();
         task1.setPriority( 100 );
@@ -108,73 +123,65 @@ public class TestModelPersistence extends TestCase {
         PeopleAssignments peopleAssignments = new PeopleAssignments();
         task1.setPeopleAssignments( peopleAssignments );
 
-        User darth = new User( "Darth",
-                               "Vader" );
+        User darth = new User( "Darth Vader" );
         peopleAssignments.setTaskInitiator( darth );
         em.persist( darth );
 
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setPotentialOwners( potentialOwners );
-        User bobba = new User( "Bobba",
-                               "Fet" );
+        User bobba = new User( "Bobba Fet" );
         potentialOwners.add( bobba );
-        em.persist( bobba );
+        taskService.addUser( bobba );
 
-        User jabba = new User( "Jabba",
-                               "Hutt" );
+        User jabba = new User( "Jabba Hutt" );
         potentialOwners.add( jabba );
-        em.persist( jabba );
+        taskService.addUser( jabba );
 
         List<OrganizationalEntity> excludedOwners = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setExcludedOwners( excludedOwners );
-        User dalai = new User( "Dalai",
-                               "Lama" );
+        User dalai = new User( "Dalai Lama" );
         excludedOwners.add( dalai );
-        em.persist( dalai );
+        taskService.addUser( dalai );
 
-        User christoper = new User( "Christoper",
-                                    "Columbus" );
+        User christoper = new User( "Christoper Columbus" );
         excludedOwners.add( christoper );
-        em.persist( christoper );
+        taskService.addUser( christoper );
 
         List<OrganizationalEntity> stakeholders = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setTaskStakeholders( stakeholders );
-        User stuart = new User( "Stuart",
-                              "Little" );
+        User stuart = new User( "Stuart Little" );
         stakeholders.add( stuart );
-        em.persist( stuart );
+        taskService.addUser( stuart );
 
-        User jane = new User( "Jane",
-                              "Austin" );
+        User jane = new User( "Jane Austin" );
         stakeholders.add( jane );
-        em.persist( jane );
+        taskService.addUser( jane );
 
         List<OrganizationalEntity> businessAdmin = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setBusinessAdministrators( businessAdmin );
-        User peter = new User( "Peter",
-                               "Parker" );
+        User peter = new User( "Peter Parker" );
         businessAdmin.add( peter );
-        em.persist( peter );
+        taskService.addUser( peter );
 
-        User steve = new User( "Steve",
-                               "Rogers" );
+        User steve = new User( "Steve Rogers" );
         businessAdmin.add( steve );
-        em.persist( steve );
+        taskService.addUser( steve );
 
         List<OrganizationalEntity> recipients = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setRecipients( recipients );
-        User sly = new User( "Sly",
-                             "Stalone" );
+        User sly = new User( "Sly Stalone" );
         recipients.add( sly );
-        em.persist( sly );
+        taskService.addUser( sly );
 
-        User liz = new User( "Elizabeth",
-                             "Windsor" );
+        User liz = new User( "Elizabeth Windsor" );
         recipients.add( liz );
-        em.persist( liz );
+        taskService.addUser( liz );
 
         TaskData taskData = new TaskData();
         task1.setTaskData( taskData );
+        
+        taskData.setActualOwner( liz );
+        taskData.setCreatedBy( sly );
 
         taskData.setActivationTime( new Date( 10000000 ) );
         taskData.setCreatedOn( new Date( 10000000 ) );
@@ -247,11 +254,11 @@ public class TestModelPersistence extends TestCase {
         List<OrganizationalEntity> groups = new ArrayList<OrganizationalEntity>();
         delegation.setDelegates( groups );
         Group crusaders = new Group( "Crusaders" );
-        em.persist( crusaders );
+        taskService.addUser( crusaders );
         groups.add( crusaders );
 
         Group knightsTempler = new Group( "Knights Templer" );
-        em.persist( knightsTempler );
+        taskService.addUser( knightsTempler );
         groups.add( knightsTempler );
 
         Deadlines deadlines = new Deadlines();
@@ -295,18 +302,16 @@ public class TestModelPersistence extends TestCase {
 
         businessAdmin = new ArrayList<OrganizationalEntity>();
         notification.setBusinessAdministrators( businessAdmin );
-        User bruce = new User( "Bruce",
-                               "Wayne " );
+        User bruce = new User( "Bruce Wayne" );
         businessAdmin.add( bruce );
-        em.persist( bruce );
+        taskService.addUser( bruce );
         businessAdmin.add( peter );
 
         recipients = new ArrayList<OrganizationalEntity>();
         notification.setRecipients( recipients );
-        User tony = new User( "Tony",
-                              "Stark" );
+        User tony = new User( "Tony Stark" );
         recipients.add( tony );
-        em.persist( tony );
+        taskService.addUser( tony );
         recipients.add( darth );
 
         NotificationPresentationElements npresentationElements = new NotificationPresentationElements();
@@ -342,12 +347,10 @@ public class TestModelPersistence extends TestCase {
         potentialOwners = new ArrayList<OrganizationalEntity>();
         reassignment.setPotentialOwners( potentialOwners );
         potentialOwners.add( bobba );
-        User cage = new User( "Luke",
-                              "Cage " );
+        User cage = new User( "Luke Cage" );
         potentialOwners.add( cage );
-        em.persist( cage );
+        taskService.addUser( cage );
         
-////////////////
         List<Deadline> endDeadlines = new ArrayList<Deadline>();
         deadlines.setEndDeadlines( endDeadlines );
         deadline = new Deadline();
@@ -427,17 +430,14 @@ public class TestModelPersistence extends TestCase {
         potentialOwners = new ArrayList<OrganizationalEntity>();
         reassignment.setPotentialOwners( potentialOwners );
         potentialOwners.add( stuart );
-        potentialOwners.add( dalai );
-////////////////////        
+        potentialOwners.add( dalai );        
 
-
-        em.persist( task1 );
-
-        em.flush();
+        taskService.addTask( task1 );        
+        
         em.clear();
-
-        Task task2 = em.find( Task.class,
-                              task1.getId() );
+        
+        Task task2 = taskService.getTask( task1.getId( ) );
+        
         assertNotSame( task1,
                        task2 );
 //        assertEquals( task1,
@@ -462,6 +462,19 @@ public class TestModelPersistence extends TestCase {
 
         em.close();
         emf.close();
+    }
+    
+    public void testQuery() throws Exception {
+        List actual = taskService.getAllOpenTasks( 11L, "en-UK" );
+        
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "TaskSummaryResults.mvel" ) );
+        List<TaskSummary> expected = ( List<TaskSummary> ) eval( reader, new HashMap() );
+        
+        CollectionUtils.equals( actual, expected );
+        
+        em.close();
+        emf.close();
+        
     }
 
 }

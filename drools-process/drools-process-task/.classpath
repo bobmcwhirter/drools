@@ -23,4 +23,5 @@
   <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.4.GA/javassist-3.4.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mvel/mvel/2.0-dp4/mvel-2.0-dp4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.2/slf4j-jdk14-1.5.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/postgresql/postgresql/8.3-603.jdbc3/postgresql-8.3-603.jdbc3.jar"/>
 </classpath>

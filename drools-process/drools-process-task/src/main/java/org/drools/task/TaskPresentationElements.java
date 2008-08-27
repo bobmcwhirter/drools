@@ -28,6 +28,7 @@ public class TaskPresentationElements implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskPresentationElements_Descriptions_Id", nullable = true)
+    @Lob
     private List<IL8NText> descriptions = Collections.emptyList();  
     
     public TaskPresentationElements() {

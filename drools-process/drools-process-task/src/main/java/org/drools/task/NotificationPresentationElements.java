@@ -28,6 +28,7 @@ public class NotificationPresentationElements implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "NotificationPresentationElements_Descriptions_Id", nullable = true)
+    @Lob
     private List<IL8NText> descriptions = Collections.emptyList();  
     
     public NotificationPresentationElements() {
