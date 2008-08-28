@@ -27,7 +27,8 @@ public class TaskServiceTest extends BaseTest  {
         super.setUp();
         server = new MinaTaskServer( taskService );
         Thread thread = new Thread( server );
-        thread.start();     
+        thread.start();
+        Thread.sleep(500);
         
         client = new MinaTaskClient( "client 1", new TaskClientHandler() );
         NioSocketConnector connector = new NioSocketConnector();

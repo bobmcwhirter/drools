@@ -48,7 +48,7 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 
 import junit.framework.TestCase;
 
-public class BaseTest extends TestCase {
+public abstract class BaseTest extends TestCase {
     protected EntityManagerFactory emf;
     protected EntityManager em;
     
