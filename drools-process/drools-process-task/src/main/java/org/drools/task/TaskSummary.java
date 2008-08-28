@@ -185,7 +185,7 @@ public class TaskSummary implements Serializable {
         TaskSummary other = (TaskSummary) obj;
         if ( activationTime == null ) {
             if ( other.activationTime != null ) return false;
-        } else if ( !activationTime.equals( other.activationTime ) ) return false;
+        } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;
         if ( actualOwner == null ) {
             if ( other.actualOwner != null ) return false;
         } else if ( !actualOwner.equals( other.actualOwner ) ) return false;
@@ -194,14 +194,13 @@ public class TaskSummary implements Serializable {
         } else if ( !createdBy.equals( other.createdBy ) ) return false;
         if ( createdOn == null ) {
             if ( other.createdOn != null ) return false;
-        } else if ( !createdOn.equals( other.createdOn ) ) return false;
+        } else if ( createdOn.getTime() != other.createdOn.getTime() ) return false;
         if ( description == null ) {
             if ( other.description != null ) return false;
         } else if ( !description.equals( other.description ) ) return false;
         if ( expirationTime == null ) {
             if ( other.expirationTime != null ) return false;
-        } else if ( !expirationTime.equals( other.expirationTime ) ) return false;
-        if ( id != other.id ) return false;
+        } else if ( expirationTime.getTime() != other.expirationTime.getTime() ) return false;
         if ( name == null ) {
             if ( other.name != null ) return false;
         } else if ( !name.equals( other.name ) ) return false;

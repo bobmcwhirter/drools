@@ -6,13 +6,9 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.drools.task.utils.CollectionUtils;
 
@@ -20,43 +16,43 @@ import org.drools.task.utils.CollectionUtils;
 public class NotificationPresentationElements implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "NotificationPresentationElements_Names_Id", nullable = true)    
-    private List<IL8NText> names        = Collections.emptyList();
+    private List<I18NText> names        = Collections.emptyList();
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "NotificationPresentationElements_Subjects_Id", nullable = true)    
-    private List<IL8NText> subjects     = Collections.emptyList();
+    private List<I18NText> subjects     = Collections.emptyList();
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "NotificationPresentationElements_Descriptions_Id", nullable = true)
     @Lob
-    private List<IL8NText> descriptions = Collections.emptyList();  
+    private List<I18NText> descriptions = Collections.emptyList();  
     
     public NotificationPresentationElements() {
         
     }
 
 
-    public List<IL8NText> getNames() {
+    public List<I18NText> getNames() {
         return names;
     }
 
-    public void setNames(List<IL8NText> names) {
+    public void setNames(List<I18NText> names) {
         this.names = names;
     }
 
-    public List<IL8NText> getSubjects() {
+    public List<I18NText> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(List<IL8NText> subjects) {
+    public void setSubjects(List<I18NText> subjects) {
         this.subjects = subjects;
     }
     
-    public List<IL8NText> getDescriptions() {
+    public List<I18NText> getDescriptions() {
         return descriptions;
     }
 
-    public void setDescriptions(List<IL8NText> descriptions) {
+    public void setDescriptions(List<I18NText> descriptions) {
         this.descriptions = descriptions;
     }
 

@@ -1,31 +1,16 @@
-users = [ 'darth'  : new User('Darth Vader'),  
-          'bobba'  : new User( 'Bobba Fet'),     'jabba'      : new User('Jabba Hutt'),
-          'dalai'  : new User('Dalai Lama'),     'christoper' : new User('Christoper Columbus'),
-          'stuart' : new User('Stuart Little'),  'jane'       : new User('Jane Austin'),
-          'peter'  : new User('Peter Parker'),   'steve'      : new User('Steve Rogers'),
-          'sly'    : new User('Sly Stalone'),    'liz'        : new User('Elizabeth Windsor'),
-          'bruce'  : new User('Bruce Wayne' ),   'tony'       : new User('Tony Stark'),
-          'luke'   : new User('Luke Cage')
-        ];
-groups = [ 'knightsTempler' : new Group( "Knights Templer" ),
-           'crusaders' : new Group( "Crusaders" )
-         ];
-        
-          
 with ( new Task() ) { 
-    id = 1,
     priority = 100,
     peopleAssignments = (with ( new PeopleAssignments() ) {        
-        taskInitiator = users.get('darth'),
-        potentialOwners = [users.get('bobba'), users.get('jabba')],
-        excludedOwners = [users.get('dalai'), users.get('christoper')],
-        taskStakeholders = [users.get('stuart'), users.get('jane')],
-        businessAdministrators = [users.get('peter'), users.get('steve')],
-        recipients = [users.get('sly'), users.get('liz')]
+        taskInitiator = users['darth' ],
+        potentialOwners = [users['bobba' ], users['jabba' ]],
+        excludedOwners = [users['dalai' ], users['christoper' ]],
+        taskStakeholders = [users['stuart' ], users['jane' ]],
+        businessAdministrators = [users['peter' ], users['steve' ]],
+        recipients = [users['sly' ], users['liz' ]]
     }),
     taskData = (with ( new TaskData() ) {
-        actualOwner = users.get( 'liz' ),
-        createdBy = users.get( 'sly' ),
+        actualOwner = users[ 'liz' ],
+        createdBy = users[ 'sly' ],
         activationTime = new Date( 10000000 ),
         createdOn = new Date( 10000000 ),
         expirationTime = new Date( 10000000 ),
@@ -34,7 +19,7 @@ with ( new Task() ) {
             (with ( new Attachment() ) {
                 accessType = AccessType.Inline,
                 attachedAt = new Date( 10000000 ),                            
-                attachedBy = users.get('liz'),
+                attachedBy = users['liz' ],
                 contentType = "text",
                 name = "file.txt",
                 attachment = bytes1           
@@ -42,7 +27,7 @@ with ( new Task() ) {
              (with ( new Attachment() ) {
                  accessType = AccessType.Url, 
                  attachedAt = new Date( 10000000 ),
-                 attachedBy = users.get('liz'),
+                 attachedBy = users['liz' ],
                  contentType = "text",
                  name = "file2.txt",
                  attachment = "http://domain.org/file.txt".bytes
@@ -50,60 +35,60 @@ with ( new Task() ) {
         ],
         comments = [ 
             (with ( new Comment ) {
-                addedBy = users.get('peter'),
+                addedBy = users['peter' ],
                 addedDate = new Date( 10000000 ),
                 text = "this is a short comment"
              }),
              (with ( new Comment ) {
-                 addedBy = users.get('steve'),
+                 addedBy = users['steve' ],
                  addedDate = new Date( 10000000 ),
                  text = "this is a loooooooooooooooooooooooooooooooooooooooooooooooong comment"
              })
         ]
     }),
     taskPresentationElements = (with ( new TaskPresentationElements() ) {
-        names = [ new IL8NText( "en-UK", "This is my task name" ),
-                  new IL8NText( "en-DK", "Dies ist mein task Name" )],
-        subjects = [ new IL8NText( "en-UK", "This is my task subject" ),
-                     new IL8NText( "en-DK", "Das ist mein task Thema" ) ],
-        descriptions = [ new IL8NText( "en-UK", "This is my task description" ),
-                          new IL8NText( "en-DK", "Das ist mein task Beschreibung" ) ]   
+        names = [ new I18NText( "en-UK", "This is my task name" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description" ),
+                          new I18NText( "en-DK", "Das ist mein task Beschreibung" ) ]   
     }),  
     delegation = ( with( new Delegation() ) {
         allowed = Allowed.PotentialOwners,
-        delegates = [ groups.get('crusaders'), groups.get('knightsTempler') ]                                                                
+        delegates = [ groups['crusaders' ], groups['knightsTempler' ] ]                                                                
     }),
     deadlines = ( with ( new Deadlines() ) {
         startDeadlines = [ 
             (with (new Deadline()) {
                 date = new Date( 10000000 ),
-                documentation = [ new IL8NText( "en-UK", "Start Deadline documentation" ),
-                                  new IL8NText( "en-DK", "Start Termin Dokumentation" ) ],
+                documentation = [ new I18NText( "en-UK", "Start Deadline documentation" ),
+                                  new I18NText( "en-DK", "Start Termin Dokumentation" ) ],
                 escalations = [ 
                     (with (new Escalation()) {
                         name = "My Start Escalation",
                         constraints = [new BooleanExpression( "mvel", "true" )],
                         notifications = [ 
                             (with (new Notification()) {
-                                documentation =  [ new IL8NText( "en-UK", "Start Notification documentation" ),
-                                                   new IL8NText( "en-DK", "Start Anmeldung Dokumentation" ) ],
-                                businessAdministrators = [ users.get('bruce'), users.get('peter') ],
-                                recipients = [ users.get('tony'), users.get('darth') ],                                                                                        
+                                documentation =  [ new I18NText( "en-UK", "Start Notification documentation" ),
+                                                   new I18NText( "en-DK", "Start Anmeldung Dokumentation" ) ],
+                                businessAdministrators = [ users['bruce' ], users['peter' ] ],
+                                recipients = [ users['tony' ], users['darth' ] ],                                                                                        
                                 notificationPresentationElements = (with (new NotificationPresentationElements()) {
-                                    names = [ new IL8NText( "en-UK", "This is my start notification name" ),
-                                              new IL8NText( "en-DK", "Dies ist mein start anmeldung Name" ) ],
-                                    subjects = [ new IL8NText( "en-UK", "This is my start notification subject" ), 
-                                                 new IL8NText( "en-DK", "Das ist mein start anmeldung Thema" ) ],
-                                    descriptions = [new IL8NText( "en-UK", "This is my start notification description" ),
-                                                    new IL8NText( "en-DK", "Das ist mein start anmeldung Beschreibung" ) ]
+                                    names = [ new I18NText( "en-UK", "This is my start notification name" ),
+                                              new I18NText( "en-DK", "Dies ist mein start anmeldung Name" ) ],
+                                    subjects = [ new I18NText( "en-UK", "This is my start notification subject" ), 
+                                                 new I18NText( "en-DK", "Das ist mein start anmeldung Thema" ) ],
+                                    descriptions = [new I18NText( "en-UK", "This is my start notification description" ),
+                                                    new I18NText( "en-DK", "Das ist mein start anmeldung Beschreibung" ) ]
                                 })                                                                                                                                                                                       
                             }) 
                         ],
                         reassignments = [
                             (with (new Reassignment()) {
-                                documentation =  [ new IL8NText( "en-UK", "Start Reassignment documentation" ),
-                                                   new IL8NText( "en-DK", "Start Neuzuweisung Dokumentation" ) ], 
-                                potentialOwners = [  users.get('bobba'), users.get('luke') ]
+                                documentation =  [ new I18NText( "en-UK", "Start Reassignment documentation" ),
+                                                   new I18NText( "en-DK", "Start Neuzuweisung Dokumentation" ) ], 
+                                potentialOwners = [  users['bobba' ], users['luke' ] ]
                              })                          
                         ]                        
                         
@@ -114,33 +99,33 @@ with ( new Task() ) {
         endDeadlines = [ 
             (with (new Deadline()) {
                 date = new Date( 10000000 ),
-                documentation = [ new IL8NText( "en-UK", "End Deadline documentation" ),
-                                  new IL8NText( "en-DK", "Ende Termin Dokumentation" ) ],
+                documentation = [ new I18NText( "en-UK", "End Deadline documentation" ),
+                                  new I18NText( "en-DK", "Ende Termin Dokumentation" ) ],
                 escalations = [ 
                     (with (new Escalation()) {
                         name = "My End Escalation",
                         constraints = [new BooleanExpression( "mvel", "true" )],
                         notifications = [ 
                             (with (new Notification()) {
-                                documentation =  [ new IL8NText( "en-UK", "End Notification documentation" ),
-                                                   new IL8NText( "en-DK", "Ende Anmeldung Dokumentation" ) ],
-                                businessAdministrators = [ users.get('bobba'), users.get('darth') ],
-                                recipients = [ users.get('liz'), users.get('jane') ],                                                                                        
+                                documentation =  [ new I18NText( "en-UK", "End Notification documentation" ),
+                                                   new I18NText( "en-DK", "Ende Anmeldung Dokumentation" ) ],
+                                businessAdministrators = [ users['bobba' ], users['darth' ] ],
+                                recipients = [ users['liz' ], users['jane' ] ],                                                                                        
                                 notificationPresentationElements = (with (new NotificationPresentationElements()) {
-                                    names = [ new IL8NText( "en-UK", "This is my end notification name" ),
-                                              new IL8NText( "en-DK", "Dies ist mein ende anmeldung Name" ) ],
-                                    subjects = [ new IL8NText( "en-UK", "This is my end notification subject" ), 
-                                                 new IL8NText( "en-DK", "Das ist mein ende anmeldung Thema" ) ],
-                                    descriptions = [new IL8NText( "en-UK", "This is my end notification description" ),
-                                                    new IL8NText( "en-DK", "Das ist mein ende anmeldung Beschreibung" ) ]
+                                    names = [ new I18NText( "en-UK", "This is my end notification name" ),
+                                              new I18NText( "en-DK", "Dies ist mein ende anmeldung Name" ) ],
+                                    subjects = [ new I18NText( "en-UK", "This is my end notification subject" ), 
+                                                 new I18NText( "en-DK", "Das ist mein ende anmeldung Thema" ) ],
+                                    descriptions = [new I18NText( "en-UK", "This is my end notification description" ),
+                                                    new I18NText( "en-DK", "Das ist mein ende anmeldung Beschreibung" ) ]
                                 })                                                                                                                                                                                       
                             }) 
                         ],
                         reassignments = [
                             (with (new Reassignment()) {
-                                documentation =  [ new IL8NText( "en-UK", "End Reassignment documentation" ),
-                                                   new IL8NText( "en-DK", "Ende Neuzuweisung Dokumentation" ) ], 
-                                potentialOwners = [  users.get('stuart'), users.get('dalai') ]
+                                documentation =  [ new I18NText( "en-UK", "End Reassignment documentation" ),
+                                                   new I18NText( "en-DK", "Ende Neuzuweisung Dokumentation" ) ], 
+                                potentialOwners = [  users['stuart' ], users['dalai' ] ]
                              })                          
                         ]                        
                         

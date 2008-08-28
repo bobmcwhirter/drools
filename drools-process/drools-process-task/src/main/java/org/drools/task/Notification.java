@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,8 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 
 import org.drools.task.utils.CollectionUtils;
 
@@ -26,7 +23,7 @@ public class Notification implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Notification_Documentation_Id", nullable = true)
-    private List<IL8NText>                   documentation = Collections.emptyList();
+    private List<I18NText>                   documentation = Collections.emptyList();
 
     private int                              priority;
 
@@ -49,11 +46,11 @@ public class Notification implements Serializable {
         this.id = id;
     }
 
-    public List<IL8NText> getDocumentation() {
+    public List<I18NText> getDocumentation() {
         return documentation;
     }
 
-    public void setDocumentation(List<IL8NText> documentation) {
+    public void setDocumentation(List<I18NText> documentation) {
         this.documentation = documentation;
     }
 

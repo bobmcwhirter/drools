@@ -22,7 +22,7 @@ public class Reassignment implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Reassignment_Documentation_Id", nullable = true)     
-    private List<IL8NText>             documentation = Collections.emptyList();;
+    private List<I18NText>             documentation = Collections.emptyList();;
 
     @OneToMany
     @JoinColumn(name = "Reassignment_potentialOwners_Id", nullable = true)    
@@ -37,11 +37,11 @@ public class Reassignment implements Serializable {
         this.id = id;
     }
 
-    public List<IL8NText> getDocumentation() {
+    public List<I18NText> getDocumentation() {
         return documentation;
     }
 
-    public void setDocumentation(List<IL8NText> documentation) {
+    public void setDocumentation(List<I18NText> documentation) {
         this.documentation = documentation;
     }
 

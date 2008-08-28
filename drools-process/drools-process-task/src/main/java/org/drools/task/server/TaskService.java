@@ -37,7 +37,7 @@ public class TaskService {
         em.getTransaction().commit();
     }
     
-    public void addUser(Group group) {
+    public void addGroup(Group group) {
         em.getTransaction().begin();
         em.persist( group );
         em.getTransaction().commit();
@@ -55,7 +55,7 @@ public class TaskService {
     
     public List<TaskSummary> getAllOpenTasks(long userId, String language) {
         allOpenTasks.setParameter( "currentUser", userId );
-        allOpenTasks.setParameter( "language", "en-UK" );
+        allOpenTasks.setParameter( "language", language );
         List<TaskSummary> list = ( List<TaskSummary> ) allOpenTasks.getResultList();
         return list;
     }

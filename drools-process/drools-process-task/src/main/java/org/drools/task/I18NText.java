@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 @Entity
-public class IL8NText implements Serializable {
+public class I18NText implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long   id;
@@ -19,11 +19,11 @@ public class IL8NText implements Serializable {
     @Lob
     private String text;
 
-    public IL8NText() {
+    public I18NText() {
 
     }
 
-    public IL8NText(String language,
+    public I18NText(String language,
                     String text) {
         this.language = language;
         this.text = text;
@@ -66,8 +66,8 @@ public class IL8NText implements Serializable {
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
-        if ( !(obj instanceof IL8NText) ) return false;
-        IL8NText other = (IL8NText) obj;
+        if ( !(obj instanceof I18NText) ) return false;
+        I18NText other = (I18NText) obj;
         if ( language == null ) {
             if ( other.language != null ) return false;
         } else if ( !language.equals( other.language ) ) return false;

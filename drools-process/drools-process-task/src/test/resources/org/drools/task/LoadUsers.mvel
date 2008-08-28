@@ -6,12 +6,7 @@ users = [ 'darth'  : new User('Darth Vader'),
           'sly'    : new User('Sly Stalone'),    'liz'        : new User('Elizabeth Windsor'),
           'bruce'  : new User('Bruce Wayne' ),   'tony'       : new User('Tony Stark'),
           'luke'   : new User('Luke Cage')
-        ];
-groups = [ 'knightsTempler' : new Group( "Knights Templer" ),
-           'crusaders' : new Group( "Crusaders" )
-         ];
+        ];       
+
+return users;
         
-[ new TaskSummary( 1, 'This is my task name', 'This is my task subject', 'This is my task Description',
-                   Status.Created, 100, false, users.get( 'liz' ), users.get( 'sly' ), 
-                   new Date( 10000000 ), new Date( 10000000 ), new Date( 10000000 ) )
-]

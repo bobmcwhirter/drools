@@ -27,7 +27,7 @@ import org.drools.task.Deadlines;
 import org.drools.task.Delegation;
 import org.drools.task.Escalation;
 import org.drools.task.Group;
-import org.drools.task.IL8NText;
+import org.drools.task.I18NText;
 import org.drools.task.Notification;
 import org.drools.task.NotificationPresentationElements;
 import org.drools.task.OrganizationalEntity;
@@ -54,6 +54,9 @@ public class TestModelPersistence extends TestCase {
     EntityManagerFactory emf;
     EntityManager em;
     
+    private Map<String, User> users;
+    private Map<String, Group> groups;
+    
     private TaskService taskService;
     
     protected void setUp() throws Exception {
@@ -62,6 +65,23 @@ public class TestModelPersistence extends TestCase {
         em = emf.createEntityManager(); // Retrieve an application managed entity manager
         
         taskService = new TaskService( em );
+        
+        Map  vars = new HashedMap();
+        //vars.put( "em", em );   
+        
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "LoadUsers.mvel" ) );     
+        users = ( Map<String, User> ) eval( reader, vars );   
+        for ( User user : users.values() ) {
+            taskService.addUser( user );
+        }           
+        
+        reader = new InputStreamReader( getClass().getResourceAsStream( "LoadGroups.mvel" ) );      
+        groups = ( Map<String, Group> ) eval( reader, vars );     
+        for ( Group group : groups.values() ) {
+            taskService.addGroup( group );
+        }           
+        
+    
     }
 
     public Object eval(Reader reader, Map vars) {
@@ -100,7 +120,7 @@ public class TestModelPersistence extends TestCase {
         context.addImport( "Delegation", Delegation.class );
         context.addImport( "Escalation", Escalation.class );
         context.addImport( "Group", Group.class );
-        context.addImport( "IL8NText", IL8NText.class );
+        context.addImport( "I18NText", I18NText.class );
         context.addImport( "Notification", Notification.class );
         context.addImport( "NotificationPresentationElements", NotificationPresentationElements.class );
         context.addImport( "OrganizationalEntity", OrganizationalEntity.class );
@@ -123,65 +143,40 @@ public class TestModelPersistence extends TestCase {
         PeopleAssignments peopleAssignments = new PeopleAssignments();
         task1.setPeopleAssignments( peopleAssignments );
 
-        User darth = new User( "Darth Vader" );
-        peopleAssignments.setTaskInitiator( darth );
-        em.persist( darth );
+        peopleAssignments.setTaskInitiator( users.get(  "darth" ) );
 
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setPotentialOwners( potentialOwners );
-        User bobba = new User( "Bobba Fet" );
-        potentialOwners.add( bobba );
-        taskService.addUser( bobba );
+        potentialOwners.add( users.get( "bobba") );
 
-        User jabba = new User( "Jabba Hutt" );
-        potentialOwners.add( jabba );
-        taskService.addUser( jabba );
+        potentialOwners.add( users.get( "jabba") );
 
         List<OrganizationalEntity> excludedOwners = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setExcludedOwners( excludedOwners );
-        User dalai = new User( "Dalai Lama" );
-        excludedOwners.add( dalai );
-        taskService.addUser( dalai );
+        excludedOwners.add( users.get( "dalai" ) );
 
-        User christoper = new User( "Christoper Columbus" );
-        excludedOwners.add( christoper );
-        taskService.addUser( christoper );
+        excludedOwners.add( users.get( "christoper" ) );
 
         List<OrganizationalEntity> stakeholders = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setTaskStakeholders( stakeholders );
-        User stuart = new User( "Stuart Little" );
-        stakeholders.add( stuart );
-        taskService.addUser( stuart );
-
-        User jane = new User( "Jane Austin" );
-        stakeholders.add( jane );
-        taskService.addUser( jane );
+        stakeholders.add( users.get( "stuart" ) );
+        stakeholders.add( users.get( "jane" ) );
 
         List<OrganizationalEntity> businessAdmin = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setBusinessAdministrators( businessAdmin );
-        User peter = new User( "Peter Parker" );
-        businessAdmin.add( peter );
-        taskService.addUser( peter );
-
-        User steve = new User( "Steve Rogers" );
-        businessAdmin.add( steve );
-        taskService.addUser( steve );
+        businessAdmin.add( users.get( "peter" ) );
+        businessAdmin.add( users.get( "steve" ) );
 
         List<OrganizationalEntity> recipients = new ArrayList<OrganizationalEntity>();
         peopleAssignments.setRecipients( recipients );
-        User sly = new User( "Sly Stalone" );
-        recipients.add( sly );
-        taskService.addUser( sly );
-
-        User liz = new User( "Elizabeth Windsor" );
-        recipients.add( liz );
-        taskService.addUser( liz );
+        recipients.add( users.get( "sly" ) );
+        recipients.add( users.get( "liz" ) );
 
         TaskData taskData = new TaskData();
         task1.setTaskData( taskData );
         
-        taskData.setActualOwner( liz );
-        taskData.setCreatedBy( sly );
+        taskData.setActualOwner( users.get( "liz" ) );
+        taskData.setCreatedBy( users.get( "sly" ) );
 
         taskData.setActivationTime( new Date( 10000000 ) );
         taskData.setCreatedOn( new Date( 10000000 ) );
@@ -194,7 +189,7 @@ public class TestModelPersistence extends TestCase {
         Attachment attachment = new Attachment();
         attachment.setAccessType( AccessType.Inline );
         attachment.setAttachedAt( new Date( 10000000 ) );
-        attachment.setAttachedBy( liz );
+        attachment.setAttachedBy( users.get( "liz" ) );
         attachment.setContentType( "text" );
         attachment.setName( "file.txt" );
         attachment.setAttachment( new byte[]{1, 0, 0, 1} );
@@ -203,7 +198,7 @@ public class TestModelPersistence extends TestCase {
         attachment = new Attachment();
         attachment.setAccessType( AccessType.Url );
         attachment.setAttachedAt( new Date( 10000000 ) );
-        attachment.setAttachedBy( liz );
+        attachment.setAttachedBy( users.get( "liz" ) );
         attachment.setContentType( "text" );
         attachment.setName( "file2.txt" );
         attachment.setAttachment( new String( "http://domain.org/file.txt" ).getBytes() );
@@ -212,54 +207,49 @@ public class TestModelPersistence extends TestCase {
         List<Comment> comments = new ArrayList<Comment>();
         taskData.setComments( comments );
         Comment comment = new Comment();
-        comment.setAddedBy( peter );
+        comment.setAddedBy( users.get( "peter" ) );
         comment.setAddedDate( new Date( 10000000 ) );
         comment.setText( "this is a short comment" );
         comments.add( comment );
 
         comment = new Comment();
-        comment.setAddedBy( steve );
+        comment.setAddedBy( users.get( "steve" ) );
         comment.setAddedDate( new Date( 10000000 ) );
         comment.setText( "this is a loooooooooooooooooooooooooooooooooooooooooooooooong comment" );
         comments.add( comment );
 
         TaskPresentationElements tpresentationElements = new TaskPresentationElements();
         task1.setTaskPresentationElements( tpresentationElements );
-        List<IL8NText> names = new ArrayList<IL8NText>();
+        List<I18NText> names = new ArrayList<I18NText>();
         tpresentationElements.setNames( names );
-        List<IL8NText> subjects = new ArrayList<IL8NText>();
+        List<I18NText> subjects = new ArrayList<I18NText>();
         tpresentationElements.setSubjects( subjects );
-        List<IL8NText> descriptions = new ArrayList<IL8NText>();
+        List<I18NText> descriptions = new ArrayList<I18NText>();
         tpresentationElements.setDescriptions( descriptions );
 
-        names.add( new IL8NText( "en-UK",
+        names.add( new I18NText( "en-UK",
                                  "This is my task name" ) );
-        names.add( new IL8NText( "en-DK",
+        names.add( new I18NText( "en-DK",
                                  "Dies ist mein task Name" ) );
 
-        subjects.add( new IL8NText( "en-UK",
+        subjects.add( new I18NText( "en-UK",
                                     "This is my task subject" ) );
-        subjects.add( new IL8NText( "en-DK",
+        subjects.add( new I18NText( "en-DK",
                                     "Das ist mein task Thema" ) );
 
-        descriptions.add( new IL8NText( "en-UK",
+        descriptions.add( new I18NText( "en-UK",
                                         "This is my task description" ) );
-        descriptions.add( new IL8NText( "en-DK",
+        descriptions.add( new I18NText( "en-DK",
                                         "Das ist mein task Beschreibung" ) );
 
         Delegation delegation = new Delegation();
         task1.setDelegation( delegation );
         delegation.setAllowed( Allowed.PotentialOwners );
 
-        List<OrganizationalEntity> groups = new ArrayList<OrganizationalEntity>();
-        delegation.setDelegates( groups );
-        Group crusaders = new Group( "Crusaders" );
-        taskService.addUser( crusaders );
-        groups.add( crusaders );
-
-        Group knightsTempler = new Group( "Knights Templer" );
-        taskService.addUser( knightsTempler );
-        groups.add( knightsTempler );
+        List<OrganizationalEntity> delegates = new ArrayList<OrganizationalEntity>();
+        delegation.setDelegates( delegates );
+        delegates.add( groups.get( "crusaders" ) );
+        delegates.add( groups.get( "knightsTempler" ) );
 
         Deadlines deadlines = new Deadlines();
         task1.setDeadlines( deadlines );
@@ -269,11 +259,11 @@ public class TestModelPersistence extends TestCase {
         Deadline deadline = new Deadline();
         startDeadlines.add( deadline );
         deadline.setDate( new Date( 10000000 ) );
-        List<IL8NText> docs = new ArrayList<IL8NText>();
+        List<I18NText> docs = new ArrayList<I18NText>();
         deadline.setDocumentation( docs );
-        docs.add( new IL8NText( "en-UK",
+        docs.add( new I18NText( "en-UK",
                                 "Start Deadline documentation" ) );
-        docs.add( new IL8NText( "en-DK",
+        docs.add( new I18NText( "en-DK",
                                 "Start Termin Dokumentation" ) );
 
         List<Escalation> escalations = new ArrayList<Escalation>();
@@ -293,74 +283,68 @@ public class TestModelPersistence extends TestCase {
         Notification notification = new Notification();
         notifications.add( notification );
         notification.setPriority( 1000 );
-        docs = new ArrayList<IL8NText>();
+        docs = new ArrayList<I18NText>();
         notification.setDocumentation( docs );
-        docs.add( new IL8NText( "en-UK",
+        docs.add( new I18NText( "en-UK",
                                 "Start Notification documentation" ) );
-        docs.add( new IL8NText( "en-DK",
+        docs.add( new I18NText( "en-DK",
                                 "Start Anmeldung Dokumentation" ) );
 
         businessAdmin = new ArrayList<OrganizationalEntity>();
         notification.setBusinessAdministrators( businessAdmin );
-        User bruce = new User( "Bruce Wayne" );
-        businessAdmin.add( bruce );
-        taskService.addUser( bruce );
-        businessAdmin.add( peter );
+        businessAdmin.add( users.get( "bruce" ) );
+        businessAdmin.add( users.get( "peter" ) );
 
         recipients = new ArrayList<OrganizationalEntity>();
         notification.setRecipients( recipients );
-        User tony = new User( "Tony Stark" );
-        recipients.add( tony );
-        taskService.addUser( tony );
-        recipients.add( darth );
+        recipients.add( users.get( "tony" ) );
+        recipients.add( users.get( "darth" ) );
 
         NotificationPresentationElements npresentationElements = new NotificationPresentationElements();
         notification.setNotificationPresentationElements( npresentationElements );
-        names = new ArrayList<IL8NText>();
+        names = new ArrayList<I18NText>();
         npresentationElements.setNames( names );
-        subjects = new ArrayList<IL8NText>();
+        subjects = new ArrayList<I18NText>();
         npresentationElements.setSubjects( subjects );
-        descriptions = new ArrayList<IL8NText>();
+        descriptions = new ArrayList<I18NText>();
         npresentationElements.setDescriptions( descriptions );
 
-        names.add( new IL8NText( "en-UK",
+        names.add( new I18NText( "en-UK",
                                  "This is my start notification name" ) );
-        names.add( new IL8NText( "en-DK",
+        names.add( new I18NText( "en-DK",
                                  "Dies ist mein start anmeldung Name" ) );
 
-        subjects.add( new IL8NText( "en-UK", "This is my start notification subject" ) );
-        subjects.add( new IL8NText( "en-DK", "Das ist mein start anmeldung Thema" ) );
+        subjects.add( new I18NText( "en-UK", "This is my start notification subject" ) );
+        subjects.add( new I18NText( "en-DK", "Das ist mein start anmeldung Thema" ) );
 
-        descriptions.add( new IL8NText( "en-UK", "This is my start notification description" ) );
-        descriptions.add( new IL8NText( "en-DK", "Das ist mein start anmeldung Beschreibung" ) );
+        descriptions.add( new I18NText( "en-UK", "This is my start notification description" ) );
+        descriptions.add( new I18NText( "en-DK", "Das ist mein start anmeldung Beschreibung" ) );
 
         List<Reassignment> reassignments = new ArrayList<Reassignment>();
         escalation.setReassignments( reassignments );
         Reassignment reassignment = new Reassignment();
         reassignments.add( reassignment );
 
-        docs = new ArrayList<IL8NText>();
+        docs = new ArrayList<I18NText>();
         reassignment.setDocumentation( docs );
-        docs.add( new IL8NText( "en-UK", "Start Reassignment documentation" ) );
-        docs.add( new IL8NText( "en-DK", "Start Neuzuweisung Dokumentation" ) );
+        docs.add( new I18NText( "en-UK", "Start Reassignment documentation" ) );
+        docs.add( new I18NText( "en-DK", "Start Neuzuweisung Dokumentation" ) );
 
         potentialOwners = new ArrayList<OrganizationalEntity>();
         reassignment.setPotentialOwners( potentialOwners );
-        potentialOwners.add( bobba );
-        User cage = new User( "Luke Cage" );
-        potentialOwners.add( cage );
-        taskService.addUser( cage );
+        potentialOwners.add( users.get( "bobba" ) );
+        potentialOwners.add( users.get( "luke" ) );
         
         List<Deadline> endDeadlines = new ArrayList<Deadline>();
         deadlines.setEndDeadlines( endDeadlines );
         deadline = new Deadline();
         endDeadlines.add( deadline );
         deadline.setDate( new Date( 10000000 ) );
-        docs = new ArrayList<IL8NText>();
+        docs = new ArrayList<I18NText>();
         deadline.setDocumentation( docs );
-        docs.add( new IL8NText( "en-UK",
+        docs.add( new I18NText( "en-UK",
                                 "End Deadline documentation" ) );
-        docs.add( new IL8NText( "en-DK",
+        docs.add( new I18NText( "en-DK",
                                 "Ende Termin Dokumentation" ) );
 
         escalations = new ArrayList<Escalation>();
@@ -380,57 +364,57 @@ public class TestModelPersistence extends TestCase {
         notification = new Notification();
         notifications.add( notification );
         notification.setPriority( 1000 );
-        docs = new ArrayList<IL8NText>();
+        docs = new ArrayList<I18NText>();
         notification.setDocumentation( docs );
-        docs.add( new IL8NText( "en-UK",
+        docs.add( new I18NText( "en-UK",
                                 "End Notification documentation" ) );
-        docs.add( new IL8NText( "en-DK",
+        docs.add( new I18NText( "en-DK",
                                 "Ende Anmeldung Dokumentation" ) );
 
         businessAdmin = new ArrayList<OrganizationalEntity>();
         notification.setBusinessAdministrators( businessAdmin );
-        businessAdmin.add( bobba );
-        businessAdmin.add( darth );
+        businessAdmin.add( users.get( "bobba" ) );
+        businessAdmin.add( users.get( "darth" ) );
 
         recipients = new ArrayList<OrganizationalEntity>();
         notification.setRecipients( recipients );
-        recipients.add( liz );
-        recipients.add( jane );
+        recipients.add( users.get( "liz" ) );
+        recipients.add( users.get( "jane" ) );
 
         npresentationElements = new NotificationPresentationElements();
         notification.setNotificationPresentationElements( npresentationElements );
-        names = new ArrayList<IL8NText>();
+        names = new ArrayList<I18NText>();
         npresentationElements.setNames( names );
-        subjects = new ArrayList<IL8NText>();
+        subjects = new ArrayList<I18NText>();
         npresentationElements.setSubjects( subjects );
-        descriptions = new ArrayList<IL8NText>();
+        descriptions = new ArrayList<I18NText>();
         npresentationElements.setDescriptions( descriptions );
 
-        names.add( new IL8NText( "en-UK",
+        names.add( new I18NText( "en-UK",
                                  "This is my end notification name" ) );
-        names.add( new IL8NText( "en-DK",
+        names.add( new I18NText( "en-DK",
                                  "Dies ist mein ende anmeldung Name" ) );
 
-        subjects.add( new IL8NText( "en-UK", "This is my end notification subject" ) );
-        subjects.add( new IL8NText( "en-DK", "Das ist mein ende anmeldung Thema" ) );
+        subjects.add( new I18NText( "en-UK", "This is my end notification subject" ) );
+        subjects.add( new I18NText( "en-DK", "Das ist mein ende anmeldung Thema" ) );
 
-        descriptions.add( new IL8NText( "en-UK", "This is my end notification description" ) );
-        descriptions.add( new IL8NText( "en-DK", "Das ist mein ende anmeldung Beschreibung" ) );
+        descriptions.add( new I18NText( "en-UK", "This is my end notification description" ) );
+        descriptions.add( new I18NText( "en-DK", "Das ist mein ende anmeldung Beschreibung" ) );
 
         reassignments = new ArrayList<Reassignment>();
         escalation.setReassignments( reassignments );
         reassignment = new Reassignment();
         reassignments.add( reassignment );
 
-        docs = new ArrayList<IL8NText>();
+        docs = new ArrayList<I18NText>();
         reassignment.setDocumentation( docs );
-        docs.add( new IL8NText( "en-UK", "End Reassignment documentation" ) );
-        docs.add( new IL8NText( "en-DK", "Ende Neuzuweisung Dokumentation" ) );
+        docs.add( new I18NText( "en-UK", "End Reassignment documentation" ) );
+        docs.add( new I18NText( "en-DK", "Ende Neuzuweisung Dokumentation" ) );
 
         potentialOwners = new ArrayList<OrganizationalEntity>();
         reassignment.setPotentialOwners( potentialOwners );
-        potentialOwners.add( stuart );
-        potentialOwners.add( dalai );        
+        potentialOwners.add( users.get( "stuart" ) );
+        potentialOwners.add( users.get( "dalai" ) );        
 
         taskService.addTask( task1 );        
         
@@ -440,8 +424,8 @@ public class TestModelPersistence extends TestCase {
         
         assertNotSame( task1,
                        task2 );
-//        assertEquals( task1,
-//                      task2 );
+        assertEquals( task1,
+                      task2 );
 
 //        XStream xstream = new XStream();
 //        String xml = xstream.toXML( task1 );
@@ -452,6 +436,8 @@ public class TestModelPersistence extends TestCase {
         
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "FullyPopulatedTask.mvel" ) );
         Map  vars = new HashedMap();
+        vars.put( "users", users );
+        vars.put( "groups", groups );          
         vars.put( "bytes1", new byte[]{1, 0, 0, 1} );        
         Task task3= (Task) eval( reader, vars );               
         
@@ -465,16 +451,51 @@ public class TestModelPersistence extends TestCase {
     }
     
     public void testQuery() throws Exception {
-        List actual = taskService.getAllOpenTasks( 11L, "en-UK" );
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
         
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "TaskSummaryResults.mvel" ) );
-        List<TaskSummary> expected = ( List<TaskSummary> ) eval( reader, new HashMap() );
+        //Reader reader;
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "AllOpenTasksData.mvel" ) );
+        List<Task> tasks = ( List<Task> ) eval( reader, vars );
+        for ( Task task : tasks) {
+            taskService.addTask( task );
+        }
         
-        CollectionUtils.equals( actual, expected );
+        // Test UK I18N  
+        reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResultsInEnglish.mvel" ) );
+        Map<String, List<TaskSummary>> expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );
+           
+        List actual = taskService.getAllOpenTasks( users.get( "peter" ).getId(), "en-UK" );
+        assertEquals( 3, actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
+
+        actual = taskService.getAllOpenTasks( users.get( "steve" ).getId(), "en-UK" );
+        assertEquals( 2, actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
+        
+        actual = taskService.getAllOpenTasks( users.get( "darth" ).getId(), "en-UK" );
+        assertEquals( 1, actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );
+        
+        // Test DK I18N 
+        reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResultsInGerman.mvel" ) );
+        expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );
+            
+        actual = taskService.getAllOpenTasks( users.get( "peter" ).getId(), "en-DK" );
+        assertEquals( 3, actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
+
+        actual = taskService.getAllOpenTasks( users.get( "steve" ).getId(), "en-DK" );
+        assertEquals( 2, actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
+        
+        actual = taskService.getAllOpenTasks( users.get( "darth" ).getId(), "en-DK" );
+        assertEquals( 1, actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );        
         
         em.close();
-        emf.close();
-        
+        emf.close();        
     }
 
 }

@@ -14,9 +14,9 @@ select
      t.taskData.expirationTime)
 from 
     Task t,
-    IL8NText names,
-    IL8NText subjects,
-    IL8NText descriptions 
+    I18NText names,
+    I18NText subjects,
+    I18NText descriptions 
 where    
     t.taskData.actualOwner.id = :currentUser and
     names in elements( t.taskPresentationElements.names) and
