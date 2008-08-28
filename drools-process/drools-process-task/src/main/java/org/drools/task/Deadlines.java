@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -12,14 +16,25 @@ import javax.persistence.OneToMany;
 import org.drools.task.utils.CollectionUtils;
 
 @Embeddable
-public class Deadlines implements Serializable {    
+public class Deadlines implements Externalizable {    
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Deadlines_StartDeadLine_Id", nullable = true)    
     private List<Deadline> startDeadlines = Collections.emptyList();
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Deadlines_EndDeadLine_Id", nullable = true)    
-    private List<Deadline> endDeadlines  = Collections.emptyList();       
+    private List<Deadline> endDeadlines  = Collections.emptyList();
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        CollectionUtils.writeDeadlineList( startDeadlines, out );
+        CollectionUtils.writeDeadlineList( endDeadlines, out );       
+    } 
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        startDeadlines = CollectionUtils.readDeadlinesList( in );
+        endDeadlines = CollectionUtils.readDeadlinesList( in );        
+    }        
       
     public List<Deadline> getStartDeadlines() {
         return startDeadlines;

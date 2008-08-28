@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -11,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-public class Group extends OrganizationalEntity implements Serializable {    
+public class Group extends OrganizationalEntity implements Externalizable {    
       private String displayName;
       
       public Group() {
@@ -30,6 +34,18 @@ public class Group extends OrganizationalEntity implements Serializable {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeUTF( displayName );
+        
+    } 
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        displayName = in.readUTF();
+    }      
 
     @Override
     public int hashCode() {

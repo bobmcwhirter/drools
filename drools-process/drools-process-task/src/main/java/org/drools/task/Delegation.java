@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -16,13 +20,29 @@ import javax.persistence.OneToMany;
 import org.drools.task.utils.CollectionUtils;
 
 @Embeddable
-public class Delegation implements Serializable {
+public class Delegation  implements Externalizable {
     @Enumerated(EnumType.STRING)      
     private Allowed                    allowed;
     
     @OneToMany
     @JoinColumn(name = "Delegates_Id", nullable = true)
     private List<OrganizationalEntity> delegates = Collections.emptyList();
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        if ( allowed != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( allowed.toString() );
+        } else {
+            out.writeBoolean( false );
+        }
+        CollectionUtils.writeOrganizationalEntityList( delegates, out );       
+    } 
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        allowed = Allowed.valueOf( in.readUTF() );
+        delegates = CollectionUtils.readOrganizationalEntityList( in );
+    }       
 
     public Allowed getAllowed() {
         return allowed;

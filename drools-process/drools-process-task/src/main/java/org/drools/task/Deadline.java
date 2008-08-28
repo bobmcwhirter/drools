@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -16,7 +20,7 @@ import javax.persistence.OneToMany;
 import org.drools.task.utils.CollectionUtils;
 
 @Entity
-public class Deadline implements Serializable {
+public class Deadline implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)    
     private long             id;
@@ -30,6 +34,30 @@ public class Deadline implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Deadline_Escalation_Id", nullable = true)    
     private List<Escalation> escalations = Collections.emptyList();
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        
+        if ( date != null ) {
+            out.writeBoolean( true );
+            out.writeLong( date.getTime() );
+        } else {
+            out.writeBoolean( false );
+        }
+        CollectionUtils.writeI18NTextList( documentation, out );
+        CollectionUtils.writeEscalationList( escalations, out );
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        
+        if ( in.readBoolean()) {
+            date = new Date( in.readLong() );
+        }
+        documentation = CollectionUtils.readI18NTextList( in );
+        escalations = CollectionUtils.readIEscalationList( in );       
+    }
 
     public long getId() {
         return id;

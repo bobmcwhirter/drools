@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -12,7 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Comment implements Serializable  {
+public class Comment implements Externalizable  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -20,10 +24,26 @@ public class Comment implements Serializable  {
     @Lob
     private String text;
     
-    private Date addedDate;
-    
     @ManyToOne()
     private User addedBy;
+    
+    private Date addedDate;    
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        out.writeUTF( text );
+        addedBy.writeExternal( out );        
+        out.writeLong( addedDate.getTime() );        
+    }    
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        text = in.readUTF();
+        addedBy = new User();
+        addedBy.readExternal( in );
+        addedDate = new Date( in.readLong() );
+    }
     
     public Long getId() {
         return id;

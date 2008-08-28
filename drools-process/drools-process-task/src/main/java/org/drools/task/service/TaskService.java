@@ -1,4 +1,4 @@
-package org.drools.task.server;
+package org.drools.task.service;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,7 +53,7 @@ public class TaskService {
         return em.find( Task.class, taskId );
     }
     
-    public List<TaskSummary> getAllOpenTasks(long userId, String language) {
+    public List<TaskSummary> getAllOpenTasksForUser(long userId, String language) {
         allOpenTasks.setParameter( "currentUser", userId );
         allOpenTasks.setParameter( "language", language );
         List<TaskSummary> list = ( List<TaskSummary> ) allOpenTasks.getResultList();

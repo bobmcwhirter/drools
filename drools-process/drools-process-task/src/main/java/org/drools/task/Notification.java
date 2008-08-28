@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -11,12 +15,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
 import org.drools.task.utils.CollectionUtils;
 
 @Entity
-public class Notification implements Serializable {
+public class Notification implements Externalizable  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long                             id;
@@ -35,8 +40,45 @@ public class Notification implements Serializable {
     @JoinColumn(name = "Notification_BusinessAdministrators_Id", nullable = true)
     private List<OrganizationalEntity>       businessAdministrators = Collections.emptyList();
 
-    @Embedded
-    private NotificationPresentationElements presentationElements;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Notification_Names_Id", nullable = true)    
+    private List<I18NText> names        = Collections.emptyList();
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Notification_Subjects_Id", nullable = true)    
+    private List<I18NText> subjects     = Collections.emptyList();
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Notification_Descriptions_Id", nullable = true)
+    @Lob
+    private List<I18NText> descriptions = Collections.emptyList();  
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        out.writeInt( priority );
+        
+        CollectionUtils.writeOrganizationalEntityList( recipients, out );
+        CollectionUtils.writeOrganizationalEntityList( businessAdministrators, out );                
+        
+        CollectionUtils.writeI18NTextList( documentation, out );
+        CollectionUtils.writeI18NTextList( names, out );
+        CollectionUtils.writeI18NTextList( subjects, out );
+        CollectionUtils.writeI18NTextList( descriptions, out );
+        
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        priority = in.readInt();
+        
+        recipients = CollectionUtils.readOrganizationalEntityList( in );
+        businessAdministrators = CollectionUtils.readOrganizationalEntityList( in );
+        
+        names = CollectionUtils.readI18NTextList( in );
+        subjects = CollectionUtils.readI18NTextList( in );
+        descriptions = CollectionUtils.readI18NTextList( in );        
+    }
 
     public Long getId() {
         return id;
@@ -78,23 +120,41 @@ public class Notification implements Serializable {
         this.businessAdministrators = businessAdministrators;
     }
 
-    public NotificationPresentationElements getNotificationPresentationElements() {
-        return presentationElements;
+    public List<I18NText> getNames() {
+        return names;
     }
 
-    public void setNotificationPresentationElements(NotificationPresentationElements presentationElements) {
-        this.presentationElements = presentationElements;
+    public void setNames(List<I18NText> names) {
+        this.names = names;
     }
+
+    public List<I18NText> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<I18NText> subjects) {
+        this.subjects = subjects;
+    }
+    
+    public List<I18NText> getDescriptions() {
+        return descriptions;
+    }
+
+    public void setDescriptions(List<I18NText> descriptions) {
+        this.descriptions = descriptions;
+    }    
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + priority;        
+        result = prime * result + CollectionUtils.hashCode( documentation );        
+        result = prime * result + CollectionUtils.hashCode( recipients );        
         result = prime * result + CollectionUtils.hashCode( businessAdministrators );
-        result = prime * result + CollectionUtils.hashCode( documentation );
-        result = prime * result + ((presentationElements == null) ? 0 : presentationElements.hashCode());
-        result = prime * result + priority;
-        result = prime * result + CollectionUtils.hashCode( recipients );
+        result = prime * result + CollectionUtils.hashCode( names );       
+        result = prime * result + CollectionUtils.hashCode( subjects );        
+        result = prime * result + CollectionUtils.hashCode( descriptions );        
         return result;
     }
 
@@ -103,14 +163,11 @@ public class Notification implements Serializable {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( !(obj instanceof Notification) ) return false;
-        Notification other = (Notification) obj;
-        
-        if ( presentationElements == null ) {
-            if ( other.presentationElements != null ) return false;
-        } else if ( !presentationElements.equals( other.presentationElements ) ) return false;
+        Notification other = (Notification) obj;        
         
         return CollectionUtils.equals( businessAdministrators, other.businessAdministrators ) && CollectionUtils.equals( documentation, other.documentation )
-        && CollectionUtils.equals( recipients, other.recipients );
+        && CollectionUtils.equals( recipients, other.recipients ) && CollectionUtils.equals( descriptions, other.descriptions ) && CollectionUtils.equals( names, other.names )
+        && CollectionUtils.equals( subjects, other.subjects );
     }
                 
 }

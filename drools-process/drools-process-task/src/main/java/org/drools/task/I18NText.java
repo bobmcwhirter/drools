@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -9,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 @Entity
-public class I18NText implements Serializable {
+public class I18NText implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long   id;
@@ -21,6 +25,19 @@ public class I18NText implements Serializable {
 
     public I18NText() {
 
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        out.writeUTF( language );
+        out.writeUTF( text );        
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        language = in.readUTF();
+        text = in.readUTF();        
     }
 
     public I18NText(String language,

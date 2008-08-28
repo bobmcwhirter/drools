@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +18,7 @@ import javax.persistence.OneToOne;
 import org.drools.task.utils.CollectionUtils;
 
 @Embeddable
-public class PeopleAssignments implements Serializable {
+public class PeopleAssignments implements Externalizable {
     @ManyToOne()
     private User                       taskInitiator;
 
@@ -41,6 +45,33 @@ public class PeopleAssignments implements Serializable {
     public PeopleAssignments() {
         
     }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        if ( taskInitiator != null ) {
+            out.writeBoolean( true );
+            taskInitiator.writeExternal( out );
+        } else {
+            out.writeBoolean( false );
+        }
+        CollectionUtils.writeOrganizationalEntityList( potentialOwners, out );
+        CollectionUtils.writeOrganizationalEntityList( excludedOwners, out );
+        CollectionUtils.writeOrganizationalEntityList( taskStakeholders, out );
+        CollectionUtils.writeOrganizationalEntityList( businessAdministrators, out );
+        CollectionUtils.writeOrganizationalEntityList( recipients, out );
+    } 
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        if ( in.readBoolean() ) {
+            taskInitiator = new User();
+            taskInitiator.readExternal( in );
+        }
+        potentialOwners = CollectionUtils.readOrganizationalEntityList( in );
+        excludedOwners = CollectionUtils.readOrganizationalEntityList( in );
+        taskStakeholders = CollectionUtils.readOrganizationalEntityList( in );
+        businessAdministrators = CollectionUtils.readOrganizationalEntityList( in );
+        recipients = CollectionUtils.readOrganizationalEntityList( in );
+    }      
 
     public User getTaskInitiator() {
         return taskInitiator;

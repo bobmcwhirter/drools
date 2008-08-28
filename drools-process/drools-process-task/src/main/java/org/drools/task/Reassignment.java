@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +19,7 @@ import javax.persistence.OneToMany;
 import org.drools.task.utils.CollectionUtils;
 
 @Entity
-public class Reassignment implements Serializable {
+public class Reassignment implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)    
     private long                       id;
@@ -28,6 +32,18 @@ public class Reassignment implements Serializable {
     @JoinColumn(name = "Reassignment_potentialOwners_Id", nullable = true)    
     private List<OrganizationalEntity> potentialOwners = Collections.emptyList();;
 
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        CollectionUtils.writeI18NTextList( documentation, out );
+        CollectionUtils.writeOrganizationalEntityList( potentialOwners, out );
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        documentation = CollectionUtils.readI18NTextList( in );
+        potentialOwners = CollectionUtils.readOrganizationalEntityList( in );        
+    }
 
     public Long getId() {
         return id;

@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -9,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 @Entity
-public class BooleanExpression implements Serializable {
+public class BooleanExpression implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long   id;
@@ -20,6 +24,19 @@ public class BooleanExpression implements Serializable {
     
     public BooleanExpression() {
         
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        out.writeUTF( type );
+        out.writeUTF( expression );        
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        type = in.readUTF();
+        expression = in.readUTF();        
     }
     
     public BooleanExpression(String type, String expression) {

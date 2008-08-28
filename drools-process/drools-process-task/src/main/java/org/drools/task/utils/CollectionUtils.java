@@ -1,11 +1,31 @@
 package org.drools.task.utils;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.print.attribute.HashAttributeSet;
+
+import org.drools.task.Attachment;
+import org.drools.task.BooleanExpression;
+import org.drools.task.Comment;
+import org.drools.task.Deadline;
+import org.drools.task.Deadlines;
+import org.drools.task.Escalation;
+import org.drools.task.Group;
+import org.drools.task.I18NText;
+import org.drools.task.Notification;
+import org.drools.task.OrganizationalEntity;
+import org.drools.task.Reassignment;
+import org.drools.task.User;
 
 public class CollectionUtils {
     public static boolean equals(List list1, List list2) {
@@ -49,5 +69,182 @@ public class CollectionUtils {
             result = prime * result + it.next().hashCode();
         }        
         return result;
+    }       
+    
+    public static void writeCommentList(List<Comment> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( Comment item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<Comment> readCommentList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<Comment> list = new ArrayList<Comment>(size);
+        for ( int i = 0; i < size; i++ ) {
+            Comment item = new Comment();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
+    }     
+    
+    
+    public static void writeAttachmentList(List<Attachment> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( Attachment item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<Attachment> readAttachmentList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<Attachment> list = new ArrayList<Attachment>(size);
+        for ( int i = 0; i < size; i++ ) {
+            Attachment item = new Attachment();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
+    }      
+    
+    public static void writeBooleanExpressionList(List<BooleanExpression> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( BooleanExpression item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<BooleanExpression> readBooleanExpressionList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<BooleanExpression> list = new ArrayList<BooleanExpression>(size);
+        for ( int i = 0; i < size; i++ ) {
+            BooleanExpression item = new BooleanExpression();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
+    }     
+
+    
+    public static void writeNotificationList(List<Notification> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( Notification item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<Notification> readNotificationList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<Notification> list = new ArrayList<Notification>(size);
+        for ( int i = 0; i < size; i++ ) {
+            Notification item = new Notification();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
+    }     
+    
+    
+    public static void writeReassignmentList(List<Reassignment> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( Reassignment item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<Reassignment> readReassignmentList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<Reassignment> list = new ArrayList<Reassignment>(size);
+        for ( int i = 0; i < size; i++ ) {
+            Reassignment item = new Reassignment();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
+    }       
+    
+    public static void writeDeadlineList(List<Deadline> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( Deadline item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<Deadline> readDeadlinesList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<Deadline> list = new ArrayList<Deadline>(size);
+        for ( int i = 0; i < size; i++ ) {
+            Deadline item = new Deadline();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
+    }    
+    
+    public static void writeEscalationList(List<Escalation> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( Escalation item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<Escalation> readIEscalationList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<Escalation> list = new ArrayList<Escalation>(size);
+        for ( int i = 0; i < size; i++ ) {
+            Escalation item = new Escalation();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
+    }    
+    
+    public static void writeI18NTextList(List<I18NText> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( I18NText item : list ) {
+            item.writeExternal( out );
+        }
+    }    
+    
+    public static List<I18NText> readI18NTextList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<I18NText> list = new ArrayList<I18NText>(size);
+        for ( int i = 0; i < size; i++ ) {
+            I18NText item = new I18NText();
+            item.readExternal( in );
+            list.add( item );
+        }
+        return list;
     }
+    
+    public static void writeOrganizationalEntityList(List<OrganizationalEntity> list, ObjectOutput out) throws IOException {
+        out.writeInt( list.size() );
+        for( OrganizationalEntity item : list ) {
+            if ( item instanceof User ) {
+                out.writeShort( 0 );
+            } else {
+                out.writeShort( 1 );
+            }
+            item.writeExternal( out );
+        }
+    }
+    
+    public static List<OrganizationalEntity> readOrganizationalEntityList(ObjectInput in) throws IOException, ClassNotFoundException  {
+        int size = in.readInt();
+        List<OrganizationalEntity> list = new ArrayList<OrganizationalEntity>(size);
+        for ( int i = 0; i < size; i++ ) {
+            short type = in.readShort();
+            if ( type == 0 ) {
+                User user = new User();
+                user.readExternal( in );
+                list.add( user ); 
+            } else {
+                Group group = new Group();
+                group.readExternal( in );
+                list.add( group );
+            }
+        }
+        return list;
+    }    
 }

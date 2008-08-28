@@ -19,9 +19,9 @@ from
     I18NText descriptions 
 where    
     t.taskData.actualOwner.id = :currentUser and
-    names in elements( t.taskPresentationElements.names) and
+    names in elements( t.names) and
     names.language = :language and
-    subjects in elements( t.taskPresentationElements.subjects) and
+    subjects in elements( t.subjects) and
     subjects.language = :language and
-    descriptions in elements( t.taskPresentationElements.descriptions) and
+    descriptions in elements( t.descriptions) and
     descriptions.language = :language

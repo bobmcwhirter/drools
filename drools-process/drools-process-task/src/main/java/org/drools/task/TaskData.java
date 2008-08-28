@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -16,7 +20,7 @@ import javax.persistence.OneToMany;
 import org.drools.task.utils.CollectionUtils;
 
 @Embeddable
-public class TaskData implements Serializable {    
+public class TaskData implements Externalizable {    
     @Enumerated(EnumType.STRING)    
     private Status           status = Status.Created; // initial default state
     
@@ -40,7 +44,89 @@ public class TaskData implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Attachments_Id", nullable = true)    
-    private List<Attachment> attachments = Collections.emptyList();   
+    private List<Attachment> attachments = Collections.emptyList();
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        if ( status != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( status.toString() );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( actualOwner != null) {
+            out.writeBoolean( true );
+            actualOwner.writeExternal( out );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( createdBy != null ) {
+            out.writeBoolean( true );
+            createdBy.writeExternal( out );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( createdOn != null ) {
+            out.writeBoolean( true );
+            out.writeLong( createdOn.getTime() );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( activationTime != null ) {
+            out.writeBoolean( true );
+            out.writeLong( activationTime.getTime() );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( expirationTime != null ) {
+            out.writeBoolean( true );
+            out.writeLong( expirationTime.getTime() );
+        } else {
+            out.writeBoolean( false );
+        }
+        out.writeBoolean(  skipable );
+        CollectionUtils.writeCommentList( comments, out );
+        CollectionUtils.writeAttachmentList( attachments, out );        
+    } 
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        if( in.readBoolean() ) {
+            status = Status.valueOf( in.readUTF() );
+        }
+        
+        if ( in.readBoolean() ) {
+            actualOwner = new User();
+            actualOwner.readExternal( in );
+        }
+        
+        if ( in.readBoolean() ) {
+            createdBy = new User();
+            createdBy.readExternal( in );
+        }
+        
+        if ( in.readBoolean() ) {
+            createdOn = new Date( in.readLong() );
+        }
+        
+        if ( in.readBoolean() ) {
+            activationTime = new Date( in.readLong() );
+        }
+        
+        if ( in.readBoolean() ) {
+            expirationTime = new Date( in.readLong() );
+        }
+        
+        skipable = in.readBoolean();
+        
+        comments = CollectionUtils.readCommentList( in );
+        attachments = CollectionUtils.readAttachmentList( in );
+        
+    }        
     
     public Status getStatus() {
         return status;

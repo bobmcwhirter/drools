@@ -1,10 +1,14 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Date;
 
 
-public class TaskSummary implements Serializable {
+public class TaskSummary implements Externalizable {
     private long    id; 
     
     private String  name;
@@ -59,7 +63,39 @@ public class TaskSummary implements Serializable {
     }
 
     public TaskSummary() {
-
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        out.writeUTF(  name );
+        out.writeUTF(  subject );
+        out.writeUTF( description );
+        out.writeUTF( status.toString()  );
+        out.writeInt( priority );
+        out.writeBoolean( skipable );
+        actualOwner.writeExternal( out );
+        createdBy.writeExternal( out );
+        out.writeLong( createdOn.getTime() );
+        out.writeLong( activationTime.getTime() );
+        out.writeLong( expirationTime.getTime() );        
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        name = in.readUTF();
+        subject = in.readUTF();
+        description = in.readUTF();
+        status = Status.valueOf( in.readUTF() );
+        priority = in.readInt();
+        skipable = in.readBoolean();
+        actualOwner = new User();
+        actualOwner.readExternal( in );
+        createdBy = new User();
+        createdBy.readExternal( in );
+        createdOn = new Date( in.readLong() );
+        activationTime = new Date( in.readLong() );
+        expirationTime = new Date( in.readLong() );               
     }
 
     public long getId() {

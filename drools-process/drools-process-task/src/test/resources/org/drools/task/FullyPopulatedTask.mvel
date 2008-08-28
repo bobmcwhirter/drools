@@ -46,14 +46,12 @@ with ( new Task() ) {
              })
         ]
     }),
-    taskPresentationElements = (with ( new TaskPresentationElements() ) {
-        names = [ new I18NText( "en-UK", "This is my task name" ),
-                  new I18NText( "en-DK", "Dies ist mein task Name" )],
-        subjects = [ new I18NText( "en-UK", "This is my task subject" ),
-                     new I18NText( "en-DK", "Das ist mein task Thema" ) ],
-        descriptions = [ new I18NText( "en-UK", "This is my task description" ),
-                          new I18NText( "en-DK", "Das ist mein task Beschreibung" ) ]   
-    }),  
+    names = [ new I18NText( "en-UK", "This is my task name" ),
+              new I18NText( "en-DK", "Dies ist mein task Name" )],
+    subjects = [ new I18NText( "en-UK", "This is my task subject" ),
+                 new I18NText( "en-DK", "Das ist mein task Thema" ) ],
+    descriptions = [ new I18NText( "en-UK", "This is my task description" ),
+                     new I18NText( "en-DK", "Das ist mein task Beschreibung" ) ],
     delegation = ( with( new Delegation() ) {
         allowed = Allowed.PotentialOwners,
         delegates = [ groups['crusaders' ], groups['knightsTempler' ] ]                                                                
@@ -74,14 +72,12 @@ with ( new Task() ) {
                                                    new I18NText( "en-DK", "Start Anmeldung Dokumentation" ) ],
                                 businessAdministrators = [ users['bruce' ], users['peter' ] ],
                                 recipients = [ users['tony' ], users['darth' ] ],                                                                                        
-                                notificationPresentationElements = (with (new NotificationPresentationElements()) {
-                                    names = [ new I18NText( "en-UK", "This is my start notification name" ),
-                                              new I18NText( "en-DK", "Dies ist mein start anmeldung Name" ) ],
-                                    subjects = [ new I18NText( "en-UK", "This is my start notification subject" ), 
-                                                 new I18NText( "en-DK", "Das ist mein start anmeldung Thema" ) ],
-                                    descriptions = [new I18NText( "en-UK", "This is my start notification description" ),
-                                                    new I18NText( "en-DK", "Das ist mein start anmeldung Beschreibung" ) ]
-                                })                                                                                                                                                                                       
+                                names = [ new I18NText( "en-UK", "This is my start notification name" ),
+                                          new I18NText( "en-DK", "Dies ist mein start anmeldung Name" ) ],
+                                subjects = [ new I18NText( "en-UK", "This is my start notification subject" ), 
+                                             new I18NText( "en-DK", "Das ist mein start anmeldung Thema" ) ],
+                                descriptions = [new I18NText( "en-UK", "This is my start notification description" ),
+                                                new I18NText( "en-DK", "Das ist mein start anmeldung Beschreibung" ) ]                                                                                                                                                                                       
                             }) 
                         ],
                         reassignments = [
@@ -111,14 +107,12 @@ with ( new Task() ) {
                                                    new I18NText( "en-DK", "Ende Anmeldung Dokumentation" ) ],
                                 businessAdministrators = [ users['bobba' ], users['darth' ] ],
                                 recipients = [ users['liz' ], users['jane' ] ],                                                                                        
-                                notificationPresentationElements = (with (new NotificationPresentationElements()) {
-                                    names = [ new I18NText( "en-UK", "This is my end notification name" ),
-                                              new I18NText( "en-DK", "Dies ist mein ende anmeldung Name" ) ],
-                                    subjects = [ new I18NText( "en-UK", "This is my end notification subject" ), 
-                                                 new I18NText( "en-DK", "Das ist mein ende anmeldung Thema" ) ],
-                                    descriptions = [new I18NText( "en-UK", "This is my end notification description" ),
-                                                    new I18NText( "en-DK", "Das ist mein ende anmeldung Beschreibung" ) ]
-                                })                                                                                                                                                                                       
+                                names = [ new I18NText( "en-UK", "This is my end notification name" ),
+                                          new I18NText( "en-DK", "Dies ist mein ende anmeldung Name" ) ],
+                                subjects = [ new I18NText( "en-UK", "This is my end notification subject" ), 
+                                             new I18NText( "en-DK", "Das ist mein ende anmeldung Thema" ) ],
+                                descriptions = [new I18NText( "en-UK", "This is my end notification description" ),
+                                                new I18NText( "en-DK", "Das ist mein ende anmeldung Beschreibung" ) ]                                                                                                  
                             }) 
                         ],
                         reassignments = [

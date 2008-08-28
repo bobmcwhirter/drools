@@ -29,16 +29,14 @@ import org.drools.task.Escalation;
 import org.drools.task.Group;
 import org.drools.task.I18NText;
 import org.drools.task.Notification;
-import org.drools.task.NotificationPresentationElements;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.PeopleAssignments;
 import org.drools.task.Reassignment;
-import org.drools.task.TaskPresentationElements;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
-import org.drools.task.server.TaskService;
+import org.drools.task.service.TaskService;
 import org.drools.task.utils.CollectionUtils;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
@@ -50,91 +48,16 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 
 import junit.framework.TestCase;
 
-public class TestModelPersistence extends TestCase {
-    EntityManagerFactory emf;
-    EntityManager em;
-    
-    private Map<String, User> users;
-    private Map<String, Group> groups;
-    
-    private TaskService taskService;
+public class TestModelPersistence extends BaseTest {
     
     protected void setUp() throws Exception {
-        // Use persistence.xml configuration
-        emf = Persistence.createEntityManagerFactory( "org.drools.task" );
-        em = emf.createEntityManager(); // Retrieve an application managed entity manager
-        
-        taskService = new TaskService( em );
-        
-        Map  vars = new HashedMap();
-        //vars.put( "em", em );   
-        
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "LoadUsers.mvel" ) );     
-        users = ( Map<String, User> ) eval( reader, vars );   
-        for ( User user : users.values() ) {
-            taskService.addUser( user );
-        }           
-        
-        reader = new InputStreamReader( getClass().getResourceAsStream( "LoadGroups.mvel" ) );      
-        groups = ( Map<String, Group> ) eval( reader, vars );     
-        for ( Group group : groups.values() ) {
-            taskService.addGroup( group );
-        }           
-        
-    
-    }
-
-    public Object eval(Reader reader, Map vars) {
-        try {
-            return eval( toString( reader ), vars );
-        } catch ( IOException e ) {
-            throw new RuntimeException( "Exception Thrown",
-                                        e );
-        }
+        super.setUp();                    
     }
     
-    public String toString(Reader reader) throws IOException {
-        int charValue = 0;
-        StringBuffer sb = new StringBuffer( 1024 );
-        while ( (charValue = reader.read()) != -1 ) {
-            //result = result + (char) charValue;
-            sb.append( (char) charValue );
-        }
-        return sb.toString();
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
-
-    public Object eval(String str, Map vars) {
-        ExpressionCompiler compiler = new ExpressionCompiler( str.trim() );
-
-        ParserContext context = new ParserContext();
-        context.addPackageImport( "org.drools.task" );
-        context.addPackageImport( "java.util" );
-        
-        context.addImport( "AccessType", AccessType.class );
-        context.addImport( "Allowed", Allowed.class );
-        context.addImport( "Attachment", Attachment.class );
-        context.addImport( "BooleanExpression", BooleanExpression.class );
-        context.addImport( "Comment", Comment.class );
-        context.addImport( "Deadline", Deadline.class );
-        context.addImport( "Deadlines", Deadlines.class );
-        context.addImport( "Delegation", Delegation.class );
-        context.addImport( "Escalation", Escalation.class );
-        context.addImport( "Group", Group.class );
-        context.addImport( "I18NText", I18NText.class );
-        context.addImport( "Notification", Notification.class );
-        context.addImport( "NotificationPresentationElements", NotificationPresentationElements.class );
-        context.addImport( "OrganizationalEntity", OrganizationalEntity.class );
-        context.addImport( "PeopleAssignments", PeopleAssignments.class );
-        context.addImport( "Reassignment", Reassignment.class );
-        context.addImport( "Status", Status.class );
-        context.addImport( "Task", Task.class );
-        context.addImport( "TaskData", TaskData.class );
-        context.addImport( "TaskPresentationElements", TaskPresentationElements.class );
-        context.addImport( "User", User.class );
-
-        return MVEL.executeExpression( compiler.compile( context ), vars );
-    }
-
+    
     public void testfullHibernateRoundtripWithAdditionalMVELCheck() throws Exception {
 
         Task task1 = new Task();
@@ -218,14 +141,12 @@ public class TestModelPersistence extends TestCase {
         comment.setText( "this is a loooooooooooooooooooooooooooooooooooooooooooooooong comment" );
         comments.add( comment );
 
-        TaskPresentationElements tpresentationElements = new TaskPresentationElements();
-        task1.setTaskPresentationElements( tpresentationElements );
         List<I18NText> names = new ArrayList<I18NText>();
-        tpresentationElements.setNames( names );
+        task1.setNames( names );
         List<I18NText> subjects = new ArrayList<I18NText>();
-        tpresentationElements.setSubjects( subjects );
+        task1.setSubjects( subjects );
         List<I18NText> descriptions = new ArrayList<I18NText>();
-        tpresentationElements.setDescriptions( descriptions );
+        task1.setDescriptions( descriptions );
 
         names.add( new I18NText( "en-UK",
                                  "This is my task name" ) );
@@ -300,14 +221,12 @@ public class TestModelPersistence extends TestCase {
         recipients.add( users.get( "tony" ) );
         recipients.add( users.get( "darth" ) );
 
-        NotificationPresentationElements npresentationElements = new NotificationPresentationElements();
-        notification.setNotificationPresentationElements( npresentationElements );
         names = new ArrayList<I18NText>();
-        npresentationElements.setNames( names );
+        notification.setNames( names );
         subjects = new ArrayList<I18NText>();
-        npresentationElements.setSubjects( subjects );
+        notification.setSubjects( subjects );
         descriptions = new ArrayList<I18NText>();
-        npresentationElements.setDescriptions( descriptions );
+        notification.setDescriptions( descriptions );
 
         names.add( new I18NText( "en-UK",
                                  "This is my start notification name" ) );
@@ -381,14 +300,12 @@ public class TestModelPersistence extends TestCase {
         recipients.add( users.get( "liz" ) );
         recipients.add( users.get( "jane" ) );
 
-        npresentationElements = new NotificationPresentationElements();
-        notification.setNotificationPresentationElements( npresentationElements );
         names = new ArrayList<I18NText>();
-        npresentationElements.setNames( names );
+        notification.setNames( names );
         subjects = new ArrayList<I18NText>();
-        npresentationElements.setSubjects( subjects );
+        notification.setSubjects( subjects );
         descriptions = new ArrayList<I18NText>();
-        npresentationElements.setDescriptions( descriptions );
+        notification.setDescriptions( descriptions );
 
         names.add( new I18NText( "en-UK",
                                  "This is my end notification name" ) );
@@ -445,9 +362,6 @@ public class TestModelPersistence extends TestCase {
                        task3 );
         assertEquals( task1,
                       task3 );
-
-        em.close();
-        emf.close();
     }
     
     public void testQuery() throws Exception {
@@ -466,15 +380,15 @@ public class TestModelPersistence extends TestCase {
         reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResultsInEnglish.mvel" ) );
         Map<String, List<TaskSummary>> expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );
            
-        List actual = taskService.getAllOpenTasks( users.get( "peter" ).getId(), "en-UK" );
+        List actual = taskService.getAllOpenTasksForUser( users.get( "peter" ).getId(), "en-UK" );
         assertEquals( 3, actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
 
-        actual = taskService.getAllOpenTasks( users.get( "steve" ).getId(), "en-UK" );
+        actual = taskService.getAllOpenTasksForUser( users.get( "steve" ).getId(), "en-UK" );
         assertEquals( 2, actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
         
-        actual = taskService.getAllOpenTasks( users.get( "darth" ).getId(), "en-UK" );
+        actual = taskService.getAllOpenTasksForUser( users.get( "darth" ).getId(), "en-UK" );
         assertEquals( 1, actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );
         
@@ -482,20 +396,17 @@ public class TestModelPersistence extends TestCase {
         reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResultsInGerman.mvel" ) );
         expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );
             
-        actual = taskService.getAllOpenTasks( users.get( "peter" ).getId(), "en-DK" );
+        actual = taskService.getAllOpenTasksForUser( users.get( "peter" ).getId(), "en-DK" );
         assertEquals( 3, actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
 
-        actual = taskService.getAllOpenTasks( users.get( "steve" ).getId(), "en-DK" );
+        actual = taskService.getAllOpenTasksForUser( users.get( "steve" ).getId(), "en-DK" );
         assertEquals( 2, actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
         
-        actual = taskService.getAllOpenTasks( users.get( "darth" ).getId(), "en-DK" );
+        actual = taskService.getAllOpenTasksForUser( users.get( "darth" ).getId(), "en-DK" );
         assertEquals( 1, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );        
-        
-        em.close();
-        emf.close();        
+        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );              
     }
 
 }

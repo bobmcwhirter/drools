@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -13,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Attachment implements Serializable {
+public class Attachment implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long   id;
@@ -33,13 +37,37 @@ public class Attachment implements Serializable {
      */
     private String contentType;
 
-    private Date   attachedAt;
-
     @ManyToOne()
     private User   attachedBy;
+    
+    private Date   attachedAt;    
 
     @Lob
     private byte[] attachment;
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong( id );
+        out.writeUTF( name );
+        out.writeUTF( accessType.toString() );
+        out.writeUTF( contentType );
+        attachedBy.writeExternal( out );
+        out.writeLong( attachedAt.getTime() );
+        out.writeInt( attachment.length );
+        out.write( attachment );        
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
+        name = in.readUTF();
+        accessType = AccessType.valueOf( in.readUTF() );
+        contentType = in.readUTF();
+        attachedBy = new User();
+        attachedBy.readExternal( in );        
+        attachedAt = new Date( in.readLong() );
+        attachment = new byte[ in.readInt() ];
+        in.read( attachment );
+    }
 
     public Long getId() {
         return id;

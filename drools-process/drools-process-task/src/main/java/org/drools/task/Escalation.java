@@ -1,5 +1,9 @@
 package org.drools.task;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +21,7 @@ import org.drools.task.utils.CollectionUtils;
 @Entity
 public class Escalation
     implements
-    Serializable {
+    Externalizable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,6 +40,32 @@ public class Escalation
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Escalation_Reassignments_Id", nullable = true)
     private List<Reassignment>      reassignments = Collections.emptyList();
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong(  id );
+        
+        if ( name != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( name );
+        } else {
+            out.writeBoolean( false );
+        }
+        CollectionUtils.writeBooleanExpressionList( constraints, out );
+        CollectionUtils.writeNotificationList( notifications, out );
+        CollectionUtils.writeReassignmentList( reassignments, out );        
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+       id = in.readLong();
+       if ( in.readBoolean() ) {
+           name = in.readUTF();
+       }
+       constraints = CollectionUtils.readBooleanExpressionList( in );
+       notifications = CollectionUtils.readNotificationList( in );
+       reassignments = CollectionUtils.readReassignmentList( in );
+        
+    }
 
     public long getId() {
         return id;
