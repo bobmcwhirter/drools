@@ -26,12 +26,19 @@ import org.drools.task.Notification;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.Reassignment;
 import org.drools.task.User;
+import org.hibernate.collection.PersistentBag;
 
 public class CollectionUtils {
     public static boolean equals(List list1, List list2) {
         if ( list1 == null && list2 == null ) {
+            // both are null
             return true;
         }
+        
+        if ( list1 == null || list2 == null ) {
+            // we know both aren't null, so if one is null them obviously false
+            return false;
+        }        
         
         if ( list1.size() != list2.size() ) {
             return false;

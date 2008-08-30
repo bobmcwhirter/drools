@@ -1,0 +1,12 @@
+select 
+     t.id,
+     d.id,
+     d.date
+from 
+    Task t,
+    Deadline d
+where    
+    (d in elements( t.deadlines.startDeadlines ) or d in elements( t.deadlines.endDeadlines ) ) and 
+    d.escalated = false
+order by
+    d.date    

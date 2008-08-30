@@ -14,38 +14,46 @@ import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.drools.task.utils.CollectionUtils;
 
 @Embeddable
-public class TaskData implements Externalizable {    
-    @Enumerated(EnumType.STRING)    
-    private Status           status = Status.Created; // initial default state
-    
+public class TaskData
+    implements
+    Externalizable {
+    @Enumerated(EnumType.STRING)
+    private Status           status      = Status.Created;         // initial default state
+
     @ManyToOne()
     private User             actualOwner;
-    
+
     @ManyToOne()
     private User             createdBy;
 
     private Date             createdOn;
-    
+
     private Date             activationTime;
-    
+
     private Date             expirationTime;
-    
+
     private boolean          skipable;
 
+    private String           associatedDocumentType;
+
+    @Lob
+    private byte[]           associatedDocument;
+
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "TaskData_Comments_Id", nullable = true)    
-    private List<Comment>    comments = Collections.emptyList();
-    
+    @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
+    private List<Comment>    comments    = Collections.emptyList();
+
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "TaskData_Attachments_Id", nullable = true)    
+    @JoinColumn(name = "TaskData_Attachments_Id", nullable = true)
     private List<Attachment> attachments = Collections.emptyList();
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         if ( status != null ) {
             out.writeBoolean( true );
@@ -53,89 +61,91 @@ public class TaskData implements Externalizable {
         } else {
             out.writeBoolean( false );
         }
-        
-        if ( actualOwner != null) {
+
+        if ( actualOwner != null ) {
             out.writeBoolean( true );
             actualOwner.writeExternal( out );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( createdBy != null ) {
             out.writeBoolean( true );
             createdBy.writeExternal( out );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( createdOn != null ) {
             out.writeBoolean( true );
             out.writeLong( createdOn.getTime() );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( activationTime != null ) {
             out.writeBoolean( true );
             out.writeLong( activationTime.getTime() );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( expirationTime != null ) {
             out.writeBoolean( true );
             out.writeLong( expirationTime.getTime() );
         } else {
             out.writeBoolean( false );
         }
-        out.writeBoolean(  skipable );
-        CollectionUtils.writeCommentList( comments, out );
-        CollectionUtils.writeAttachmentList( attachments, out );        
-    } 
-    
+        out.writeBoolean( skipable );
+        CollectionUtils.writeCommentList( comments,
+                                          out );
+        CollectionUtils.writeAttachmentList( attachments,
+                                             out );
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        if( in.readBoolean() ) {
+        if ( in.readBoolean() ) {
             status = Status.valueOf( in.readUTF() );
         }
-        
+
         if ( in.readBoolean() ) {
             actualOwner = new User();
             actualOwner.readExternal( in );
         }
-        
+
         if ( in.readBoolean() ) {
             createdBy = new User();
             createdBy.readExternal( in );
         }
-        
+
         if ( in.readBoolean() ) {
             createdOn = new Date( in.readLong() );
         }
-        
+
         if ( in.readBoolean() ) {
             activationTime = new Date( in.readLong() );
         }
-        
+
         if ( in.readBoolean() ) {
             expirationTime = new Date( in.readLong() );
         }
-        
+
         skipable = in.readBoolean();
-        
+
         comments = CollectionUtils.readCommentList( in );
         attachments = CollectionUtils.readAttachmentList( in );
-        
-    }        
-    
+
+    }
+
     public Status getStatus() {
         return status;
     }
-    
+
     public void setStatus(Status status) {
         this.status = status;
     }
-            
+
     public User getActualOwner() {
         return actualOwner;
     }
@@ -143,7 +153,7 @@ public class TaskData implements Externalizable {
     public void setActualOwner(User actualOwner) {
         this.actualOwner = actualOwner;
     }
-        
+
     public User getCreatedBy() {
         return createdBy;
     }
@@ -155,47 +165,47 @@ public class TaskData implements Externalizable {
     public Date getCreatedOn() {
         return createdOn;
     }
-    
+
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
-    
+
     public Date getActivationTime() {
         return activationTime;
     }
-    
+
     public void setActivationTime(Date activationTime) {
         this.activationTime = activationTime;
     }
-    
+
     public Date getExpirationTime() {
         return expirationTime;
     }
-    
+
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
     }
-    
+
     public boolean isSkipable() {
         return skipable;
     }
-    
+
     public void setSkipable(boolean isSkipable) {
         this.skipable = isSkipable;
     }
-      
+
     public List<Comment> getComments() {
         return comments;
     }
-    
+
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
-    
+
     public List<Attachment> getAttachments() {
         return attachments;
     }
-    
+
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
@@ -220,35 +230,36 @@ public class TaskData implements Externalizable {
         if ( obj == null ) return false;
         if ( !(obj instanceof TaskData) ) return false;
         TaskData other = (TaskData) obj;
-        
+
         if ( actualOwner == null ) {
             if ( other.actualOwner != null ) return false;
-        } else if ( !actualOwner.equals( other.actualOwner) ) {
+        } else if ( !actualOwner.equals( other.actualOwner ) ) {
             return false;
         }
-        
+
         if ( createdBy == null ) {
             if ( other.createdBy != null ) return false;
-        } else if ( !createdBy.equals( other.createdBy) ) {
+        } else if ( !createdBy.equals( other.createdBy ) ) {
             return false;
-        }        
-        
+        }
+
         if ( createdOn == null ) {
-            if ( other.createdOn != null ) return false;            
+            if ( other.createdOn != null ) return false;
         } else if ( createdOn.getTime() != other.createdOn.getTime() ) return false;
         if ( expirationTime == null ) {
-            if ( other.expirationTime != null ) return false;            
+            if ( other.expirationTime != null ) return false;
         } else if ( expirationTime.getTime() != other.expirationTime.getTime() ) return false;
         if ( skipable != other.skipable ) return false;
         if ( status == null ) {
             if ( other.status != null ) return false;
-        } else if ( !status.equals( other.status ) ) return false;        
+        } else if ( !status.equals( other.status ) ) return false;
         if ( activationTime == null ) {
             if ( other.activationTime != null ) return false;
-        } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;                
-        
-        return CollectionUtils.equals( attachments, other.attachments ) && CollectionUtils.equals( comments, other.comments );
+        } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;
+
+        return CollectionUtils.equals( attachments,
+                                       other.attachments ) && CollectionUtils.equals( comments,
+                                                                                      other.comments );
     }
-    
-    
+
 }

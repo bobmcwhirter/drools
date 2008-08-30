@@ -9,7 +9,7 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.drools.task.Task;
-import org.drools.task.TaskSummary;
+import org.drools.task.query.TaskSummary;
 
 public class TaskServerHandler extends IoHandlerAdapter {
     private TaskService service;
@@ -34,7 +34,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;
             }
             case AllOpenTasksForUserRequest : {
-                List<TaskSummary> results = service.getAllOpenTasksForUser( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getOpenOwnedTasksForUser( (Long) cmd.getArguments().get( 0 ),
                                                                             (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );

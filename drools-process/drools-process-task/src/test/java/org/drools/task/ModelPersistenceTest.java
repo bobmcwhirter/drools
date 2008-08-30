@@ -48,7 +48,7 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 
 import junit.framework.TestCase;
 
-public class TestModelPersistence extends BaseTest {
+public class ModelPersistenceTest extends BaseTest {
     
     protected void setUp() throws Exception {
         super.setUp();                    
@@ -343,13 +343,6 @@ public class TestModelPersistence extends BaseTest {
                        task2 );
         assertEquals( task1,
                       task2 );
-
-//        XStream xstream = new XStream();
-//        String xml = xstream.toXML( task1 );
-//
-//        System.out.println( xml );
-//
-//        Task task3 = (Task) xstream.fromXML( new InputStreamReader( getClass().getResourceAsStream( "FullyPopulatedTask.xml" ) ) );
         
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "FullyPopulatedTask.mvel" ) );
         Map  vars = new HashedMap();
@@ -362,51 +355,6 @@ public class TestModelPersistence extends BaseTest {
                        task3 );
         assertEquals( task1,
                       task3 );
-    }
-    
-    public void testQuery() throws Exception {
-        Map  vars = new HashedMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        
-        //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "AllOpenTasksData.mvel" ) );
-        List<Task> tasks = ( List<Task> ) eval( reader, vars );
-        for ( Task task : tasks) {
-            taskService.addTask( task );
-        }
-        
-        // Test UK I18N  
-        reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResultsInEnglish.mvel" ) );
-        Map<String, List<TaskSummary>> expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );
-           
-        List actual = taskService.getAllOpenTasksForUser( users.get( "peter" ).getId(), "en-UK" );
-        assertEquals( 3, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
-
-        actual = taskService.getAllOpenTasksForUser( users.get( "steve" ).getId(), "en-UK" );
-        assertEquals( 2, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
-        
-        actual = taskService.getAllOpenTasksForUser( users.get( "darth" ).getId(), "en-UK" );
-        assertEquals( 1, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );
-        
-        // Test DK I18N 
-        reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResultsInGerman.mvel" ) );
-        expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );
-            
-        actual = taskService.getAllOpenTasksForUser( users.get( "peter" ).getId(), "en-DK" );
-        assertEquals( 3, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
-
-        actual = taskService.getAllOpenTasksForUser( users.get( "steve" ).getId(), "en-DK" );
-        assertEquals( 2, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
-        
-        actual = taskService.getAllOpenTasksForUser( users.get( "darth" ).getId(), "en-DK" );
-        assertEquals( 1, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );              
-    }
+    }    
 
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
-import org.drools.task.TaskSummary;
+import org.drools.task.query.TaskSummary;
 
 public class TaskClientHandler extends IoHandlerAdapter
 {    

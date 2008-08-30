@@ -11,12 +11,9 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.BaseTest;
 import org.drools.task.Task;
-import org.drools.task.TaskSummary;
-import org.drools.task.TestModelPersistence;
+import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskClientHandler.AllOpenTasksForUseResponseHandler;
 import org.drools.task.utils.CollectionUtils;
-
-import junit.framework.TestCase;
 
 public class TaskServiceTest extends BaseTest  {
     MinaTaskServer server;
@@ -48,7 +45,7 @@ public class TaskServiceTest extends BaseTest  {
         vars.put( "groups", groups );        
         
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../AllOpenTasksData.mvel" ) );
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../OpenOwnedTasksForUser.mvel" ) );
         List<Task> tasks = ( List<Task> ) eval( reader, vars );
         for ( Task task : tasks) {
             client.addTask( task );

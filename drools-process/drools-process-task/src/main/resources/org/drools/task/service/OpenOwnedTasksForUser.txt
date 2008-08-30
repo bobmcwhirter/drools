@@ -1,5 +1,5 @@
 select 
-     new org.drools.task.TaskSummary(
+     new org.drools.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -24,4 +24,5 @@ where
     subjects in elements( t.subjects) and
     subjects.language = :language and
     descriptions in elements( t.descriptions) and
-    descriptions.language = :language
+    descriptions.language = :language and 
+    t.taskData.expirationTime is null

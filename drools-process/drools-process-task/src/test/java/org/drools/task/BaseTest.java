@@ -36,6 +36,7 @@ import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
+import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskService;
 import org.drools.task.utils.CollectionUtils;
 import org.mvel.MVEL;
@@ -60,7 +61,7 @@ public abstract class BaseTest extends TestCase {
     protected void setUp() throws Exception {
         // Use persistence.xml configuration
         emf = Persistence.createEntityManagerFactory( "org.drools.task" );
-        em = emf.createEntityManager(); // Retrieve an application managed entity manager
+        em = emf.createEntityManager(); // Retrieve an application managed entity manager        
         
         taskService = new TaskService( em );
         
@@ -129,6 +130,7 @@ public abstract class BaseTest extends TestCase {
         context.addImport( "Status", Status.class );
         context.addImport( "Task", Task.class );
         context.addImport( "TaskData", TaskData.class );
+        context.addImport( "TaskSummary", TaskSummary.class );
         context.addImport( "User", User.class );
 
         return MVEL.executeExpression( compiler.compile( context ), vars );

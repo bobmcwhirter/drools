@@ -1,4 +1,4 @@
-package org.drools.task;
+package org.drools.task.query;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -7,10 +7,14 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.drools.task.Status;
+import org.drools.task.User;
 
-public class TaskSummary implements Externalizable {
-    private long    id; 
-    
+public class TaskSummary
+    implements
+    Externalizable {
+    private long    id;
+
     private String  name;
 
     private String  subject;
@@ -32,8 +36,6 @@ public class TaskSummary implements Externalizable {
     private Date    activationTime;
 
     private Date    expirationTime;
-    
-    
 
     public TaskSummary(long id,
                        String name,
@@ -64,38 +66,119 @@ public class TaskSummary implements Externalizable {
 
     public TaskSummary() {
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
-        out.writeUTF(  name );
-        out.writeUTF(  subject );
-        out.writeUTF( description );
-        out.writeUTF( status.toString()  );
+
+        if ( name != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( name );
+        } else {
+            out.writeBoolean( false );
+        }
+        if ( subject != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( subject );
+        } else {
+            out.writeBoolean( false );
+        }
+
+        if ( description != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( description );
+        } else {
+            out.writeBoolean( false );
+        }
+
+        if ( status != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( status.toString() );
+        } else {
+            out.writeBoolean( false );
+        }
+
         out.writeInt( priority );
         out.writeBoolean( skipable );
-        actualOwner.writeExternal( out );
-        createdBy.writeExternal( out );
-        out.writeLong( createdOn.getTime() );
-        out.writeLong( activationTime.getTime() );
-        out.writeLong( expirationTime.getTime() );        
+
+        if ( actualOwner != null ) {
+            out.writeBoolean( true );
+            actualOwner.writeExternal( out );
+        } else {
+            out.writeBoolean( false );
+        }
+
+        if ( createdBy != null ) {
+            out.writeBoolean( true );
+            createdBy.writeExternal( out );
+        } else {
+            out.writeBoolean( false );
+        }
+        if ( createdOn != null ) {
+            out.writeBoolean( true );
+            out.writeLong( createdOn.getTime() );
+        } else {
+            out.writeBoolean( false );
+        }
+
+        if ( activationTime != null ) {
+            out.writeBoolean( true );
+            out.writeLong( activationTime.getTime() );
+        } else {
+            out.writeBoolean( false );
+        }
+
+        if ( expirationTime != null ) {
+            out.writeBoolean( true );
+            out.writeLong( expirationTime.getTime() );
+        } else {
+            out.writeBoolean( false );
+        }
     }
-    
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         id = in.readLong();
-        name = in.readUTF();
-        subject = in.readUTF();
-        description = in.readUTF();
-        status = Status.valueOf( in.readUTF() );
+
+        if ( in.readBoolean() ) {
+            name = in.readUTF();
+        }
+
+        if ( in.readBoolean() ) {
+            subject = in.readUTF();
+        }
+        
+        if ( in.readBoolean() ) {
+            description = in.readUTF();
+        }
+        
+        if ( in.readBoolean() ) {
+            status = Status.valueOf( in.readUTF() );
+        }
+        
         priority = in.readInt();
         skipable = in.readBoolean();
-        actualOwner = new User();
-        actualOwner.readExternal( in );
-        createdBy = new User();
-        createdBy.readExternal( in );
-        createdOn = new Date( in.readLong() );
-        activationTime = new Date( in.readLong() );
-        expirationTime = new Date( in.readLong() );               
+
+        if ( in.readBoolean() ) {
+            actualOwner = new User();
+            actualOwner.readExternal( in );
+        }
+        
+        if ( in.readBoolean() ) {
+            createdBy = new User();
+            createdBy.readExternal( in );
+        }
+        
+        if ( in.readBoolean() ) {
+            createdOn = new Date( in.readLong() );
+        }
+        
+        if ( in.readBoolean() ) {
+            activationTime = new Date( in.readLong() );
+        }
+        
+        if ( in.readBoolean() ) {
+            expirationTime = new Date( in.readLong() );
+        }
     }
 
     public long getId() {
@@ -250,5 +333,5 @@ public class TaskSummary implements Externalizable {
         } else if ( !subject.equals( other.subject ) ) return false;
         return true;
     }
-            
+
 }
