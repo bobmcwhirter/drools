@@ -60,6 +60,7 @@ with ( new Task() ) {
         startDeadlines = [ 
             (with (new Deadline()) {
                 date = new Date( 10000000 ),
+                escalated = true,
                 documentation = [ new I18NText( "en-UK", "Start Deadline documentation" ),
                                   new I18NText( "en-DK", "Start Termin Dokumentation" ) ],
                 escalations = [ 
@@ -95,6 +96,7 @@ with ( new Task() ) {
         endDeadlines = [ 
             (with (new Deadline()) {
                 date = new Date( 10000000 ),
+                escalated = true,
                 documentation = [ new I18NText( "en-UK", "End Deadline documentation" ),
                                   new I18NText( "en-DK", "Ende Termin Dokumentation" ) ],
                 escalations = [ 

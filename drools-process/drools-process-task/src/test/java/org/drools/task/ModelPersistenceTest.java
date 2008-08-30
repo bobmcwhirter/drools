@@ -178,6 +178,7 @@ public class ModelPersistenceTest extends BaseTest {
         List<Deadline> startDeadlines = new ArrayList<Deadline>();
         deadlines.setStartDeadlines( startDeadlines );
         Deadline deadline = new Deadline();
+        deadline.setEscalated( true );
         startDeadlines.add( deadline );
         deadline.setDate( new Date( 10000000 ) );
         List<I18NText> docs = new ArrayList<I18NText>();
@@ -257,6 +258,7 @@ public class ModelPersistenceTest extends BaseTest {
         List<Deadline> endDeadlines = new ArrayList<Deadline>();
         deadlines.setEndDeadlines( endDeadlines );
         deadline = new Deadline();
+        deadline.setEscalated( true );
         endDeadlines.add( deadline );
         deadline.setDate( new Date( 10000000 ) );
         docs = new ArrayList<I18NText>();
@@ -333,11 +335,11 @@ public class ModelPersistenceTest extends BaseTest {
         potentialOwners.add( users.get( "stuart" ) );
         potentialOwners.add( users.get( "dalai" ) );        
 
-        taskService.addTask( task1 );        
+        taskService.addTask( task1 );                
         
-        em.clear();
+        taskService.getEntityManager().clear();
         
-        Task task2 = taskService.getTask( task1.getId( ) );
+        Task task2 = taskService.getTask( task1.getId( ) );       
         
         assertNotSame( task1,
                        task2 );

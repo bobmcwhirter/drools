@@ -79,6 +79,8 @@ public class TaskServiceEscalationTest extends BaseTest {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../UnescalatedDeadlines.mvel" ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
+        
+        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         for ( Task task : tasks ) {
             // for this one we put the task in directly;
@@ -87,7 +89,7 @@ public class TaskServiceEscalationTest extends BaseTest {
         em.getTransaction().commit();
 
         // now create a new service, to see if it initiates from the DB correctly
-        TaskService local = new TaskService(em);      
+        TaskService local = new TaskService(emf);      
         
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
         local.setEscalatedDeadlineHandler( handler );

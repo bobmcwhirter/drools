@@ -10,6 +10,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
 import org.drools.task.Deadline;
@@ -19,6 +20,8 @@ import org.drools.task.User;
 import org.drools.task.query.TaskSummary;
 
 public class TaskService {
+    EntityManagerFactory             emf;
+        
     EntityManager                    em;
 
     Query                            openOwnedTasksForUser;
@@ -28,9 +31,10 @@ public class TaskService {
 
     private EscalatedDeadlineHandler escalatedDeadlineHandler;
 
-    public TaskService(EntityManager em) {
-        this.em = em;
-
+    public TaskService(EntityManagerFactory emf) {
+        this.emf = emf;
+        em = emf.createEntityManager();
+        
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "OpenOwnedTasksForUser.txt" ) );
         try {
             openOwnedTasksForUser = em.createQuery( toString( reader ) );
@@ -60,6 +64,14 @@ public class TaskService {
                                         e );
         }
     }
+    
+    public EntityManagerFactory getEntityManagerFactory() {
+        return emf;
+    }
+    
+    public EntityManager getEntityManager() {
+        return em;
+    }    
 
     public void setEscalatedDeadlineHandler(EscalatedDeadlineHandler escalatedDeadlineHandler) {
         this.escalatedDeadlineHandler = escalatedDeadlineHandler;
@@ -80,7 +92,6 @@ public class TaskService {
     public void addTask(Task task) {
         em.getTransaction().begin();
         em.persist( task );
-        em.flush();
         em.getTransaction().commit();
         long now = System.currentTimeMillis();
         // schedule after it's been persisted, otherwise the id's won't be assigned
@@ -114,12 +125,13 @@ public class TaskService {
                     }
                 }
             }
-        }
+       }
     }
 
     public Task getTask(long taskId) {
-        return em.find( Task.class,
+        Task task = em.find( Task.class,
                         taskId );
+        return task;
     }
 
     public List<Object[]> getUnescalatedDeadlines() {
@@ -138,9 +150,10 @@ public class TaskService {
 
     public void executeEscalatedDeadline(long taskId,
                                          long deadlineId) {
-        Task task = em.find( Task.class,
+        EntityManager localEm = emf.createEntityManager();
+        Task task = localEm.find( Task.class,
                              taskId );
-        Deadline deadline = em.find( Deadline.class,
+        Deadline deadline = localEm.find( Deadline.class,
                                      deadlineId );
 
         if ( escalatedDeadlineHandler == null ) {
@@ -149,7 +162,8 @@ public class TaskService {
 
         escalatedDeadlineHandler.executeEscalatedDeadline( task,
                                                            deadline,
-                                                           em );
+                                                           localEm );
+        localEm.close();
     }
 
     public static String toString(Reader reader) throws IOException {

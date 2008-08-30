@@ -51,7 +51,6 @@ import junit.framework.TestCase;
 
 public abstract class BaseTest extends TestCase {
     protected EntityManagerFactory emf;
-    protected EntityManager em;
     
     protected Map<String, User> users;
     protected Map<String, Group> groups;
@@ -60,13 +59,11 @@ public abstract class BaseTest extends TestCase {
     
     protected void setUp() throws Exception {
         // Use persistence.xml configuration
-        emf = Persistence.createEntityManagerFactory( "org.drools.task" );
-        em = emf.createEntityManager(); // Retrieve an application managed entity manager        
+        emf = Persistence.createEntityManagerFactory( "org.drools.task" );        
         
-        taskService = new TaskService( em );
+        taskService = new TaskService( emf );
         
         Map  vars = new HashedMap();
-        //vars.put( "em", em );   
         
         Reader reader = new InputStreamReader( BaseTest.class.getResourceAsStream( "LoadUsers.mvel" ) );     
         users = ( Map<String, User> ) eval( reader, vars );   
@@ -82,7 +79,6 @@ public abstract class BaseTest extends TestCase {
     }
     
     protected void tearDown() throws Exception {
-        em.close();
         emf.close();
     }    
 
