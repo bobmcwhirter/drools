@@ -33,13 +33,79 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 service.addTask( (Task) cmd.getArguments().get( 0 ) );
                 break;
             }
-            case AllOpenTasksForUserRequest : {
-                List<TaskSummary> results = service.getOpenOwnedTasksForUser( (Long) cmd.getArguments().get( 0 ),
-                                                                            (String) cmd.getArguments().get( 1 ) );
+            case Query_TasksOwned : {
+                List<TaskSummary> results = service.getTasksOwned( (Long) cmd.getArguments().get( 0 ),
+                                                                   (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.AllOpenTasksForUserResponse,
+                                                   CommandName.Query_TaskSummaryResponse,
+                                                   args );
+                session.write( resultsCmnd );
+                break;
+            }
+            case Query_TasksAssignedAsBusinessAdministrator : {
+                List<TaskSummary> results = service.getTasksAssignedAsBusinessAdministrator( (Long) cmd.getArguments().get( 0 ),
+                                                                                             (String) cmd.getArguments().get( 1 ) );
+                List args = new ArrayList( 1 );
+                args.add( results );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.Query_TaskSummaryResponse,
+                                                   args );
+                session.write( resultsCmnd );
+                break;
+            }
+            case Query_TasksAssignedAsPotentialOwner : {
+                List<TaskSummary> results = service.getTasksAssignedAsPotentialOwner( (Long) cmd.getArguments().get( 0 ),
+                                                                                      (String) cmd.getArguments().get( 1 ) );
+                List args = new ArrayList( 1 );
+                args.add( results );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.Query_TaskSummaryResponse,
+                                                   args );
+                session.write( resultsCmnd );
+                break;
+            }
+            case Query_TasksAssignedAsTaskInitiator : {
+                List<TaskSummary> results = service.getTasksAssignedAsTaskInitiator( (Long) cmd.getArguments().get( 0 ),
+                                                                                     (String) cmd.getArguments().get( 1 ) );
+                List args = new ArrayList( 1 );
+                args.add( results );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.Query_TaskSummaryResponse,
+                                                   args );
+                session.write( resultsCmnd );
+                break;
+            }
+            case Query_TasksAssignedAsExcludedOwner : {
+                List<TaskSummary> results = service.getTasksAssignedAsExcludedOwner( (Long) cmd.getArguments().get( 0 ),
+                                                                                     (String) cmd.getArguments().get( 1 ) );
+                List args = new ArrayList( 1 );
+                args.add( results );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.Query_TaskSummaryResponse,
+                                                   args );
+                session.write( resultsCmnd );
+                break;
+            }
+            case Query_TasksAssignedAsRecipient : {
+                List<TaskSummary> results = service.getTasksAssignedAsRecipient( (Long) cmd.getArguments().get( 0 ),
+                                                                                 (String) cmd.getArguments().get( 1 ) );
+                List args = new ArrayList( 1 );
+                args.add( results );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.Query_TaskSummaryResponse,
+                                                   args );
+                session.write( resultsCmnd );
+                break;
+            }
+            case Query_TasksAssignedAsTaskStakeholder : {
+                List<TaskSummary> results = service.getTasksAssignedAsTaskStakeholder( (Long) cmd.getArguments().get( 0 ),
+                                                                                       (String) cmd.getArguments().get( 1 ) );
+                List args = new ArrayList( 1 );
+                args.add( results );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.Query_TaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;

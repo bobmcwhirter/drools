@@ -1,0 +1,35 @@
+select 
+     new org.drools.task.query.TaskSummary(
+     t.id,
+     names.text,
+     subjects.text,
+     descriptions.text,
+     t.taskData.status,
+     t.priority,
+     t.taskData.skipable,
+     t.taskData.actualOwner,
+     t.taskData.createdBy,
+     t.taskData.createdOn,
+     t.taskData.activationTime,
+     t.taskData.expirationTime)
+from 
+    Task t,
+    I18NText names,
+    I18NText subjects,
+    I18NText descriptions, 
+    OrganizationalEntity taskStakeholder
+where    
+    taskStakeholder.id = :userId and
+    taskStakeholder in elements ( t.peopleAssignments.taskStakeholders  )  and   
+    
+    names.language = :language and
+    names in elements( t.names) and
+    
+    subjects.language = :language and
+    subjects in elements( t.subjects) and
+    
+    descriptions.language = :language and
+    descriptions in elements( t.descriptions) and
+     
+    t.taskData.expirationTime is null
+    

@@ -39,7 +39,7 @@ public class TaskServiceEscalationTest extends BaseTest {
         taskService.setEscalatedDeadlineHandler( handler );
 
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../UnescalatedDeadlines.mvel" ) );
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
@@ -76,7 +76,7 @@ public class TaskServiceEscalationTest extends BaseTest {
 
 
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../UnescalatedDeadlines.mvel" ) );
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         

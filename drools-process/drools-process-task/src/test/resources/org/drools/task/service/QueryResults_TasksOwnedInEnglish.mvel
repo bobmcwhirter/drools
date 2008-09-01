@@ -10,8 +10,8 @@ format = new java.text.SimpleDateFormat( "dd/MMM/yyyy" );
                                Status.Created, 90, false, users[ 'peter' ], users[ 'steve' ], 
                                format.parse( "15/Mar/2008" ), format.parse( "20/Mar/2008" ), null ) ],                                                                     
   'steve' : [new TaskSummary( 1, 'This is my task name Feb', 'This is my task subject Feb', 'This is my task description Feb',
-                   Status.Created, 150, false, users[ 'steve' ], users[ 'tony' ], 
-                   format.parse( "15/Feb/2008" ), format.parse( "20/Feb/2008" ), null ),
+                              Status.Created, 150, false, users[ 'steve' ], users[ 'tony' ], 
+                              format.parse( "15/Feb/2008" ), format.parse( "20/Feb/2008" ), null ),
              new TaskSummary( 1, 'This is my task name Jun', 'This is my task subject Jun', 'This is my task description Jun',
                               Status.Created, 15, false, users[ 'steve' ], users[ 'steve' ], 
                               format.parse( "15/Jun/2008" ), format.parse( "20/Jun/2008" ), null ) ]                      

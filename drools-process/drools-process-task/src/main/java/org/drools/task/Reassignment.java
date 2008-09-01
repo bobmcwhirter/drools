@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.drools.task.utils.CollectionUtils;
@@ -26,10 +28,10 @@ public class Reassignment implements Externalizable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Reassignment_Documentation_Id", nullable = true)     
-    private List<I18NText>             documentation = Collections.emptyList();;
-
-    @OneToMany
-    @JoinColumn(name = "Reassignment_potentialOwners_Id", nullable = true)    
+    private List<I18NText>             documentation = Collections.emptyList();; 
+    
+    @ManyToMany
+    @JoinTable(name = "Reassignment_potentialOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
     private List<OrganizationalEntity> potentialOwners = Collections.emptyList();;
 
     public void writeExternal(ObjectOutput out) throws IOException {

@@ -1,7 +1,8 @@
 select 
+     new org.drools.task.query.DeadlineSummary(
      t.id,
      d.id,
-     d.date
+     d.date)
 from 
     Task t,
     Deadline d

@@ -27,13 +27,13 @@ public class Comment implements Externalizable  {
     @ManyToOne()
     private User addedBy;
     
-    private Date addedDate;    
+    private Date addedAt;    
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
         out.writeUTF( text );
         addedBy.writeExternal( out );        
-        out.writeLong( addedDate.getTime() );        
+        out.writeLong( addedAt.getTime() );        
     }    
     
     public void readExternal(ObjectInput in) throws IOException,
@@ -42,7 +42,7 @@ public class Comment implements Externalizable  {
         text = in.readUTF();
         addedBy = new User();
         addedBy.readExternal( in );
-        addedDate = new Date( in.readLong() );
+        addedAt = new Date( in.readLong() );
     }
     
     public Long getId() {
@@ -61,12 +61,12 @@ public class Comment implements Externalizable  {
         this.text = text;
     }
 
-    public Date getAddedDate() {
-        return addedDate;
+    public Date getAddedAt() {
+        return addedAt;
     }
 
-    public void setAddedDate(Date addedDate) {
-        this.addedDate = addedDate;
+    public void setAddedAt(Date addedDate) {
+        this.addedAt = addedDate;
     }
 
     public User getAddedBy() {
@@ -82,7 +82,7 @@ public class Comment implements Externalizable  {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((addedBy == null) ? 0 : addedBy.hashCode());
-        result = prime * result + ((addedDate == null) ? 0 : addedDate.hashCode());
+        result = prime * result + ((addedAt == null) ? 0 : addedAt.hashCode());
         result = prime * result + ((text == null) ? 0 : text.hashCode());
         return result;
     }
@@ -96,9 +96,9 @@ public class Comment implements Externalizable  {
         if ( addedBy == null ) {
             if ( other.addedBy != null ) return false;
         } else if ( !addedBy.equals( other.addedBy ) ) return false;
-        if ( addedDate == null ) {
-            if ( other.addedDate != null ) return false;
-        } else if ( addedDate.getTime() != other.addedDate.getTime() ) return false;
+        if ( addedAt == null ) {
+            if ( other.addedAt != null ) return false;
+        } else if ( addedAt.getTime() != other.addedAt.getTime() ) return false;
         if ( text == null ) {
             if ( other.text != null ) return false;
         } else if ( !text.equals( other.text ) ) return false;

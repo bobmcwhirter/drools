@@ -43,7 +43,7 @@ public class Attachment implements Externalizable {
     private Date   attachedAt;    
 
     @Lob
-    private byte[] attachment;
+    private byte[] content;
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
@@ -52,8 +52,8 @@ public class Attachment implements Externalizable {
         out.writeUTF( contentType );
         attachedBy.writeExternal( out );
         out.writeLong( attachedAt.getTime() );
-        out.writeInt( attachment.length );
-        out.write( attachment );        
+        out.writeInt( content.length );
+        out.write( content );        
     }
     
     public void readExternal(ObjectInput in) throws IOException,
@@ -65,8 +65,8 @@ public class Attachment implements Externalizable {
         attachedBy = new User();
         attachedBy.readExternal( in );        
         attachedAt = new Date( in.readLong() );
-        attachment = new byte[ in.readInt() ];
-        in.read( attachment );
+        content = new byte[ in.readInt() ];
+        in.read( content );
     }
 
     public Long getId() {
@@ -117,12 +117,12 @@ public class Attachment implements Externalizable {
         this.attachedBy = attachedBy;
     }
 
-    public byte[] getAttachment() {
-        return attachment;
+    public byte[] getContent() {
+        return content;
     }
 
-    public void setAttachment(byte[] attachment) {
-        this.attachment = attachment;
+    public void setContent(byte[] attachment) {
+        this.content = attachment;
     }        
     
     @Override
@@ -132,7 +132,7 @@ public class Attachment implements Externalizable {
         result = prime * result + ((accessType == null) ? 0 : accessType.hashCode());
         result = prime * result + ((attachedAt == null) ? 0 : attachedAt.hashCode());
         result = prime * result + ((attachedBy == null) ? 0 : attachedBy.hashCode());
-        result = prime * result + Arrays.hashCode( attachment );
+        result = prime * result + Arrays.hashCode( content );
         result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
@@ -153,8 +153,8 @@ public class Attachment implements Externalizable {
         if ( attachedBy == null ) {
             if ( other.attachedBy != null ) return false;
         } else if ( !attachedBy.equals( other.attachedBy ) ) return false;
-        if ( !Arrays.equals( attachment,
-                             other.attachment ) ) return false;
+        if ( !Arrays.equals( content,
+                             other.content ) ) return false;
         if ( contentType == null ) {
             if ( other.contentType != null ) return false;
         } else if ( !contentType.equals( other.contentType ) ) return false;

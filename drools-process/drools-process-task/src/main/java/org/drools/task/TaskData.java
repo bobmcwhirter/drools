@@ -40,11 +40,13 @@ public class TaskData
     private Date             expirationTime;
 
     private boolean          skipable;
+    
+    private AccessType       accessType;
 
-    private String           associatedDocumentType;
+    private String           contentType;
 
     @Lob
-    private byte[]           associatedDocument;
+    private byte[]           document;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)

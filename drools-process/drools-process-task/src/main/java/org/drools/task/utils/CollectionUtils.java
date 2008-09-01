@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
@@ -29,6 +30,7 @@ import org.drools.task.User;
 import org.hibernate.collection.PersistentBag;
 
 public class CollectionUtils {
+    
     public static boolean equals(List list1, List list2) {
         if ( list1 == null && list2 == null ) {
             // both are null

@@ -16,13 +16,20 @@ from
     Task t,
     I18NText names,
     I18NText subjects,
-    I18NText descriptions 
+    I18NText descriptions, 
+    OrganizationalEntity businessAdministrator
 where    
-    t.taskData.actualOwner.id = :currentUser and
-    names in elements( t.names) and
+    businessAdministrator.id = :userId and
+    businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  and   
+    
     names.language = :language and
-    subjects in elements( t.subjects) and
+    names in elements( t.names) and
+    
     subjects.language = :language and
+    subjects in elements( t.subjects) and
+    
+    descriptions.language = :language and
     descriptions in elements( t.descriptions) and
-    descriptions.language = :language and 
+     
     t.taskData.expirationTime is null
+    

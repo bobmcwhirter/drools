@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.mina.core.future.ConnectFuture;
@@ -16,8 +17,9 @@ import org.apache.mina.filter.codec.serialization.ObjectSerializationEncoder;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.transport.socket.SocketConnector;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.drools.task.AccessType;
 import org.drools.task.Task;
-import org.drools.task.service.TaskClientHandler.AllOpenTasksForUseResponseHandler;
+import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
 public class MinaTaskClient
 {
@@ -98,14 +100,93 @@ public class MinaTaskClient
         session.write( cmd );
     }
     
-    public void getAllOpenTasksForUser(long userId, String language, AllOpenTasksForUseResponseHandler responseHandler) {
+    public void addAttachment(long taskId, String name, long userId, Date attachedAt, AccessType accessType, String contentType,  byte[] content ) {
+        List args = new ArrayList( 7 );
+        args.add( taskId );
+        args.add( name );
+        args.add( userId );
+        args.add( attachedAt );
+        args.add( accessType );
+        args.add( contentType );
+        args.add( content );
+        Command cmd = new Command( counter++, CommandName.AddAttachment, args);        
+        
+        session.write( cmd );        
+    }
+    
+    public void addComment(long taskId, long userId, Date addedAt, String text) {
+        List args = new ArrayList( 4 );
+        args.add( taskId );
+        args.add( name );
+        args.add( userId );
+        args.add( addedAt );
+        args.add( text );
+        Command cmd = new Command( counter++, CommandName.AddComment, args);        
+        
+        session.write( cmd );         
+    }
+    
+    public void getTasksOwned(long userId, String language, TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.AllOpenTasksForUserRequest, args);
-        handler.addResponseHandler( cmd.getId(), responseHandler );
-        
+        Command cmd = new Command( counter++, CommandName.Query_TasksOwned, args);
+        handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }
+        
+    public void getTasksAssignedAsBusinessAdministrator(long userId, String language, TaskSummaryResponseHandler responseHandler) {
+        List args = new ArrayList( 2 );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsBusinessAdministrator, args);
+        handler.addResponseHandler( cmd.getId(), responseHandler );        
+        session.write( cmd );
+    }    
+    
+    public void getTasksAssignedAsExcludedOwner(long userId, String language, TaskSummaryResponseHandler responseHandler) {
+        List args = new ArrayList( 2 );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsExcludedOwner, args);
+        handler.addResponseHandler( cmd.getId(), responseHandler );        
+        session.write( cmd );
+    }     
+        
+    public void getTasksAssignedAsPotentialOwner(long userId, String language, TaskSummaryResponseHandler responseHandler) {
+        List args = new ArrayList( 2 );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsPotentialOwner, args);
+        handler.addResponseHandler( cmd.getId(), responseHandler );        
+        session.write( cmd );
+    }      
+    
+    public void getTasksAssignedAsRecipient(long userId, String language, TaskSummaryResponseHandler responseHandler) {
+        List args = new ArrayList( 2 );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsRecipient, args);
+        handler.addResponseHandler( cmd.getId(), responseHandler );        
+        session.write( cmd );
+    } 
+    
+    public void getTasksAssignedAsTaskInitiator(long userId, String language, TaskSummaryResponseHandler responseHandler) {
+        List args = new ArrayList( 2 );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsTaskInitiator, args);
+        handler.addResponseHandler( cmd.getId(), responseHandler );        
+        session.write( cmd );
+    }    
+           
+    public void getTasksAssignedAsTaskStakeholder(long userId, String language, TaskSummaryResponseHandler responseHandler) {
+        List args = new ArrayList( 2 );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsTaskStakeholder, args);
+        handler.addResponseHandler( cmd.getId(), responseHandler );        
+        session.write( cmd );
+    }     
 
 }

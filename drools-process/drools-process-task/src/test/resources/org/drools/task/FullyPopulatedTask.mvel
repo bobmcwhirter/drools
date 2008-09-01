@@ -22,7 +22,7 @@ with ( new Task() ) {
                 attachedBy = users['liz' ],
                 contentType = "text",
                 name = "file.txt",
-                attachment = bytes1           
+                content = bytes1           
              }),
              (with ( new Attachment() ) {
                  accessType = AccessType.Url, 
@@ -30,18 +30,18 @@ with ( new Task() ) {
                  attachedBy = users['liz' ],
                  contentType = "text",
                  name = "file2.txt",
-                 attachment = "http://domain.org/file.txt".bytes
+                 content = "http://domain.org/file.txt".bytes
              })
         ],
         comments = [ 
             (with ( new Comment ) {
                 addedBy = users['peter' ],
-                addedDate = new Date( 10000000 ),
+                addedAt = new Date( 10000000 ),
                 text = "this is a short comment"
              }),
              (with ( new Comment ) {
                  addedBy = users['steve' ],
-                 addedDate = new Date( 10000000 ),
+                 addedAt = new Date( 10000000 ),
                  text = "this is a loooooooooooooooooooooooooooooooooooooooooooooooong comment"
              })
         ]

@@ -42,9 +42,9 @@ public class TaskClientHandler extends IoHandlerAdapter
                                 Object message) throws Exception {
         Command cmd = (Command) message;
         switch ( cmd.getName() ) {
-            case AllOpenTasksForUserResponse : {
+            case Query_TaskSummaryResponse : {
                 List<TaskSummary> results = ( List<TaskSummary> ) cmd.getArguments().get( 0 );
-                AllOpenTasksForUseResponseHandler responseHandler = ( AllOpenTasksForUseResponseHandler ) responseHandlers.remove( cmd.getId() );
+                TaskSummaryResponseHandler responseHandler = ( TaskSummaryResponseHandler ) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
                     responseHandler.execute( results );
                 }               
@@ -77,7 +77,7 @@ public class TaskClientHandler extends IoHandlerAdapter
         
     }
     
-    public static interface AllOpenTasksForUseResponseHandler extends ResponseHandler {
+    public static interface TaskSummaryResponseHandler extends ResponseHandler {
         public void execute(List<TaskSummary> results);
         
         public List<TaskSummary> getResults();

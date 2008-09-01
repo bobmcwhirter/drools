@@ -115,7 +115,7 @@ public class ModelPersistenceTest extends BaseTest {
         attachment.setAttachedBy( users.get( "liz" ) );
         attachment.setContentType( "text" );
         attachment.setName( "file.txt" );
-        attachment.setAttachment( new byte[]{1, 0, 0, 1} );
+        attachment.setContent( new byte[]{1, 0, 0, 1} );
         attachments.add( attachment );
 
         attachment = new Attachment();
@@ -124,20 +124,20 @@ public class ModelPersistenceTest extends BaseTest {
         attachment.setAttachedBy( users.get( "liz" ) );
         attachment.setContentType( "text" );
         attachment.setName( "file2.txt" );
-        attachment.setAttachment( new String( "http://domain.org/file.txt" ).getBytes() );
+        attachment.setContent( new String( "http://domain.org/file.txt" ).getBytes() );
         attachments.add( attachment );
 
         List<Comment> comments = new ArrayList<Comment>();
         taskData.setComments( comments );
         Comment comment = new Comment();
         comment.setAddedBy( users.get( "peter" ) );
-        comment.setAddedDate( new Date( 10000000 ) );
+        comment.setAddedAt( new Date( 10000000 ) );
         comment.setText( "this is a short comment" );
         comments.add( comment );
 
         comment = new Comment();
         comment.setAddedBy( users.get( "steve" ) );
-        comment.setAddedDate( new Date( 10000000 ) );
+        comment.setAddedAt( new Date( 10000000 ) );
         comment.setText( "this is a loooooooooooooooooooooooooooooooooooooooooooooooong comment" );
         comments.add( comment );
 

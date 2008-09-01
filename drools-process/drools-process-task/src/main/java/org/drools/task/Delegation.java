@@ -15,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.drools.task.utils.CollectionUtils;
@@ -24,8 +25,8 @@ public class Delegation  implements Externalizable {
     @Enumerated(EnumType.STRING)      
     private Allowed                    allowed;
     
-    @OneToMany
-    @JoinColumn(name = "Delegates_Id", nullable = true)
+    @ManyToMany
+    @JoinTable(name = "Delegation_delegates", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
     private List<OrganizationalEntity> delegates = Collections.emptyList();
     
     public void writeExternal(ObjectOutput out) throws IOException {

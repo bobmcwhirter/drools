@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -18,34 +19,36 @@ import javax.persistence.OneToOne;
 import org.drools.task.utils.CollectionUtils;
 
 @Embeddable
-public class PeopleAssignments implements Externalizable {
+public class PeopleAssignments
+    implements
+    Externalizable {
     @ManyToOne()
     private User                       taskInitiator;
 
-    @OneToMany
-    @JoinColumn(name = "PeopleAssignments_PotentialOwners_Id", nullable = true)
+    @ManyToMany
+    @JoinTable(name = "PeopleAssignments_PotentialOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> potentialOwners        = Collections.emptyList();
 
-    @OneToMany
-    @JoinColumn(name = "PeopleAssignments_ExcludedOwners_Id", nullable = true)
+    @ManyToMany
+    @JoinTable(name = "PeopleAssignments_ExcludedOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> excludedOwners         = Collections.emptyList();
 
-    @OneToMany
-    @JoinColumn(name = "PeopleAssignments_TaskStakeholders_Id", nullable = true)
+    @ManyToMany
+    @JoinTable(name = "PeopleAssignments_TaskStakeholders", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> taskStakeholders       = Collections.emptyList();
 
-    @OneToMany
-    @JoinColumn(name = "PeopleAssignments_BusinessAdministrators_Id", nullable = true)
+    @ManyToMany
+    @JoinTable(name = "PeopleAssignments_BusinessAdministrators", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> businessAdministrators = Collections.emptyList();
 
-    @OneToMany
-    @JoinColumn(name = "PeopleAssignments_Recipients_Id", nullable = true)
+    @ManyToMany
+    @JoinTable(name = "PeopleAssignments_Recipients", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> recipients             = Collections.emptyList();
-    
+
     public PeopleAssignments() {
-        
+
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         if ( taskInitiator != null ) {
             out.writeBoolean( true );
@@ -53,13 +56,18 @@ public class PeopleAssignments implements Externalizable {
         } else {
             out.writeBoolean( false );
         }
-        CollectionUtils.writeOrganizationalEntityList( potentialOwners, out );
-        CollectionUtils.writeOrganizationalEntityList( excludedOwners, out );
-        CollectionUtils.writeOrganizationalEntityList( taskStakeholders, out );
-        CollectionUtils.writeOrganizationalEntityList( businessAdministrators, out );
-        CollectionUtils.writeOrganizationalEntityList( recipients, out );
-    } 
-    
+        CollectionUtils.writeOrganizationalEntityList( potentialOwners,
+                                                       out );
+        CollectionUtils.writeOrganizationalEntityList( excludedOwners,
+                                                       out );
+        CollectionUtils.writeOrganizationalEntityList( taskStakeholders,
+                                                       out );
+        CollectionUtils.writeOrganizationalEntityList( businessAdministrators,
+                                                       out );
+        CollectionUtils.writeOrganizationalEntityList( recipients,
+                                                       out );
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         if ( in.readBoolean() ) {
@@ -71,7 +79,7 @@ public class PeopleAssignments implements Externalizable {
         taskStakeholders = CollectionUtils.readOrganizationalEntityList( in );
         businessAdministrators = CollectionUtils.readOrganizationalEntityList( in );
         recipients = CollectionUtils.readOrganizationalEntityList( in );
-    }      
+    }
 
     public User getTaskInitiator() {
         return taskInitiator;
@@ -140,15 +148,18 @@ public class PeopleAssignments implements Externalizable {
         if ( obj == null ) return false;
         if ( !(obj instanceof PeopleAssignments) ) return false;
         PeopleAssignments other = (PeopleAssignments) obj;
-        
+
         if ( taskInitiator == null ) {
             if ( other.taskInitiator != null ) return false;
         } else if ( !taskInitiator.equals( other.taskInitiator ) ) return false;
-        
-        return CollectionUtils.equals( businessAdministrators, other.businessAdministrators ) && CollectionUtils.equals( excludedOwners, other.excludedOwners )
-        && CollectionUtils.equals( potentialOwners, other.potentialOwners ) && CollectionUtils.equals( recipients, other.recipients )
-        && CollectionUtils.equals( taskStakeholders, other.taskStakeholders );
+
+        return CollectionUtils.equals( businessAdministrators,
+                                       other.businessAdministrators ) && CollectionUtils.equals( excludedOwners,
+                                                                                                 other.excludedOwners ) && CollectionUtils.equals( potentialOwners,
+                                                                                                                                                   other.potentialOwners ) && CollectionUtils.equals( recipients,
+                                                                                                                                                                                                      other.recipients )
+               && CollectionUtils.equals( taskStakeholders,
+                                          other.taskStakeholders );
     }
-    
-    
+
 }
