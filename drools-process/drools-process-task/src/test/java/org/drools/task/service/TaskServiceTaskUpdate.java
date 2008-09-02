@@ -208,6 +208,11 @@ public class TaskServiceTaskUpdate extends BaseTest {
         List<Attachment> attachments2 = task1.getTaskData().getAttachments();
         assertEquals(2, attachments2.size() );
         
+        getAttachmentContentResponseHandler = new BlockingGetAttachmentContentResponseHandler();
+        client.getAttachmentContent( addAttachmentResponseHandler.getContentId(), getAttachmentContentResponseHandler );
+        attachmentContent = getAttachmentContentResponseHandler.getAttachmentContent();
+        assertEquals( "Ths is my attachment text2", new String( attachmentContent.getContent() ) );        
+        
         // make two collections the same and compare
         attachment.setSize( 26 );
         attachment.setContentId( addAttachmentResponseHandler.getContentId() );
