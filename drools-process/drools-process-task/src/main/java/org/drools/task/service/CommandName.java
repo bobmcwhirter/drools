@@ -2,10 +2,21 @@ package org.drools.task.service;
 
 import javax.persistence.Query;
 
-public enum CommandName {
+public enum CommandName {   
+    
+    GetTaskRequest,
+    GetTaskResponse,
+    
     AddTaskRequest,
-    AddAttachment,
-    AddComment,
+    AddTaskResponse,
+    
+    AddAttachmentRequest,
+    AddAttachmentResponse,
+    GetAttachmentContentRequest,
+    GetAttachmentContentResponse,
+    
+    AddCommentRequest,
+    AddCommentResponse,
     
     Query_TasksOwned,
     

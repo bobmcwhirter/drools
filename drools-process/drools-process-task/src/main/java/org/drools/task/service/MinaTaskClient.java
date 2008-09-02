@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoHandler;
@@ -18,7 +19,15 @@ import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.transport.socket.SocketConnector;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.AccessType;
+import org.drools.task.Attachment;
+import org.drools.task.AttachmentContent;
+import org.drools.task.Comment;
 import org.drools.task.Task;
+import org.drools.task.service.TaskClientHandler.AddAttachmentResponseHandler;
+import org.drools.task.service.TaskClientHandler.AddCommentResponseHandler;
+import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
+import org.drools.task.service.TaskClientHandler.GetAttachmentContentResponseHandler;
+import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
 public class MinaTaskClient
@@ -29,7 +38,7 @@ public class MinaTaskClient
 
     private IoSession session;
     
-    private int counter;
+    private AtomicInteger counter;
     
     public static void main(String[] args) throws Exception {
         MinaTaskClient client = new MinaTaskClient("test client", new TaskClientHandler() );
@@ -44,6 +53,7 @@ public class MinaTaskClient
         }
         this.name = name;
         this.handler = handler;
+        counter = new AtomicInteger();
     }
 
     public boolean connect(SocketConnector connector, SocketAddress address) {
@@ -92,45 +102,68 @@ public class MinaTaskClient
         }
     }
     
-    public void addTask(Task task) {
+    public void addTask(Task task, AddTaskResponseHandler responseHandler ) {
         List args = new ArrayList( 1 );
         args.add( task );
-        Command cmd = new Command( counter++, CommandName.AddTaskRequest, args);        
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.AddTaskRequest, args);  
+        
+        handler.addResponseHandler( cmd.getId(), responseHandler );   
         
         session.write( cmd );
     }
     
-    public void addAttachment(long taskId, String name, long userId, Date attachedAt, AccessType accessType, String contentType,  byte[] content ) {
-        List args = new ArrayList( 7 );
+    public void getTask(long taskId, GetTaskResponseHandler responseHandler) {
+        List args = new ArrayList( 1 );
         args.add( taskId );
-        args.add( name );
-        args.add( userId );
-        args.add( attachedAt );
-        args.add( accessType );
-        args.add( contentType );
-        args.add( content );
-        Command cmd = new Command( counter++, CommandName.AddAttachment, args);        
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.GetTaskRequest, args);  
+        
+        handler.addResponseHandler( cmd.getId(), responseHandler );   
         
         session.write( cmd );        
+        
     }
     
-    public void addComment(long taskId, long userId, Date addedAt, String text) {
-        List args = new ArrayList( 4 );
+    public void addComment(long taskId, Comment comment, AddCommentResponseHandler responseHandler) {
+        List args = new ArrayList( 2 );
         args.add( taskId );
-        args.add( name );
-        args.add( userId );
-        args.add( addedAt );
-        args.add( text );
-        Command cmd = new Command( counter++, CommandName.AddComment, args);        
+        args.add( comment );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.AddCommentRequest, args);       
+        
+        handler.addResponseHandler( cmd.getId(), responseHandler );
         
         session.write( cmd );         
     }
     
+    
+    public void addAttachment(long taskId, Attachment attachment, AttachmentContent content, AddAttachmentResponseHandler responseHandler ) {
+        List args = new ArrayList( 2 );
+        args.add( taskId );
+        args.add( attachment );
+        args.add( content );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.AddAttachmentRequest, args);   
+        
+        handler.addResponseHandler( cmd.getId(), responseHandler );
+        
+        session.write( cmd );        
+    }
+    
+    public void getAttachmentContent(long contentId, GetAttachmentContentResponseHandler responseHandler) {
+        List args = new ArrayList( 1 );
+        args.add( contentId );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.GetAttachmentContentRequest, args);  
+        
+        handler.addResponseHandler( cmd.getId(), responseHandler );   
+        
+        session.write( cmd );        
+        
+    }
+    
+
     public void getTasksOwned(long userId, String language, TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.Query_TasksOwned, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksOwned, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }
@@ -139,7 +172,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsBusinessAdministrator, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsBusinessAdministrator, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }    
@@ -148,7 +181,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsExcludedOwner, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsExcludedOwner, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }     
@@ -157,7 +190,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsPotentialOwner, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsPotentialOwner, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }      
@@ -166,7 +199,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsRecipient, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsRecipient, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     } 
@@ -175,7 +208,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsTaskInitiator, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsTaskInitiator, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }    
@@ -184,7 +217,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter++, CommandName.Query_TasksAssignedAsTaskStakeholder, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsTaskStakeholder, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }     

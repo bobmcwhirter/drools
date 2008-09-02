@@ -19,6 +19,7 @@ import javax.persistence.Query;
 
 import org.drools.task.AccessType;
 import org.drools.task.Attachment;
+import org.drools.task.AttachmentContent;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
 import org.drools.task.Group;
@@ -155,29 +156,39 @@ public class TaskService {
                 }
             }
         }
+    }    
+    
+    public void addComment(long taskId, Comment comment) {
+        Task task = em.find( Task.class, taskId );
+        if ( task == null ) {
+            // throw some exception
+        }  
+        
+        em.getTransaction().begin();
+        
+        List<Comment> list = task.getTaskData().getComments();
+        if ( list == null || list == Collections.<Comment>emptyList() ) {
+            list = new ArrayList<Comment>( 1 );
+            task.getTaskData().setComments( list );
+        }
+        
+        list.add ( comment );   
+        
+        em.getTransaction().commit();
     }
     
-    public void addAttachment(long taskId, String name, long userId, Date attachedAt, AccessType accessType, String contentType,  byte[] content ) {
+    public void addAttachment(long taskId,  Attachment attachment, AttachmentContent content) {
         Task task = em.find( Task.class, taskId );
         
         if ( task == null ) {
             // throw some exception
         }
         
-        User addedBy = em.find( User.class, userId);
-        if ( addedBy == null ) {
-            // throw some exception
-        }        
+        em.getTransaction().begin();        
         
-        em.getTransaction().begin();
-        
-        Attachment attachment = new Attachment();
-        attachment.setName( name );
-        attachment.setAttachedBy( addedBy );
-        attachment.setAttachedAt( attachedAt );
-        attachment.setAccessType( accessType );
-        attachment.setContentType( contentType );
-        attachment.setContent( content );
+        em.persist( content );
+        attachment.setSize( content.getContent().length );
+        attachment.setContentId( content.getId() );
         
         List<Attachment> list = task.getTaskData().getAttachments();
         if ( list == null || list == Collections.<Attachment>emptyList() ) {
@@ -189,39 +200,15 @@ public class TaskService {
         em.getTransaction().commit();
     }  
     
-    public void addComment(long taskId, long userId, Date addedAt, String text) {
-        Task task = em.find( Task.class, taskId );
-        if ( task == null ) {
-            // throw some exception
-        }
-        
-        User addedBy = em.find( User.class, userId);
-        if ( addedBy == null ) {
-            // throw some exception
-        }       
-        
-        em.getTransaction().begin();
-        
-        Comment comment = new Comment();
-        comment.setAddedBy( addedBy );
-        comment.setAddedAt( addedAt );
-        comment.setText( text );
-        
-        List<Comment> list = task.getTaskData().getComments();
-        if ( list == null || list == Collections.<Comment>emptyList() ) {
-            list = new ArrayList<Comment>( 1 );
-            task.getTaskData().setComments( list );
-        }
-        
-        list.add ( comment );   
-        
-        em.getTransaction().commit();
-    }    
+    public AttachmentContent getAttachmentContent(long contentId) {
+        AttachmentContent content = em.find( AttachmentContent.class, contentId );
+        return content;
+    }      
 
     public Task getTask(long taskId) {
         Task task = em.find( Task.class,
                              taskId );
-        return task;
+        return task;                                                                                                                                                                                
     }
 
     public List<DeadlineSummary> getUnescalatedDeadlines() {

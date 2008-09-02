@@ -15,90 +15,123 @@ import org.drools.task.BaseTest;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
+import org.drools.task.service.TaskServiceTaskUpdate.BlockingAddTaskResponseHandler;
 import org.drools.task.utils.CollectionUtils;
 
-public class TaskServiceTest extends BaseTest  {
+public class TaskServiceTest extends BaseTest {
     MinaTaskServer server;
     MinaTaskClient client;
-    
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         server = new MinaTaskServer( taskService );
         Thread thread = new Thread( server );
         thread.start();
-        Thread.sleep(500);
-        
-        client = new MinaTaskClient( "client 1", new TaskClientHandler() );
+        Thread.sleep( 500 );
+
+        client = new MinaTaskClient( "client 1",
+                                     new TaskClientHandler() );
         NioSocketConnector connector = new NioSocketConnector();
-        SocketAddress address =  new InetSocketAddress( "127.0.0.1", 9123 );
-        client.connect( connector, address );        
+        SocketAddress address = new InetSocketAddress( "127.0.0.1",
+                                                       9123 );
+        client.connect( connector,
+                        address );
     }
-    
+
     protected void tearDown() throws Exception {
         super.tearDown();
         client.disconnect();
         server.stop();
     }
-    
+
     public void testTasksOwnedQueryWithI18N() throws Exception {
-        Map  vars = new HashedMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        
+        Map vars = new HashedMap();
+        vars.put( "users",
+                  users );
+        vars.put( "groups",
+                  groups );
+
         //Reader reader;
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "QueryData_TasksOwned.mvel" ) );
-        List<Task> tasks = ( List<Task> ) eval( reader, vars );
-        for ( Task task : tasks) {
-            client.addTask( task );
+        List<Task> tasks = (List<Task>) eval( reader,
+                                              vars );
+        for ( Task task : tasks ) {
+            BlockingAddTaskResponseHandler responseHandler = new BlockingAddTaskResponseHandler();
+            client.addTask( task, responseHandler );
         }
-        
+
         // Test UK I18N  
         reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResults_TasksOwnedInEnglish.mvel" ) );
-        Map<String, List<TaskSummary>> expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );
-           
+        Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
+                                                                                         vars );
 
-        TaskSummaryResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();       
-        client.getTasksOwned( users.get( "peter" ).getId(), "en-UK", responseHandler );
-        List<TaskSummary> actual = responseHandler.getResults();       
-        assertEquals( 3, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
+        BlockingAllOpenTasksForUseResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "peter" ).getId(),
+                              "en-UK",
+                              responseHandler );
+        List<TaskSummary> actual = responseHandler.getResults();
+        assertEquals( 3,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "peter" ),
+                                            actual ) );
 
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();  
-        client.getTasksOwned( users.get( "steve" ).getId(), "en-UK", responseHandler );
-        actual = responseHandler.getResults();           
-        assertEquals( 2, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
-        
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();  
-        client.getTasksOwned( users.get( "darth" ).getId(), "en-UK", responseHandler );
-        actual = responseHandler.getResults();        
-        assertEquals( 1, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );
-        
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "steve" ).getId(),
+                              "en-UK",
+                              responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 2,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "steve" ),
+                                            actual ) );
+
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "darth" ).getId(),
+                              "en-UK",
+                              responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 1,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "darth" ),
+                                            actual ) );
+
         // Test DK I18N 
         reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResults_TasksOwnedInGerman.mvel" ) );
-        expected = ( Map<String, List<TaskSummary>> ) eval( reader, vars );            
-        
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();  
-        client.getTasksOwned(  users.get( "peter" ).getId(), "en-DK",  responseHandler   );
-        actual = responseHandler.getResults();        
-        assertEquals( 3, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
+        expected = (Map<String, List<TaskSummary>>) eval( reader,
+                                                          vars );
 
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();  
-        client.getTasksOwned(  users.get( "steve" ).getId(), "en-DK",  responseHandler   );
-        actual = responseHandler.getResults();            
-        assertEquals( 2, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "steve" ), actual ) );
-        
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();  
-        client.getTasksOwned(  users.get( "darth" ).getId(), "en-DK",  responseHandler   );
-        actual = responseHandler.getResults();        
-        assertEquals( 1, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "darth" ), actual ) );              
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "peter" ).getId(),
+                              "en-DK",
+                              responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 3,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "peter" ),
+                                            actual ) );
+
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "steve" ).getId(),
+                              "en-DK",
+                              responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 2,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "steve" ),
+                                            actual ) );
+
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "darth" ).getId(),
+                              "en-DK",
+                              responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 1,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "darth" ),
+                                            actual ) );
     }
-    
+
     public void testPeopleAssignmentQueries() {
         Map vars = new HashedMap();
         vars.put( "users",
@@ -112,74 +145,87 @@ public class TaskServiceTest extends BaseTest  {
         for ( Task task : tasks ) {
             taskService.addTask( task );
         }
-        
+
         reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResults_PeopleAssignmentQuerries.mvel" ) );
         Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                                                          vars );
-        
-        TaskSummaryResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();       
-        client.getTasksAssignedAsTaskInitiator( users.get( "darth" ).getId(), "en-UK", responseHandler );
-        List<TaskSummary> actual = responseHandler.getResults();        
-        assertEquals( 1, actual.size() );     
-        assertTrue( CollectionUtils.equals( expected.get( "darth" ),
-                                            actual ) );                       
-        
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();       
-        client.getTasksAssignedAsBusinessAdministrator( users.get( "steve" ).getId(), "en-UK", responseHandler );
-        actual = responseHandler.getResults();      
-        assertTrue( CollectionUtils.equals( expected.get( "steve" ),
-                                            actual ) );     
-        
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();       
-        client.getTasksAssignedAsExcludedOwner( users.get( "liz" ).getId(), "en-UK", responseHandler );
-        actual = responseHandler.getResults();              
-        assertEquals( 2, actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "liz" ),
-                                            actual ) );            
 
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();       
-        client.getTasksAssignedAsPotentialOwner( users.get( "bobba" ).getId(), "en-UK", responseHandler );
-        actual = responseHandler.getResults();         
-        assertEquals( 3, actual.size() );
+        BlockingAllOpenTasksForUseResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsTaskInitiator( users.get( "darth" ).getId(),
+                                                "en-UK",
+                                                responseHandler );
+        List<TaskSummary> actual = responseHandler.getResults();
+        assertEquals( 1,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "darth" ),
+                                            actual ) );
+
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsBusinessAdministrator( users.get( "steve" ).getId(),
+                                                        "en-UK",
+                                                        responseHandler );
+        actual = responseHandler.getResults();
+        assertTrue( CollectionUtils.equals( expected.get( "steve" ),
+                                            actual ) );
+
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsExcludedOwner( users.get( "liz" ).getId(),
+                                                "en-UK",
+                                                responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 2,
+                      actual.size() );
+        assertTrue( CollectionUtils.equals( expected.get( "liz" ),
+                                            actual ) );
+
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsPotentialOwner( users.get( "bobba" ).getId(),
+                                                 "en-UK",
+                                                 responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 3,
+                      actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "bobba" ),
-                                            actual ) );         
-     
-        
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();       
-        client.getTasksAssignedAsRecipient( users.get( "sly" ).getId(), "en-UK", responseHandler );
-        actual = responseHandler.getResults();             
-        assertEquals( 1, actual.size() );   
+                                            actual ) );
+
+        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsRecipient( users.get( "sly" ).getId(),
+                                            "en-UK",
+                                            responseHandler );
+        actual = responseHandler.getResults();
+        assertEquals( 1,
+                      actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "sly" ),
-                                            actual ) );                             
-    }    
-    
-    
-    public static class BlockingAllOpenTasksForUseResponseHandler implements TaskSummaryResponseHandler {
+                                            actual ) );
+    }
+
+    public static class BlockingAllOpenTasksForUseResponseHandler
+        implements
+        TaskSummaryResponseHandler {
         private volatile List<TaskSummary> results;
 
         public synchronized void execute(List<TaskSummary> results) {
             this.results = results;
-            notifyAll();                
+            notifyAll();
         }
-        
+
         public synchronized List<TaskSummary> getResults() {
-            if ( results == null ) {                  
+            if ( results == null ) {
                 try {
                     wait( 3000 );
                 } catch ( InterruptedException e ) {
                     e.printStackTrace();
                 }
             }
-            
+
             if ( results == null ) {
-                throw new RuntimeException("Timeout : unable to retrieve results" );
+                throw new RuntimeException( "Timeout : unable to retrieve results" );
             }
-            
+
             return results;
 
         }
-        
-    };    
-    
-    
+
+    };
+
 }

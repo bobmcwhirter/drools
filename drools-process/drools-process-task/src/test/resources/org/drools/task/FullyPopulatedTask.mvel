@@ -22,7 +22,8 @@ with ( new Task() ) {
                 attachedBy = users['liz' ],
                 contentType = "text",
                 name = "file.txt",
-                content = bytes1           
+                size = 5000,
+                contentId = 5           
              }),
              (with ( new Attachment() ) {
                  accessType = AccessType.Url, 
@@ -30,7 +31,8 @@ with ( new Task() ) {
                  attachedBy = users['liz' ],
                  contentType = "text",
                  name = "file2.txt",
-                 content = "http://domain.org/file.txt".bytes
+                 size = 500,
+                 contentId = 3
              })
         ],
         comments = [ 

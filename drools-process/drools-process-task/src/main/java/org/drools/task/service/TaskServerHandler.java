@@ -8,6 +8,10 @@ import java.util.Map;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
+import org.drools.task.AccessType;
+import org.drools.task.Attachment;
+import org.drools.task.AttachmentContent;
+import org.drools.task.Comment;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 
@@ -29,10 +33,66 @@ public class TaskServerHandler extends IoHandlerAdapter {
                                 Object message) throws Exception {
         Command cmd = (Command) message;
         switch ( cmd.getName() ) {
+            case GetTaskRequest : {
+                long taskId = ( Long ) cmd.getArguments().get( 0 );
+                Task task = service.getTask( taskId );
+                List args = new ArrayList( 1 );
+                args.add( task );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.GetTaskResponse,
+                                                   args );
+                session.write( resultsCmnd );                                
+                break;                
+            }
             case AddTaskRequest : {
-                service.addTask( (Task) cmd.getArguments().get( 0 ) );
+                Task task = (Task) cmd.getArguments().get( 0 ) ;
+                service.addTask( task );
+                
+                List args = new ArrayList( 1 );
+                args.add( task.getId() );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.AddTaskResponse,
+                                                   args );
+                session.write( resultsCmnd );                                
                 break;
             }
+            case AddCommentRequest : {      
+                Comment comment = ( Comment ) cmd.getArguments().get( 1 );
+                service.addComment( (Long) cmd.getArguments().get( 0 ), comment );
+                
+                List args = new ArrayList( 1 );
+                args.add( comment.getId() );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.AddCommentResponse,
+                                                   args );
+                session.write( resultsCmnd );                       
+                break;
+            }
+            case  AddAttachmentRequest : {
+                Attachment attachment = ( Attachment ) cmd.getArguments().get( 1 );
+                AttachmentContent content = ( AttachmentContent ) cmd.getArguments().get( 2 ); 
+                service.addAttachment( (Long) cmd.getArguments().get( 0 ), attachment, content );
+                
+                List args = new ArrayList( 1 );
+                args.add( attachment.getId() );
+                args.add( content.getId() );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.AddAttachmentResponse,
+                                                   args );
+                session.write( resultsCmnd );                    
+                break;
+            }
+            case GetAttachmentContentRequest : {
+                long contentId = ( Long ) cmd.getArguments().get( 0 );
+                AttachmentContent content = service.getAttachmentContent( contentId );
+                List args = new ArrayList( 1 );
+                args.add( content );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.GetAttachmentContentResponse,
+                                                   args );
+                session.write( resultsCmnd );                                
+                break;                
+            }            
             case Query_TasksOwned : {
                 List<TaskSummary> results = service.getTasksOwned( (Long) cmd.getArguments().get( 0 ),
                                                                    (String) cmd.getArguments().get( 1 ) );

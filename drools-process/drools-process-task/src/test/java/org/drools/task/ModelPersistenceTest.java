@@ -115,7 +115,8 @@ public class ModelPersistenceTest extends BaseTest {
         attachment.setAttachedBy( users.get( "liz" ) );
         attachment.setContentType( "text" );
         attachment.setName( "file.txt" );
-        attachment.setContent( new byte[]{1, 0, 0, 1} );
+        attachment.setSize( 5000);
+        attachment.setContentId( 5 );
         attachments.add( attachment );
 
         attachment = new Attachment();
@@ -124,7 +125,8 @@ public class ModelPersistenceTest extends BaseTest {
         attachment.setAttachedBy( users.get( "liz" ) );
         attachment.setContentType( "text" );
         attachment.setName( "file2.txt" );
-        attachment.setContent( new String( "http://domain.org/file.txt" ).getBytes() );
+        attachment.setSize( 500 );
+        attachment.setContentId( 3 );
         attachments.add( attachment );
 
         List<Comment> comments = new ArrayList<Comment>();

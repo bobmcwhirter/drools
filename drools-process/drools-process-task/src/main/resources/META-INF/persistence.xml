@@ -3,8 +3,8 @@
 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="org.drools.task">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>org.drools.task.User</class>
         <class>org.drools.task.Attachment</class>
+        <class>org.drools.task.AttachmentContent</class>        
         <class>org.drools.task.BooleanExpression</class>        
         <class>org.drools.task.Comment</class>
         <class>org.drools.task.Deadline</class>
@@ -20,7 +20,8 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
         <class>org.drools.task.Status</class>
         <class>org.drools.task.Task</class>
         <class>org.drools.task.TaskData</class>
-
+        <class>org.drools.task.User</class>
+        
 	    <properties>
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
 	        <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>	        
@@ -37,7 +38,7 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
 	        <property name="hibernate.connection.autocommit" value="false" /> 	               
 	        <property name="hibernate.max_fetch_depth" value="3"/>
 		    <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="true" />		    
+            <property name="hibernate.show_sql" value="false" />		    
 	    </properties>        
     </persistence-unit>
     
