@@ -79,7 +79,7 @@ public class TaskServiceTaskUpdate extends BaseTest {
         Date addedAt = new Date( System.currentTimeMillis() ); 
         comment.setAddedAt( addedAt );
         comment.setAddedBy( users.get( "luke" ) );
-        comment.setText( "This is my comment!!!!!" );
+        comment.setText( "This is my comment1!!!!!" );
         
         BlockingAddCommentResponseHandler addCommentResponseHandler = new BlockingAddCommentResponseHandler();
         client.addComment( taskId, comment,addCommentResponseHandler );      
@@ -91,17 +91,37 @@ public class TaskServiceTaskUpdate extends BaseTest {
         assertNotSame(task, task1);
         assertFalse(  task.equals( task1) );
        
-        List<Comment> comments = task1.getTaskData().getComments();
-        assertEquals(1, comments.size() );
-        Comment returnedComment = comments.get( 0 );        
-        assertEquals( "This is my comment!!!!!", returnedComment.getText() );
+        List<Comment> comments1 = task1.getTaskData().getComments();
+        assertEquals(1, comments1.size() );
+        Comment returnedComment = comments1.get( 0 );        
+        assertEquals( "This is my comment1!!!!!", returnedComment.getText() );
         assertEquals( addedAt, returnedComment.getAddedAt() );
         assertEquals( users.get( "luke" ), returnedComment.getAddedBy() );
         
         assertEquals( (long)addCommentResponseHandler.getCommentId(), (long) returnedComment.getId() );
         
-        task.getTaskData().setComments( comments );
-        assertEquals(task, task1);              
+        task.getTaskData().setComments( comments1 );
+        assertEquals(task, task1);       
+        
+        // test we can have multiple comments
+        comment = new Comment();
+        addedAt = new Date( System.currentTimeMillis() ); 
+        comment.setAddedAt( addedAt );
+        comment.setAddedBy( users.get( "tony" ) );
+        comment.setText( "This is my comment2!!!!!" );
+        
+        addCommentResponseHandler = new BlockingAddCommentResponseHandler();
+        client.addComment( taskId, comment, addCommentResponseHandler );
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        task1 = getTaskResponseHandler.getTask();     
+        List<Comment> comments2 = task1.getTaskData().getComments();
+        assertEquals(2, comments2.size() );       
+        
+        // make two collections the same and compare
+        comments1.add( comment );
+        assertTrue( CollectionUtils.equals( comments1, comments2 ) );
     }
     
     public void testAddAttachment() {
@@ -122,11 +142,11 @@ public class TaskServiceTaskUpdate extends BaseTest {
         Date attachedAt = new Date( System.currentTimeMillis() ); 
         attachment.setAttachedAt( attachedAt);
         attachment.setAttachedBy( users.get( "luke" ) );
-        attachment.setName( "file.txt" );
+        attachment.setName( "file1.txt" );
         attachment.setAccessType( AccessType.Inline );
         attachment.setContentType( "txt" );
         
-        byte[] bytes = "Ths is my attachment text".getBytes();
+        byte[] bytes = "Ths is my attachment text1".getBytes();
         AttachmentContent content = new AttachmentContent();
         content.setContent( bytes );
         
@@ -141,26 +161,58 @@ public class TaskServiceTaskUpdate extends BaseTest {
         assertNotSame(task, task1);
         assertFalse(  task.equals( task1) );
        
-        List<Attachment> attachments = task1.getTaskData().getAttachments();
-        assertEquals(1, attachments.size() );
-        Attachment returnedAttachment = attachments.get( 0 );        
+        List<Attachment> attachments1 = task1.getTaskData().getAttachments();
+        assertEquals(1, attachments1.size() );
+        Attachment returnedAttachment = attachments1.get( 0 );        
         assertEquals( attachedAt, returnedAttachment.getAttachedAt() );
         assertEquals( users.get( "luke" ), returnedAttachment.getAttachedBy() );
         assertEquals( AccessType.Inline, returnedAttachment.getAccessType() );
         assertEquals( "txt", returnedAttachment.getContentType() );
-        assertEquals( "file.txt", returnedAttachment.getName() );        
+        assertEquals( "file1.txt", returnedAttachment.getName() );        
         assertEquals( bytes.length, returnedAttachment.getSize() );
         
         assertEquals( (long) addAttachmentResponseHandler.getAttachmentId(), (long) returnedAttachment.getId() );
         assertEquals( (long) addAttachmentResponseHandler.getContentId(),  (long) returnedAttachment.getContentId() );        
         
-        task.getTaskData().setAttachments( attachments );
+        task.getTaskData().setAttachments( attachments1 );
         assertEquals(task, task1);            
         
         BlockingGetAttachmentContentResponseHandler  getAttachmentContentResponseHandler = new BlockingGetAttachmentContentResponseHandler();
         client.getAttachmentContent( returnedAttachment.getContentId(), getAttachmentContentResponseHandler );
         AttachmentContent attachmentContent = getAttachmentContentResponseHandler.getAttachmentContent();
-        assertEquals( "Ths is my attachment text", new String( attachmentContent.getContent() ) );
+        assertEquals( "Ths is my attachment text1", new String( attachmentContent.getContent() ) );
+        
+        // test we can have multiple attachments
+        
+        attachment = new Attachment();
+        attachedAt = new Date( System.currentTimeMillis() ); 
+        attachment.setAttachedAt( attachedAt);
+        attachment.setAttachedBy( users.get( "tony" ) );
+        attachment.setName( "file2.txt" );
+        attachment.setAccessType( AccessType.Inline );
+        attachment.setContentType( "txt" );
+        
+        bytes = "Ths is my attachment text2".getBytes();
+        content = new AttachmentContent();
+        content.setContent( bytes );
+        
+        addAttachmentResponseHandler = new BlockingAddAttachmentResponseHandler();
+        client.addAttachment( taskId, attachment, content, addAttachmentResponseHandler);   
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        task1 = getTaskResponseHandler.getTask();
+        assertNotSame(task, task1);
+        assertFalse(  task.equals( task1) );
+       
+        List<Attachment> attachments2 = task1.getTaskData().getAttachments();
+        assertEquals(2, attachments2.size() );
+        
+        // make two collections the same and compare
+        attachment.setSize( 26 );
+        attachment.setContentId( addAttachmentResponseHandler.getContentId() );
+        attachments1.add( attachment );
+        assertTrue( CollectionUtils.equals( attachments2, attachments1 ) );       
     }    
 
     public static class BlockingGetTaskResponseHandler implements GetTaskResponseHandler {
