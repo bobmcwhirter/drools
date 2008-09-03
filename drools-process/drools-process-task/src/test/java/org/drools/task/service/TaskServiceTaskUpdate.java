@@ -65,8 +65,9 @@ public class TaskServiceTaskUpdate extends BaseTest {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
         
-        String str = "(with (new Task()) { priority = 55, taskData = new TaskData(),";
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
@@ -137,9 +138,10 @@ public class TaskServiceTaskUpdate extends BaseTest {
     public void testAddRemoveAttachment() throws Exception {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
-        vars.put( "groups", groups );        
+        vars.put( "groups", groups );
+        vars.put( "now", new Date() );        
         
-        String str = "(with (new Task()) { priority = 55, taskData = new TaskData(),";
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();

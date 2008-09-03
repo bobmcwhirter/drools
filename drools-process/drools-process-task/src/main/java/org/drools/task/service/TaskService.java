@@ -24,7 +24,9 @@ import org.drools.task.AttachmentContent;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
 import org.drools.task.Group;
+import org.drools.task.Status;
 import org.drools.task.Task;
+import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.query.DeadlineSummary;
 import org.drools.task.query.TaskSummary;
@@ -123,6 +125,37 @@ public class TaskService {
     }
 
     public void addTask(Task task) {
+
+        TaskData taskData = task.getTaskData();
+        // new tasks start off with status created
+        taskData.setStatus( Status.Created );
+
+        if ( task.getPeopleAssignments() != null ) {
+            List potentialOwners = task.getPeopleAssignments().getPotentialOwners();
+            if ( potentialOwners.size() == 1 ) {
+                // if there is a single potential owner, assign and set status to Reserved
+                taskData.setActualOwner( (User) potentialOwners.get( 0 ) );
+                taskData.setStatus( Status.Reserved );
+            } else if ( potentialOwners.size() > 1 ) {
+                // multiple potential owners, so set to Ready so one can claim.
+                taskData.setStatus( Status.Ready );
+            } else {
+                //@TODO we have no potential owners
+            }
+        } else {
+            //@TODO we have no potential owners
+        }
+
+        // set the CreatedOn date if it's not already set
+        if ( taskData.getCreatedOn() == null ) {
+            taskData.setCreatedOn( new Date() );
+        }
+
+        //@FIXME for now we activate on creation, unless date is supplied
+        if ( taskData.getActivationTime() == null ) {
+            taskData.setActivationTime( taskData.getCreatedOn() );
+        }
+
         em.getTransaction().begin();
         em.persist( task );
         em.getTransaction().commit();
@@ -159,63 +192,156 @@ public class TaskService {
                 }
             }
         }
-    }    
-    
-    public void addComment(long taskId, Comment comment) {
-        Task task = em.find( Task.class, taskId );
+    }
+
+    public void claim(long taskId,
+                      User user) {
+        Task task = em.find( Task.class,
+                             taskId );
+        TaskData taskData = task.getTaskData();
+
+        em.getTransaction().begin();
+
+        //task must be in status Ready
+        if ( taskData.getStatus() == Status.Ready ) {
+            taskData.setStatus( Status.Reserved );
+            taskData.setActualOwner( user );
+        } else {
+            // @TODO Error
+        }
+
+        em.getTransaction().commit();
+    }
+
+    public void start(long taskId,
+                      User user) {
+        Task task = em.find( Task.class,
+                             taskId );
+        TaskData taskData = task.getTaskData();
+
+        em.getTransaction().begin();
+
+        //task must be in status Ready or Reserved Status
+        if ( taskData.getStatus() == Status.Ready ) {
+            // if Ready make sure is a potentialOwner
+            boolean allowed = task.getPeopleAssignments().getPotentialOwners().contains( user ) && !task.getPeopleAssignments().getExcludedOwners().contains( user );
+            if ( allowed ) {
+                taskData.setStatus( Status.InProgress );
+            } else {
+                //@TODO Error
+            }
+        } else if ( taskData.getStatus() == Status.Reserved ) {
+            // make sure the user us the owner
+            if ( taskData.getActualOwner().equals( user ) ) {
+                taskData.setStatus( Status.InProgress );
+            } else {
+                //@TODO Error
+            }
+        }
+
+        em.getTransaction().commit();
+    }
+
+    public void stop(long taskId,
+                     User user) {
+        Task task = em.find( Task.class,
+                             taskId );
+        TaskData taskData = task.getTaskData();
+
+        // make sure user is owner, then change state to Reserved
+        if ( taskData.getActualOwner().equals( user ) ) {
+            taskData.setStatus( Status.Reserved );
+        } else {
+            //@TODO Error
+        }
+    }
+
+    public void release(long taskId,
+                        User user) {
+        Task task = em.find( Task.class,
+                             taskId );
+        TaskData taskData = task.getTaskData();
+
+        // task must be reserved or in progress and owned by user
+        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && taskData.getActualOwner().equals( user ) ) {
+            taskData.setStatus( Status.Ready );
+        } else {
+            //@TODO Error
+        }
+    }
+
+    public void complete(long taskId) {
+
+    }
+
+    public void fail(long taskId) {
+
+    }
+
+    public void addComment(long taskId,
+                           Comment comment) {
+        Task task = em.find( Task.class,
+                             taskId );
         if ( task == null ) {
             // throw some exception
-        }  
-        
+        }
+
         em.getTransaction().begin();
-        
+
         List<Comment> list = task.getTaskData().getComments();
-        if ( list == null || list == Collections.<Comment>emptyList() ) {
+        if ( list == null || list == Collections.<Comment> emptyList() ) {
             list = new ArrayList<Comment>( 1 );
             task.getTaskData().setComments( list );
         }
-        
-        list.add ( comment );   
-        
+
+        list.add( comment );
+
         em.getTransaction().commit();
     }
-    
-    public void addAttachment(long taskId,  Attachment attachment, AttachmentContent content) {
-        Task task = em.find( Task.class, taskId );
-        
+
+    public void addAttachment(long taskId,
+                              Attachment attachment,
+                              AttachmentContent content) {
+        Task task = em.find( Task.class,
+                             taskId );
+
         if ( task == null ) {
             // throw some exception
         }
-        
-        em.getTransaction().begin();        
-        
+
+        em.getTransaction().begin();
+
         em.persist( content );
         attachment.setSize( content.getContent().length );
         attachment.setContentId( content.getId() );
-        
+
         List<Attachment> list = task.getTaskData().getAttachments();
-        if ( list == null || list == Collections.<Attachment>emptyList() ) {
+        if ( list == null || list == Collections.<Attachment> emptyList() ) {
             list = new ArrayList<Attachment>( 1 );
             task.getTaskData().setAttachments( list );
         }
-        
-        list.add ( attachment );          
+
+        list.add( attachment );
         em.getTransaction().commit();
-    }  
-    
+    }
+
     public AttachmentContent getAttachmentContent(long contentId) {
-        AttachmentContent content = em.find( AttachmentContent.class, contentId );
+        AttachmentContent content = em.find( AttachmentContent.class,
+                                             contentId );
         return content;
-    }      
-    
-    public void deleteAttachment(long taskId, long attachmentId, long attachmentContentId) {
+    }
+
+    public void deleteAttachment(long taskId,
+                                 long attachmentId,
+                                 long attachmentContentId) {
         // @TODO I can't get this to work with HQL deleting the Attachment. Hibernate needs both the item removed from the collection
         // and also the item deleted, so for now have to load the entire Task, I suspect that this is due to using the same EM which 
         // is caching things.
-        Task task = em.find( Task.class, taskId );
-        
+        Task task = em.find( Task.class,
+                             taskId );
+
         em.getTransaction().begin();
-        for( Iterator<Attachment> it = task.getTaskData().getAttachments().iterator(); it.hasNext(); ) {
+        for ( Iterator<Attachment> it = task.getTaskData().getAttachments().iterator(); it.hasNext(); ) {
             Attachment attachment = it.next();
             if ( attachment.getId() == attachmentId ) {
                 it.remove();
@@ -223,39 +349,42 @@ public class TaskService {
                 break;
             }
         }
-        
+
         // we do this as HQL to avoid streaming in the entire HQL
         String deleteContent = "delete from AttachmentContent where id = :id";
-        em.createQuery( deleteContent ).setParameter( "id", attachmentContentId ).executeUpdate();
-        
-        em.getTransaction().commit();       
+        em.createQuery( deleteContent ).setParameter( "id",
+                                                      attachmentContentId ).executeUpdate();
+
+        em.getTransaction().commit();
     }
-    
-    public void deleteComment(long taskId, long commentId) {
+
+    public void deleteComment(long taskId,
+                              long commentId) {
         // @TODO I can't get this to work with HQL deleting the Comment. Hibernate needs both the item removed from the collection
         // and also the item deleted, so for now have to load the entire Task, I suspect that this is due to using the same EM which 
         // is caching things.
-        Task task = em.find( Task.class, taskId );
+        Task task = em.find( Task.class,
+                             taskId );
         em.getTransaction().begin();
-        for( Iterator<Comment> it = task.getTaskData().getComments().iterator(); it.hasNext(); ) {
+        for ( Iterator<Comment> it = task.getTaskData().getComments().iterator(); it.hasNext(); ) {
             Comment comment = it.next();
             if ( comment.getId() == commentId ) {
                 it.remove();
                 em.remove( comment ); // need to do this otherwise it just removes the link id, without removing the comment
                 break;
             }
-        }        
+        }
         em.getTransaction().commit();
     }
 
     public Task getTask(long taskId) {
         Task task = em.find( Task.class,
                              taskId );
-        return task;                                                                                                                                                                                
+        return task;
     }
 
     public List<DeadlineSummary> getUnescalatedDeadlines() {
-        return ( List<DeadlineSummary> ) unescalatedDeadlines.getResultList();
+        return (List<DeadlineSummary>) unescalatedDeadlines.getResultList();
     }
 
     public List<TaskSummary> getTasksOwned(long userId,

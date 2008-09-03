@@ -173,7 +173,10 @@ public class MinaTaskClient
         
         handler.addResponseHandler( cmd.getId(), responseHandler );   
         
-        session.write( cmd );        
+        session.write( cmd );                
+    }
+    
+    public void claim(long taskId) {
         
     }
     

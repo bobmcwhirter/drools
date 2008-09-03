@@ -14,7 +14,7 @@ with ( new Task() ) {
         activationTime = new Date( 10000000 ),
         createdOn = new Date( 10000000 ),
         expirationTime = new Date( 10000000 ),
-        status = Status.Created,
+        status = Status.Ready,
         attachments = [ 
             (with ( new Attachment() ) {
                 accessType = AccessType.Inline,
