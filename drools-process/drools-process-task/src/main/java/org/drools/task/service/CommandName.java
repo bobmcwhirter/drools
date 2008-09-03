@@ -12,11 +12,17 @@ public enum CommandName {
     
     AddAttachmentRequest,
     AddAttachmentResponse,
+    DeleteAttachmentRequest,
+    DeleteAttachmentResponse,    
     GetAttachmentContentRequest,
     GetAttachmentContentResponse,
     
     AddCommentRequest,
     AddCommentResponse,
+    DeleteCommentRequest,    
+    DeleteCommentResponse,
+    
+
     
     Query_TasksOwned,
     

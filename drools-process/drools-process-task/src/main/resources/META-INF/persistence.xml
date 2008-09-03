@@ -38,7 +38,7 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
 	        <property name="hibernate.connection.autocommit" value="false" /> 	               
 	        <property name="hibernate.max_fetch_depth" value="3"/>
 		    <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="false" />		    
+            <property name="hibernate.show_sql" value="true" />		    
 	    </properties>        
     </persistence-unit>
     

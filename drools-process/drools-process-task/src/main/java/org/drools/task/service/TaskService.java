@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -31,8 +32,10 @@ import org.drools.task.query.TaskSummary;
 public class TaskService {
     EntityManagerFactory             emf;
 
+    //@TODO we should not be re-using the same em, create as needed (but have issues with closing the em while returned objects are still in use
     EntityManager                    em;
 
+    //@TODO these should all be named querries
     Query                            tasksAssignedAsBusinessAdministrator;
     Query                            tasksAssignedAsExcludedOwner;
     Query                            tasksAssignedAsPotentialOwner;
@@ -204,6 +207,46 @@ public class TaskService {
         AttachmentContent content = em.find( AttachmentContent.class, contentId );
         return content;
     }      
+    
+    public void deleteAttachment(long taskId, long attachmentId, long attachmentContentId) {
+        // @TODO I can't get this to work with HQL deleting the Attachment. Hibernate needs both the item removed from the collection
+        // and also the item deleted, so for now have to load the entire Task, I suspect that this is due to using the same EM which 
+        // is caching things.
+        Task task = em.find( Task.class, taskId );
+        
+        em.getTransaction().begin();
+        for( Iterator<Attachment> it = task.getTaskData().getAttachments().iterator(); it.hasNext(); ) {
+            Attachment attachment = it.next();
+            if ( attachment.getId() == attachmentId ) {
+                it.remove();
+                em.remove( attachment ); // need to do this otherwise it just removes the link id, without removing the attachment
+                break;
+            }
+        }
+        
+        // we do this as HQL to avoid streaming in the entire HQL
+        String deleteContent = "delete from AttachmentContent where id = :id";
+        em.createQuery( deleteContent ).setParameter( "id", attachmentContentId ).executeUpdate();
+        
+        em.getTransaction().commit();       
+    }
+    
+    public void deleteComment(long taskId, long commentId) {
+        // @TODO I can't get this to work with HQL deleting the Comment. Hibernate needs both the item removed from the collection
+        // and also the item deleted, so for now have to load the entire Task, I suspect that this is due to using the same EM which 
+        // is caching things.
+        Task task = em.find( Task.class, taskId );
+        em.getTransaction().begin();
+        for( Iterator<Comment> it = task.getTaskData().getComments().iterator(); it.hasNext(); ) {
+            Comment comment = it.next();
+            if ( comment.getId() == commentId ) {
+                it.remove();
+                em.remove( comment ); // need to do this otherwise it just removes the link id, without removing the comment
+                break;
+            }
+        }        
+        em.getTransaction().commit();
+    }
 
     public Task getTask(long taskId) {
         Task task = em.find( Task.class,

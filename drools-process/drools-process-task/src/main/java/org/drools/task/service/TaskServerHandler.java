@@ -68,6 +68,12 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );                       
                 break;
             }
+            case DeleteCommentRequest : {
+                long taskId = ( Long ) cmd.getArguments().get( 0 );
+                long commentId = ( Long ) cmd.getArguments().get( 1 );
+                service.deleteComment( taskId, commentId );
+                break;
+            }
             case  AddAttachmentRequest : {
                 Attachment attachment = ( Attachment ) cmd.getArguments().get( 1 );
                 AttachmentContent content = ( AttachmentContent ) cmd.getArguments().get( 2 ); 
@@ -80,6 +86,13 @@ public class TaskServerHandler extends IoHandlerAdapter {
                                                    CommandName.AddAttachmentResponse,
                                                    args );
                 session.write( resultsCmnd );                    
+                break;
+            }
+            case DeleteAttachmentRequest : {
+                long taskId = ( Long ) cmd.getArguments().get( 0 );
+                long attachmentId = ( Long ) cmd.getArguments().get( 1 );
+                long contentId = ( Long ) cmd.getArguments().get( 2 );
+                service.deleteAttachment( taskId, attachmentId, contentId );
                 break;
             }
             case GetAttachmentContentRequest : {

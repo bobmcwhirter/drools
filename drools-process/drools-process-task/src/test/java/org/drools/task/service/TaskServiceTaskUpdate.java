@@ -122,9 +122,19 @@ public class TaskServiceTaskUpdate extends BaseTest {
         // make two collections the same and compare
         comments1.add( comment );
         assertTrue( CollectionUtils.equals( comments1, comments2 ) );
+        
+        client.deleteComment( taskId, addCommentResponseHandler.getCommentId() );
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        task1 = getTaskResponseHandler.getTask(); 
+        comments2 = task1.getTaskData().getComments();
+        assertEquals(1, comments2.size() );   
+        
+        assertEquals( "This is my comment1!!!!!", comments2.get( 0 ).getText() );
     }
     
-    public void testAddAttachment() {
+    public void testAddRemoveAttachment() throws Exception {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );        
@@ -217,7 +227,19 @@ public class TaskServiceTaskUpdate extends BaseTest {
         attachment.setSize( 26 );
         attachment.setContentId( addAttachmentResponseHandler.getContentId() );
         attachments1.add( attachment );
-        assertTrue( CollectionUtils.equals( attachments2, attachments1 ) );       
+        assertTrue( CollectionUtils.equals( attachments2, attachments1 ) );      
+        
+        client.deleteAttachment( taskId, addAttachmentResponseHandler.getAttachmentId(), addAttachmentResponseHandler.getContentId() );
+        
+        Thread.sleep( 3000 );
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        task1 = getTaskResponseHandler.getTask();
+        attachments2 = task1.getTaskData().getAttachments();
+        assertEquals(1, attachments2.size() );        
+        
+        assertEquals( "file1.txt", attachments2.get( 0 ).getName());
     }    
 
     public static class BlockingGetTaskResponseHandler implements GetTaskResponseHandler {

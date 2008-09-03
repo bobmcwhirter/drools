@@ -134,6 +134,15 @@ public class MinaTaskClient
         session.write( cmd );         
     }
     
+    public void deleteComment(long taskId, long commentId) {
+        List args = new ArrayList( 2 );
+        args.add( taskId );
+        args.add( commentId );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.DeleteCommentRequest, args);
+        
+        session.write( cmd );
+    }
+    
     
     public void addAttachment(long taskId, Attachment attachment, AttachmentContent content, AddAttachmentResponseHandler responseHandler ) {
         List args = new ArrayList( 2 );
@@ -146,6 +155,16 @@ public class MinaTaskClient
         
         session.write( cmd );        
     }
+    
+    public void deleteAttachment(long taskId, long attachmentId, long contentId) {
+        List args = new ArrayList( 3 );
+        args.add( taskId );
+        args.add( attachmentId );
+        args.add( contentId );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.DeleteAttachmentRequest, args);
+        
+        session.write( cmd );
+    }    
     
     public void getAttachmentContent(long contentId, GetAttachmentContentResponseHandler responseHandler) {
         List args = new ArrayList( 1 );
