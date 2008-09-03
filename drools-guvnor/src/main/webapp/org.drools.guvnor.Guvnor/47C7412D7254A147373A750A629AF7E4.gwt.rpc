@@ -12,5 +12,6 @@ java.util.LinkedHashSet, true
 java.util.LinkedList, true
 java.util.Stack, true
 java.util.Vector, true
+org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection, true
 org.drools.guvnor.client.rpc.UserSecurityContext, true
 org.drools.guvnor.client.security.Capabilities, true
