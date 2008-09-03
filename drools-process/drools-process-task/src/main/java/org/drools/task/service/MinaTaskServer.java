@@ -2,13 +2,14 @@ package org.drools.task.service;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
-import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
@@ -62,17 +63,10 @@ public class MinaTaskServer
     }
 
     public static void main(String[] args) throws IOException {
-        //        IoAcceptor acceptor = new NioSocketAcceptor();
-        //
-        //        acceptor.getFilterChain().addLast( "logger", new LoggingFilter() );
-        //        acceptor.getFilterChain().addLast(
-        //                                          "codec",
-        //                                          new ProtocolCodecFilter(
-        //                                                  new ObjectSerializationCodecFactory()));
-        //
-        //        acceptor.setHandler( new TaskServerHandler() );
-        //        acceptor.getSessionConfig().setReadBufferSize( 2048 );
-        //        acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
-        //        acceptor.bind( new InetSocketAddress(PORT) );
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.drools.task");
+        TaskService taskService = new TaskService(emf);
+        MinaTaskServer server = new MinaTaskServer(taskService);
+        Thread thread = new Thread(server);
+        thread.start();
     }
 }

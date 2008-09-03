@@ -28,14 +28,20 @@ public class User extends OrganizationalEntity implements Externalizable{
     
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeUTF( displayName );
+        if (displayName != null) {
+        	out.writeBoolean( true );
+        	out.writeUTF( displayName );
+        } else {
+        	out.writeBoolean( false );
+        }
     } 
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        displayName = in.readUTF();
-        
+        if ( in.readBoolean() ) {
+        	displayName = in.readUTF();
+        }        
     }      
     
     public String getDisplayName() {

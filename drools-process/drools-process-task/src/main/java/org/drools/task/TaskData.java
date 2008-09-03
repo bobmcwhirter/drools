@@ -4,7 +4,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +39,8 @@ public class TaskData
     private Date             expirationTime;
 
     private boolean          skipable;
+    
+    private long             workItemId;
     
     private AccessType       accessType;
 
@@ -195,7 +196,15 @@ public class TaskData
     public void setSkipable(boolean isSkipable) {
         this.skipable = isSkipable;
     }
-
+    
+    public void setWorkItemId(long workItemId) {
+    	this.workItemId = workItemId;
+    }
+    
+    public long getWorkItemId() {
+    	return workItemId;
+    }
+      
     public List<Comment> getComments() {
         return comments;
     }

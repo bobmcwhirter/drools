@@ -4,10 +4,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
@@ -45,13 +43,12 @@ public class TaskServiceTest extends BaseTest {
         server.stop();
     }
 
+    @SuppressWarnings("unchecked")
     public void testTasksOwnedQueryWithI18N() throws Exception {
-        Map vars = new HashedMap();
-        vars.put( "users",
-                  users );
-        vars.put( "groups",
-                  groups );
-
+        Map<String, Object>  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        
         //Reader reader;
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "QueryData_TasksOwned.mvel" ) );
         List<Task> tasks = (List<Task>) eval( reader,

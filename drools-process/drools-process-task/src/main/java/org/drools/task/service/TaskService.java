@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 
 import org.drools.task.AccessType;
@@ -59,22 +57,22 @@ public class TaskService {
             Reader reader = new InputStreamReader( getClass().getResourceAsStream( "TasksOwned.txt" ) );
             tasksOwned = em.createQuery( toString( reader ) );
 
-            reader = new InputStreamReader( getClass().getResourceAsStream( "tasksAssignedAsBusinessAdministrator.txt" ) );
+            reader = new InputStreamReader( getClass().getResourceAsStream( "TasksAssignedAsBusinessAdministrator.txt" ) );
             tasksAssignedAsBusinessAdministrator = em.createQuery( toString( reader ) );
 
-            reader = new InputStreamReader( getClass().getResourceAsStream( "tasksAssignedAsExcludedOwner.txt" ) );
+            reader = new InputStreamReader( getClass().getResourceAsStream( "TasksAssignedAsExcludedOwner.txt" ) );
             tasksAssignedAsExcludedOwner = em.createQuery( toString( reader ) );
 
-            reader = new InputStreamReader( getClass().getResourceAsStream( "tasksAssignedAsPotentialOwner.txt" ) );
+            reader = new InputStreamReader( getClass().getResourceAsStream( "TasksAssignedAsPotentialOwner.txt" ) );
             tasksAssignedAsPotentialOwner = em.createQuery( toString( reader ) );
 
-            reader = new InputStreamReader( getClass().getResourceAsStream( "tasksAssignedAsRecipient.txt" ) );
+            reader = new InputStreamReader( getClass().getResourceAsStream( "TasksAssignedAsRecipient.txt" ) );
             tasksAssignedAsRecipient = em.createQuery( toString( reader ) );
 
-            reader = new InputStreamReader( getClass().getResourceAsStream( "tasksAssignedAsTaskInitiator.txt" ) );
+            reader = new InputStreamReader( getClass().getResourceAsStream( "TasksAssignedAsTaskInitiator.txt" ) );
             tasksAssignedAsTaskInitiator = em.createQuery( toString( reader ) );
 
-            reader = new InputStreamReader( getClass().getResourceAsStream( "tasksAssignedAsTaskStakeholder.txt" ) );
+            reader = new InputStreamReader( getClass().getResourceAsStream( "TasksAssignedAsTaskStakeholder.txt" ) );
             tasksAssignedAsTaskStakeholder = em.createQuery( toString( reader ) );
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to inialize TaskService.",
