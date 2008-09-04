@@ -277,26 +277,7 @@ public class TaskService {
             // @TODO Error
             return;            
         }  
-    }
-    
-    public void complete(long taskId, long userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-        
-        User user = em.find( User.class, userId );
-        
-        TaskData taskData = task.getTaskData();
-        
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
-            // Status must be InProgress and actual owner, switch to Reserved
-            em.getTransaction().begin();
-            taskData.setStatus( Status.Completed );
-            em.getTransaction().commit();
-        } else {
-            // @TODO Error
-            return;            
-        }  
-    }    
+    }   
 
     public void release(long taskId, long userId) {
         Task task = em.find( Task.class,
@@ -369,6 +350,51 @@ public class TaskService {
             //@TODO Error            
         }
     }    
+    
+    public void skip(long taskId, long userId) {
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        List[] allowed;
+        PeopleAssignments people = task.getPeopleAssignments();
+        if ( taskData.getStatus() == Status.Ready ) {
+            // If it's ready then potential owners can skip too
+            allowed = new List[] { people.getPotentialOwners(), people.getBusinessAdministrators() };
+        } else {
+            allowed = new List[] { people.getBusinessAdministrators() };
+        }
+        
+        if ( task.getTaskData().isSkipable() && (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed ) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
+            em.getTransaction().begin();
+            taskData.setStatus( Status.Obselete );
+            em.getTransaction().commit();
+        } else {
+            //@TODO Error            
+        }
+    }    
+    
+    public void complete(long taskId, long userId) {
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
+            // Status must be InProgress and actual owner, switch to Reserved
+            em.getTransaction().begin();
+            taskData.setStatus( Status.Completed );
+            em.getTransaction().commit();
+        } else {
+            // @TODO Error
+            return;            
+        }  
+    }     
     
     public void fail(long taskId, long userId) {
         Task task = em.find( Task.class,

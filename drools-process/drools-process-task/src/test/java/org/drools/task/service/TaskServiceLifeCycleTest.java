@@ -671,6 +671,61 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );      
     }     
           
+    public void testSkipFromReady() {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = true} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();                     
+        
+        // Check is Complete
+        client.skip( taskId, users.get( "darth" ).getId() );        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Obselete, task1.getTaskData().getStatus() );
+        assertNull(  task1.getTaskData().getActualOwner() );                  
+    }    
+    
+    public void testSkipFromReseerved() {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = true} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();             
+        
+        // Go straight from Ready 
+        client.claim( taskId, users.get( "darth" ).getId() );
+ 
+        
+        // Check is Complete
+        client.skip( taskId, users.get( "darth" ).getId() );        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Obselete, task1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );                  
+    }     
     
     public void testComplete() {
         Map  vars = new HashedMap();     
