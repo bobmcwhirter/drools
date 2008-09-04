@@ -1,7 +1,7 @@
 format = new java.text.SimpleDateFormat( "dd/MMM/yyyy" );
         
 [ 'peter' : [ new TaskSummary( 1, 'This is my task name Jan', 'This is my task subject Jan', 'This is my task description Jan',
-                               Status.Ready, 20, false, users[ 'peter' ], users[ 'sly' ], 
+                               Status.Ready, 20, false, users[ 'peter' ], null, 
                                format.parse( "15/Jan/2008" ), format.parse( "20/Jan/2008" ), null ),
               new TaskSummary( 1, 'This is my task name May', 'This is my task subject May', 'This is my task description May',
                                Status.Created, 20, false, users[ 'peter' ], users[ 'steve' ], 

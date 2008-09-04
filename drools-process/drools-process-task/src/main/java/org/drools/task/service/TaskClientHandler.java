@@ -1,12 +1,11 @@
 package org.drools.task.service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.service.IoHandlerAdapter;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.drools.task.AttachmentContent;
 import org.drools.task.Task;
@@ -105,9 +104,6 @@ public class TaskClientHandler extends IoHandlerAdapter
             return;
         }
 
-        Date date = new Date();
-        //session.write( date.toString() );
-        System.out.println("Message written : " + str + " : " + date);
     }
 
     @Override

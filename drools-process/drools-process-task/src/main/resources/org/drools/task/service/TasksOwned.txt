@@ -13,7 +13,7 @@ select
     t.taskData.activationTime,
     t.taskData.expirationTime)
 from 
-    Task t,
+    Task t left join t.taskData.createdBy,
     I18NText names,
     I18NText subjects,
     I18NText descriptions 
