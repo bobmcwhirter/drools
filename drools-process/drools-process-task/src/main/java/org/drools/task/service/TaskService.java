@@ -278,20 +278,6 @@ public class TaskService {
         }  
     }
 
-    public void stop(long taskId,
-                     User user) {
-        Task task = em.find( Task.class,
-                             taskId );
-        TaskData taskData = task.getTaskData();
-
-        // make sure user is owner, then change state to Reserved
-        if ( taskData.getActualOwner().equals( user ) ) {
-            taskData.setStatus( Status.Reserved );
-        } else {
-            //@TODO Error
-        }
-    }
-
     public void release(long taskId,
                         User user) {
         Task task = em.find( Task.class,
@@ -307,11 +293,41 @@ public class TaskService {
     }
 
     public void complete(long taskId, long userId) {
-
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
+            // Status must be InProgress and actual owner, switch to Reserved
+            em.getTransaction().begin();
+            taskData.setStatus( Status.Completed );
+            em.getTransaction().commit();
+        } else {
+            // @TODO Error
+            return;            
+        }  
     }
 
-    public void fail(long taskId) {
-
+    public void fail(long taskId, long userId) {
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
+            // Status must be InProgress and actual owner, switch to Reserved
+            em.getTransaction().begin();
+            taskData.setStatus( Status.Failed );
+            em.getTransaction().commit();
+        } else {
+            // @TODO Error
+            return;            
+        }  
     }
 
     public void addComment(long taskId,

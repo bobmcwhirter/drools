@@ -213,6 +213,15 @@ public class MinaTaskClient
         session.write( cmd ); 
     }
     
+    public void fail(long taskId, long userId) {
+        List args = new ArrayList( 1 );
+        args.add( taskId );
+        args.add(  userId );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.FailRequest, args);
+        
+        session.write( cmd ); 
+    }    
+    
 
     public void getTasksOwned(long userId, String language, TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );

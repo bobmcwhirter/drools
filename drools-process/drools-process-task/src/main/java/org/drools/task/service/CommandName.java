@@ -9,7 +9,9 @@ public enum CommandName {
     StopRequest,
     StopResponse,        
     CompleteRequest,
-    CompleteResponse,    
+    CompleteResponse,   
+    FailRequest,
+    FailResponse,
     
     GetTaskRequest,
     GetTaskResponse,

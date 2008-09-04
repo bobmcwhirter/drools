@@ -51,6 +51,18 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 service.stop( taskId, userId );   
                 break;
             }
+            case CompleteRequest : {
+                long taskId = ( Long ) cmd.getArguments().get( 0 );
+                long userId = ( Long ) cmd.getArguments().get( 1 );
+                service.complete( taskId, userId );   
+                break;
+            }   
+            case FailRequest : {
+                long taskId = ( Long ) cmd.getArguments().get( 0 );
+                long userId = ( Long ) cmd.getArguments().get( 1 );
+                service.fail( taskId, userId );   
+                break;
+            }             
             case GetTaskRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
                 Task task = service.getTask( taskId );
