@@ -245,7 +245,7 @@ public class TaskService {
             }
         } else if ( taskData.getStatus() == Status.Reserved ) {
             // if Reserved must be actual owner
-            if ( taskData.getActualOwner().equals( user ) ) {
+            if ( taskData.getActualOwner().getId() == user.getId() ) {
                 em.getTransaction().begin();
                 taskData.setStatus( Status.InProgress );
                 em.getTransaction().commit();
@@ -268,7 +268,7 @@ public class TaskService {
         TaskData taskData = task.getTaskData();
         
         PeopleAssignments people = task.getPeopleAssignments();        
-        if ( taskData.getStatus() == Status.InProgress && ( taskData.getActualOwner().equals( user ) || isAllowed( user, new List[] { people.getBusinessAdministrators() } ) ) ) {
+        if ( taskData.getStatus() == Status.InProgress && ( taskData.getActualOwner().getId() == user.getId() || isAllowed( user, new List[] { people.getBusinessAdministrators() } ) ) ) {
             // Status must be InProgress and actual owner, switch to Reserved
             em.getTransaction().begin();
             taskData.setStatus( Status.Reserved );
@@ -289,7 +289,7 @@ public class TaskService {
         
         // task must be reserved or in progress and owned by user
         PeopleAssignments people = task.getPeopleAssignments();        
-        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && ( taskData.getActualOwner().equals( user ) || isAllowed( user, new List[] { people.getBusinessAdministrators() } ) ) ) {
+        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && ( taskData.getActualOwner().getId() == user.getId() || isAllowed( user, new List[] { people.getBusinessAdministrators() } ) ) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Ready );
             taskData.setActualOwner( null );
@@ -316,7 +316,7 @@ public class TaskService {
             allowed = new List[] { people.getBusinessAdministrators() };
         }
         
-        if ( (taskData.getStatus() == Status.Ready || taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
+        if ( (taskData.getStatus() == Status.Ready || taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().getId() == user.getId() ) || isAllowed( user, allowed ) ) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Suspended );
             em.getTransaction().commit();
@@ -342,7 +342,7 @@ public class TaskService {
             allowed = new List[] { people.getBusinessAdministrators() };
         }
         
-        if ( (taskData.getStatus() == Status.Suspended) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
+        if ( (taskData.getStatus() == Status.Suspended) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().getId() == user.getId() ) || isAllowed( user, allowed ) ) ) {
             em.getTransaction().begin();
             taskData.setStatus( taskData.getPreviousStatus() );
             em.getTransaction().commit();
@@ -368,7 +368,7 @@ public class TaskService {
             allowed = new List[] { people.getBusinessAdministrators() };
         }
         
-        if ( task.getTaskData().isSkipable() && (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed ) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
+        if ( task.getTaskData().isSkipable() && (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed ) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().getId() == user.getId() ) || isAllowed( user, allowed ) ) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Obselete );
             em.getTransaction().commit();
@@ -385,7 +385,7 @@ public class TaskService {
         
         TaskData taskData = task.getTaskData();
         
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId() == user.getId() ) {
             // Status must be InProgress and actual owner, switch to Reserved
             em.getTransaction().begin();
             taskData.setStatus( Status.Completed );
@@ -404,7 +404,7 @@ public class TaskService {
         
         TaskData taskData = task.getTaskData();
         
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId() == user.getId() ) {
             // Status must be InProgress and actual owner, switch to Reserved
             em.getTransaction().begin();
             taskData.setStatus( Status.Failed );
@@ -623,7 +623,12 @@ public class TaskService {
     
     public boolean isAllowed(User user, List<OrganizationalEntity> entities) {
         // for now just do a contains, I'll figure out group membership later.
-        return entities.contains( user );
+        for ( OrganizationalEntity entity : entities ) {
+            if ( entity.getId() == user.getId() ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String toString(Reader reader) throws IOException {
