@@ -20,6 +20,7 @@ import org.drools.task.AttachmentContent;
 import org.drools.task.BaseTest;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
+import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
@@ -96,7 +97,9 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         
         assertEquals( (long)addCommentResponseHandler.getCommentId(), (long) returnedComment.getId() );
         
+        // Make the same as the returned tasks, so we can test equals
         task.getTaskData().setComments( comments1 );
+        task.getTaskData().setStatus( Status.Created );
         assertEquals(task, task1);       
         
         // test we can have multiple comments
@@ -181,7 +184,9 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         assertEquals( (long) addAttachmentResponseHandler.getAttachmentId(), (long) returnedAttachment.getId() );
         assertEquals( (long) addAttachmentResponseHandler.getContentId(),  (long) returnedAttachment.getContentId() );        
         
+        // Make the same as the returned tasks, so we can test equals
         task.getTaskData().setAttachments( attachments1 );
+        task.getTaskData().setStatus( Status.Created );
         assertEquals(task, task1);            
         
         BlockingGetAttachmentContentResponseHandler  getAttachmentContentResponseHandler = new BlockingGetAttachmentContentResponseHandler();

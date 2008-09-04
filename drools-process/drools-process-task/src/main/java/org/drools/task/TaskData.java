@@ -25,6 +25,8 @@ public class TaskData
     Externalizable {
     @Enumerated(EnumType.STRING)
     private Status           status      = Status.Created;         // initial default state
+    
+    private Status           previousStatus = null;
 
     @ManyToOne()
     private User             actualOwner;
@@ -64,6 +66,13 @@ public class TaskData
         } else {
             out.writeBoolean( false );
         }
+        
+        if ( previousStatus != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( previousStatus.toString() );
+        } else {
+            out.writeBoolean( false );
+        }        
 
         if ( actualOwner != null ) {
             out.writeBoolean( true );
@@ -111,6 +120,10 @@ public class TaskData
         if ( in.readBoolean() ) {
             status = Status.valueOf( in.readUTF() );
         }
+        
+        if ( in.readBoolean() ) {
+            previousStatus = Status.valueOf( in.readUTF() );
+        }
 
         if ( in.readBoolean() ) {
             actualOwner = new User();
@@ -146,7 +159,16 @@ public class TaskData
     }
 
     public void setStatus(Status status) {
+        previousStatus = this.status;
         this.status = status;
+    }        
+
+    public Status getPreviousStatus() {
+        return previousStatus;
+    }
+
+    public void setPreviousStatus(Status previousStatus) {
+        this.previousStatus = previousStatus;
     }
 
     public User getActualOwner() {
@@ -232,6 +254,8 @@ public class TaskData
         result = prime * result + ((expirationTime == null) ? 0 : expirationTime.hashCode());
         result = prime * result + (skipable ? 1231 : 1237);
         result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((previousStatus == null) ? 0 : previousStatus.hashCode());
+        
         return result;
     }
 
@@ -264,6 +288,9 @@ public class TaskData
         if ( status == null ) {
             if ( other.status != null ) return false;
         } else if ( !status.equals( other.status ) ) return false;
+        if ( previousStatus == null ) {
+            if ( other.previousStatus != null ) return false;
+        } else if ( !previousStatus.equals( other.previousStatus ) ) return false;        
         if ( activationTime == null ) {
             if ( other.activationTime != null ) return false;
         } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;

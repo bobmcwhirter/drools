@@ -267,7 +267,8 @@ public class TaskService {
         
         TaskData taskData = task.getTaskData();
         
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
+        PeopleAssignments people = task.getPeopleAssignments();        
+        if ( taskData.getStatus() == Status.InProgress && ( taskData.getActualOwner().equals( user ) || isAllowed( user, new List[] { people.getBusinessAdministrators() } ) ) ) {
             // Status must be InProgress and actual owner, switch to Reserved
             em.getTransaction().begin();
             taskData.setStatus( Status.Reserved );
@@ -306,7 +307,8 @@ public class TaskService {
         TaskData taskData = task.getTaskData();
         
         // task must be reserved or in progress and owned by user
-        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && taskData.getActualOwner().equals( user ) ) {
+        PeopleAssignments people = task.getPeopleAssignments();        
+        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && ( taskData.getActualOwner().equals( user ) || isAllowed( user, new List[] { people.getBusinessAdministrators() } ) ) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Ready );
             taskData.setActualOwner( null );
@@ -316,6 +318,58 @@ public class TaskService {
         } 
     }
 
+    public void suspend(long taskId, long userId) {
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        List[] allowed;
+        PeopleAssignments people = task.getPeopleAssignments();
+        if ( taskData.getStatus() == Status.Ready ) {
+            // If it's ready then potential owners can suspect too
+            allowed = new List[] { people.getPotentialOwners(), people.getBusinessAdministrators() };
+        } else {
+            allowed = new List[] { people.getBusinessAdministrators() };
+        }
+        
+        if ( (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed && taskData.getStatus() != Status.Created) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
+            em.getTransaction().begin();
+            taskData.setStatus( Status.Suspended );
+            em.getTransaction().commit();
+        } else {
+            //@TODO Error            
+        }
+    }
+    
+    public void resume(long taskId, long userId) {
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        List[] allowed;
+        PeopleAssignments people = task.getPeopleAssignments();
+        if ( taskData.getPreviousStatus() == Status.Ready ) {
+            // If it's ready then potential owners can suspect too
+            allowed = new List[] { people.getPotentialOwners(), people.getBusinessAdministrators() };
+        } else {
+            allowed = new List[] { people.getBusinessAdministrators() };
+        }
+        
+        if ( (taskData.getStatus() == Status.Suspended) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
+            em.getTransaction().begin();
+            taskData.setStatus( taskData.getPreviousStatus() );
+            em.getTransaction().commit();
+        } else {
+            //@TODO Error            
+        }
+    }    
+    
     public void fail(long taskId, long userId) {
         Task task = em.find( Task.class,
                              taskId );
