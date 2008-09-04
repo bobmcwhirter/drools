@@ -4,7 +4,10 @@ package org.drools.task.service;
 public enum CommandName {   
     ClaimRequest,
     ClaimResponse,
-    
+    StartRequest,
+    StartResponse,
+    CompleteRequest,
+    CompleteResponse,    
     
     GetTaskRequest,
     GetTaskResponse,

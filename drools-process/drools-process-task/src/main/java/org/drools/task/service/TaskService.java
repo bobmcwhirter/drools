@@ -209,7 +209,7 @@ public class TaskService {
             PeopleAssignments people = task.getPeopleAssignments();
             if ( isAllowed( user, new List[] { people.getPotentialOwners(), people.getBusinessAdministrators() } ) ) {
                 em.getTransaction().begin();
-                // only potential onwers and business admin can claim a task
+                // only potential owners and business admin can claim a task
                 taskData.setStatus( Status.Reserved );
                 taskData.setActualOwner( user );
                 em.getTransaction().commit();
@@ -219,35 +219,44 @@ public class TaskService {
         } else {
             // @TODO Error
         }
-    }
+    }    
 
     public void start(long taskId,
-                      User user) {
+                      long userId) {
         Task task = em.find( Task.class,
                              taskId );
+        
+        User user = em.find( User.class, userId );
+        
         TaskData taskData = task.getTaskData();
+        
 
-        em.getTransaction().begin();
-
-        //task must be in status Ready or Reserved Status
+        // Status must be Read or Reserved
         if ( taskData.getStatus() == Status.Ready ) {
-            // if Ready make sure is a potentialOwner
-            boolean allowed = task.getPeopleAssignments().getPotentialOwners().contains( user ) && !task.getPeopleAssignments().getExcludedOwners().contains( user );
-            if ( allowed ) {
+            // if Ready must be potentialOwner
+            PeopleAssignments people = task.getPeopleAssignments();
+            if ( isAllowed( user, new List[] { people.getPotentialOwners() } ) ) {
+                em.getTransaction().begin();
+                taskData.setActualOwner( user );
                 taskData.setStatus( Status.InProgress );
+                em.getTransaction().commit();              
             } else {
-                //@TODO Error
+                // @TODO Error
             }
         } else if ( taskData.getStatus() == Status.Reserved ) {
-            // make sure the user us the owner
+            // if Reserved must be actual owner
             if ( taskData.getActualOwner().equals( user ) ) {
+                em.getTransaction().begin();
                 taskData.setStatus( Status.InProgress );
-            } else {
-                //@TODO Error
-            }
-        }
+                em.getTransaction().commit();
 
-        em.getTransaction().commit();
+            } else {
+                // @TODO Error
+            }
+        } else {
+            // @TODO Error
+            return;            
+        }        
     }
 
     public void stop(long taskId,
@@ -278,7 +287,7 @@ public class TaskService {
         }
     }
 
-    public void complete(long taskId) {
+    public void complete(long taskId, long userId) {
 
     }
 
