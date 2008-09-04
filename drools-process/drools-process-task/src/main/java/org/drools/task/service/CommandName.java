@@ -1,8 +1,10 @@
 package org.drools.task.service;
 
-import javax.persistence.Query;
 
 public enum CommandName {   
+    ClaimRequest,
+    ClaimResponse,
+    
     
     GetTaskRequest,
     GetTaskResponse,

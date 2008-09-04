@@ -33,6 +33,11 @@ public class TaskServerHandler extends IoHandlerAdapter {
                                 Object message) throws Exception {
         Command cmd = (Command) message;
         switch ( cmd.getName() ) {
+            case ClaimRequest : {
+                long taskId = ( Long ) cmd.getArguments().get( 0 );
+                long userId = ( Long ) cmd.getArguments().get( 1 );
+                service.claim( taskId, userId );                                               
+            }
             case GetTaskRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
                 Task task = service.getTask( taskId );

@@ -22,6 +22,8 @@ import org.drools.task.AttachmentContent;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
 import org.drools.task.Group;
+import org.drools.task.OrganizationalEntity;
+import org.drools.task.PeopleAssignments;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
@@ -193,22 +195,30 @@ public class TaskService {
     }
 
     public void claim(long taskId,
-                      User user) {
+                      long userId) {
         Task task = em.find( Task.class,
                              taskId );
+        
+        User user = em.find( User.class, userId );
+        
         TaskData taskData = task.getTaskData();
-
-        em.getTransaction().begin();
 
         //task must be in status Ready
         if ( taskData.getStatus() == Status.Ready ) {
-            taskData.setStatus( Status.Reserved );
-            taskData.setActualOwner( user );
+            // check permissions
+            PeopleAssignments people = task.getPeopleAssignments();
+            if ( isAllowed( user, new List[] { people.getPotentialOwners(), people.getBusinessAdministrators() } ) ) {
+                em.getTransaction().begin();
+                // only potential onwers and business admin can claim a task
+                taskData.setStatus( Status.Reserved );
+                taskData.setActualOwner( user );
+                em.getTransaction().commit();
+            } else {
+                // @TODO Error
+            }
         } else {
             // @TODO Error
         }
-
-        em.getTransaction().commit();
     }
 
     public void start(long taskId,
@@ -471,6 +481,20 @@ public class TaskService {
                                                            deadline,
                                                            localEm );
         localEm.close();
+    }
+    
+    public boolean isAllowed(User user,  List<OrganizationalEntity>[] people) {
+        for ( List<OrganizationalEntity> list : people ) {
+            if ( isAllowed( user, list) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isAllowed(User user, List<OrganizationalEntity> entities) {
+        // for now just do a contains, I'll figure out group membership later.
+        return entities.contains( user );
     }
 
     public static String toString(Reader reader) throws IOException {

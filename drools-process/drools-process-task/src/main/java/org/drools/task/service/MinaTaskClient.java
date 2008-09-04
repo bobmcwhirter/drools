@@ -23,6 +23,7 @@ import org.drools.task.Attachment;
 import org.drools.task.AttachmentContent;
 import org.drools.task.Comment;
 import org.drools.task.Task;
+import org.drools.task.User;
 import org.drools.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 import org.drools.task.service.TaskClientHandler.AddCommentResponseHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
@@ -176,8 +177,13 @@ public class MinaTaskClient
         session.write( cmd );                
     }
     
-    public void claim(long taskId) {
+    public void claim(long taskId, long userId) {
+        List args = new ArrayList( 1 );
+        args.add( taskId );
+        args.add(  userId );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.ClaimRequest, args);
         
+        session.write( cmd );          
     }
     
 

@@ -22,11 +22,6 @@ import org.drools.task.Comment;
 import org.drools.task.Deadline;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
-import org.drools.task.service.TaskClientHandler.AddAttachmentResponseHandler;
-import org.drools.task.service.TaskClientHandler.AddCommentResponseHandler;
-import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
-import org.drools.task.service.TaskClientHandler.GetAttachmentContentResponseHandler;
-import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.drools.task.service.TaskServiceEscalationTest.MockEscalatedDeadlineHandler.Item;
 import org.drools.task.service.TaskServiceTest.BlockingAllOpenTasksForUseResponseHandler;
@@ -34,7 +29,7 @@ import org.drools.task.utils.CollectionUtils;
 
 import junit.framework.TestCase;
 
-public class TaskServiceTaskUpdate extends BaseTest {
+public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
     MinaTaskServer server;
     MinaTaskClient client;
 
@@ -242,154 +237,5 @@ public class TaskServiceTaskUpdate extends BaseTest {
         assertEquals(1, attachments2.size() );        
         
         assertEquals( "file1.txt", attachments2.get( 0 ).getName());
-    }    
-
-    public static class BlockingGetTaskResponseHandler implements GetTaskResponseHandler {
-        private volatile Task task;
-
-        public synchronized void execute(Task task) {
-            this.task = task;
-            notifyAll();                
-        }
-        
-        public synchronized Task getTask() {
-            if ( task == null ) {                  
-                try {
-                    wait( 3000 );
-                } catch ( InterruptedException e ) {
-                    // swallow as this is just a notifiation
-                }
-            }
-            
-            if ( task == null ) {
-                throw new RuntimeException("Timeout : unable to retrieve Task Id" );
-            }
-            
-            return task;
-        }       
-    }    
-    
-    public static class BlockingAddTaskResponseHandler implements AddTaskResponseHandler {
-        private volatile long taskId;
-        private volatile boolean wait = true;
-
-        public synchronized void execute(long taskId) {
-            this.taskId = taskId;
-            wait = false;
-            notifyAll();                
-        }
-        
-        public synchronized long getTaskId() {
-            if ( wait ) {                  
-                try {
-                    wait( 3000 );
-                } catch ( InterruptedException e ) {
-                    // swallow as this is just a notifiation
-                }
-            }
-            
-            if ( wait ) {
-                throw new RuntimeException("Timeout : unable to retrieve Task Id" );
-            }
-            
-            return taskId;
-        }       
-    }    
-    
-    public static class BlockingAddCommentResponseHandler implements AddCommentResponseHandler {
-        private volatile long commentId;
-        private volatile boolean wait = true;
-
-        public synchronized void execute(long commentId) {
-            this.commentId = commentId;
-            wait = false;
-            notifyAll();                
-        }
-        
-        public synchronized long getCommentId() {
-            if ( wait ) {                  
-                try {
-                    wait( 3000 );
-                } catch ( InterruptedException e ) {
-                    // swallow as this is just a notifiation
-                }
-            }
-            
-            if ( wait ) {
-                throw new RuntimeException("Timeout : unable to retrieve Task Id" );
-            }
-            
-            return commentId;
-        }       
-    }       
-    
-    public static class BlockingAddAttachmentResponseHandler implements AddAttachmentResponseHandler {
-        private volatile long attachmentId ;
-        private volatile long contentId;
-        private volatile boolean wait = true;
-
-        public synchronized void execute(long attachmentId, long contentId) {
-            this.attachmentId = attachmentId;
-            this.contentId = contentId;
-            wait = false;
-            notifyAll();                
-        }
-        
-        public synchronized long getAttachmentId() {
-            if ( wait ) {                  
-                try {
-                    wait( 3000 );
-                } catch ( InterruptedException e ) {
-                    // swallow as this is just a notifiation
-                }
-            }
-            
-            if ( wait ) {
-                throw new RuntimeException("Timeout : unable to retrieve Attachment Id" );
-            }
-            
-            return attachmentId;
-        }       
-        
-        public synchronized long getContentId() {
-            if ( wait ) {                  
-                try {
-                    wait( 3000 );
-                } catch ( InterruptedException e ) {
-                    // swallow as this is just a notifiation
-                }
-            }
-            
-            if ( wait ) {
-                throw new RuntimeException("Timeout : unable to retrieve Attachment Content Id" );
-            }
-            
-            return contentId;
-        }
-    }        
-    
-    public static class BlockingGetAttachmentContentResponseHandler implements GetAttachmentContentResponseHandler {
-        private volatile AttachmentContent attachmentContent;
-
-        public synchronized void execute(AttachmentContent attachmentContent) {
-            this.attachmentContent = attachmentContent;
-            notifyAll();                
-        }
-        
-        public synchronized AttachmentContent getAttachmentContent() {
-            if ( attachmentContent == null ) {                  
-                try {
-                    wait( 3000 );
-                } catch ( InterruptedException e ) {
-                    // swallow as this is just a notifiation
-                }
-            }
-            
-            if ( attachmentContent == null ) {
-                throw new RuntimeException("Timeout : unable to retrieve Attachment Content" );
-            }
-            
-            return attachmentContent;
-        }       
     } 
 }

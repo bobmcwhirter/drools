@@ -13,7 +13,6 @@ import org.drools.task.BaseTest;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
-import org.drools.task.service.TaskServiceTaskUpdate.BlockingAddTaskResponseHandler;
 import org.drools.task.utils.CollectionUtils;
 
 public class TaskServiceTest extends BaseTest {
