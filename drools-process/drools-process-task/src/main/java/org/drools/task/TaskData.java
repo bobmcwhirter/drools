@@ -42,7 +42,7 @@ public class TaskData
 
     private boolean          skipable;
     
-    private long             workItemId;
+    private long             workItemId = -1;
     
     private AccessType       accessType;
 
@@ -108,7 +108,16 @@ public class TaskData
         } else {
             out.writeBoolean( false );
         }
+        
         out.writeBoolean( skipable );
+        
+        if ( workItemId != -1 ) {
+            out.writeBoolean( true );
+            out.writeLong( workItemId );
+        } else {
+            out.writeBoolean( false );
+        }
+        
         CollectionUtils.writeCommentList( comments,
                                           out );
         CollectionUtils.writeAttachmentList( attachments,
@@ -148,6 +157,10 @@ public class TaskData
         }
 
         skipable = in.readBoolean();
+
+        if ( in.readBoolean() ) {
+            workItemId = in.readLong();
+        }
 
         comments = CollectionUtils.readCommentList( in );
         attachments = CollectionUtils.readAttachmentList( in );
@@ -255,7 +268,7 @@ public class TaskData
         result = prime * result + (skipable ? 1231 : 1237);
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((previousStatus == null) ? 0 : previousStatus.hashCode());
-        
+        result = prime * result + ((workItemId == -1) ? 0 : (int) workItemId);
         return result;
     }
 
@@ -285,6 +298,7 @@ public class TaskData
             if ( other.expirationTime != null ) return false;
         } else if ( expirationTime.getTime() != other.expirationTime.getTime() ) return false;
         if ( skipable != other.skipable ) return false;
+        if ( workItemId != other.workItemId) return false;
         if ( status == null ) {
             if ( other.status != null ) return false;
         } else if ( !status.equals( other.status ) ) return false;
