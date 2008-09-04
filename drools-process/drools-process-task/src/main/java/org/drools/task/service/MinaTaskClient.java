@@ -195,6 +195,15 @@ public class MinaTaskClient
         session.write( cmd );         
     }
     
+    public void stop(long taskId, long userId) {
+        List args = new ArrayList( 1 );
+        args.add( taskId );
+        args.add(  userId );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.StopRequest, args);
+        
+        session.write( cmd );          
+    }
+    
     public void complete(long taskId, long userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );

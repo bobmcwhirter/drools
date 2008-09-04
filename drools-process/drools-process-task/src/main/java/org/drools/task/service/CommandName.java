@@ -6,6 +6,8 @@ public enum CommandName {
     ClaimResponse,
     StartRequest,
     StartResponse,
+    StopRequest,
+    StopResponse,        
     CompleteRequest,
     CompleteResponse,    
     

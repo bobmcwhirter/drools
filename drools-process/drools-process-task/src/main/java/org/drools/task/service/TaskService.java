@@ -249,7 +249,6 @@ public class TaskService {
                 em.getTransaction().begin();
                 taskData.setStatus( Status.InProgress );
                 em.getTransaction().commit();
-
             } else {
                 // @TODO Error
             }
@@ -257,6 +256,26 @@ public class TaskService {
             // @TODO Error
             return;            
         }        
+    }
+    
+    public void stop(long taskId,
+                      long userId) {
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().equals( user ) ) {
+            // Status must be InProgress and actual owner, switch to Reserved
+            em.getTransaction().begin();
+            taskData.setStatus( Status.Reserved );
+            em.getTransaction().commit();
+        } else {
+            // @TODO Error
+            return;            
+        }  
     }
 
     public void stop(long taskId,
