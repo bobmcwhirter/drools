@@ -277,21 +277,7 @@ public class TaskService {
             return;            
         }  
     }
-
-    public void release(long taskId,
-                        User user) {
-        Task task = em.find( Task.class,
-                             taskId );
-        TaskData taskData = task.getTaskData();
-
-        // task must be reserved or in progress and owned by user
-        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && taskData.getActualOwner().equals( user ) ) {
-            taskData.setStatus( Status.Ready );
-        } else {
-            //@TODO Error
-        }
-    }
-
+    
     public void complete(long taskId, long userId) {
         Task task = em.find( Task.class,
                              taskId );
@@ -309,6 +295,25 @@ public class TaskService {
             // @TODO Error
             return;            
         }  
+    }    
+
+    public void release(long taskId, long userId) {
+        Task task = em.find( Task.class,
+                             taskId );
+        
+        User user = em.find( User.class, userId );
+        
+        TaskData taskData = task.getTaskData();
+        
+        // task must be reserved or in progress and owned by user
+        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && taskData.getActualOwner().equals( user ) ) {
+            em.getTransaction().begin();
+            taskData.setStatus( Status.Ready );
+            taskData.setActualOwner( null );
+            em.getTransaction().commit();
+        } else {
+            //@TODO Error
+        } 
     }
 
     public void fail(long taskId, long userId) {
