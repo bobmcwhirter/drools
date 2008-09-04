@@ -335,7 +335,7 @@ public class TaskService {
             allowed = new List[] { people.getBusinessAdministrators() };
         }
         
-        if ( (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed && taskData.getStatus() != Status.Created) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
+        if ( (taskData.getStatus() == Status.Ready || taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && ( ( taskData.getActualOwner() != null && taskData.getActualOwner().equals( user ) ) || isAllowed( user, allowed ) ) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Suspended );
             em.getTransaction().commit();
