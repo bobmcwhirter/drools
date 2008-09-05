@@ -60,6 +60,8 @@ org.drools.guvnor.client.modeldriven.brl.DSLSentence, true
 org.drools.guvnor.client.modeldriven.brl.FactPattern, true
 [Lorg.drools.guvnor.client.modeldriven.brl.FactPattern;, true
 [Lorg.drools.guvnor.client.modeldriven.brl.FieldConstraint;, true
+org.drools.guvnor.client.modeldriven.brl.FreeFormLine, true
+[Lorg.drools.guvnor.client.modeldriven.brl.FreeFormLine;, true
 [Lorg.drools.guvnor.client.modeldriven.brl.IAction;, true
 [Lorg.drools.guvnor.client.modeldriven.brl.IPattern;, true
 org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint, true
