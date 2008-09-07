@@ -41,7 +41,9 @@ public class Delegation  implements Externalizable {
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        allowed = Allowed.valueOf( in.readUTF() );
+        if ( in.readBoolean() ) {
+            allowed = Allowed.valueOf( in.readUTF() );
+        }
         delegates = CollectionUtils.readOrganizationalEntityList( in );
     }       
 
