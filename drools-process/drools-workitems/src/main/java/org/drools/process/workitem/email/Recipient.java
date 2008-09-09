@@ -10,10 +10,6 @@ public class Recipient {
     private String mobile;
 
     public Recipient() {
-        this( "to",
-              "John Smith",
-              "john@xxx.com",
-              "" );
     }
 
     public Recipient(String type,

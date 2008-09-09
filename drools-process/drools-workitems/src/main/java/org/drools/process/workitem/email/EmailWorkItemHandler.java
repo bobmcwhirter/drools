@@ -39,18 +39,45 @@ public class EmailWorkItemHandler implements WorkItemHandler {
 		Email email = new Email();
 		Message message = new Message();
 		message.setFrom((String) workItem.getParameter("From"));
+		message.setReplyTo( (String) workItem.getParameter("Reply-To"));
 		Recipients recipients = new Recipients();
 		String to = (String) workItem.getParameter("To");
+		if ( to == null || to.trim().length() == 0 ) {
+		    throw new RuntimeException( "Email must have one or more to adresses" );
+		}
 		for (String s: to.split(";")) {
 			if (s != null && !"".equals(s)) {
 				Recipient recipient = new Recipient();
 				recipient.setEmail(s);
+                recipient.setType( "To" );
 				recipients.addRecipient(recipient);
 			}
 		}
+        String cc = (String) workItem.getParameter("Cc");
+        if ( cc != null && cc.trim().length() > 0 ) {
+            for (String s: cc.split(";")) {
+                if (s != null && !"".equals(s)) {
+                    Recipient recipient = new Recipient();
+                    recipient.setEmail(s);
+                    recipient.setType( "Cc" );
+                    recipients.addRecipient(recipient);
+                }
+            }		
+        }
+        String bcc = (String) workItem.getParameter("Bcc");
+        if ( bcc != null && bcc.trim().length() > 0 ) {
+            for (String s: bcc.split(";")) {
+                if (s != null && !"".equals(s)) {
+                    Recipient recipient = new Recipient();
+                    recipient.setEmail(s);
+                    recipient.setType( "Bcc" );
+                    recipients.addRecipient(recipient);
+                }
+            }		
+        }
 		message.setRecipients(recipients);
 		message.setSubject((String) workItem.getParameter("Subject"));
-		message.setBody((String) workItem.getParameter("Text"));
+		message.setBody((String) workItem.getParameter("Body"));
 		email.setMessage(message);
 		email.setConnection(connection);
 		SendHtml.sendHtml(email);
