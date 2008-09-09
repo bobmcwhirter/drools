@@ -22,7 +22,6 @@ public class EmailWorkItemHandlerTest extends TestCase {
     protected void setUp() throws Exception {
          wiser = new Wiser();
          wiser.start();
-
     }
     
     @Override
