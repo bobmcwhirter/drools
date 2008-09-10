@@ -1,8 +1,7 @@
 package org.drools.bpel.instance;
 
 import org.drools.bpel.core.BPELFaultHandler;
-import org.drools.bpel.core.BPELScope;
-import org.drools.bpel.core.BPELScope.BPELFaultHandlerScope;
+import org.drools.bpel.core.BPELFaultHandlerScope;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.context.exception.ExceptionHandlerInstance;
@@ -45,9 +44,11 @@ public class BPELFaultHandlerInstance implements ExceptionHandlerInstance {
         CompositeContextNodeInstance nodeInstance = (CompositeContextNodeInstance)
         	nodeInstanceContainer.getNodeInstance((BPELFaultHandlerScope)
     			faultHandler.getActivity().getNodeContainer());
-        VariableScopeInstance variableScopeInstance = ((VariableScopeInstance) nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELScope.INTERNAL_FAULT_NAME_VARIABLE));
-    	variableScopeInstance.setVariable(BPELScope.INTERNAL_FAULT_NAME_VARIABLE, exception);
-    	variableScopeInstance.setVariable(BPELScope.INTERNAL_FAULT_DATA_VARIABLE, param);
+        VariableScopeInstance variableScopeInstance =
+        	((VariableScopeInstance) nodeInstance.resolveContextInstance(
+    			VariableScope.VARIABLE_SCOPE, BPELFaultHandlerScope.INTERNAL_FAULT_NAME_VARIABLE));
+    	variableScopeInstance.setVariable(BPELFaultHandlerScope.INTERNAL_FAULT_NAME_VARIABLE, exception);
+    	variableScopeInstance.setVariable(BPELFaultHandlerScope.INTERNAL_FAULT_DATA_VARIABLE, param);
         String faultVariable = faultHandler.getFaultVariable();
         if (faultVariable != null) {
             variableScopeInstance = (VariableScopeInstance)

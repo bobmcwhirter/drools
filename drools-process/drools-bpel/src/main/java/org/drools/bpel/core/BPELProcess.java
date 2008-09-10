@@ -90,15 +90,21 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
     		join, Node.CONNECTION_DEFAULT_TYPE,
     		endNode, Node.CONNECTION_DEFAULT_TYPE);
         for (BPELFaultHandler faultHandler: faultHandlers) {
-        	Node activity = faultHandler.getActivity(); 
-        	activity.setId(i++);
-            addNode(activity);
+        	BPELFaultHandlerScope faultHandlerScope = new BPELFaultHandlerScope();
+        	faultHandlerScope.setId(i++);
+            addNode(faultHandlerScope);
+        	Node activity = faultHandler.getActivity();
+        	faultHandlerScope.addNode(activity);
+        	faultHandlerScope.linkIncomingConnections(
+    			Node.CONNECTION_DEFAULT_TYPE, activity.getId(), Node.CONNECTION_DEFAULT_TYPE);
+        	faultHandlerScope.linkOutgoingConnections(
+    			activity.getId(), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
             exceptionScope.setExceptionHandler(faultHandler.getFaultName(), faultHandler);
             new ConnectionImpl(
         		split, Node.CONNECTION_DEFAULT_TYPE,
-        		activity, Node.CONNECTION_DEFAULT_TYPE);
+        		faultHandlerScope, Node.CONNECTION_DEFAULT_TYPE);
             new ConnectionImpl(
-        		activity, Node.CONNECTION_DEFAULT_TYPE,
+        		faultHandlerScope, Node.CONNECTION_DEFAULT_TYPE,
         		join, Node.CONNECTION_DEFAULT_TYPE);
         }
     }

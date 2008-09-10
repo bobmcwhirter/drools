@@ -1,6 +1,6 @@
 package org.drools.bpel.instance;
 
-import org.drools.bpel.core.BPELScope;
+import org.drools.bpel.core.BPELFaultHandlerScope;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
@@ -27,7 +27,7 @@ public class BPELRethrowInstance extends FaultNodeInstance {
     
     protected ExceptionScopeInstance getExceptionScopeInstance(String faultName) {
     	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-    		resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELScope.INTERNAL_FAULT_NAME_VARIABLE);
+    		resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELFaultHandlerScope.INTERNAL_FAULT_NAME_VARIABLE);
 		BPELScopeInstance scopeInstance = (BPELScopeInstance)
 			((CompositeContextNodeInstance) variableScopeInstance.getContextInstanceContainer())
 				.getNodeInstanceContainer();
@@ -47,14 +47,14 @@ public class BPELRethrowInstance extends FaultNodeInstance {
     
     protected String getFaultName() {
     	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-    		resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELScope.INTERNAL_FAULT_NAME_VARIABLE);
-    	return (String) variableScopeInstance.getVariable(BPELScope.INTERNAL_FAULT_NAME_VARIABLE);
+    		resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELFaultHandlerScope.INTERNAL_FAULT_NAME_VARIABLE);
+    	return (String) variableScopeInstance.getVariable(BPELFaultHandlerScope.INTERNAL_FAULT_NAME_VARIABLE);
     }
     
     protected Object getFaultData() {
     	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-    		resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELScope.INTERNAL_FAULT_DATA_VARIABLE);
-    	return variableScopeInstance.getVariable(BPELScope.INTERNAL_FAULT_DATA_VARIABLE);
+    		resolveContextInstance(VariableScope.VARIABLE_SCOPE, BPELFaultHandlerScope.INTERNAL_FAULT_DATA_VARIABLE);
+    	return variableScopeInstance.getVariable(BPELFaultHandlerScope.INTERNAL_FAULT_DATA_VARIABLE);
     }
     
     protected void handleException(String faultName, ExceptionScopeInstance exceptionScopeInstance) {

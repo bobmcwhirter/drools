@@ -1,12 +1,9 @@
 package org.drools.bpel.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.process.core.context.exception.ExceptionScope;
-import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.node.CompositeContextNode;
@@ -20,8 +17,6 @@ import org.drools.workflow.core.node.Split;
  */
 public class BPELScope extends CompositeContextNode implements BPELActivity, BPELFaultHandlerContainer {
 
-	public static final String INTERNAL_FAULT_DATA_VARIABLE = "DroolsInternalFaultDataVariable";
-	public static final String INTERNAL_FAULT_NAME_VARIABLE = "DroolsInternalFaultNameVariable";
     private static final long serialVersionUID = 400L;
 
 	private SourceLink[] sourceLinks;
@@ -94,25 +89,4 @@ public class BPELScope extends CompositeContextNode implements BPELActivity, BPE
         this.targetLinks = targetLinks;
     }
     
-    public static class BPELFaultHandlerScope extends CompositeContextNode {
-
-		private static final long serialVersionUID = 4L;
-		
-		public BPELFaultHandlerScope() {
-			VariableScope variableScope = new VariableScope();
-			List<Variable> variables = new ArrayList<Variable>();
-			Variable variable = new Variable();
-			variable.setName(INTERNAL_FAULT_DATA_VARIABLE);
-			variables.add(variable);
-			variable = new Variable();
-			variable.setName(INTERNAL_FAULT_NAME_VARIABLE);
-			variable.setType(new StringDataType());
-			variables.add(variable);
-			variableScope.setVariables(variables);
-		    addContext(variableScope);
-		    setDefaultContext(variableScope);
-		}
-		
-    }
-
 }
