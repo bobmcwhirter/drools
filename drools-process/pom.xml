@@ -15,6 +15,7 @@
   <modules>
       <module>drools-process-task</module>
       <module>drools-workitems</module>
+      <module>drools-bpel</module>
   </modules>
   
 </project>
