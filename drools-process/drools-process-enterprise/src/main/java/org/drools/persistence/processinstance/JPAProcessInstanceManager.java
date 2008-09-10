@@ -1,8 +1,7 @@
-package org.drools.process.enterprise.processinstance;
+package org.drools.persistence.processinstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -13,7 +12,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
 
-public class EJB3ProcessInstanceManager implements ProcessInstanceManager {
+public class JPAProcessInstanceManager implements ProcessInstanceManager {
 
     private EntityManager manager;
     private WorkingMemory workingMemory;
@@ -27,11 +26,13 @@ public class EJB3ProcessInstanceManager implements ProcessInstanceManager {
     }
     
     public void addProcessInstance(ProcessInstance processInstance) {
-        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo();
-        processInstanceInfo.setProcessInstance(processInstance);
+        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo(processInstance);
         manager.persist(processInstanceInfo);
-        manager.flush();
         processInstance.setId(processInstanceInfo.getId());
+        processInstanceInfo.updateLastReadDate();
+    }
+    
+    public void internalAddProcessInstance(ProcessInstance processInstance) {
     }
 
     public ProcessInstance getProcessInstance(long id) {
@@ -39,6 +40,7 @@ public class EJB3ProcessInstanceManager implements ProcessInstanceManager {
         if (processInstanceInfo == null) {
             return null;
         }
+        processInstanceInfo.updateLastReadDate();
         ProcessInstance processInstance = processInstanceInfo.getProcessInstance();
         processInstance.setProcess(((InternalRuleBase) workingMemory.getRuleBase()).getProcess(processInstance.getProcessId()));
         if (processInstance.getWorkingMemory() == null) {
@@ -48,16 +50,8 @@ public class EJB3ProcessInstanceManager implements ProcessInstanceManager {
         return processInstance;
     }
 
-    public Collection<ProcessInstance> getProcessInstances() {
-        List<ProcessInstance> result = new ArrayList<ProcessInstance>();
-        List<ProcessInstanceInfo> processInstanceInfos = 
-            manager.createQuery("from ProcessInstanceInfo").getResultList();
-        if (processInstanceInfos != null) {
-            for (ProcessInstanceInfo processInstanceInfo: processInstanceInfos) {
-                result.add(processInstanceInfo.getProcessInstance());
-            }
-        }
-        return result;
+	public Collection<ProcessInstance> getProcessInstances() {
+        return new ArrayList<ProcessInstance>();
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
@@ -65,6 +59,9 @@ public class EJB3ProcessInstanceManager implements ProcessInstanceManager {
         if (processInstanceInfo != null) {
             manager.remove(processInstanceInfo);
         }
+    }
+
+    public void internalRemoveProcessInstance(ProcessInstance processInstance) {
     }
 
 }

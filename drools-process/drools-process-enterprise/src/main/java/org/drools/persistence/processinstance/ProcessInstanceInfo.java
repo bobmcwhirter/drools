@@ -1,14 +1,17 @@
-package org.drools.process.enterprise.processinstance;
+package org.drools.persistence.processinstance;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
 import org.drools.marshalling.InputMarshaller;
@@ -23,8 +26,23 @@ public class ProcessInstanceInfo {
 
 	private @Id @GeneratedValue(strategy=GenerationType.AUTO) Long processInstanceId;
 	private String processId;
+	private Date startDate;
+	private Date lastReadDate;
+	private Date lastModificationDate;
+	private int state;
 	private @Lob byte[] processInstanceByteArray;
+	// TODO How do I mark a process instance info as dirty when the process instance
+	// has changed (so that byte array is regenerated and saved) ?
 	private @Transient ProcessInstance processInstance;
+	
+	ProcessInstanceInfo() {
+	}
+	
+	public ProcessInstanceInfo(ProcessInstance processInstance) {
+		this.processInstance = processInstance;
+		this.processId = processInstance.getProcessId();
+		startDate = new Date();
+	}
 	
 	public long getId() {
 		return processInstanceId;
@@ -32,6 +50,26 @@ public class ProcessInstanceInfo {
 	
 	public String getProcessId() {
 		return processId;
+	}
+	
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public Date getLastModificationDate() {
+		return lastModificationDate;
+	}
+	
+	public Date getLastReadDate() {
+		return lastReadDate;
+	}
+	
+	public void updateLastReadDate() {
+		lastReadDate = new Date();
+	}
+	
+	public int getState() {
+		return state;
 	}
 	
 	public ProcessInstance getProcessInstance() {
@@ -49,20 +87,23 @@ public class ProcessInstanceInfo {
 		}
 		return processInstance;
 	}
-	
-	public void setProcessInstance(ProcessInstance processInstance) {
-		this.processInstance = processInstance;
-//		this.processInstanceId = processInstance.getId();
-		this.processId = processInstance.getProcessId();
+
+	@PreUpdate
+	public void update() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			MarshallerWriteContext context = new MarshallerWriteContext(baos, null, null, null, null);
 			OutputMarshaller.writeProcessInstance(context, (RuleFlowProcessInstance) processInstance);
 			context.close();
-			this.processInstanceByteArray = baos.toByteArray();
 		} catch (IOException e) {
 			throw new IllegalArgumentException(
 				"IOException while storing process instance " + processInstance.getId() + ": " + e.getMessage());
+		}
+		byte[] newByteArray = baos.toByteArray();
+		if (!Arrays.equals(newByteArray, processInstanceByteArray)) {
+			this.state = processInstance.getState();
+			this.lastModificationDate = new Date();
+			this.processInstanceByteArray = newByteArray;
 		}
 	}
 	
