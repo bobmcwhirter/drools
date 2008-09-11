@@ -1,20 +1,19 @@
 package org.drools.process.workitem.email;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
+import junit.framework.TestCase;
+
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
-
-
-import junit.framework.TestCase;
 
 public class EmailWorkItemHandlerTest extends TestCase {
     Wiser wiser;
@@ -40,7 +39,7 @@ public class EmailWorkItemHandlerTest extends TestCase {
         workItem.setParameter( "Subject", "Subject 1" );
         workItem.setParameter( "Body", "Body 1" );
         
-        WorkItemManager manager = new WorkItemManager();
+        WorkItemManager manager = new DefaultWorkItemManager(null);
         handler.executeWorkItem( workItem, manager );
         
         assertEquals( 1, wiser.getMessages().size() );
@@ -68,7 +67,7 @@ public class EmailWorkItemHandlerTest extends TestCase {
         workItem.setParameter( "Subject", "Subject 1" );
         workItem.setParameter( "Body", "Body 1" );
         
-        WorkItemManager manager = new WorkItemManager();
+        WorkItemManager manager = new DefaultWorkItemManager(null);
         handler.executeWorkItem( workItem, manager );
         
         assertEquals( 3, wiser.getMessages().size() );
@@ -124,7 +123,7 @@ public class EmailWorkItemHandlerTest extends TestCase {
         workItem.setParameter( "Subject", "Subject 1" );
         workItem.setParameter( "Body", "Body 1" );
         
-        WorkItemManager manager = new WorkItemManager();
+        WorkItemManager manager = new DefaultWorkItemManager(null);
         handler.executeWorkItem( workItem, manager );
         
         assertEquals( 6, wiser.getMessages().size() );

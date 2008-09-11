@@ -24,6 +24,11 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-process-task</artifactId>
+      <version>5.0.0.SNAPSHOT</version>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>
@@ -41,14 +46,6 @@
       <artifactId>commons-finder</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
-    
-    <dependency>
-      <groupId>org.subethamail</groupId>
-      <artifactId>subethasmtp-wiser</artifactId>
-      <version>1.2</version>
-      <scope>test</scope>
-    </dependency>
-        
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -64,6 +61,15 @@
       <artifactId>commons-exec</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
+    
+    <!-- External test dependencies -->
+    <dependency>
+      <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
+        
   </dependencies>
 
 </project>
