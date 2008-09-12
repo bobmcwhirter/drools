@@ -54,7 +54,6 @@ org.drools.guvnor.client.modeldriven.brl.ActionUpdateField, true
 org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern, true
 [Lorg.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;, true
 org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint, true
-[Lorg.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;, true
 org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;, true
 org.drools.guvnor.client.modeldriven.brl.DSLSentence, true
@@ -62,6 +61,8 @@ org.drools.guvnor.client.modeldriven.brl.DSLSentence, true
 org.drools.guvnor.client.modeldriven.brl.FactPattern, true
 [Lorg.drools.guvnor.client.modeldriven.brl.FactPattern;, true
 [Lorg.drools.guvnor.client.modeldriven.brl.FieldConstraint;, true
+org.drools.guvnor.client.modeldriven.brl.FreeFormLine, true
+[Lorg.drools.guvnor.client.modeldriven.brl.FreeFormLine;, true
 [Lorg.drools.guvnor.client.modeldriven.brl.IAction;, true
 [Lorg.drools.guvnor.client.modeldriven.brl.IPattern;, true
 org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint, true
@@ -69,7 +70,6 @@ org.drools.guvnor.client.modeldriven.brl.RuleAttribute, true
 [Lorg.drools.guvnor.client.modeldriven.brl.RuleAttribute;, true
 org.drools.guvnor.client.modeldriven.brl.RuleModel, true
 org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint, true
-[Lorg.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;, true
 org.drools.guvnor.client.modeldriven.dt.ActionCol, true
 org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol, true
 org.drools.guvnor.client.modeldriven.dt.ActionRetractFactCol, true
@@ -122,18 +122,13 @@ org.drools.guvnor.client.rpc.ValidatedResponse, true
 org.drools.guvnor.client.ruleeditor.PropertiesHolder, true
 org.drools.guvnor.client.ruleeditor.PropertyHolder, true
 org.drools.guvnor.client.rulefloweditor.ForEachTransferNode, true
-[Lorg.drools.guvnor.client.rulefloweditor.ForEachTransferNode;, true
 org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode, true
-[Lorg.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode;, true
 org.drools.guvnor.client.rulefloweditor.SplitNode$ConnectionRef, true
 org.drools.guvnor.client.rulefloweditor.SplitNode$Constraint, true
 org.drools.guvnor.client.rulefloweditor.SplitTransferNode, true
 org.drools.guvnor.client.rulefloweditor.SplitTransferNode$Type, true
-[Lorg.drools.guvnor.client.rulefloweditor.SplitTransferNode;, true
 org.drools.guvnor.client.rulefloweditor.TransferConnection, true
-[Lorg.drools.guvnor.client.rulefloweditor.TransferConnection;, true
 org.drools.guvnor.client.rulefloweditor.TransferNode, true
-[Lorg.drools.guvnor.client.rulefloweditor.TransferNode;, true
+org.drools.guvnor.client.rulefloweditor.TransferNode$Type, true
 org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode, true
-[Lorg.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;, true
 org.drools.guvnor.client.security.Capabilities, true
