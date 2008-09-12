@@ -58,7 +58,7 @@ public class Deadline implements Externalizable {
             date = new Date( in.readLong() );
         }
         documentation = CollectionUtils.readI18NTextList( in );
-        escalations = CollectionUtils.readIEscalationList( in );       
+        escalations = CollectionUtils.readEscalationList( in );       
     }
 
     public long getId() {

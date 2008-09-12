@@ -166,7 +166,7 @@ public class Task implements Externalizable {
     
     public List<I18NText> getDescriptions() {
         return descriptions;
-    }
+    }    
 
     public void setDescriptions(List<I18NText> descriptions) {
         this.descriptions = descriptions;

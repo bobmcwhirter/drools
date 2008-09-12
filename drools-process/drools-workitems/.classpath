@@ -12,8 +12,8 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-exec/1.0.0-SNAPSHOT/commons-exec-1.0.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-finder/1.0-SNAPSHOT/commons-finder-1.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-cli/2.0-SNAPSHOT/commons-cli-2.0-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.0.0.SNAPSHOT/drools-compiler-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-compiler/5.0.0.SNAPSHOT/drools-compiler-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.0.0.SNAPSHOT/drools-core-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-core/5.0.0.SNAPSHOT/drools-core-5.0.0.SNAPSHOT-sources.jar"/>
+  <classpathentry kind="src" path="/drools-compiler"/>
+  <classpathentry kind="src" path="/drools-core"/>
   <classpathentry kind="var" path="M2_REPO/org/mvel/mvel/2.0-SNAPSHOT/mvel-2.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/gunit/1.0.1/gunit-1.0.1.jar"/>
@@ -21,20 +21,6 @@
   <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.10/janino-2.5.10.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-process-task/5.0.0.SNAPSHOT/drools-process-task-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-process-task/5.0.0.SNAPSHOT/drools-process-task-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-M3/mina-core-2.0.0-M3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.2/slf4j-jdk14-1.5.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-entitymanager/3.4.0.GA/hibernate-entitymanager-3.4.0.GA.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/hibernate/ejb3-persistence/1.0.2.GA/ejb3-persistence-1.0.2.GA.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-commons-annotations/3.1.0.GA/hibernate-commons-annotations-3.1.0.GA.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-annotations/3.4.0.GA/hibernate-annotations-3.4.0.GA.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-core/3.3.0.SP1/hibernate-core-3.3.0.SP1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/transaction/jta/1.1/jta-1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.4.GA/javassist-3.4.GA.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/h2database/h2/1.0.77/h2-1.0.77.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.0.1/jmock-2.5.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>

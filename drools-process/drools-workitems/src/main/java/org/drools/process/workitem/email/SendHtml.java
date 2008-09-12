@@ -38,7 +38,11 @@ public class SendHtml {
             Properties props = new Properties();
             // XXX - could use Session.getTransport() and Transport.connect()
             // XXX - assume we're using SMTP
-            if ( mailhost != null ) props.put( "mail.smtp.host", mailhost );
+            if ( mailhost != null && mailhost.trim().length() > 0 ) props.put( "mail.smtp.host", mailhost );
+            if ( connection.getPort() != null && connection.getPort().trim().length() > 0 ) {
+                props.put( "mail.smtp.port", Integer.parseInt( connection.getPort() ) );                
+            }               
+                        
             // Get a Session object
             Session session = Session.getInstance( props, null );
             if ( debug ) session.setDebug( true );
@@ -69,7 +73,7 @@ public class SendHtml {
             // send the thing off
             Transport.send( msg );
         } catch ( Exception e ) {
-            e.printStackTrace();
+            throw new RuntimeException( "Unable to send email", e );
         }
     }
 

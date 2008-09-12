@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 @Entity
-public class AttachmentContent implements Externalizable {
+public class Content implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long   id;
@@ -21,7 +21,7 @@ public class AttachmentContent implements Externalizable {
     @Lob
     private byte[] content;
     
-    public AttachmentContent() {
+    public Content() {
         
     }    
     
@@ -66,8 +66,8 @@ public class AttachmentContent implements Externalizable {
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
-        if ( !(obj instanceof AttachmentContent) ) return false;
-        AttachmentContent other = (AttachmentContent) obj;
+        if ( !(obj instanceof Content) ) return false;
+        Content other = (Content) obj;
         if ( !Arrays.equals( content,
                              other.content ) ) return false;
         return true;

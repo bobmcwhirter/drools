@@ -20,10 +20,12 @@ import org.drools.task.BooleanExpression;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
 import org.drools.task.Deadlines;
+import org.drools.task.EmailNotification;
 import org.drools.task.Escalation;
 import org.drools.task.Group;
 import org.drools.task.I18NText;
 import org.drools.task.Notification;
+import org.drools.task.NotificationType;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.Reassignment;
 import org.drools.task.User;
@@ -139,6 +141,7 @@ public class CollectionUtils {
     public static void writeNotificationList(List<Notification> list, ObjectOutput out) throws IOException {
         out.writeInt( list.size() );
         for( Notification item : list ) {
+            out.writeUTF( item.getNotificationType().toString() );
             item.writeExternal( out );
         }
     }    
@@ -147,7 +150,18 @@ public class CollectionUtils {
         int size = in.readInt();
         List<Notification> list = new ArrayList<Notification>(size);
         for ( int i = 0; i < size; i++ ) {
-            Notification item = new Notification();
+            Notification item = null;
+            switch( NotificationType.valueOf(  in.readUTF() ) ) {
+                case Default : {
+                    item = new Notification();
+                    break;
+                }
+                case Email : {
+                    item = new EmailNotification();
+                    break;
+                }
+            }
+             
             item.readExternal( in );
             list.add( item );
         }
@@ -198,7 +212,7 @@ public class CollectionUtils {
         }
     }    
     
-    public static List<Escalation> readIEscalationList(ObjectInput in) throws IOException, ClassNotFoundException  {
+    public static List<Escalation> readEscalationList(ObjectInput in) throws IOException, ClassNotFoundException  {
         int size = in.readInt();
         List<Escalation> list = new ArrayList<Escalation>(size);
         for ( int i = 0; i < size; i++ ) {

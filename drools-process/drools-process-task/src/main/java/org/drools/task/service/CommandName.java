@@ -31,8 +31,10 @@ public enum CommandName {
     AddAttachmentResponse,
     DeleteAttachmentRequest,
     DeleteAttachmentResponse,    
-    GetAttachmentContentRequest,
-    GetAttachmentContentResponse,
+    SetDocumentContentRequest,
+    SetDocumentContentResponse,
+    GetContentRequest,
+    GetContentResponse,
     
     AddCommentRequest,
     AddCommentResponse,

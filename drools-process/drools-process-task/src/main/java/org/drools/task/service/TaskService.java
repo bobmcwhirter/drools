@@ -18,7 +18,7 @@ import javax.persistence.Query;
 
 import org.drools.task.AccessType;
 import org.drools.task.Attachment;
-import org.drools.task.AttachmentContent;
+import org.drools.task.Content;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
 import org.drools.task.Group;
@@ -28,6 +28,7 @@ import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
+import org.drools.task.UserInfo;
 import org.drools.task.query.DeadlineSummary;
 import org.drools.task.query.TaskSummary;
 
@@ -50,6 +51,8 @@ public class TaskService {
     ScheduledThreadPoolExecutor      scheduler;
 
     private EscalatedDeadlineHandler escalatedDeadlineHandler;
+    
+    private UserInfo userInfo;
 
     public TaskService(EntityManagerFactory emf) {
         this.emf = emf;
@@ -87,7 +90,7 @@ public class TaskService {
             unescalatedDeadlines = em.createQuery( toString( reader ) );
             long now = System.currentTimeMillis();
             for ( Object object : unescalatedDeadlines.getResultList() ) {
-                DeadlineSummary summary = (DeadlineSummary) object;
+                DeadlineSummary summary = (DeadlineSummary) object;                
                 scheduler.schedule( new ScheduledTaskDeadline( summary.getTaskId(),
                                                                summary.getDeadlineId(),
                                                                this ),
@@ -98,6 +101,14 @@ public class TaskService {
             throw new RuntimeException( "Unable to inialize TaskService, could not load and schedule oustanding deadlines",
                                         e );
         }
+    }    
+    
+    public UserInfo getUserinfo() {
+        return userInfo;
+    }
+
+    public void setUserinfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     public EntityManagerFactory getEntityManagerFactory() {
@@ -135,7 +146,7 @@ public class TaskService {
             if ( potentialOwners.size() == 1 ) {
                 // if there is a single potential owner, assign and set status to Reserved
                 taskData.setActualOwner( (User) potentialOwners.get( 0 ) );
-                taskData.setStatus( Status.Reserved );
+                taskData.setStatus( Status.Reserved );                
             } else if ( potentialOwners.size() > 1 ) {
                 // multiple potential owners, so set to Ready so one can claim.
                 taskData.setStatus( Status.Ready );
@@ -192,7 +203,12 @@ public class TaskService {
                 }
             }
         }
-    }
+        
+        if ( task.getTaskData().getStatus() == Status.Reserved ) {
+            // Task was reserved so owner should get icals
+            SendIcal.getInstance().sendIcalForTask( task, userInfo );
+        }
+    }    
 
     public void claim(long taskId,
                       long userId) {
@@ -213,6 +229,9 @@ public class TaskService {
                 taskData.setStatus( Status.Reserved );
                 taskData.setActualOwner( user );
                 em.getTransaction().commit();
+                
+                // Task was reserved so owner should get icals
+                SendIcal.getInstance().sendIcalForTask( task, userInfo );
             } else {
                 // @TODO Error
             }
@@ -230,7 +249,6 @@ public class TaskService {
         
         TaskData taskData = task.getTaskData();
         
-
         // Status must be Read or Reserved
         if ( taskData.getStatus() == Status.Ready ) {
             // if Ready must be potentialOwner
@@ -438,7 +456,7 @@ public class TaskService {
 
     public void addAttachment(long taskId,
                               Attachment attachment,
-                              AttachmentContent content) {
+                              Content content) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -450,7 +468,7 @@ public class TaskService {
 
         em.persist( content );
         attachment.setSize( content.getContent().length );
-        attachment.setContentId( content.getId() );
+        attachment.setAttachmentContentId( content.getId() );
 
         List<Attachment> list = task.getTaskData().getAttachments();
         if ( list == null || list == Collections.<Attachment> emptyList() ) {
@@ -461,16 +479,34 @@ public class TaskService {
         list.add( attachment );
         em.getTransaction().commit();
     }
+    
+    public void setDocumentContent(long taskId,
+                                   Content content) {
+        Task task = em.find( Task.class,
+                             taskId );
 
-    public AttachmentContent getAttachmentContent(long contentId) {
-        AttachmentContent content = em.find( AttachmentContent.class,
+        if ( task == null ) {
+            // throw some exception
+        }
+
+        em.getTransaction().begin();
+
+        em.persist( content );
+        
+        task.getTaskData().setDocumentContentId( content.getId() );
+        
+        em.getTransaction().commit();
+    }
+
+    public Content getContent(long contentId) {
+        Content content = em.find( Content.class,
                                              contentId );
         return content;
     }
 
     public void deleteAttachment(long taskId,
                                  long attachmentId,
-                                 long attachmentContentId) {
+                                 long contentId) {
         // @TODO I can't get this to work with HQL deleting the Attachment. Hibernate needs both the item removed from the collection
         // and also the item deleted, so for now have to load the entire Task, I suspect that this is due to using the same EM which 
         // is caching things.
@@ -488,9 +524,9 @@ public class TaskService {
         }
 
         // we do this as HQL to avoid streaming in the entire HQL
-        String deleteContent = "delete from AttachmentContent where id = :id";
+        String deleteContent = "delete from Content where id = :id";
         em.createQuery( deleteContent ).setParameter( "id",
-                                                      attachmentContentId ).executeUpdate();
+                                                      contentId ).executeUpdate();
 
         em.getTransaction().commit();
     }
@@ -608,7 +644,8 @@ public class TaskService {
 
         escalatedDeadlineHandler.executeEscalatedDeadline( task,
                                                            deadline,
-                                                           localEm );
+                                                           localEm,
+                                                           this );
         localEm.close();
     }
     

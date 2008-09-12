@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -92,6 +93,22 @@ public class I18NText implements Externalizable {
             if ( other.text != null ) return false;
         } else if ( !text.equals( other.text ) ) return false;
         return true;
+    }
+    
+    public static String getLocalText(List<I18NText> list, String prefferedLanguage, String defaultLanguage) {
+        for ( I18NText text : list) {
+            if ( text.getLanguage().equals( prefferedLanguage )) {
+                return text.getText();
+            }
+        }
+        if (  defaultLanguage == null ) {
+            for ( I18NText text : list) {
+                if ( text.getLanguage().equals( defaultLanguage )) {
+                    return text.getText();
+                }
+            }    
+        }
+        return "";
     }
 
 

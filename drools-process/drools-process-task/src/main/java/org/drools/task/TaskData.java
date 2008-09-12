@@ -44,12 +44,11 @@ public class TaskData
     
     private long             workItemId = -1;
     
-    private AccessType       accessType;
+    private AccessType       documentAccessType;
 
-    private String           contentType;
+    private String           documentType;
 
-    @Lob
-    private byte[]           document;
+    private long             documentContentId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
@@ -239,7 +238,31 @@ public class TaskData
     public long getWorkItemId() {
     	return workItemId;
     }
-      
+             
+    public AccessType getDocumentAccessType() {
+        return documentAccessType;
+    }
+
+    public void setDocumentAccessType(AccessType accessType) {
+        this.documentAccessType = accessType;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }        
+
+    public long getDocumentContentId() {
+        return documentContentId;
+    }
+
+    public void setDocumentContentId(long documentContentId) {
+        this.documentContentId = documentContentId;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -308,7 +331,18 @@ public class TaskData
         if ( activationTime == null ) {
             if ( other.activationTime != null ) return false;
         } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;
-
+                
+        if ( workItemId != other.workItemId ) return false;
+        
+        if ( documentAccessType == null ) {
+            if ( other.documentAccessType != null ) return false;
+        } else if ( !documentAccessType.equals( other.documentAccessType ) ) return false;
+        
+        if ( documentContentId != other.documentContentId ) return false;
+        if ( documentType == null ) {
+            if ( other.documentType != null ) return false;
+        } else if ( !documentType.equals( other.documentType ) ) return false;                
+        
         return CollectionUtils.equals( attachments,
                                        other.attachments ) && CollectionUtils.equals( comments,
                                                                                       other.comments );

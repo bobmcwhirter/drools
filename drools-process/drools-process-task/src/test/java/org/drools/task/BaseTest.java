@@ -117,6 +117,8 @@ public abstract class BaseTest extends TestCase {
         context.addImport( "Deadlines", Deadlines.class );
         context.addImport( "Delegation", Delegation.class );
         context.addImport( "Escalation", Escalation.class );
+        context.addImport( "EmailNotification", EmailNotification.class );
+        context.addImport( "EmailNotificationHeader", EmailNotificationHeader.class );        
         context.addImport( "Group", Group.class );
         context.addImport( "I18NText", I18NText.class );
         context.addImport( "Notification", Notification.class );

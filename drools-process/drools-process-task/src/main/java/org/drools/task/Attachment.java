@@ -44,7 +44,7 @@ public class Attachment implements Externalizable {
 
     private int    size;    
     
-    private long   contentId;
+    private long   attachmentContentId;
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
@@ -54,7 +54,7 @@ public class Attachment implements Externalizable {
         attachedBy.writeExternal( out );
         out.writeLong( attachedAt.getTime() );
         out.writeInt( size );
-        out.writeLong( contentId );
+        out.writeLong( attachmentContentId );
     }
     
     public void readExternal(ObjectInput in) throws IOException,
@@ -67,7 +67,7 @@ public class Attachment implements Externalizable {
         attachedBy.readExternal( in );        
         attachedAt = new Date( in.readLong() );
         size = in.readInt( );
-        contentId = in.readLong();
+        attachmentContentId = in.readLong();
     }
 
     public Long getId() {
@@ -126,12 +126,12 @@ public class Attachment implements Externalizable {
         this.size = size;
     }
         
-    public long getContentId() {
-        return contentId;
+    public long getAttachmentContentId() {
+        return attachmentContentId;
     }
 
-    public void setContentId(long contentId) {
-        this.contentId = contentId;
+    public void setAttachmentContentId(long contentId) {
+        this.attachmentContentId = contentId;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class Attachment implements Externalizable {
         result = prime * result + ((attachedAt == null) ? 0 : attachedAt.hashCode());
         result = prime * result + ((attachedBy == null) ? 0 : attachedBy.hashCode());
         result = prime * result + size;
-        result = prime * result + (int) (contentId ^ (contentId >>> 32));
+        result = prime * result + (int) (attachmentContentId ^ (attachmentContentId >>> 32));
         result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
@@ -164,7 +164,7 @@ public class Attachment implements Externalizable {
             if ( other.attachedBy != null ) return false;
         } else if ( !attachedBy.equals( other.attachedBy ) ) return false;
         if ( size != other.size ) return false;
-        if ( contentId != other.contentId ) return false;
+        if ( attachmentContentId != other.attachmentContentId ) return false;
         if ( contentType == null ) {
             if ( other.contentType != null ) return false;
         } else if ( !contentType.equals( other.contentType ) ) return false;

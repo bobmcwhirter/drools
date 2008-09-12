@@ -59,7 +59,6 @@ public class ModelPersistenceTest extends BaseTest {
     }
     
     public void testfullHibernateRoundtripWithAdditionalMVELCheck() throws Exception {
-
         Task task1 = new Task();
         task1.setPriority( 100 );
 
@@ -105,6 +104,10 @@ public class ModelPersistenceTest extends BaseTest {
         taskData.setCreatedOn( new Date( 10000000 ) );
         taskData.setExpirationTime( new Date( 10000000 ) );
         taskData.setStatus( Status.Created );
+        
+        taskData.setDocumentAccessType( AccessType.Inline );
+        taskData.setDocumentType( "mvel" );
+        taskData.setDocumentContentId( 20 );
 
         List<Attachment> attachments = new ArrayList<Attachment>();
         taskData.setAttachments( attachments );
@@ -116,7 +119,7 @@ public class ModelPersistenceTest extends BaseTest {
         attachment.setContentType( "text" );
         attachment.setName( "file.txt" );
         attachment.setSize( 5000);
-        attachment.setContentId( 5 );
+        attachment.setAttachmentContentId( 5 );
         attachments.add( attachment );
 
         attachment = new Attachment();
@@ -126,7 +129,7 @@ public class ModelPersistenceTest extends BaseTest {
         attachment.setContentType( "text" );
         attachment.setName( "file2.txt" );
         attachment.setSize( 500 );
-        attachment.setContentId( 3 );
+        attachment.setAttachmentContentId( 3 );
         attachments.add( attachment );
 
         List<Comment> comments = new ArrayList<Comment>();
@@ -352,7 +355,7 @@ public class ModelPersistenceTest extends BaseTest {
         Map  vars = new HashedMap();
         vars.put( "users", users );
         vars.put( "groups", groups );          
-        vars.put( "bytes1", new byte[]{1, 0, 0, 1} );        
+        vars.put( "bytes1", new byte[]{1, 0, 0, 1} ); 
         Task task3= (Task) eval( reader, vars );               
         
         assertNotSame( task1,

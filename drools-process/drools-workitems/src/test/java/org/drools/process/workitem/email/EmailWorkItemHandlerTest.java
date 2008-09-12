@@ -28,6 +28,10 @@ public class EmailWorkItemHandlerTest extends TestCase {
         wiser.stop();
     }
     
+    public void test1() {
+        
+    }
+    
     public void testSingleTo() throws Exception {
         EmailWorkItemHandler handler = new EmailWorkItemHandler();
         handler.setConnection( "localhost", "25", null, null );   

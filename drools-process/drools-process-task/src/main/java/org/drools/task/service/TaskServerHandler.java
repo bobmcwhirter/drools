@@ -10,7 +10,7 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.drools.task.AccessType;
 import org.drools.task.Attachment;
-import org.drools.task.AttachmentContent;
+import org.drools.task.Content;
 import org.drools.task.Comment;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
@@ -130,10 +130,10 @@ public class TaskServerHandler extends IoHandlerAdapter {
             }
             case  AddAttachmentRequest : {
                 Attachment attachment = ( Attachment ) cmd.getArguments().get( 1 );
-                AttachmentContent content = ( AttachmentContent ) cmd.getArguments().get( 2 ); 
+                Content content = ( Content ) cmd.getArguments().get( 2 ); 
                 service.addAttachment( (Long) cmd.getArguments().get( 0 ), attachment, content );
                 
-                List args = new ArrayList( 1 );
+                List args = new ArrayList( 2 );
                 args.add( attachment.getId() );
                 args.add( content.getId() );
                 Command resultsCmnd = new Command( cmd.getId(),
@@ -149,13 +149,26 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 service.deleteAttachment( taskId, attachmentId, contentId );
                 break;
             }
-            case GetAttachmentContentRequest : {
+            case  SetDocumentContentRequest : {
+                long taskId = ( Long ) cmd.getArguments().get( 0 );
+                Content content = ( Content ) cmd.getArguments().get( 1 ); 
+                service.setDocumentContent( taskId, content );
+                
+                List args = new ArrayList( 1 );
+                args.add( content.getId() );
+                Command resultsCmnd = new Command( cmd.getId(),
+                                                   CommandName.SetDocumentContentResponse,
+                                                   args );
+                session.write( resultsCmnd );                    
+                break;
+            }            
+            case GetContentRequest : {
                 long contentId = ( Long ) cmd.getArguments().get( 0 );
-                AttachmentContent content = service.getAttachmentContent( contentId );
+                Content content = service.getContent( contentId );
                 List args = new ArrayList( 1 );
                 args.add( content );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.GetAttachmentContentResponse,
+                                                   CommandName.GetContentResponse,
                                                    args );
                 session.write( resultsCmnd );                                
                 break;                

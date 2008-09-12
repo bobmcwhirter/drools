@@ -15,7 +15,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.drools.task.utils.CollectionUtils;
@@ -31,13 +33,13 @@ public class Notification implements Externalizable  {
     private List<I18NText>                   documentation = Collections.emptyList();
 
     private int                              priority;
-
-    @OneToMany
-    @JoinColumn(name = "Notification_Recipients_Id", nullable = true)
+    
+    @ManyToMany
+    @JoinTable(name = "Notification_Recipients", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
     private List<OrganizationalEntity>       recipients = Collections.emptyList();;
 
-    @OneToMany
-    @JoinColumn(name = "Notification_BusinessAdministrators_Id", nullable = true)
+    @ManyToMany
+    @JoinTable(name = "Notification_BusinessAdministrators", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity>       businessAdministrators = Collections.emptyList();
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -74,7 +76,8 @@ public class Notification implements Externalizable  {
         
         recipients = CollectionUtils.readOrganizationalEntityList( in );
         businessAdministrators = CollectionUtils.readOrganizationalEntityList( in );
-        
+                
+        documentation = CollectionUtils.readI18NTextList( in );
         names = CollectionUtils.readI18NTextList( in );
         subjects = CollectionUtils.readI18NTextList( in );
         descriptions = CollectionUtils.readI18NTextList( in );        
@@ -86,6 +89,10 @@ public class Notification implements Externalizable  {
 
     public void setId(long id) {
         this.id = id;
+    }
+    
+    public NotificationType getNotificationType() {
+        return NotificationType.Default;
     }
 
     public List<I18NText> getDocumentation() {

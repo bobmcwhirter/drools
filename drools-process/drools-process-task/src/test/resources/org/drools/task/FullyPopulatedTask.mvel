@@ -15,6 +15,9 @@ with ( new Task() ) {
         createdOn = new Date( 10000000 ),
         expirationTime = new Date( 10000000 ),
         status = Status.Ready,
+        documentAccessType = AccessType.Inline,
+        documentType = "mvel",
+        documentContentId = 20,
         attachments = [ 
             (with ( new Attachment() ) {
                 accessType = AccessType.Inline,
@@ -23,7 +26,7 @@ with ( new Task() ) {
                 contentType = "text",
                 name = "file.txt",
                 size = 5000,
-                contentId = 5           
+                attachmentContentId = 5           
              }),
              (with ( new Attachment() ) {
                  accessType = AccessType.Url, 
@@ -32,7 +35,7 @@ with ( new Task() ) {
                  contentType = "text",
                  name = "file2.txt",
                  size = 500,
-                 contentId = 3
+                 attachmentContentId = 3
              })
         ],
         comments = [ 

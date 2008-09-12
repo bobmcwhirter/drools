@@ -16,7 +16,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.AccessType;
 import org.drools.task.Attachment;
-import org.drools.task.AttachmentContent;
+import org.drools.task.Content;
 import org.drools.task.BaseTest;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
@@ -57,7 +57,7 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         server.stop();
     }
 
-    public void testAddComment() {
+    public void testAddRemoveComment() {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );        
@@ -157,13 +157,13 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         attachment.setContentType( "txt" );
         
         byte[] bytes = "Ths is my attachment text1".getBytes();
-        AttachmentContent content = new AttachmentContent();
+        Content content = new Content();
         content.setContent( bytes );
         
         BlockingAddAttachmentResponseHandler addAttachmentResponseHandler = new BlockingAddAttachmentResponseHandler();
         client.addAttachment( taskId, attachment, content, addAttachmentResponseHandler);
         assertTrue( addAttachmentResponseHandler.getAttachmentId() != attachment.getId() );
-        assertTrue( addAttachmentResponseHandler.getContentId() != attachment.getContentId() );
+        assertTrue( addAttachmentResponseHandler.getContentId() != attachment.getAttachmentContentId() );
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
@@ -182,17 +182,17 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         assertEquals( bytes.length, returnedAttachment.getSize() );
         
         assertEquals( (long) addAttachmentResponseHandler.getAttachmentId(), (long) returnedAttachment.getId() );
-        assertEquals( (long) addAttachmentResponseHandler.getContentId(),  (long) returnedAttachment.getContentId() );        
+        assertEquals( (long) addAttachmentResponseHandler.getContentId(),  (long) returnedAttachment.getAttachmentContentId() );        
         
         // Make the same as the returned tasks, so we can test equals
         task.getTaskData().setAttachments( attachments1 );
         task.getTaskData().setStatus( Status.Created );
         assertEquals(task, task1);            
         
-        BlockingGetAttachmentContentResponseHandler  getAttachmentContentResponseHandler = new BlockingGetAttachmentContentResponseHandler();
-        client.getAttachmentContent( returnedAttachment.getContentId(), getAttachmentContentResponseHandler );
-        AttachmentContent attachmentContent = getAttachmentContentResponseHandler.getAttachmentContent();
-        assertEquals( "Ths is my attachment text1", new String( attachmentContent.getContent() ) );
+        BlockingGetContentResponseHandler  getResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent( returnedAttachment.getAttachmentContentId(), getResponseHandler );
+        content = getResponseHandler.getContent();
+        assertEquals( "Ths is my attachment text1", new String( content.getContent() ) );
         
         // test we can have multiple attachments
         
@@ -205,7 +205,7 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         attachment.setContentType( "txt" );
         
         bytes = "Ths is my attachment text2".getBytes();
-        content = new AttachmentContent();
+        content = new Content();
         content.setContent( bytes );
         
         addAttachmentResponseHandler = new BlockingAddAttachmentResponseHandler();
@@ -220,14 +220,14 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         List<Attachment> attachments2 = task1.getTaskData().getAttachments();
         assertEquals(2, attachments2.size() );
         
-        getAttachmentContentResponseHandler = new BlockingGetAttachmentContentResponseHandler();
-        client.getAttachmentContent( addAttachmentResponseHandler.getContentId(), getAttachmentContentResponseHandler );
-        attachmentContent = getAttachmentContentResponseHandler.getAttachmentContent();
-        assertEquals( "Ths is my attachment text2", new String( attachmentContent.getContent() ) );        
+        getResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent( addAttachmentResponseHandler.getContentId(), getResponseHandler );
+        content = getResponseHandler.getContent();
+        assertEquals( "Ths is my attachment text2", new String( content.getContent() ) );        
         
         // make two collections the same and compare
         attachment.setSize( 26 );
-        attachment.setContentId( addAttachmentResponseHandler.getContentId() );
+        attachment.setAttachmentContentId( addAttachmentResponseHandler.getContentId() );
         attachments1.add( attachment );
         assertTrue( CollectionUtils.equals( attachments2, attachments1 ) );      
         

@@ -1,25 +1,143 @@
 package org.drools.task.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Map.Entry;
+
 import javax.persistence.EntityManager;
 
+import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.process.workitem.email.EmailWorkItemHandler;
+import org.drools.task.AccessType;
+import org.drools.task.Content;
 import org.drools.task.Deadline;
+import org.drools.task.EmailNotification;
+import org.drools.task.EmailNotificationHeader;
 import org.drools.task.Escalation;
+import org.drools.task.Group;
+import org.drools.task.I18NText;
 import org.drools.task.Notification;
+import org.drools.task.NotificationType;
+import org.drools.task.OrganizationalEntity;
 import org.drools.task.Reassignment;
 import org.drools.task.Task;
+import org.drools.task.TaskData;
+import org.drools.task.User;
+import org.drools.task.UserInfo;
+import org.drools.util.ChainedProperties;
+import org.mvel.MVEL;
+import org.mvel.compiler.ExpressionCompiler;
+import org.mvel.templates.TemplateRuntime;
 
-public class DefaultEscalatedDeadlineHandler implements EscalatedDeadlineHandler {
+public class DefaultEscalatedDeadlineHandler
+    implements
+    EscalatedDeadlineHandler {
+
+    private UserInfo     userInfo;
+
+    private String       from;
+
+    private String       replyTo;
+
+    EmailWorkItemHandler handler;
+
+    WorkItemManager      manager;
+    
+    public DefaultEscalatedDeadlineHandler() {
+        handler = new EmailWorkItemHandler();
+        ChainedProperties conf = new ChainedProperties("process.email.conf");
+//        String host = conf.getProperty( "host", null );
+//        String port = conf.getProperty( "port", "25" );
+//        String userName = conf.getProperty( "userName", null );
+//        String password = conf.getProperty( "password", null );       
+        
+        from = conf.getProperty( "from", null );
+        replyTo = conf.getProperty( "replyTo", null );
+        
+ 
+    }
+    
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public String getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(String replyTo) {
+        this.replyTo = replyTo;
+    }
+
+    public EmailWorkItemHandler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(EmailWorkItemHandler handler) {
+        this.handler = handler;
+    }
+
+    public WorkItemManager getManager() {
+        return manager;
+    }
+
+    public void setManager(WorkItemManager manager) {
+        this.manager = manager;
+    }
 
     public void executeEscalatedDeadline(Task task,
                                          Deadline deadline,
-                                         EntityManager em) {
-        
+                                         EntityManager em,
+                                         TaskService service) {
+
         for ( Escalation escalation : deadline.getEscalations() ) {
             // we won't impl constraints for now
             //escalation.getConstraints()
-
+            String language = "en-UK";
             for ( Notification notification : escalation.getNotifications() ) {
-                //notification.g
+                if ( notification.getNotificationType() == NotificationType.Email) {
+                    executeEmailNotification( (EmailNotification) notification, task, em );
+                }
+                //                I18NText name = null;
+                //                I18NText subject = null;
+                //                I18NText description = null;
+                //                for ( I18NText item : notification.getNames() ) {
+                //                    if ( item.getLanguage().equals( language ) ) {
+                //                        name = item;
+                //                        break;
+                //                    }
+                //                }
+                //                for ( I18NText item : notification.getSubjects() ) {
+                //                    if ( item.getLanguage().equals( language ) ) {
+                //                        subject = item;
+                //                        break;
+                //                    }
+                //                }
+                //                for ( I18NText item : notification.getDescriptions() ) {
+                //                    if ( item.getLanguage().equals( language ) ) {
+                //                        description = item;
+                //                        break;
+                //                    }
+                //                }                
+
             }
 
             for ( Reassignment reassignment : escalation.getReassignments() ) {
@@ -29,6 +147,128 @@ public class DefaultEscalatedDeadlineHandler implements EscalatedDeadlineHandler
         em.getTransaction().begin();
         deadline.setEscalated( true );
         em.getTransaction().commit();
+    }
+
+    public void executeEmailNotification(EmailNotification notification,
+                                         Task task,
+                                         EntityManager em) {
+        Map<String, EmailNotificationHeader> headers = notification.getEmailHeaders();
+
+        // group users into languages
+        Map<String, List<User>> users = new HashMap<String, List<User>>();
+        for ( OrganizationalEntity entity : notification.getBusinessAdministrators() ) {
+            if ( entity instanceof Group ) {
+                buildMapByLanguage( users,
+                                    (Group) entity );
+            } else {
+                buildMapByLanguage( users,
+                                    (User) entity );
+            }
+        }
+
+        for ( OrganizationalEntity entity : notification.getRecipients() ) {
+            if ( entity instanceof Group ) {
+                buildMapByLanguage( users,
+                                    (Group) entity );
+            } else {
+                buildMapByLanguage( users,
+                                    (User) entity );
+            }
+        }
+
+        TaskData taskData = task.getTaskData();
+        Map<String, Object> doc = null;
+        if ( taskData != null ) {
+            Content content = em.find( Content.class,
+                                       taskData.getDocumentContentId() );
+            if ( content != null ) {
+                ExpressionCompiler compiler = new ExpressionCompiler( new String( content.getContent() ) );
+                doc = (Map<String, Object>) MVEL.executeExpression( compiler.compile() );
+            } else {
+                doc = Collections.emptyMap();
+            }
+        }
+
+        for ( Iterator<Entry<String, List<User>>> it = users.entrySet().iterator(); it.hasNext(); ) {
+            Entry<String, List<User>> entry = it.next();
+            EmailNotificationHeader header = headers.get( entry.getKey()  );
+
+            Map<String, Object> email = new HashMap<String, Object>();
+            StringBuilder to = new StringBuilder();
+            boolean first = true;
+            for ( User user : entry.getValue() ) {
+                if ( !first ) {
+                    to.append( ';' );
+                }
+                String emailAddress = userInfo.getEmailForEntity( user );
+                to.append( emailAddress );
+                first = false;
+            }
+            email.put( "To",
+                       to.toString() );
+
+            if ( header.getFrom() != null && header.getFrom().trim().length() > 0 ) {
+                email.put( "From",
+                           header.getFrom() );
+            } else {
+                email.put( "From",
+                           from );
+            }
+
+            if ( header.getReplyTo() != null && header.getReplyTo().trim().length() > 0 ) {
+                email.put( "Reply-To",
+                           header.getReplyTo() );
+            } else {
+                email.put( "Reply-To",
+                           replyTo );
+            }
+
+            Map<String, Object> vars = new HashMap<String, Object>();
+            vars.put( "doc",
+                      doc );
+            String subject = (String) TemplateRuntime.eval( header.getSubject(),
+                                                            vars );
+            String body = (String) TemplateRuntime.eval( header.getBody(),
+                                                         vars );
+
+            email.put( "Subject",
+                       subject );
+            email.put( "Body",
+                       body );
+
+            WorkItemImpl workItem = new WorkItemImpl();
+            workItem.setParameters( email );
+
+            handler.executeWorkItem( workItem,
+                                     manager );
+
+        }
+    }
+
+    private void buildMapByLanguage(Map<String, List<User>> map,
+                                    Group group) {
+        for ( Iterator<OrganizationalEntity> it = userInfo.getMembersForGroup( group ); it.hasNext(); ) {
+            OrganizationalEntity entity = it.next();
+            if ( entity instanceof Group ) {
+                buildMapByLanguage( map,
+                                    (Group) entity );
+            } else {
+                buildMapByLanguage( map,
+                                    (User) entity );
+            }
+        }
+    }
+
+    private void buildMapByLanguage(Map<String, List<User>> map,
+                                    User user) {
+        String language = userInfo.getLanguageForEntity( user );
+        List<User> list = map.get( language );
+        if ( list == null ) {
+            list = new ArrayList<User>();
+            map.put( language,
+                     list );
+        }
+        list.add( user );
     }
 
 }

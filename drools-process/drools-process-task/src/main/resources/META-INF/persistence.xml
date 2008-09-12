@@ -4,7 +4,7 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
     <persistence-unit name="org.drools.task">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>org.drools.task.Attachment</class>
-        <class>org.drools.task.AttachmentContent</class>        
+        <class>org.drools.task.Content</class>        
         <class>org.drools.task.BooleanExpression</class>        
         <class>org.drools.task.Comment</class>
         <class>org.drools.task.Deadline</class>
@@ -15,6 +15,8 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
         <class>org.drools.task.Group</class>
         <class>org.drools.task.I18NText</class>
         <class>org.drools.task.Notification</class>
+        <class>org.drools.task.EmailNotification</class>
+        <class>org.drools.task.EmailNotificationHeader</class>
         <class>org.drools.task.PeopleAssignments</class>
         <class>org.drools.task.Reassignment</class>
         <class>org.drools.task.Status</class>
@@ -37,7 +39,7 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
 	        <property name="hibernate.connection.password" value="sasa"/>	
 	        <property name="hibernate.connection.autocommit" value="false" /> 	               
 	        <property name="hibernate.max_fetch_depth" value="3"/>
-		    <property name="hibernate.hbm2ddl.auto" value="update" />
+		    <property name="hibernate.hbm2ddl.auto" value="create" />
             <property name="hibernate.show_sql" value="true" />		    
 	    </properties>        
     </persistence-unit>

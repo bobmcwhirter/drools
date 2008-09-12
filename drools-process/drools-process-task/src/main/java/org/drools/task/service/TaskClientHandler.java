@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
-import org.drools.task.AttachmentContent;
+import org.drools.task.Content;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 
@@ -76,14 +76,22 @@ public class TaskClientHandler extends IoHandlerAdapter
                 }
                 break;                
             }         
-            case GetAttachmentContentResponse : {
-                AttachmentContent content = ( AttachmentContent ) cmd.getArguments().get( 0 );
-                GetAttachmentContentResponseHandler responseHandler = (GetAttachmentContentResponseHandler) responseHandlers.remove( cmd.getId() );
+            case GetContentResponse : {
+                Content content = ( Content ) cmd.getArguments().get( 0 );
+                GetContentResponseHandler responseHandler = (GetContentResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
                     responseHandler.execute( content );
                 }
                 break;
-            }            
+            }    
+            case SetDocumentContentResponse : {
+                long contentId = ( Long ) cmd.getArguments().get( 0 );
+                SetDocumentResponseHandler responseHandler = (SetDocumentResponseHandler) responseHandlers.remove( cmd.getId() );
+                if ( responseHandler != null ) {
+                    responseHandler.execute( contentId );
+                }
+                break;                    
+            }
             case Query_TaskSummaryResponse : {
                 List<TaskSummary> results = ( List<TaskSummary> ) cmd.getArguments().get( 0 );
                 TaskSummaryResponseHandler responseHandler = ( TaskSummaryResponseHandler ) responseHandlers.remove( cmd.getId() );
@@ -133,8 +141,12 @@ public class TaskClientHandler extends IoHandlerAdapter
         public void execute(long attachmentId, long contentId);
     }        
     
-    public static interface GetAttachmentContentResponseHandler extends ResponseHandler {
-        public void execute(AttachmentContent attachmentContent);
+    public static interface SetDocumentResponseHandler extends ResponseHandler {
+        public void execute(long contentId);
+    }      
+    
+    public static interface GetContentResponseHandler extends ResponseHandler {
+        public void execute(Content content);
     }    
     
     public static interface TaskSummaryResponseHandler extends ResponseHandler {

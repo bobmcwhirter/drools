@@ -116,13 +116,17 @@ public class TaskServiceEscalationTest extends BaseTest {
         EscalatedDeadlineHandler {
 
         List<Item> list = new ArrayList<Item>();
+        
+        TaskService taskService;
 
         public void executeEscalatedDeadline(Task task,
                                              Deadline deadline,
-                                             EntityManager em) {
+                                             EntityManager em,
+                                             TaskService taskService) {
             list.add( new Item( task,
                                 deadline,
-                                em ) );
+                                em,
+                                taskService ) );
         }
         
         public List<Item> getList() {
@@ -136,7 +140,8 @@ public class TaskServiceEscalationTest extends BaseTest {
 
             public Item(Task task,
                         Deadline deadline,
-                        EntityManager em) {
+                        EntityManager em,
+                        TaskService taskService) {
                 this.deadline = deadline;
                 this.em = em;
                 this.task = task;
@@ -165,6 +170,16 @@ public class TaskServiceEscalationTest extends BaseTest {
             public void setEntityManager(EntityManager em) {
                 this.em = em;
             }
+
+            public EntityManager getEm() {
+                return em;
+            }
+
+            public void setEm(EntityManager em) {
+                this.em = em;
+            }
+            
+            
         }
     }
 }

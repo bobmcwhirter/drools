@@ -20,15 +20,16 @@ import org.apache.mina.transport.socket.SocketConnector;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.AccessType;
 import org.drools.task.Attachment;
-import org.drools.task.AttachmentContent;
+import org.drools.task.Content;
 import org.drools.task.Comment;
 import org.drools.task.Task;
 import org.drools.task.User;
 import org.drools.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 import org.drools.task.service.TaskClientHandler.AddCommentResponseHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
-import org.drools.task.service.TaskClientHandler.GetAttachmentContentResponseHandler;
+import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
+import org.drools.task.service.TaskClientHandler.SetDocumentResponseHandler;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
 public class MinaTaskClient
@@ -145,8 +146,8 @@ public class MinaTaskClient
     }
     
     
-    public void addAttachment(long taskId, Attachment attachment, AttachmentContent content, AddAttachmentResponseHandler responseHandler ) {
-        List args = new ArrayList( 2 );
+    public void addAttachment(long taskId, Attachment attachment, Content content, AddAttachmentResponseHandler responseHandler ) {
+        List args = new ArrayList( 3 );
         args.add( taskId );
         args.add( attachment );
         args.add( content );
@@ -167,10 +168,23 @@ public class MinaTaskClient
         session.write( cmd );
     }    
     
-    public void getAttachmentContent(long contentId, GetAttachmentContentResponseHandler responseHandler) {
+    public void setDocumentContent(long taskId,
+                                   Content content, 
+                                   SetDocumentResponseHandler responseHandler ) {    
+        List args = new ArrayList( 2 );
+        args.add( taskId );
+        args.add( content );
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.SetDocumentContentRequest, args);   
+        
+        handler.addResponseHandler( cmd.getId(), responseHandler );
+        
+        session.write( cmd );         
+    }
+    
+    public void getContent(long contentId, GetContentResponseHandler responseHandler) {
         List args = new ArrayList( 1 );
         args.add( contentId );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.GetAttachmentContentRequest, args);  
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.GetContentRequest, args);  
         
         handler.addResponseHandler( cmd.getId(), responseHandler );   
         
