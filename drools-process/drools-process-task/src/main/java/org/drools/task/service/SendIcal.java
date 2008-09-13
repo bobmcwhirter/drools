@@ -50,7 +50,7 @@ import junit.framework.TestCase;
 //import net.fortuna.ical4j.model.property.Version;
 
 public class SendIcal {
-    private static SimpleDateFormat df              = new SimpleDateFormat(  "yyyyMMdd'T'HHmmss" );
+    private static SimpleDateFormat df              = new SimpleDateFormat(  "yyyyMMdd'T'HHmmss'Z'" );
     static {
         df.setTimeZone( TimeZone.getTimeZone("UTC") );
     }
@@ -190,7 +190,7 @@ public class SendIcal {
         String text = "Summary\n-------\n\n" + summary + "\n\nDescription\n-----------\n\n" + description;
         messageBodyPart.setText( text );
         messageBodyPart.setDataHandler( new DataHandler( new ByteArrayDataSource( text,
-                                                                                  "text/plain" ) ) );
+                                                                                  "text/plain; charset=UTF8;" ) ) );
         multipart.addBodyPart( messageBodyPart );
 
         // Add ical
@@ -208,9 +208,9 @@ public class SendIcal {
                                   userInfo.getDisplayName( creator ),
                                   creatorEmail,
                                   type );
-        System.out.println( icalStr );
+        
         messageBodyPart.setDataHandler( new DataHandler( new ByteArrayDataSource( icalStr,
-                                                                                  "text/calendar; charset=US-ASCII; " ) ) );
+                                                                                  "text/calendar; charset=UTF8; " ) ) );
         multipart.addBodyPart( messageBodyPart );
 
         message.setContent( multipart );
@@ -242,43 +242,5 @@ public class SendIcal {
         builder.append( "END:VEVENT\n" );
         builder.append( "END:VCALENDAR\n" );
         return builder.toString();
-//        String str = "";
-//        str += "BEGIN:VCALENDAR\n";
-//        str += "PRODID:-//Apple Inc.//iCal 3.0//EN\n";
-//        str += "CALSCALE:GREGORIAN\n";
-//        str += "VERSION:2.0\n";
-//        str += "METHOD:REQUEST\n";
-//        str += "BEGIN:VTIMEZONE\n";
-//        str += "TZID:US/Mountain\n";
-//        str += "BEGIN:DAYLIGHT\n";
-//        str += "TZOFFSETFROM:-0700\n";
-//        str += "TZOFFSETTO:-0600\n";
-//        str += "DTSTART:20070311T020000\n";
-//        str += "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\n";
-//        str += "TZNAME:MDT\n";
-//        str += "END:DAYLIGHT\n";
-//        str += "BEGIN:STANDARD\n";
-//        str += "TZOFFSETFROM:-0600\n";
-//        str += "TZOFFSETTO:-0700\n";
-//        str += "DTSTART:20071104T020000\n";
-//        str += "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\n";
-//        str += "TZNAME:MST\n";
-//        str += "END:STANDARD\n";
-//        str += "END:VTIMEZONE\n";
-//        str += "BEGIN:VEVENT\n";
-//        //        str += "SEQUENCE:4\n";
-//        str += "DTSTART;TZID=US/Mountain:20080911T180000\n";
-//        //        str += "DURATION:PT1H\n";
-//        str += "UID:EC585E23-E48D-435A-B351-C6B7ABA9A949\n";
-//        str += "ORGANIZER;CN=\"Zachery Jensen\":mailto:zjensen@edustructures.com\n";
-//        str += "DTSTAMP:20080910T235058Z\n";
-//        str += "SUMMARY:Test Todo\n";
-//        //        str += "ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;VP=TRUE:mailto:Mproctor@redhat.com\n";
-//        //        str += "ATTENDEE;CN=\"Zachery Jensen\";PARTSTAT=ACCEPTED:mailto:zjensen@edustructures.com\n";
-//        //        str += "CREATED:20080910T235039Z\n";
-//        //        str += "LOCATION:Test Location\n";
-//        str += "END:VEVENT\n";
-//        str += "END:VCALENDAR\n";
-//        return str;  
     }
 }
