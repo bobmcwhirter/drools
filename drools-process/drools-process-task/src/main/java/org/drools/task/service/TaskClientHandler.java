@@ -92,7 +92,7 @@ public class TaskClientHandler extends IoHandlerAdapter
                 }
                 break;                    
             }
-            case Query_TaskSummaryResponse : {
+            case QueryTaskSummaryResponse : {
                 List<TaskSummary> results = ( List<TaskSummary> ) cmd.getArguments().get( 0 );
                 TaskSummaryResponseHandler responseHandler = ( TaskSummaryResponseHandler ) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {

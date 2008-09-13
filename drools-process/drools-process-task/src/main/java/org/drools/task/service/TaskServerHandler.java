@@ -179,7 +179,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.Query_TaskSummaryResponse,
+                                                   CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;
@@ -190,7 +190,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.Query_TaskSummaryResponse,
+                                                   CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;
@@ -201,7 +201,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.Query_TaskSummaryResponse,
+                                                   CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;
@@ -212,7 +212,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.Query_TaskSummaryResponse,
+                                                   CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;
@@ -223,7 +223,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.Query_TaskSummaryResponse,
+                                                   CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;
@@ -234,7 +234,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.Query_TaskSummaryResponse,
+                                                   CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;
@@ -245,7 +245,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 List args = new ArrayList( 1 );
                 args.add( results );
                 Command resultsCmnd = new Command( cmd.getId(),
-                                                   CommandName.Query_TaskSummaryResponse,
+                                                   CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
                 break;

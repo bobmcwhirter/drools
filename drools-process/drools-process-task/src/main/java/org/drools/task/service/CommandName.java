@@ -52,5 +52,5 @@ public enum CommandName {
     QueryTasksAssignedAsTaskInitiator,
     QueryTasksAssignedAsTaskStakeholder,
     
-    Query_TaskSummaryResponse;
+    QueryTaskSummaryResponse;
 }
