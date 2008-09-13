@@ -173,7 +173,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );                                
                 break;                
             }            
-            case Query_TasksOwned : {
+            case QueryTasksOwned : {
                 List<TaskSummary> results = service.getTasksOwned( (Long) cmd.getArguments().get( 0 ),
                                                                    (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
@@ -184,7 +184,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );
                 break;
             }
-            case Query_TasksAssignedAsBusinessAdministrator : {
+            case QueryTasksAssignedAsBusinessAdministrator : {
                 List<TaskSummary> results = service.getTasksAssignedAsBusinessAdministrator( (Long) cmd.getArguments().get( 0 ),
                                                                                              (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
@@ -195,7 +195,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );
                 break;
             }
-            case Query_TasksAssignedAsPotentialOwner : {
+            case QueryTasksAssignedAsPotentialOwner : {
                 List<TaskSummary> results = service.getTasksAssignedAsPotentialOwner( (Long) cmd.getArguments().get( 0 ),
                                                                                       (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
@@ -206,7 +206,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );
                 break;
             }
-            case Query_TasksAssignedAsTaskInitiator : {
+            case QueryTasksAssignedAsTaskInitiator : {
                 List<TaskSummary> results = service.getTasksAssignedAsTaskInitiator( (Long) cmd.getArguments().get( 0 ),
                                                                                      (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
@@ -217,7 +217,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );
                 break;
             }
-            case Query_TasksAssignedAsExcludedOwner : {
+            case QueryTasksAssignedAsExcludedOwner : {
                 List<TaskSummary> results = service.getTasksAssignedAsExcludedOwner( (Long) cmd.getArguments().get( 0 ),
                                                                                      (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
@@ -228,7 +228,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );
                 break;
             }
-            case Query_TasksAssignedAsRecipient : {
+            case QueryTasksAssignedAsRecipient : {
                 List<TaskSummary> results = service.getTasksAssignedAsRecipient( (Long) cmd.getArguments().get( 0 ),
                                                                                  (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
@@ -239,7 +239,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 session.write( resultsCmnd );
                 break;
             }
-            case Query_TasksAssignedAsTaskStakeholder : {
+            case QueryTasksAssignedAsTaskStakeholder : {
                 List<TaskSummary> results = service.getTasksAssignedAsTaskStakeholder( (Long) cmd.getArguments().get( 0 ),
                                                                                        (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );

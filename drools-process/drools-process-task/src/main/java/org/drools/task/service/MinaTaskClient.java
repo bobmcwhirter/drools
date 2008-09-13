@@ -277,7 +277,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksOwned, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.QueryTasksOwned, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }
@@ -286,7 +286,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsBusinessAdministrator, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.QueryTasksAssignedAsBusinessAdministrator, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }    
@@ -295,7 +295,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsExcludedOwner, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.QueryTasksAssignedAsExcludedOwner, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }     
@@ -304,7 +304,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsPotentialOwner, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.QueryTasksAssignedAsPotentialOwner, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }      
@@ -313,7 +313,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsRecipient, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.QueryTasksAssignedAsRecipient, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     } 
@@ -322,7 +322,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsTaskInitiator, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.QueryTasksAssignedAsTaskInitiator, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }    
@@ -331,7 +331,7 @@ public class MinaTaskClient
         List args = new ArrayList( 2 );
         args.add( userId );
         args.add( language );
-        Command cmd = new Command( counter.getAndIncrement(), CommandName.Query_TasksAssignedAsTaskStakeholder, args);
+        Command cmd = new Command( counter.getAndIncrement(), CommandName.QueryTasksAssignedAsTaskStakeholder, args);
         handler.addResponseHandler( cmd.getId(), responseHandler );        
         session.write( cmd );
     }     
