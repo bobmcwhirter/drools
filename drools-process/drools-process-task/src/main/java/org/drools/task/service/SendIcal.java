@@ -7,7 +7,6 @@ import java.util.Properties;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import javax.activation.CommandInfo;
 import javax.activation.DataHandler;
 import javax.activation.MailcapCommandMap;
 import javax.activation.MimetypesFileTypeMap;
@@ -22,7 +21,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.drools.process.workitem.email.Connection;
 import org.drools.task.Deadline;
 import org.drools.task.I18NText;
 import org.drools.task.Task;
@@ -30,8 +28,6 @@ import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.UserInfo;
 import org.drools.util.ChainedProperties;
-
-import junit.framework.TestCase;
 
 //import net.fortuna.ical4j.model.Calendar;
 //import net.fortuna.ical4j.model.DateTime;
