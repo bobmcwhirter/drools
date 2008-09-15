@@ -1,13 +1,17 @@
 package org.drools.task.service;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
+import org.drools.eventmessaging.EventKey;
 import org.drools.task.AccessType;
 import org.drools.task.Attachment;
 import org.drools.task.Content;
@@ -17,9 +21,11 @@ import org.drools.task.query.TaskSummary;
 
 public class TaskServerHandler extends IoHandlerAdapter {
     private TaskService service;
+    private Map<String, IoSession> clients;
 
     public TaskServerHandler(TaskService service) {
         this.service = service;
+        this.clients = new HashMap<String, IoSession>();
     }
 
     @Override
@@ -248,6 +254,20 @@ public class TaskServerHandler extends IoHandlerAdapter {
                                                    CommandName.QueryTaskSummaryResponse,
                                                    args );
                 session.write( resultsCmnd );
+                break;
+            }
+            case RegisterForEventRequest : {
+                EventKey key = ( EventKey ) cmd.getArguments().get( 0 );
+                boolean remove = ( Boolean ) cmd.getArguments().get( 1 );
+                String uuid = ( String ) cmd.getArguments().get(  2 );
+                clients.put( uuid, session );
+                MinaEventTransport transport = new MinaEventTransport(uuid, cmd.getId(), clients, remove );
+                service.getEventKeys().register( key, transport );
+                break;
+            }
+            case RegisterClient : {
+                String uuid = ( String ) cmd.getArguments().get( 0 );
+                clients.put( uuid, session );
                 break;
             }
             default : {

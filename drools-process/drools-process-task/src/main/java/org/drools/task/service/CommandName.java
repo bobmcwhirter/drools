@@ -39,18 +39,19 @@ public enum CommandName {
     AddCommentRequest,
     AddCommentResponse,
     DeleteCommentRequest,    
-    DeleteCommentResponse,
+    DeleteCommentResponse,    
     
-
-    
-    QueryTasksOwned,
-    
+    QueryTasksOwned,    
     QueryTasksAssignedAsBusinessAdministrator,
     QueryTasksAssignedAsExcludedOwner,
     QueryTasksAssignedAsPotentialOwner,
     QueryTasksAssignedAsRecipient,
     QueryTasksAssignedAsTaskInitiator,
-    QueryTasksAssignedAsTaskStakeholder,
+    QueryTasksAssignedAsTaskStakeholder,    
+    QueryTaskSummaryResponse,
     
-    QueryTaskSummaryResponse;
+    RegisterForEventRequest,
+    EventTriggerResponse,
+    
+    RegisterClient;
 }
