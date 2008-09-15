@@ -47,7 +47,7 @@ public class BPELReceiveInstance extends NodeInstanceImpl implements EventNodeIn
         BPELLinkManager.activateTargetLinks(this);
     }
 
-	public void triggerEvent(String type, Object event) {
+	public void signalEvent(String type, Object event) {
 		this.event = true;
 		message = ((String[]) event)[3];
 		if (this.event && triggered) {
