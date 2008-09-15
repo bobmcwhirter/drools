@@ -41,55 +41,55 @@ public class TaskServerHandler extends IoHandlerAdapter {
         switch ( cmd.getName() ) {
             case ClaimRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.claim( taskId, userId );          
                 break;
             }           
             case StartRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.start( taskId, userId );   
                 break;
             }         
             case StopRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.stop( taskId, userId );   
                 break;
             }
             case ReleaseRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.release( taskId, userId );   
                 break;
             }               
             case SuspendRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.suspend( taskId, userId );   
                 break;
             }        
             case ResumeRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.resume( taskId, userId );   
                 break;
             }   
             case SkipRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.skip( taskId, userId );   
                 break;
             }             
             case CompleteRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.complete( taskId, userId );   
                 break;
             }   
             case FailRequest : {
                 long taskId = ( Long ) cmd.getArguments().get( 0 );
-                long userId = ( Long ) cmd.getArguments().get( 1 );
+                String userId = ( String ) cmd.getArguments().get( 1 );
                 service.fail( taskId, userId );   
                 break;
             }             
@@ -180,7 +180,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;                
             }            
             case QueryTasksOwned : {
-                List<TaskSummary> results = service.getTasksOwned( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getTasksOwned( (String) cmd.getArguments().get( 0 ),
                                                                    (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );
@@ -191,7 +191,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;
             }
             case QueryTasksAssignedAsBusinessAdministrator : {
-                List<TaskSummary> results = service.getTasksAssignedAsBusinessAdministrator( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getTasksAssignedAsBusinessAdministrator( (String) cmd.getArguments().get( 0 ),
                                                                                              (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );
@@ -202,7 +202,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;
             }
             case QueryTasksAssignedAsPotentialOwner : {
-                List<TaskSummary> results = service.getTasksAssignedAsPotentialOwner( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getTasksAssignedAsPotentialOwner( (String) cmd.getArguments().get( 0 ),
                                                                                       (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );
@@ -213,7 +213,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;
             }
             case QueryTasksAssignedAsTaskInitiator : {
-                List<TaskSummary> results = service.getTasksAssignedAsTaskInitiator( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getTasksAssignedAsTaskInitiator( (String) cmd.getArguments().get( 0 ),
                                                                                      (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );
@@ -224,7 +224,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;
             }
             case QueryTasksAssignedAsExcludedOwner : {
-                List<TaskSummary> results = service.getTasksAssignedAsExcludedOwner( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getTasksAssignedAsExcludedOwner( (String) cmd.getArguments().get( 0 ),
                                                                                      (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );
@@ -235,7 +235,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;
             }
             case QueryTasksAssignedAsRecipient : {
-                List<TaskSummary> results = service.getTasksAssignedAsRecipient( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getTasksAssignedAsRecipient( (String) cmd.getArguments().get( 0 ),
                                                                                  (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );
@@ -246,7 +246,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 break;
             }
             case QueryTasksAssignedAsTaskStakeholder : {
-                List<TaskSummary> results = service.getTasksAssignedAsTaskStakeholder( (Long) cmd.getArguments().get( 0 ),
+                List<TaskSummary> results = service.getTasksAssignedAsTaskStakeholder( (String) cmd.getArguments().get( 0 ),
                                                                                        (String) cmd.getArguments().get( 1 ) );
                 List args = new ArrayList( 1 );
                 args.add( results );

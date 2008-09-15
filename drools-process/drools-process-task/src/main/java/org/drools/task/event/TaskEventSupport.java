@@ -72,7 +72,7 @@ public class TaskEventSupport
         return this.listeners.isEmpty();
     }
     
-    public void fireTaskClaimed(final long taskId, final long userId) {
+    public void fireTaskClaimed(final long taskId, final String userId) {
       if ( this.listeners.isEmpty() ) {
           return;
       }
@@ -84,7 +84,7 @@ public class TaskEventSupport
       }
   }    
 
-    public void fireTaskClosed(final long taskId, final long userId) {
+    public void fireTaskClosed(final long taskId, final String userId) {
         if ( this.listeners.isEmpty() ) {
             return;
         }

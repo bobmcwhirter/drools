@@ -6,28 +6,28 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 public class TaskClaimedEvent extends TaskEvent implements Externalizable {
-    private long userId;
+    private String userId;
     
     public TaskClaimedEvent() {
         super();
     }
     
-    public TaskClaimedEvent(long taskId, long userId) {
+    public TaskClaimedEvent(long taskId, String userId) {
         super( taskId );
         this.userId = userId;
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeLong( userId );
+        out.writeUTF( userId );
     }  
     
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal( in );
-        userId = in.readLong();
+        userId = in.readUTF();
     }
     
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
         

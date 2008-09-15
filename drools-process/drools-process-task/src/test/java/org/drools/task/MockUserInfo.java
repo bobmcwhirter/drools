@@ -13,6 +13,8 @@ public class MockUserInfo implements UserInfo {
     
     private Map<OrganizationalEntity, String> languages = new HashMap<OrganizationalEntity, String>();  
     
+    private Map<OrganizationalEntity, String> displayNames = new HashMap<OrganizationalEntity, String>();
+    
     public Map<Group, List<OrganizationalEntity>> getGroups() {
         return groups;
     }
@@ -32,6 +34,16 @@ public class MockUserInfo implements UserInfo {
     public String getEmailForEntity(OrganizationalEntity entity) {
         return emails.get( entity );
     }        
+    
+    
+
+    public Map<OrganizationalEntity, String> getDisplayNames() {
+        return displayNames;
+    }
+
+    public void setDisplayNames(Map<OrganizationalEntity, String> displayNames) {
+        this.displayNames = displayNames;
+    }
 
     public Map<OrganizationalEntity, String> getLanguages() {
         return languages;
@@ -50,11 +62,8 @@ public class MockUserInfo implements UserInfo {
     }
     
     public String getDisplayName(OrganizationalEntity entity) {
-        if (entity instanceof User) {
-            return ((User)entity).getDisplayName();
-        } else {
-            return ((Group)entity).getDisplayName();
-        }
+        String displayName = displayNames.get( entity );
+        return ( displayName != null ) ? displayName : entity.getId();
     }
 
     public String getLanguageForEntity(OrganizationalEntity entity) {

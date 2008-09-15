@@ -16,6 +16,9 @@ public class BaseMinaClient {
     protected final String name;   
     protected AtomicInteger counter;
     
+    protected SocketConnector connector; 
+    protected SocketAddress address;
+    
     public BaseMinaClient(String name, BaseMinaHandler handler) {
         if (name == null) {
             throw new IllegalArgumentException("Name can not be null");
@@ -24,14 +27,18 @@ public class BaseMinaClient {
         this.handler = handler;
         counter = new AtomicInteger();
     }
-    
     public boolean connect(SocketConnector connector, SocketAddress address) {
+        this.connector = connector;
+        this.address = address;
+        connector.setHandler( this.handler );
+        return connect();
+    }
+    
+    public boolean connect() {
         if (session != null && session.isConnected()) {
             throw new IllegalStateException(
                     "Already connected. Disconnect first.");
-        }
-
-        connector.setHandler( this.handler );
+        } 
  
         try {
 //            SocketConnectorConfig config = new SocketConnectorConfig();

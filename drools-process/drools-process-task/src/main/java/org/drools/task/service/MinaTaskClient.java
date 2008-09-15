@@ -35,12 +35,12 @@ import org.drools.task.service.TaskClientHandler.SetDocumentResponseHandler;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
 public class MinaTaskClient extends BaseMinaClient {
-    
+
     public MinaTaskClient(String name,
                           TaskClientHandler handler) {
         super( name,
                handler );
-    }            
+    }
 
     public void addTask(Task task,
                         AddTaskResponseHandler responseHandler) {
@@ -162,7 +162,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void claim(long taskId,
-                      long userId) {
+                      String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -174,7 +174,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void start(long taskId,
-                      long userId) {
+                      String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -186,7 +186,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void stop(long taskId,
-                     long userId) {
+                     String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -198,7 +198,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void release(long taskId,
-                        long userId) {
+                        String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -210,7 +210,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void suspend(long taskId,
-                        long userId) {
+                        String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -222,7 +222,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void resume(long taskId,
-                       long userId) {
+                       String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -234,7 +234,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void skip(long taskId,
-                     long userId) {
+                     String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -246,7 +246,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void complete(long taskId,
-                         long userId) {
+                         String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -258,7 +258,7 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void fail(long taskId,
-                     long userId) {
+                     String userId) {
         List args = new ArrayList( 1 );
         args.add( taskId );
         args.add( userId );
@@ -269,7 +269,7 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
-    public void getTasksOwned(long userId,
+    public void getTasksOwned(String userId,
                               String language,
                               TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
@@ -283,7 +283,7 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
-    public void getTasksAssignedAsBusinessAdministrator(long userId,
+    public void getTasksAssignedAsBusinessAdministrator(String userId,
                                                         String language,
                                                         TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
@@ -297,7 +297,7 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
-    public void getTasksAssignedAsExcludedOwner(long userId,
+    public void getTasksAssignedAsExcludedOwner(String userId,
                                                 String language,
                                                 TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
@@ -311,7 +311,7 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
-    public void getTasksAssignedAsPotentialOwner(long userId,
+    public void getTasksAssignedAsPotentialOwner(String userId,
                                                  String language,
                                                  TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
@@ -325,7 +325,7 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
-    public void getTasksAssignedAsRecipient(long userId,
+    public void getTasksAssignedAsRecipient(String userId,
                                             String language,
                                             TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
@@ -339,7 +339,7 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
-    public void getTasksAssignedAsTaskInitiator(long userId,
+    public void getTasksAssignedAsTaskInitiator(String userId,
                                                 String language,
                                                 TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
@@ -353,7 +353,7 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
-    public void getTasksAssignedAsTaskStakeholder(long userId,
+    public void getTasksAssignedAsTaskStakeholder(String userId,
                                                   String language,
                                                   TaskSummaryResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
@@ -378,7 +378,7 @@ public class MinaTaskClient extends BaseMinaClient {
                                    CommandName.RegisterForEventRequest,
                                    args );
         handler.addResponseHandler( cmd.getId(),
-                                    responseHandler );        
+                                    responseHandler );
         session.write( cmd );
     }
 

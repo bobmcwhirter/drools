@@ -48,7 +48,7 @@ public class MockEventMessagingTest extends BaseTest {
         
         assertEquals( 1, transport.list.size() );
         assertEquals( taskId, ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getTaskId() );
-        assertEquals( users.get( "darth" ).getId(), (Long) ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getUserId() );
+        assertEquals( users.get( "darth" ).getId(), ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getUserId() );
         
     }
     

@@ -246,7 +246,7 @@ public class TaskService {
     }
 
     public void claim(long taskId,
-                      long userId) {
+                      String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -283,7 +283,7 @@ public class TaskService {
     }
 
     public void start(long taskId,
-                      long userId) {
+                      String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -307,7 +307,7 @@ public class TaskService {
             }
         } else if ( taskData.getStatus() == Status.Reserved ) {
             // if Reserved must be actual owner
-            if ( taskData.getActualOwner().getId() == user.getId() ) {
+            if ( taskData.getActualOwner().getId().equals( user.getId() ) ) {
                 em.getTransaction().begin();
                 taskData.setStatus( Status.InProgress );
                 em.getTransaction().commit();
@@ -321,7 +321,7 @@ public class TaskService {
     }
 
     public void stop(long taskId,
-                     long userId) {
+                     String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -331,7 +331,7 @@ public class TaskService {
         TaskData taskData = task.getTaskData();
 
         PeopleAssignments people = task.getPeopleAssignments();
-        if ( taskData.getStatus() == Status.InProgress && (taskData.getActualOwner().getId() == user.getId() || isAllowed( user,
+        if ( taskData.getStatus() == Status.InProgress && (taskData.getActualOwner().getId().equals( user.getId() ) || isAllowed( user,
                                                                                                                            new List[]{people.getBusinessAdministrators()} )) ) {
             // Status must be InProgress and actual owner, switch to Reserved
             em.getTransaction().begin();
@@ -344,7 +344,7 @@ public class TaskService {
     }
 
     public void release(long taskId,
-                        long userId) {
+                        String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -355,7 +355,7 @@ public class TaskService {
 
         // task must be reserved or in progress and owned by user
         PeopleAssignments people = task.getPeopleAssignments();
-        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && (taskData.getActualOwner().getId() == user.getId() || isAllowed( user,
+        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && (taskData.getActualOwner().getId().equals( user.getId() ) || isAllowed( user,
                                                                                                                                                                         new List[]{people.getBusinessAdministrators()} )) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Ready );
@@ -367,7 +367,7 @@ public class TaskService {
     }
 
     public void suspend(long taskId,
-                        long userId) {
+                        String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -386,7 +386,7 @@ public class TaskService {
         }
 
         if ( (taskData.getStatus() == Status.Ready || taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress)
-             && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId() == user.getId()) || isAllowed( user,
+             && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId().equals( user.getId()) ) || isAllowed( user,
                                                                                                                         allowed )) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Suspended );
@@ -397,7 +397,7 @@ public class TaskService {
     }
 
     public void resume(long taskId,
-                       long userId) {
+                       String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -415,7 +415,7 @@ public class TaskService {
             allowed = new List[]{people.getBusinessAdministrators()};
         }
 
-        if ( (taskData.getStatus() == Status.Suspended) && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId() == user.getId()) || isAllowed( user,
+        if ( (taskData.getStatus() == Status.Suspended) && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId().equals( user.getId()) ) || isAllowed( user,
                                                                                                                                                                    allowed )) ) {
             em.getTransaction().begin();
             taskData.setStatus( taskData.getPreviousStatus() );
@@ -426,7 +426,7 @@ public class TaskService {
     }
 
     public void skip(long taskId,
-                     long userId) {
+                     String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -444,7 +444,7 @@ public class TaskService {
             allowed = new List[]{people.getBusinessAdministrators()};
         }
 
-        if ( task.getTaskData().isSkipable() && (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed) && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId() == user.getId()) || isAllowed( user,
+        if ( task.getTaskData().isSkipable() && (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed) && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId().equals( user.getId()) ) || isAllowed( user,
                                                                                                                                                                                                                                                allowed )) ) {
             em.getTransaction().begin();
             taskData.setStatus( Status.Obselete );
@@ -455,7 +455,7 @@ public class TaskService {
     }
 
     public void complete(long taskId,
-                         long userId) {
+                         String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -464,7 +464,7 @@ public class TaskService {
 
         TaskData taskData = task.getTaskData();
 
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId() == user.getId() ) {
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId().equals( user.getId() ) ) {
             // Status must be InProgress and actual owner, switch to Reserved
             em.getTransaction().begin();
             taskData.setStatus( Status.Completed );
@@ -476,7 +476,7 @@ public class TaskService {
     }
 
     public void fail(long taskId,
-                     long userId) {
+                     String userId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -485,7 +485,7 @@ public class TaskService {
 
         TaskData taskData = task.getTaskData();
 
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId() == user.getId() ) {
+        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId().equals( user.getId() ) ) {
             // Status must be InProgress and actual owner, switch to Reserved
             em.getTransaction().begin();
             taskData.setStatus( Status.Failed );
@@ -623,7 +623,7 @@ public class TaskService {
         return (List<DeadlineSummary>) unescalatedDeadlines.getResultList();
     }
 
-    public List<TaskSummary> getTasksOwned(long userId,
+    public List<TaskSummary> getTasksOwned(String userId,
                                            String language) {
         tasksOwned.setParameter( "userId",
                                  userId );
@@ -633,7 +633,7 @@ public class TaskService {
         return list;
     }
 
-    public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(long userId,
+    public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId,
                                                                      String language) {
         tasksAssignedAsBusinessAdministrator.setParameter( "userId",
                                                            userId );
@@ -643,7 +643,7 @@ public class TaskService {
         return list;
     }
 
-    public List<TaskSummary> getTasksAssignedAsExcludedOwner(long userId,
+    public List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId,
                                                              String language) {
         tasksAssignedAsExcludedOwner.setParameter( "userId",
                                                    userId );
@@ -653,7 +653,7 @@ public class TaskService {
         return list;
     }
 
-    public List<TaskSummary> getTasksAssignedAsPotentialOwner(long userId,
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
                                                               String language) {
         tasksAssignedAsPotentialOwner.setParameter( "userId",
                                                     userId );
@@ -663,7 +663,7 @@ public class TaskService {
         return list;
     }
 
-    public List<TaskSummary> getTasksAssignedAsRecipient(long userId,
+    public List<TaskSummary> getTasksAssignedAsRecipient(String userId,
                                                          String language) {
         tasksAssignedAsRecipient.setParameter( "userId",
                                                userId );
@@ -673,7 +673,7 @@ public class TaskService {
         return list;
     }
 
-    public List<TaskSummary> getTasksAssignedAsTaskInitiator(long userId,
+    public List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId,
                                                              String language) {
         tasksAssignedAsTaskInitiator.setParameter( "userId",
                                                    userId );
@@ -683,7 +683,7 @@ public class TaskService {
         return list;
     }
 
-    public List<TaskSummary> getTasksAssignedAsTaskStakeholder(long userId,
+    public List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId,
                                                                String language) {
         tasksAssignedAsTaskStakeholder.setParameter( "userId",
                                                      userId );
@@ -727,7 +727,7 @@ public class TaskService {
                              List<OrganizationalEntity> entities) {
         // for now just do a contains, I'll figure out group membership later.
         for ( OrganizationalEntity entity : entities ) {
-            if ( entity.getId() == user.getId() ) {
+            if ( entity.getId().equals( user.getId() ) ) {
                 return true;
             }
         }

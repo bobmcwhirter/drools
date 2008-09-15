@@ -6,23 +6,23 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 public class TaskClosedEvent extends TaskEvent implements Externalizable {
-    private long userId;
+    private String userId;
     
-    public TaskClosedEvent(long taskId, long userId) {
+    public TaskClosedEvent(long taskId, String userId) {
         super( taskId );
         this.userId = userId;
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong(  userId  );
+        out.writeUTF(  userId  );
     }   
     
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        userId = in.readLong();
+        userId = in.readUTF();
     }
 
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 

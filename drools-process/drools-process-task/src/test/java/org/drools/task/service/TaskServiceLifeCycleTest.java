@@ -144,7 +144,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         assertEquals( users.get( "darth" ), task2.getTaskData().getActualOwner() );
     }
 
-    public void testStartFromReadyStateWithPotentialOwner() {
+    public void testStartFromReadyStateWithPotentialOwner() throws Exception {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );        
@@ -210,7 +210,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         assertNull( task2.getTaskData().getActualOwner() );        
     }    
     
-    public void testStartFromReserved() {
+    public void testStartFromReserved() throws Exception {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );        
