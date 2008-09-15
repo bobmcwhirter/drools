@@ -62,5 +62,9 @@ public abstract class OrganizationalEntity implements Externalizable {
             if ( other.id != null ) return false;
         } else if ( !id.equals( other.id ) ) return false;
         return true;
-    }      
+    }     
+    
+    public String toString() {
+        return "[" + getClass().getSimpleName() + ":'" + id + "']";
+    }
 }
