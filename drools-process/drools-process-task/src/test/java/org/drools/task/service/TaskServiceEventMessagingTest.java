@@ -90,6 +90,8 @@ public class TaskServiceEventMessagingTest extends BaseTest {
         
         taskSession.claim( taskId, users.get( "darth" ).getId() );  
         
+        Thread.sleep( 2000 );
+        
         Payload payload = handler.getPayload();
         TaskClaimedEvent event = ( TaskClaimedEvent ) payload.get();
         assertNotNull( event );        
