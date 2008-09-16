@@ -42,6 +42,7 @@ import org.drools.task.query.DeadlineSummary;
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.EscalatedDeadlineHandler;
 import org.drools.task.service.TaskService;
+import org.drools.task.service.TaskServiceSession;
 import org.drools.task.utils.CollectionUtils;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
@@ -58,6 +59,7 @@ import junit.framework.TestCase;
 public class QueryTest extends BaseTest {
 
     public void testUnescalatedDeadlines() throws Exception {
+        TaskServiceSession taskSession = taskService.createSession();        
         Map vars = new HashedMap();
         vars.put( "users",
                   users );
@@ -72,11 +74,11 @@ public class QueryTest extends BaseTest {
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
-            taskService.addTask( task );
+            taskSession.addTask( task );
         }
 
         // should be three, one is marked as escalated
-        List<DeadlineSummary> list = taskService.getUnescalatedDeadlines();
+        List<DeadlineSummary> list = taskSession.getUnescalatedDeadlines();
         assertEquals( 3,
                       list.size() );
 
@@ -91,6 +93,7 @@ public class QueryTest extends BaseTest {
         result = list.get( 2 );
         assertEquals( result.getDate().getTime(),
                       now + 5000 );    
+        taskSession.dispose();
     }
     
 

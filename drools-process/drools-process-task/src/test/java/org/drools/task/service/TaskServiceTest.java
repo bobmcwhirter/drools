@@ -139,7 +139,7 @@ public class TaskServiceTest extends BaseTest {
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
-            taskService.addTask( task );
+            taskSession.addTask( task );
         }
 
         reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResults_PeopleAssignmentQuerries.mvel" ) );

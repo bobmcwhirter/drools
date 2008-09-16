@@ -15,6 +15,7 @@ import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.EventTriggerTransport;
 import org.drools.eventmessaging.Payload;
 import org.drools.task.BaseTest;
+import org.drools.task.MockUserInfo;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.event.TaskClaimedEvent;
@@ -40,6 +41,18 @@ public class TaskServiceEventMessagingTest extends BaseTest {
                                                        9123 );
         client.connect( connector,
                         address );
+        
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put( users.get( "tony" ),
+                                  "tony@domain.com" );
+        userInfo.getEmails().put( users.get( "steve" ),
+                                  "steve@domain.com" );
+
+        userInfo.getLanguages().put( users.get( "tony" ),
+                                     "en-UK" );
+        userInfo.getLanguages().put( users.get( "steve" ),
+                                     "en-UK" );
+        taskService.setUserinfo( userInfo );
     }
 
     protected void tearDown() throws Exception {
@@ -75,9 +88,8 @@ public class TaskServiceEventMessagingTest extends BaseTest {
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
         client.registerForEvent( key, true, handler );
         
-        taskService.claim( taskId, users.get( "darth" ).getId() );  
+        taskSession.claim( taskId, users.get( "darth" ).getId() );  
         
-
         Payload payload = handler.getPayload();
         TaskClaimedEvent event = ( TaskClaimedEvent ) payload.get();
         assertNotNull( event );        

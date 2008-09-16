@@ -40,22 +40,24 @@ public class DemoTaskService {
 	public static void main(String[] args) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.drools.task");
         TaskService taskService = new TaskService(emf);
+        TaskServiceSession taskSession = taskService.createSession();
         // Add users
         Map vars = new HashedMap();
         Reader reader = new InputStreamReader( BaseTest.class.getResourceAsStream( "LoadUsers.mvel" ) );     
         Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
         for ( User user : users.values() ) {
-            taskService.addUser( user );
+            taskSession.addUser( user );
         }           
         reader = new InputStreamReader( BaseTest.class.getResourceAsStream( "LoadGroups.mvel" ) );      
         Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
         for ( Group group : groups.values() ) {
-            taskService.addGroup( group );
+            taskSession.addGroup( group );
         }
         // start server
         MinaTaskServer server = new MinaTaskServer(taskService);
         Thread thread = new Thread(server);
         thread.start();
+        taskSession.dispose();
 	}
 	
 	@SuppressWarnings("unchecked")

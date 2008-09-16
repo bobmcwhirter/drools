@@ -19,7 +19,7 @@ public class BlockingEventResponseHandler implements EventResponseHandler {
     public synchronized Payload getPayload() {
         if ( !wait ) {                  
             try {
-                wait( 300000 );
+                wait( 3000 );
             } catch ( InterruptedException e ) {
                 // swallow as this is just a notification
             }

@@ -105,7 +105,7 @@ public class SendIcal {
         }
 
         // get latest end deadline
-        List<Deadline> endDeadlines = task.getDeadlines().getEndDeadLines();
+        List<Deadline> endDeadlines = task.getDeadlines().getEndDeadlines();
         Deadline end = null;
         for ( Deadline deadline : endDeadlines ) {
             if ( end == null || end.getDate().getTime() < deadline.getDate().getTime() ) {

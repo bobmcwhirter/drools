@@ -26,6 +26,7 @@ import org.drools.task.Notification;
 import org.drools.task.NotificationType;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.Reassignment;
+import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
@@ -115,34 +116,20 @@ public class DefaultEscalatedDeadlineHandler
             for ( Notification notification : escalation.getNotifications() ) {
                 if ( notification.getNotificationType() == NotificationType.Email) {
                     executeEmailNotification( (EmailNotification) notification, task, em );
-                }
-                //                I18NText name = null;
-                //                I18NText subject = null;
-                //                I18NText description = null;
-                //                for ( I18NText item : notification.getNames() ) {
-                //                    if ( item.getLanguage().equals( language ) ) {
-                //                        name = item;
-                //                        break;
-                //                    }
-                //                }
-                //                for ( I18NText item : notification.getSubjects() ) {
-                //                    if ( item.getLanguage().equals( language ) ) {
-                //                        subject = item;
-                //                        break;
-                //                    }
-                //                }
-                //                for ( I18NText item : notification.getDescriptions() ) {
-                //                    if ( item.getLanguage().equals( language ) ) {
-                //                        description = item;
-                //                        break;
-                //                    }
-                //                }                
-
+                }        
             }
 
-            for ( Reassignment reassignment : escalation.getReassignments() ) {
-                //reassignment.g
-            }
+
+            if ( !escalation.getReassignments().isEmpty()) {
+                // get first and ignore the rest.
+                Reassignment reassignment = escalation.getReassignments().get( 0 );
+                em.getTransaction().begin();
+                task.getTaskData().setStatus( Status.Ready );
+                List potentialOwners = new ArrayList( reassignment.getPotentialOwners() );
+                System.out.println( potentialOwners );
+                task.getPeopleAssignments().setPotentialOwners( potentialOwners );
+                em.getTransaction().commit();
+            }            
         }
         em.getTransaction().begin();
         deadline.setEscalated( true );

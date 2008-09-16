@@ -44,7 +44,7 @@ public class Deadlines implements Externalizable {
         this.startDeadlines = startDeadlines;
     }
     
-    public List<Deadline> getEndDeadLines() {
+    public List<Deadline> getEndDeadlines() {
         return endDeadlines;
     }
     

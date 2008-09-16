@@ -24,6 +24,8 @@ import org.drools.task.BaseTest;
 import org.drools.task.Content;
 import org.drools.task.EmailNotification;
 import org.drools.task.MockUserInfo;
+import org.drools.task.OrganizationalEntity;
+import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.User;
 import org.drools.task.service.DefaultEscalatedDeadlineHandler;
@@ -35,7 +37,7 @@ import org.mvel.templates.TemplateRuntime;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
-public class TaskServiceEmailNotificationTest extends BaseTest {
+public class TaskServiceDeadlinesTest extends BaseTest {
     MinaTaskServer server;
     MinaTaskClient client;
     
@@ -90,7 +92,7 @@ public class TaskServiceEmailNotificationTest extends BaseTest {
         
         taskService.setEscalatedDeadlineHandler( notificationHandler );
         
-        String string = toString( new InputStreamReader( getClass().getResourceAsStream( "Notification1.mvel" ) ) );
+        String string = toString( new InputStreamReader( getClass().getResourceAsStream( "DeadlineWithNotification.mvel" ) ) );
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( string ), vars );
@@ -130,5 +132,62 @@ public class TaskServiceEmailNotificationTest extends BaseTest {
         assertEquals( "replyTo@domain.com", ((InternetAddress)msg.getReplyTo()[0]).getAddress() );
         assertEquals( "tony@domain.com", ((InternetAddress)msg.getRecipients( RecipientType.TO )[0]).getAddress() );
         assertEquals( "darth@domain.com", ((InternetAddress)msg.getRecipients( RecipientType.TO )[1]).getAddress() );        
+    }
+    
+    public void testDelayedReassignmentOnDeadline() throws Exception {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );
+        vars.put( "now", new Date() ); 
+        
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler();
+        notificationHandler.getHandler().setConnection( "localhost", "25", null, null );
+        WorkItemManager manager = new DefaultWorkItemManager( null );
+        notificationHandler.setManager( manager );
+        
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put( users.get("tony"), "tony@domain.com" );
+        userInfo.getEmails().put( users.get("darth"), "darth@domain.com" );
+        
+        userInfo.getLanguages().put(  users.get("tony"), "en-UK" );
+        userInfo.getLanguages().put(  users.get("darth"), "en-UK" );
+        notificationHandler.setUserInfo( userInfo );    
+        
+        taskService.setEscalatedDeadlineHandler( notificationHandler );
+        
+        String string = toString( new InputStreamReader( getClass().getResourceAsStream( "DeadlineWithReassignment.mvel" ) ) );
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( string ), vars );               
+        client.addTask( task, addTaskResponseHandler );
+        long taskId = addTaskResponseHandler.getTaskId();    
+        
+        // Shouldn't have re-assigned yet
+        Thread.sleep( 1000 );
+        BlockingGetTaskResponseHandler getTaskHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskHandler );
+        task = getTaskHandler.getTask();
+        List<OrganizationalEntity> potentialOwners = task.getPeopleAssignments().getPotentialOwners();
+        List<String> ids = new ArrayList<String>(potentialOwners.size());
+        for ( OrganizationalEntity entity : potentialOwners ) {
+            ids.add( entity.getId() );
+        }
+        assertTrue( ids.contains( users.get( "tony" ).getId() ));
+        assertTrue( ids.contains( users.get( "luke" ).getId() ));        
+        
+        // should have re-assigned by now
+        Thread.sleep( 5000 );     
+        getTaskHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskHandler );
+        task = getTaskHandler.getTask();
+        assertEquals( Status.Ready, task.getTaskData().getStatus()  );
+        potentialOwners = task.getPeopleAssignments().getPotentialOwners();
+        System.out.println( potentialOwners );
+        ids = new ArrayList<String>(potentialOwners.size());
+        for ( OrganizationalEntity entity : potentialOwners ) {
+            ids.add( entity.getId() );
+        }
+        assertTrue( ids.contains( users.get( "bobba" ).getId() ));
+        assertTrue( ids.contains( users.get( "jabba" ).getId() ));                  
     }
 }

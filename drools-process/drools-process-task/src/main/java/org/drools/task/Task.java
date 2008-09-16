@@ -45,7 +45,6 @@ public class Task implements Externalizable {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Task_Descriptions_Id", nullable = true)
-    @Lob
     private List<I18NText> descriptions = Collections.emptyList();      
     
 
@@ -226,7 +225,9 @@ public class Task implements Externalizable {
         if ( !(obj instanceof Task) ) return false;
         Task other = (Task) obj;
         if ( deadlines == null ) {
-            if ( other.deadlines != null ) return false;
+            if ( other.deadlines != null ) {
+                
+            }
         } else if ( !deadlines.equals( other.deadlines ) ) return false;
         if ( delegation == null ) {
             if ( other.delegation != null ) return false;

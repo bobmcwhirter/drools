@@ -37,6 +37,7 @@ import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.service.TaskService;
+import org.drools.task.service.TaskServiceSession;
 import org.drools.task.utils.CollectionUtils;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
@@ -59,6 +60,7 @@ public class ModelPersistenceTest extends BaseTest {
     }
     
     public void testfullHibernateRoundtripWithAdditionalMVELCheck() throws Exception {
+        TaskServiceSession session = taskService.createSession();
         Task task1 = new Task();
         task1.setPriority( 100 );
 
@@ -340,12 +342,12 @@ public class ModelPersistenceTest extends BaseTest {
         potentialOwners.add( users.get( "stuart" ) );
         potentialOwners.add( users.get( "dalai" ) );        
 
-        taskService.addTask( task1 );                
+        session.addTask( task1 );
         
-        taskService.getEntityManager().clear();
+        session.dispose();        
+        session = taskService.createSession();
         
-        Task task2 = taskService.getTask( task1.getId( ) );       
-        
+        Task task2 = session.getTask( task1.getId( ) );       
         assertNotSame( task1,
                        task2 );
         assertEquals( task1,
@@ -362,6 +364,7 @@ public class ModelPersistenceTest extends BaseTest {
                        task3 );
         assertEquals( task1,
                       task3 );
+        session.dispose();
     }    
 
 }

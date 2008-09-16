@@ -64,6 +64,9 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         vars.put( "now", new Date() );
         
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
+        str += "deadlines = new Deadlines(),";
+        str += "delegation = new Delegation(),";
+        str += "peopleAssignments = new PeopleAssignments(),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
@@ -140,6 +143,9 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         vars.put( "now", new Date() );        
         
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
+        str += "deadlines = new Deadlines(),";
+        str += "delegation = new Delegation(),";
+        str += "peopleAssignments = new PeopleAssignments(),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();

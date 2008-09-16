@@ -43,7 +43,7 @@ public class TaskServiceEscalationTest extends BaseTest {
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
-            taskService.addTask( task );
+            taskSession.addTask( task );
         }
 
         Thread.sleep( 4000 );
