@@ -16,6 +16,8 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.drools.eventmessaging.EventKey;
+import org.drools.eventmessaging.Payload;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
@@ -28,6 +30,8 @@ import org.drools.task.OrganizationalEntity;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.User;
+import org.drools.task.event.TaskClaimedEvent;
+import org.drools.task.event.TaskEventKey;
 import org.drools.task.service.DefaultEscalatedDeadlineHandler;
 import org.mvel.MVEL;
 import org.mvel.compiler.ExpressionCompiler;

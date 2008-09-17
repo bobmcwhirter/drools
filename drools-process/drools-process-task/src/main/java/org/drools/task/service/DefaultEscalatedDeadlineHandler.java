@@ -108,7 +108,10 @@ public class DefaultEscalatedDeadlineHandler
                                          Deadline deadline,
                                          EntityManager em,
                                          TaskService service) {
-
+        if ( deadline == null || deadline.getEscalations() == null ) {
+            return;
+        }
+        
         for ( Escalation escalation : deadline.getEscalations() ) {
             // we won't impl constraints for now
             //escalation.getConstraints()
