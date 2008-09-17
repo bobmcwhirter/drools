@@ -33,6 +33,7 @@ import org.drools.task.User;
 import org.drools.task.event.TaskClaimedEvent;
 import org.drools.task.event.TaskEventKey;
 import org.drools.task.service.DefaultEscalatedDeadlineHandler;
+import org.drools.util.ChainedProperties;
 import org.mvel.MVEL;
 import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.templates.CompiledTemplate;
@@ -45,11 +46,18 @@ public class TaskServiceDeadlinesTest extends BaseTest {
     MinaTaskServer server;
     MinaTaskClient client;
     
+    String emailHost;
+    String emailPort;
+    
     Wiser wiser;
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception {        
         super.setUp();
+        ChainedProperties props = new ChainedProperties( "client.conf" );
+        emailHost = props.getProperty( "host", "locahost" );
+        emailPort = props.getProperty( "port", "2345" );
+        
         server = new MinaTaskServer( taskService );
         Thread thread = new Thread( server );
         thread.start();
@@ -64,6 +72,8 @@ public class TaskServiceDeadlinesTest extends BaseTest {
                         address );
         
         wiser = new Wiser();
+        wiser.setHostname( emailHost );
+        wiser.setPort( Integer.parseInt( emailPort ) );        
         wiser.start();
     }
 

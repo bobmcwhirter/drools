@@ -22,6 +22,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.BaseTest;
 import org.drools.task.MockUserInfo;
 import org.drools.task.Task;
+import org.drools.util.ChainedProperties;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
@@ -30,10 +31,18 @@ public class IcalTest extends BaseTest {
     MinaTaskClient client;
 
     Wiser          wiser;
+    
+    String emailHost;
+    String emailPort;    
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        
+        ChainedProperties props = new ChainedProperties( "client.conf" );
+        emailHost = props.getProperty( "host", "locahost" );
+        emailPort = props.getProperty( "port", "2345" );        
+        
         server = new MinaTaskServer( taskService );
         Thread thread = new Thread( server );
         thread.start();
@@ -48,6 +57,8 @@ public class IcalTest extends BaseTest {
                         address );
 
         wiser = new Wiser();
+        wiser.setHostname( emailHost );
+        wiser.setPort( Integer.parseInt( emailPort ) );         
         wiser.start();
     }
 
