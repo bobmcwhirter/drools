@@ -17,19 +17,21 @@ import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
 public class EmailWorkItemHandlerTest extends TestCase {
-    Wiser wiser;
-    
+    Wiser wiser;    
     
     String emailHost;
     String emailPort;
     
     @Override
     protected void setUp() throws Exception {
-         wiser = new Wiser();
-         wiser.start();
-         ChainedProperties props = new ChainedProperties( "client.conf" );
-         emailHost = props.getProperty( "host", "locahost" );
-         emailPort = props.getProperty( "port", "2345" );
+        ChainedProperties props = new ChainedProperties( "client.conf" );
+        emailHost = props.getProperty( "host", "locahost" );
+        emailPort = props.getProperty( "port", "2345" );
+        
+        wiser = new Wiser();
+        wiser.setHostname( emailHost );
+        wiser.setPort( Integer.parseInt( emailPort ) );
+        wiser.start();
     }
     
     @Override
