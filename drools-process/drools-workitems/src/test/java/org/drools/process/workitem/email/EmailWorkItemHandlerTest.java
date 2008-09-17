@@ -12,15 +12,24 @@ import junit.framework.TestCase;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.util.ChainedProperties;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
 public class EmailWorkItemHandlerTest extends TestCase {
     Wiser wiser;
+    
+    
+    String emailHost;
+    String emailPort;
+    
     @Override
     protected void setUp() throws Exception {
          wiser = new Wiser();
          wiser.start();
+         ChainedProperties props = new ChainedProperties( "client.conf" );
+         emailHost = props.getProperty( "host", "locahost" );
+         emailPort = props.getProperty( "port", "2345" );
     }
     
     @Override
@@ -34,7 +43,7 @@ public class EmailWorkItemHandlerTest extends TestCase {
     
     public void testSingleTo() throws Exception {
         EmailWorkItemHandler handler = new EmailWorkItemHandler();
-        handler.setConnection( "localhost", "25", null, null );   
+        handler.setConnection( emailHost, emailPort, null, null );   
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "To", "person1@domain.com" );
