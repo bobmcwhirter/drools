@@ -39,7 +39,7 @@ public class IcalTest extends BaseTest {
     protected void setUp() throws Exception {
         super.setUp();
         
-        ChainedProperties props = new ChainedProperties( "client.conf" );
+        ChainedProperties props = new ChainedProperties( "process.email.conf" );
         emailHost = props.getProperty( "host", "locahost" );
         emailPort = props.getProperty( "port", "2345" );        
         

@@ -70,15 +70,17 @@ public class SendIcal {
         //        password = conf.getProperty( "password", null );   
         
         connection = new Properties();
-
+        connection.setProperty("mail.transport.protocol", "smtp");
+        
         if ( host != null && host.trim().length() > 0 ) {
-            connection.put( "mail.smtp.host",
+            connection.setProperty( "mail.smtp.host",
                             host );
         }
         if ( port != null && port.trim().length() > 0 ) {
-            connection.put( "mail.smtp.port",
-                            Integer.parseInt( port ) );
+            connection.setProperty( "mail.smtp.port",
+                                    port );
         }
+
 
         defaultLanguage = conf.getProperty( "defaultLanguage",
                                             "en-UK" );
@@ -210,6 +212,7 @@ public class SendIcal {
         multipart.addBodyPart( messageBodyPart );
 
         message.setContent( multipart );
+        message.saveChanges();
 
         Transport.send( message );
     }

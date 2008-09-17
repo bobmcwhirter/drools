@@ -24,8 +24,8 @@ public class EmailWorkItemHandlerTest extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
-        ChainedProperties props = new ChainedProperties( "client.conf" );
-        emailHost = props.getProperty( "host", "locahost" );
+        ChainedProperties props = new ChainedProperties( "email.conf" );
+        emailHost = props.getProperty( "host", "localhost" );
         emailPort = props.getProperty( "port", "2345" );
         
         wiser = new Wiser();
@@ -71,7 +71,7 @@ public class EmailWorkItemHandlerTest extends TestCase {
     
     public void testSingleToWithSingleCCAndBCC() throws Exception {
         EmailWorkItemHandler handler = new EmailWorkItemHandler();
-        handler.setConnection( "localhost", "25", null, null );   
+        handler.setConnection( emailHost, emailPort, null, null ); 
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "To", "person1@domain.com" );
@@ -127,7 +127,7 @@ public class EmailWorkItemHandlerTest extends TestCase {
     
     public void testMultipleToWithSingleCCAndBCC() throws Exception {
         EmailWorkItemHandler handler = new EmailWorkItemHandler();
-        handler.setConnection( "localhost", "25", null, null );   
+        handler.setConnection( emailHost, emailPort, null, null );    
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "To", "person1@domain.com; person2@domain.com" );

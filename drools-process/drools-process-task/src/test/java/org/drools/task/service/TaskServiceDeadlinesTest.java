@@ -54,7 +54,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
     @Override
     protected void setUp() throws Exception {        
         super.setUp();
-        ChainedProperties props = new ChainedProperties( "client.conf" );
+        ChainedProperties props = new ChainedProperties( "process.email.conf" );
         emailHost = props.getProperty( "host", "locahost" );
         emailPort = props.getProperty( "port", "2345" );
         
@@ -92,7 +92,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         vars.put( "now", new Date() ); 
         
         DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler();
-        notificationHandler.getHandler().setConnection( "localhost", "25", null, null );
+        notificationHandler.getHandler().setConnection( emailHost, emailPort, null, null );
         WorkItemManager manager = new DefaultWorkItemManager( null );
         notificationHandler.setManager( manager );
         

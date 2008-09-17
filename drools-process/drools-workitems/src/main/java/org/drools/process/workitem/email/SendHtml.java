@@ -38,9 +38,9 @@ public class SendHtml {
             Properties props = new Properties();
             // XXX - could use Session.getTransport() and Transport.connect()
             // XXX - assume we're using SMTP
-            if ( mailhost != null && mailhost.trim().length() > 0 ) props.put( "mail.smtp.host", mailhost );
+            if ( mailhost != null && mailhost.trim().length() > 0 ) props.setProperty( "mail.smtp.host", mailhost );
             if ( connection.getPort() != null && connection.getPort().trim().length() > 0 ) {
-                props.put( "mail.smtp.port", Integer.parseInt( connection.getPort() ) );                
+                props.setProperty( "mail.smtp.port", connection.getPort() );                
             }               
                         
             // Get a Session object
