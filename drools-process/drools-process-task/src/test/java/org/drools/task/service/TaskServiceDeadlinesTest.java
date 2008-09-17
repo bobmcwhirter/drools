@@ -161,10 +161,14 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         
         MockUserInfo userInfo = new MockUserInfo();
         userInfo.getEmails().put( users.get("tony"), "tony@domain.com" );
-        userInfo.getEmails().put( users.get("darth"), "darth@domain.com" );
+        userInfo.getEmails().put( users.get("luke"), "luke@domain.com" );
+        userInfo.getEmails().put( users.get("bobba"), "luke@domain.com" );
+        userInfo.getEmails().put( users.get("jabba"), "luke@domain.com" );
         
         userInfo.getLanguages().put(  users.get("tony"), "en-UK" );
-        userInfo.getLanguages().put(  users.get("darth"), "en-UK" );
+        userInfo.getLanguages().put(  users.get("luke"), "en-UK" );
+        userInfo.getLanguages().put(  users.get("bobba"), "en-UK" );
+        userInfo.getLanguages().put(  users.get("jabba"), "en-UK" );
         notificationHandler.setUserInfo( userInfo );    
         
         taskService.setEscalatedDeadlineHandler( notificationHandler );
@@ -190,7 +194,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         assertTrue( ids.contains( users.get( "luke" ).getId() ));        
         
         // should have re-assigned by now
-        Thread.sleep( 5000 );     
+        Thread.sleep( 6000 );     
         getTaskHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskHandler );
         task = getTaskHandler.getTask();
