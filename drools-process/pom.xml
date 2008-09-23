@@ -11,11 +11,25 @@
   <artifactId>drools-process</artifactId>
   <packaging>pom</packaging>
   <name>Drools :: Process</name>
+
+   <profiles>
+      <profile>
+          <id>cibuild</id>
+          <activation>
+              <property>
+                  <name>cibuild</name>
+              </property>
+          </activation>
+          <modules>
+              <module>drools-bpel</module>
+          </modules>
+      </profile>
+  </profiles>
   
   <modules>
       <module>drools-process-task</module>
       <module>drools-workitems</module>
-      <module>drools-bpel</module>
+      <!-- module>drools-bpel</module -->
   </modules>
   
 </project>
