@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-finder</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0-20080905.033643-1</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -49,12 +49,12 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0-20080905.032625-1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-exec</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-20080905.033237-1</version>
     </dependency>
     
     <!-- External test dependencies -->
