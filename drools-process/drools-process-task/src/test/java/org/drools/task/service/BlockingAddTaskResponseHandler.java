@@ -5,26 +5,33 @@ package org.drools.task.service;
 
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
 
-public class BlockingAddTaskResponseHandler implements AddTaskResponseHandler {
+public class BlockingAddTaskResponseHandler extends AbstractBlockingResponseHandler implements AddTaskResponseHandler {
     private volatile long taskId;
-    private volatile boolean wait = true;
 
     public synchronized void execute(long taskId) {
-        this.taskId = taskId;
-        wait = false;
-        notifyAll();                
+        synchronized ( this.done ) {        
+            this.taskId = taskId;
+            this.done = true;
+            notifyAll(); 
+        }
     }
     
     public synchronized long getTaskId() {
-        if ( wait ) {                  
-            try {
-                wait( 3000 );
-            } catch ( InterruptedException e ) {
-                // swallow as this is just a notifiation
-            }
+        boolean isDone;
+        synchronized ( done ) {
+            isDone = this.done;
         }
-        
-        if ( wait ) {
+        if ( !isDone ) {                  
+            try {
+                wait( 10000 );
+            } catch ( InterruptedException e ) {
+                // swallow as this is just a notification
+            }
+        }        
+        synchronized ( done ) {
+            isDone = this.done;
+        }        
+        if ( !isDone ) {
             throw new RuntimeException("Timeout : unable to retrieve Task Id" );
         }
         

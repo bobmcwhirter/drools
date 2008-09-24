@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -134,300 +135,213 @@ public class TaskServiceSession {
         }
     }
 
-    public void claim(long taskId,
-                      String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-
-        User user = em.find( User.class,
-                             userId );
-        em.getTransaction().begin();
-        claim(task, user);
-        em.getTransaction().commit();
-    }
-    
-    public void claim(Task task,
-                      User user) {
+    public TaskError evalCommand(Operation operation,
+                                          List<OperationCommand> commands,
+                                          Task task,
+                                          User user,
+                                          OrganizationalEntity targetEntity) {
+        PeopleAssignments people = task.getPeopleAssignments();
         TaskData taskData = task.getTaskData();
+        boolean operationAllowed = false;
+        boolean statusMatched = false;
+        for ( OperationCommand command : commands ) {
+            // first find out if we have a matching status
+            if ( command.getStatus() != null ) {
+                for ( Status status : command.getStatus() ) {
+                    if ( taskData.getStatus() == status ) {
+                        statusMatched = true;
 
-        //task must be in status Ready
-        if ( taskData.getStatus() == Status.Ready ) {
-            // check permissions
-            PeopleAssignments people = task.getPeopleAssignments();
-            if ( isAllowed( user,
-                            new List[]{people.getPotentialOwners(), people.getBusinessAdministrators()} ) ) {
-                // only potential owners and business admin can claim a task
-                taskData.setStatus( Status.Reserved );
-                taskData.setActualOwner( user );
+                        // next find out if the user can execute this operation                
+                        if ( !isAllowed( command,
+                                         task,
+                                         user,
+                                         targetEntity ) ) {
+                            return new TaskError( "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId() );
 
-                // Task was reserved so owner should get icals
-                SendIcal.getInstance().sendIcalForTask( task,
-                                                        service.getUserinfo() );
+                        }
 
-                // trigger event support
-                service.getEventSupport().fireTaskClaimed( task.getId(),
-                                                           task.getTaskData().getActualOwner().getId() );
-            } else {
-                // @TODO Error
+                        commands( command,
+                                  task,
+                                  user,
+                                  targetEntity );
+                        return null;
+                    }
+                }
             }
-        } else {
-            // @TODO Error
-        }
-    }    
 
-    public void start(long taskId,
-                      String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
+            if ( command.getPreviousStatus() != null ) {
+                for ( Status status : command.getPreviousStatus() ) {
+                    if ( taskData.getPreviousStatus() == status ) {
+                        statusMatched = true;
 
-        User user = em.find( User.class,
-                             userId );
+                        // next find out if the user can execute this operation                
+                        if ( !isAllowed( command,
+                                         task,
+                                         user,
+                                         targetEntity ) ) {
+                            return new TaskError( "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId() );
+                        }
 
-        TaskData taskData = task.getTaskData();
-
-        // Status must be Read or Reserved
-        if ( taskData.getStatus() == Status.Ready ) {
-            // if Ready must be potentialOwner
-            PeopleAssignments people = task.getPeopleAssignments();
-            if ( isAllowed( user,
-                            new List[]{people.getPotentialOwners()} ) ) {
-                em.getTransaction().begin();
-                taskData.setActualOwner( user );
-                taskData.setStatus( Status.InProgress );
-                em.getTransaction().commit();
-            } else {
-                // @TODO Error
+                        commands( command,
+                                  task,
+                                  user,
+                                  targetEntity );
+                        return null;
+                    }
+                }
             }
-        } else if ( taskData.getStatus() == Status.Reserved ) {
-            // if Reserved must be actual owner
-            if ( taskData.getActualOwner().getId().equals( user.getId() ) ) {
-                em.getTransaction().begin();
-                taskData.setStatus( Status.InProgress );
-                em.getTransaction().commit();
-            } else {
-                // @TODO Error
+        }
+        if ( !statusMatched ) {
+            return new TaskError( "User '" + user + "' was unable to execution operation '" + operation + "' on task id " + task.getId() + " due to no 'current status' matchines" );
+        }
+
+        return null;
+    }
+
+    private boolean isAllowed(OperationCommand command,
+                              Task task,
+                              User user,
+                              OrganizationalEntity targetEntity) {
+        PeopleAssignments people = task.getPeopleAssignments();
+        TaskData taskData = task.getTaskData();
+
+        boolean operationAllowed = false;
+        for ( Allowed allowed : command.getAllowed() ) {
+            if ( operationAllowed ) {
+                break;
             }
-        } else {
-            // @TODO Error
-            return;
+            switch ( allowed ) {
+                case Owner : {
+                    operationAllowed = (taskData.getActualOwner() != null && taskData.getActualOwner().getId() == user.getId());
+                    break;
+                }
+                case Initiator : {
+                    operationAllowed = (taskData.getCreatedBy() != null && taskData.getCreatedBy().getId() == user.getId());
+                    break;
+                }
+                case PotentialOwner : {
+                    operationAllowed = isAllowed( user,
+                                                  people.getPotentialOwners() );
+                    break;
+                }
+                case BusinessAdministrator : {
+                    operationAllowed = isAllowed( user,
+                                                  people.getBusinessAdministrators() );
+                    break;
+                }
+            }
         }
+
+        if ( operationAllowed && command.isUserIsExplicitPotentialOwner() ) {
+            // if user has rights to execute the command, make sure user is explicitely specified (not as a group)
+            operationAllowed = people.getPotentialOwners().contains( user );
+        }
+
+        return operationAllowed;
     }
 
-    public void stop(long taskId,
-                     String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-
-        User user = em.find( User.class,
-                             userId );
-
+    private void commands(OperationCommand command,
+                          Task task,
+                          User user,
+                          OrganizationalEntity targetEntity) {
+        PeopleAssignments people = task.getPeopleAssignments();
         TaskData taskData = task.getTaskData();
 
-        PeopleAssignments people = task.getPeopleAssignments();
-        if ( taskData.getStatus() == Status.InProgress && (taskData.getActualOwner().getId().equals( user.getId() ) || isAllowed( user,
-                                                                                                                                  new List[]{people.getBusinessAdministrators()} )) ) {
-            // Status must be InProgress and actual owner, switch to Reserved
-            em.getTransaction().begin();
-            taskData.setStatus( Status.Reserved );
-            em.getTransaction().commit();
-        } else {
-            // @TODO Error
-            return;
-        }
-    }
-
-    public void release(long taskId,
-                        String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-
-        User user = em.find( User.class,
-                             userId );
-
-        TaskData taskData = task.getTaskData();
-
-        // task must be reserved or in progress and owned by user
-        PeopleAssignments people = task.getPeopleAssignments();
-        if ( (taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress) && (taskData.getActualOwner().getId().equals( user.getId() ) || isAllowed( user,
-                                                                                                                                                                               new List[]{people.getBusinessAdministrators()} )) ) {
-            em.getTransaction().begin();
-            taskData.setStatus( Status.Ready );
-            taskData.setActualOwner( null );
-            em.getTransaction().commit();
-        } else {
-            //@TODO Error
-        }
-    }
-
-    public void suspend(long taskId,
-                        String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-
-        User user = em.find( User.class,
-                             userId );
-
-        TaskData taskData = task.getTaskData();
-
-        List[] allowed;
-        PeopleAssignments people = task.getPeopleAssignments();
-        if ( taskData.getStatus() == Status.Ready ) {
-            // If it's ready then potential owners can suspect too
-            allowed = new List[]{people.getPotentialOwners(), people.getBusinessAdministrators()};
-        } else {
-            allowed = new List[]{people.getBusinessAdministrators()};
-        }
-
-        if ( (taskData.getStatus() == Status.Ready || taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress)
-             && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId().equals( user.getId() )) || isAllowed( user,
-                                                                                                                               allowed )) ) {
-            em.getTransaction().begin();
-            taskData.setStatus( Status.Suspended );
-            em.getTransaction().commit();
-        } else {
-            //@TODO Error            
-        }
-    }
-
-    public void resume(long taskId,
-                       String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-
-        User user = em.find( User.class,
-                             userId );
-
-        TaskData taskData = task.getTaskData();
-
-        List[] allowed;
-        PeopleAssignments people = task.getPeopleAssignments();
-        if ( taskData.getPreviousStatus() == Status.Ready ) {
-            // If it's ready then potential owners can suspect too
-            allowed = new List[]{people.getPotentialOwners(), people.getBusinessAdministrators()};
-        } else {
-            allowed = new List[]{people.getBusinessAdministrators()};
-        }
-
-        if ( (taskData.getStatus() == Status.Suspended) && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId().equals( user.getId() )) || isAllowed( user,
-                                                                                                                                                                          allowed )) ) {
-            em.getTransaction().begin();
+        if ( command.getNewStatus() != null ) {
+            taskData.setStatus( command.getNewStatus() );
+        } else if ( command.isSetToPreviousStatus() ) {
             taskData.setStatus( taskData.getPreviousStatus() );
-            em.getTransaction().commit();
-        } else {
-            //@TODO Error            
-        }
-    }
-
-    public void skip(long taskId,
-                     String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-
-        User user = em.find( User.class,
-                             userId );
-
-        TaskData taskData = task.getTaskData();
-
-        List[] allowed;
-        PeopleAssignments people = task.getPeopleAssignments();
-        if ( taskData.getStatus() == Status.Ready ) {
-            // If it's ready then potential owners can skip too
-            allowed = new List[]{people.getPotentialOwners(), people.getBusinessAdministrators()};
-        } else {
-            allowed = new List[]{people.getBusinessAdministrators()};
         }
 
-        if ( task.getTaskData().isSkipable() && (taskData.getStatus() != Status.Completed && taskData.getStatus() != Status.Failed)
-             && ((taskData.getActualOwner() != null && taskData.getActualOwner().getId().equals( user.getId() )) || isAllowed( user,
-                                                                                                                               allowed )) ) {
-            em.getTransaction().begin();
-            taskData.setStatus( Status.Obselete );
-            em.getTransaction().commit();
-        } else {
-            //@TODO Error            
+        if ( command.isAddTargetEntityToPotentialOwners() && !people.getPotentialOwners().contains( targetEntity ) ) {
+            people.getPotentialOwners().add( targetEntity );
         }
-    }
 
-    public void complete(long taskId,
-                         String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-
-        User user = em.find( User.class,
-                             userId );
-
-        TaskData taskData = task.getTaskData();
-
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId().equals( user.getId() ) ) {
-            // Status must be InProgress and actual owner, switch to Reserved
-            em.getTransaction().begin();
-            taskData.setStatus( Status.Completed );
-            em.getTransaction().commit();
-        } else {
-            // @TODO Error
-            return;
+        if ( command.isRemoveUserFromPotentialOwners() ) {
+            people.getPotentialOwners().remove( user );
         }
-    }
 
-    public void delegate(long taskId,
-                         String delegateId,
-                         String userId) {
-        Task task = em.find( Task.class,
-                             taskId );
-        TaskData taskData = task.getTaskData();
-        Delegation delegation = task.getDelegation();
-        
-        
-        User delegate = em.find( User.class,
-                                   delegateId );
-        
-        User user = em.find( User.class,
-                             userId );
-        
-        // check correct status
-        if ( taskData.getStatus() == Status.Ready || taskData.getStatus() == Status.Reserved || taskData.getStatus() == Status.InProgress ) {
-            // check valid user
-            PeopleAssignments people = task.getPeopleAssignments();
-            if ( taskData.getActualOwner().getId().equals( user.getId() ) || isAllowed( user,
-                            new List[]{people.getPotentialOwners(), people.getBusinessAdministrators()} ) ) {
-                // is valid delegate
-               if ( isAllowed( delegate, new List[] { delegation.getDelegates() } ) ) {
-                   em.getTransaction().begin();
-                   taskData.setStatus( Status.Ready );
-                   if ( people.getPotentialOwners().contains( delegate ) ) {
-                       // Add delegate to potentialOwners if it's not already
-                       people.getPotentialOwners().add( delegate );
-                   }
-                   claim(task, delegate);
-                   em.getTransaction().commit();
-               }
-            } else {
-                // @TODO ERROR
+        if ( command.isSetNewOwnerToTargetUser() ) {
+            taskData.setActualOwner( (User) user );
+        }
+
+        if ( command.isSetNewOwnerToNull() ) {
+            taskData.setActualOwner( null );
+        }
+
+        if ( command.getExec() != null ) {
+            switch ( command.getExec() ) {
+                case Claim : {
+                    taskData.setActualOwner( (User) targetEntity );
+                    // Task was reserved so owner should get icals
+                    SendIcal.getInstance().sendIcalForTask( task,
+                                                            service.getUserinfo() );
+
+                    // trigger event support
+                    service.getEventSupport().fireTaskClaimed( task.getId(),
+                                                               task.getTaskData().getActualOwner().getId() );
+                    break;
+                }
             }
-        } else {
-            // @TODO ERROR
         }
     }
 
-    public void fail(long taskId,
-                     String userId) {
+    public TaskError taskOperation(Operation operation,
+                                            long taskId,
+                                            String userId,
+                                            String targetEntityId) {
         Task task = em.find( Task.class,
                              taskId );
 
         User user = em.find( User.class,
                              userId );
 
-        TaskData taskData = task.getTaskData();
-
-        if ( taskData.getStatus() == Status.InProgress && taskData.getActualOwner().getId().equals( user.getId() ) ) {
-            // Status must be InProgress and actual owner, switch to Reserved
-            em.getTransaction().begin();
-            taskData.setStatus( Status.Failed );
-            em.getTransaction().commit();
-        } else {
-            // @TODO Error
-            return;
+        OrganizationalEntity targetEntity = null;
+        if ( targetEntityId != null ) {
+            targetEntity = em.find( OrganizationalEntity.class,
+                                    targetEntityId );
         }
+
+        em.getTransaction().begin();
+        TaskError error = null;
+        try {
+            Map<Operation, List<OperationCommand>> dsl = service.getOperations();
+            List<OperationCommand> commands = dsl.get( operation );
+            error = evalCommand( operation,
+                                 commands,
+                                 task,
+                                 user,
+                                 targetEntity );
+
+            if ( error != null ) {
+                throw new RuntimeException( "TaskOperationException" );
+            }
+            switch ( operation ) {
+                case Claim : {
+                    // Task was reserved so owner should get icals
+                    SendIcal.getInstance().sendIcalForTask( task,
+                                                            service.getUserinfo() );
+                    // trigger event support
+                    service.getEventSupport().fireTaskClaimed( task.getId(),
+                                                               task.getTaskData().getActualOwner().getId() );
+                    break;
+                }
+            }
+
+        } catch ( Exception e ) {
+            em.getTransaction().rollback();
+
+            em.getTransaction().begin();
+            task.getTaskData().setStatus( Status.Error );
+            em.getTransaction().commit();
+
+            error = new TaskError( "User '" + user + "' was unable to execution operation '" + operation + "' on task id " + task.getId() + " due to exception:\n" + e.getMessage() );
+        } finally {
+            if ( em.getTransaction().isActive() ) {
+                em.getTransaction().commit();
+            }
+        }
+        return error;
     }
 
     public void addComment(long taskId,

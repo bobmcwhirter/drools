@@ -2,22 +2,39 @@ package org.drools.task.service;
 
 
 public enum CommandName {   
+    OperationRequest,
+    OperationResponse,
+    
     ClaimRequest,
     ClaimResponse,
+    
     StartRequest,
     StartResponse,
+    
     StopRequest,
     StopResponse,
+    
     ReleaseRequest,
-    ReleaseResponse,    
+    ReleaseResponse,  
+    
     SuspendRequest,
-    SuspendResponse,    
+    SuspendResponse, 
+    
     ResumeRequest,
-    ResumeResponse,    
+    ResumeResponse, 
+    
     SkipRequest,
-    SkipResponse,       
+    SkipResponse,  
+    
+    DelegateRequest,
+    DelegateResponse,
+    
+    ForwardRequest,
+    ForwardResponse,
+    
     CompleteRequest,
     CompleteResponse,   
+    
     FailRequest,
     FailResponse,
     
@@ -28,16 +45,17 @@ public enum CommandName {
     AddTaskResponse,
     
     AddAttachmentRequest,
-    AddAttachmentResponse,
+    AddAttachmentResponse,    
     DeleteAttachmentRequest,
-    DeleteAttachmentResponse,    
+    DeleteAttachmentResponse,
+        
     SetDocumentContentRequest,
     SetDocumentContentResponse,
     GetContentRequest,
     GetContentResponse,
     
     AddCommentRequest,
-    AddCommentResponse,
+    AddCommentResponse,    
     DeleteCommentRequest,    
     DeleteCommentResponse,    
     

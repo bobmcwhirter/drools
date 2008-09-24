@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -37,6 +38,7 @@ import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.query.TaskSummary;
+import org.drools.task.service.SendIcal;
 import org.drools.task.service.TaskService;
 import org.drools.task.service.TaskServiceSession;
 import org.drools.task.utils.CollectionUtils;
@@ -60,6 +62,14 @@ public abstract class BaseTest extends TestCase {
     protected TaskServiceSession   taskSession;
 
     protected void setUp() throws Exception {
+        Properties conf = new Properties();
+        conf.setProperty( "mail.smtp.host", "localhost" );
+        conf.setProperty( "mail.smtp.port", "2345" );
+        conf.setProperty( "from", "from@domain.com" );
+        conf.setProperty( "replyTo", "replyTo@domain.com" );
+        conf.setProperty( "defaultLanguage", "en-UK" );
+        SendIcal.initInstance( conf );
+        
         // Use persistence.xml configuration
         emf = Persistence.createEntityManagerFactory( "org.drools.task" );
 
@@ -116,53 +126,12 @@ public abstract class BaseTest extends TestCase {
 
         ParserContext context = new ParserContext();
         context.addPackageImport( "org.drools.task" );
+        context.addPackageImport( "org.drools.task.service" );
+        context.addPackageImport( "org.drools.task.query" );
         context.addPackageImport( "java.util" );
-
-        context.addImport( "AccessType",
-                           AccessType.class );
-        context.addImport( "Allowed",
-                           Allowed.class );
-        context.addImport( "Attachment",
-                           Attachment.class );
-        context.addImport( "BooleanExpression",
-                           BooleanExpression.class );
-        context.addImport( "Comment",
-                           Comment.class );
-        context.addImport( "Deadline",
-                           Deadline.class );
-        context.addImport( "Deadlines",
-                           Deadlines.class );
-        context.addImport( "Delegation",
-                           Delegation.class );
-        context.addImport( "Escalation",
-                           Escalation.class );
-        context.addImport( "EmailNotification",
-                           EmailNotification.class );
-        context.addImport( "EmailNotificationHeader",
-                           EmailNotificationHeader.class );
-        context.addImport( "Group",
-                           Group.class );
-        context.addImport( "I18NText",
-                           I18NText.class );
-        context.addImport( "Notification",
-                           Notification.class );
-        context.addImport( "OrganizationalEntity",
-                           OrganizationalEntity.class );
-        context.addImport( "PeopleAssignments",
-                           PeopleAssignments.class );
-        context.addImport( "Reassignment",
-                           Reassignment.class );
-        context.addImport( "Status",
-                           Status.class );
-        context.addImport( "Task",
-                           Task.class );
-        context.addImport( "TaskData",
-                           TaskData.class );
-        context.addImport( "TaskSummary",
-                           TaskSummary.class );
-        context.addImport( "User",
-                           User.class );
-
+        
+        vars.put( "now",
+                  new Date() );
         return MVEL.executeExpression( compiler.compile( context ),
                                        vars );
     }

@@ -43,6 +43,7 @@ import org.drools.task.query.TaskSummary;
 import org.drools.task.service.EscalatedDeadlineHandler;
 import org.drools.task.service.TaskService;
 import org.drools.task.service.TaskServiceSession;
+import org.drools.task.service.TaskServiceEscalationTest.MockEscalatedDeadlineHandler;
 import org.drools.task.utils.CollectionUtils;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
@@ -59,15 +60,15 @@ import junit.framework.TestCase;
 public class QueryTest extends BaseTest {
 
     public void testUnescalatedDeadlines() throws Exception {
+        MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
+        taskService.setEscalatedDeadlineHandler( handler );
         TaskServiceSession taskSession = taskService.createSession();        
         Map vars = new HashedMap();
         vars.put( "users",
                   users );
         vars.put( "groups",
                   groups );
-        long now = System.currentTimeMillis();
-        vars.put( "now",
-                  now );
+
 
         //Reader reader;
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "QueryData_UnescalatedDeadlines.mvel" ) );
@@ -76,23 +77,25 @@ public class QueryTest extends BaseTest {
         for ( Task task : tasks ) {
             taskSession.addTask( task );
         }
-
+        long now = ((Date)vars.get( "now" )).getTime();
+        
         // should be three, one is marked as escalated
         List<DeadlineSummary> list = taskSession.getUnescalatedDeadlines();
+        
         assertEquals( 3,
                       list.size() );
 
         DeadlineSummary result = list.get( 0 );
-        assertEquals( result.getDate().getTime(),
-                      now + 4000 );
+        assertEquals( now + 20000,
+                      result.getDate().getTime() );
 
         result = list.get( 1 );
-        assertEquals( result.getDate().getTime(),
-                      now + 4500 );
+        assertEquals( now + 22000 ,
+                      result.getDate().getTime() );
 
         result = list.get( 2 );
-        assertEquals( result.getDate().getTime(),
-                      now + 5000 );    
+        assertEquals( now + 24000,
+                      result.getDate().getTime());    
         taskSession.dispose();
     }
     

@@ -23,6 +23,7 @@ import org.drools.task.Deadline;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
+import org.drools.task.service.TaskClientHandler.DeleteCommentResponseHandler;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.drools.task.service.TaskServiceEscalationTest.MockEscalatedDeadlineHandler.Item;
 import org.drools.task.service.TaskServiceTest.BlockingAllOpenTasksForUseResponseHandler;
@@ -125,7 +126,9 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         comments1.add( comment );
         assertTrue( CollectionUtils.equals( comments1, comments2 ) );
         
-        client.deleteComment( taskId, addCommentResponseHandler.getCommentId() );
+        BlockingDeleteCommentResponseHandler deleteCommentResponseHandler = new BlockingDeleteCommentResponseHandler();
+        client.deleteComment( taskId, addCommentResponseHandler.getCommentId(), deleteCommentResponseHandler );
+        deleteCommentResponseHandler.waitTillDone( 3000 );
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
@@ -237,7 +240,9 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
         attachments1.add( attachment );
         assertTrue( CollectionUtils.equals( attachments2, attachments1 ) );      
         
-        client.deleteAttachment( taskId, addAttachmentResponseHandler.getAttachmentId(), addAttachmentResponseHandler.getContentId() );
+        BlockingDeleteAttachmentResponseHandler deleteCommentResponseHandler = new BlockingDeleteAttachmentResponseHandler();
+        client.deleteAttachment( taskId, addAttachmentResponseHandler.getAttachmentId(), addAttachmentResponseHandler.getContentId(), deleteCommentResponseHandler );
+        deleteCommentResponseHandler.waitTillDone( 3000 );
         
         Thread.sleep( 3000 );
         

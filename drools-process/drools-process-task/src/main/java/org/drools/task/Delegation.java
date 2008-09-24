@@ -23,16 +23,16 @@ import org.drools.task.utils.CollectionUtils;
 @Embeddable
 public class Delegation  implements Externalizable {
     @Enumerated(EnumType.STRING)      
-    private Allowed                    allowed;
+    private AllowedToDelegate                    allowedToDelegate;
     
     @ManyToMany
     @JoinTable(name = "Delegation_delegates", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
     private List<OrganizationalEntity> delegates = Collections.emptyList();
     
     public void writeExternal(ObjectOutput out) throws IOException {
-        if ( allowed != null ) {
+        if ( allowedToDelegate != null ) {
             out.writeBoolean( true );
-            out.writeUTF( allowed.toString() );
+            out.writeUTF( allowedToDelegate.toString() );
         } else {
             out.writeBoolean( false );
         }
@@ -42,17 +42,17 @@ public class Delegation  implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         if ( in.readBoolean() ) {
-            allowed = Allowed.valueOf( in.readUTF() );
+            allowedToDelegate = AllowedToDelegate.valueOf( in.readUTF() );
         }
         delegates = CollectionUtils.readOrganizationalEntityList( in );
     }       
 
-    public Allowed getAllowed() {
-        return allowed;
+    public AllowedToDelegate getAllowed() {
+        return allowedToDelegate;
     }    
     
-    public void setAllowed(Allowed allowed) {
-        this.allowed = allowed;
+    public void setAllowed(AllowedToDelegate allowedToDelegate) {
+        this.allowedToDelegate = allowedToDelegate;
     }
 
     public List<OrganizationalEntity> getDelegates() {
@@ -70,7 +70,7 @@ public class Delegation  implements Externalizable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((allowed == null) ? 0 : allowed.hashCode());
+        result = prime * result + ((allowedToDelegate == null) ? 0 : allowedToDelegate.hashCode());
         result = prime * result + CollectionUtils.hashCode( delegates );
         return result;
     }
@@ -81,9 +81,9 @@ public class Delegation  implements Externalizable {
         if ( obj == null ) return false;
         if ( !(obj instanceof Delegation) ) return false;
         Delegation other = (Delegation) obj;
-        if ( allowed == null ) {
-            if ( other.allowed != null ) return false;
-        } else if ( !allowed.equals( other.allowed ) ) return false;
+        if ( allowedToDelegate == null ) {
+            if ( other.allowedToDelegate != null ) return false;
+        } else if ( !allowedToDelegate.equals( other.allowedToDelegate ) ) return false;
         
         return CollectionUtils.equals( delegates, other.delegates );
     }

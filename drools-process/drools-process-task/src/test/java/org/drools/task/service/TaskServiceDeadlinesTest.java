@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -45,18 +46,20 @@ import org.subethamail.wiser.WiserMessage;
 public class TaskServiceDeadlinesTest extends BaseTest {
     MinaTaskServer server;
     MinaTaskClient client;
-    
-    String emailHost;
-    String emailPort;
+    Properties conf;
     
     Wiser wiser;
 
     @Override
     protected void setUp() throws Exception {        
         super.setUp();
-        ChainedProperties props = new ChainedProperties( "process.email.conf" );
-        emailHost = props.getProperty( "host", "locahost" );
-        emailPort = props.getProperty( "port", "2345" );
+        
+        conf = new Properties();
+        conf.setProperty( "mail.smtp.host", "localhost" );
+        conf.setProperty( "mail.smtp.port", "2345" );
+        conf.setProperty( "from", "from@domain.com" );
+        conf.setProperty( "replyTo", "replyTo@domain.com" );
+        conf.setProperty( "defaultLanguage", "en-UK" );
         
         server = new MinaTaskServer( taskService );
         Thread thread = new Thread( server );
@@ -72,8 +75,8 @@ public class TaskServiceDeadlinesTest extends BaseTest {
                         address );
         
         wiser = new Wiser();
-        wiser.setHostname( emailHost );
-        wiser.setPort( Integer.parseInt( emailPort ) );        
+        wiser.setHostname( conf.getProperty( "mail.smtp.host" ) );
+        wiser.setPort( Integer.parseInt( conf.getProperty( "mail.smtp.port" ) ) );        
         wiser.start();
     }
 
@@ -91,8 +94,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         vars.put( "groups", groups );
         vars.put( "now", new Date() ); 
         
-        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler();
-        notificationHandler.getHandler().setConnection( emailHost, emailPort, null, null );
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler( conf );
         WorkItemManager manager = new DefaultWorkItemManager( null );
         notificationHandler.setManager( manager );
         
@@ -126,7 +128,12 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         // nor yet
         assertEquals(0, wiser.getMessages().size() );     
         
-        Thread.sleep( 6000 );
+        long time = 0;
+        while ( wiser.getMessages().size() != 2 && time < 15000 ) {
+            Thread.sleep( 500 );
+            time += 500;
+        }
+        
         
         // 1 email with two recipients should now exist
         assertEquals(2, wiser.getMessages().size() );        
@@ -154,8 +161,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         vars.put( "groups", groups );
         vars.put( "now", new Date() ); 
         
-        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler();
-        notificationHandler.getHandler().setConnection( "localhost", "25", null, null );
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(conf);
         WorkItemManager manager = new DefaultWorkItemManager( null );
         notificationHandler.setManager( manager );
         
@@ -194,7 +200,12 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         assertTrue( ids.contains( users.get( "luke" ).getId() ));        
         
         // should have re-assigned by now
-        Thread.sleep( 6000 );     
+        long time = 0;
+        while ( wiser.getMessages().size() != 2 && time < 15000 ) {
+            Thread.sleep( 500 );
+            time += 500;
+        }
+        
         getTaskHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskHandler );
         task = getTaskHandler.getTask();

@@ -87,10 +87,10 @@ public class TaskServiceEventMessagingTest extends BaseTest {
         EventKey key = new TaskEventKey(TaskClaimedEvent.class, taskId );           
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
         client.registerForEvent( key, true, handler );
+        Thread.sleep( 3000 );
         
-        taskSession.claim( taskId, users.get( "darth" ).getId() );  
-        
-        Thread.sleep( 2000 );
+        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null );          
+        handler.waitTillDone( 5000 );
         
         Payload payload = handler.getPayload();
         TaskClaimedEvent event = ( TaskClaimedEvent ) payload.get();

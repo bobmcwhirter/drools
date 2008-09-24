@@ -14,8 +14,7 @@ import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 
 public class TaskClientHandler extends BaseMinaHandler {
-    private MinaTaskClient    client;
-  
+    private MinaTaskClient client;
 
     public MinaTaskClient getClient() {
         return client;
@@ -36,11 +35,26 @@ public class TaskClientHandler extends BaseMinaHandler {
                                 Object message) throws Exception {
         Command cmd = (Command) message;
         switch ( cmd.getName() ) {
+            case OperationResponse : {
+                TaskOperationResponseHandler responseHandler = (TaskOperationResponseHandler) responseHandlers.remove( cmd.getId() );
+                if ( responseHandler != null ) {
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.setIsDone( true );
+                    }
+                }
+                break;
+            }
             case GetTaskResponse : {
                 Task task = (Task) cmd.getArguments().get( 0 );
                 GetTaskResponseHandler responseHandler = (GetTaskResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( task );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( task );
+                    }
                 }
                 break;
             }
@@ -48,7 +62,11 @@ public class TaskClientHandler extends BaseMinaHandler {
                 long taskId = (Long) cmd.getArguments().get( 0 );
                 AddTaskResponseHandler responseHandler = (AddTaskResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( taskId );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( taskId );
+                    }
                 }
                 break;
             }
@@ -56,25 +74,59 @@ public class TaskClientHandler extends BaseMinaHandler {
                 long commentId = (Long) cmd.getArguments().get( 0 );
                 AddCommentResponseHandler responseHandler = (AddCommentResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( commentId );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( commentId );
+                    }
                 }
                 break;
+            }
+            case DeleteCommentResponse : {
+                DeleteCommentResponseHandler responseHandler = (DeleteCommentResponseHandler) responseHandlers.remove( cmd.getId() );
+                if ( responseHandler != null ) {
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.setIsDone( true );
+                    }
+                }
+                break;                
             }
             case AddAttachmentResponse : {
                 long attachmentId = (Long) cmd.getArguments().get( 0 );
                 long contentId = (Long) cmd.getArguments().get( 1 );
                 AddAttachmentResponseHandler responseHandler = (AddAttachmentResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( attachmentId,
-                                             contentId );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( attachmentId,
+                                                 contentId );
+                    }
                 }
                 break;
             }
+            case DeleteAttachmentResponse : {
+                DeleteAttachmentResponseHandler responseHandler = (DeleteAttachmentResponseHandler) responseHandlers.remove( cmd.getId() );
+                if ( responseHandler != null ) {
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.setIsDone( true );
+                    }
+                }
+                break;                
+            }            
             case GetContentResponse : {
                 Content content = (Content) cmd.getArguments().get( 0 );
                 GetContentResponseHandler responseHandler = (GetContentResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( content );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( content );
+                    }
                 }
                 break;
             }
@@ -82,7 +134,11 @@ public class TaskClientHandler extends BaseMinaHandler {
                 long contentId = (Long) cmd.getArguments().get( 0 );
                 SetDocumentResponseHandler responseHandler = (SetDocumentResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( contentId );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( contentId );
+                    }
                 }
                 break;
             }
@@ -90,7 +146,11 @@ public class TaskClientHandler extends BaseMinaHandler {
                 List<TaskSummary> results = (List<TaskSummary>) cmd.getArguments().get( 0 );
                 TaskSummaryResponseHandler responseHandler = (TaskSummaryResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( results );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( results );
+                    }
                 }
                 break;
             }
@@ -98,13 +158,17 @@ public class TaskClientHandler extends BaseMinaHandler {
                 Payload payload = (Payload) cmd.getArguments().get( 0 );
                 EventResponseHandler responseHandler = (EventResponseHandler) responseHandlers.remove( cmd.getId() );
                 if ( responseHandler != null ) {
-                    responseHandler.execute( payload );
+                    if ( !cmd.getArguments().isEmpty() &&  cmd.getArguments().get( 0 ) instanceof TaskError ) {
+                        responseHandler.setError( ((TaskError) cmd.getArguments().get( 0 )).getMessage() );
+                    } else {
+                        responseHandler.execute( payload );
+                    }
                 }
-                break;                 
+                break;
             }
             default : {
-                
-            }            
+
+            }
         }
     }
 
@@ -120,10 +184,22 @@ public class TaskClientHandler extends BaseMinaHandler {
         public void execute(long taskId);
     }
 
+    public static interface TaskOperationResponseHandler
+        extends
+        ResponseHandler {
+        public void setIsDone(boolean done);
+    }
+
     public static interface AddCommentResponseHandler
         extends
         ResponseHandler {
         public void execute(long commentId);
+    }
+
+    public static interface DeleteCommentResponseHandler
+        extends
+        ResponseHandler {
+        public void setIsDone(boolean done);
     }
 
     public static interface AddAttachmentResponseHandler
@@ -131,6 +207,12 @@ public class TaskClientHandler extends BaseMinaHandler {
         ResponseHandler {
         public void execute(long attachmentId,
                             long contentId);
+    }
+
+    public static interface DeleteAttachmentResponseHandler
+        extends
+        ResponseHandler {
+        public void setIsDone(boolean done);
     }
 
     public static interface SetDocumentResponseHandler

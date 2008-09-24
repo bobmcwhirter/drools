@@ -48,6 +48,8 @@ public class Deadline implements Externalizable {
         }
         CollectionUtils.writeI18NTextList( documentation, out );
         CollectionUtils.writeEscalationList( escalations, out );
+        
+        out.writeBoolean( escalated );
     }
     
     public void readExternal(ObjectInput in) throws IOException,
@@ -58,7 +60,9 @@ public class Deadline implements Externalizable {
             date = new Date( in.readLong() );
         }
         documentation = CollectionUtils.readI18NTextList( in );
-        escalations = CollectionUtils.readEscalationList( in );       
+        escalations = CollectionUtils.readEscalationList( in );   
+        
+        escalated = in.readBoolean();
     }
 
     public long getId() {

@@ -24,6 +24,6 @@ public class BaseMinaHandler extends IoHandlerAdapter
     }
     
     public static interface ResponseHandler {
-        
+        public void setError(String error);
     }
 }

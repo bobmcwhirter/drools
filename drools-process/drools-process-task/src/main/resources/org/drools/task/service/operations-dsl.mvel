@@ -1,0 +1,120 @@
+[   Operation.Claim 
+        : [ new OperationCommand().{ 
+                status = [ Status.Ready ],
+                allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator ],    
+                setNewOwnerToTargetUser = true,           
+                newStatus = Status.Reserved
+            } ],
+    Operation.Start 
+        : [ new OperationCommand().{ 
+                status = [ Status.Ready ],
+                allowed = [ Allowed.PotentialOwner ],  
+                setNewOwnerToTargetUser = true,              
+                newStatus = Status.InProgress
+            },
+            new OperationCommand().{ 
+                status = [ Status.Reserved ],
+                allowed = [ Allowed.Owner ],          
+                newStatus = Status.InProgress
+            } ],                  
+     Operation.Stop 
+        : [ new OperationCommand().{ 
+                status = [ Status.InProgress ],
+                allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],               
+                newStatus = Status.Reserved
+            } ],                 
+    Operation.Release 
+        : [ new OperationCommand().{ 
+                status = [ Status.Reserved, Status.InProgress ],
+                allowed = [Allowed.Owner, Allowed.BusinessAdministrator ],  
+                setNewOwnerToNull = true,            
+                newStatus = Status.Ready
+            } ],    
+    Operation.Suspend 
+        : [ new OperationCommand().{ 
+                status = [ Status.Ready ],
+                allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],              
+                newStatus = Status.Suspended
+            },
+            new OperationCommand().{ 
+                status = [ Status.Reserved, Status.InProgress ],
+                allowed = [Allowed.Owner, Allowed.BusinessAdministrator ],          
+                newStatus = Status.Suspended
+            } ],   
+    Operation.Resume 
+        : [ new OperationCommand().{ 
+                previousStatus = [ Status.Ready ],
+                allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],              
+                setToPreviousStatus = true
+            },
+            new OperationCommand().{ 
+                previousStatus = [ Status.Reserved, Status.InProgress ],
+                allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],          
+                setToPreviousStatus = true
+            } ],
+    Operation.Skip             
+        : [ new OperationCommand().{ 
+                status = [ Status.Created ],
+                allowed = [ Allowed.Initiator, Allowed.BusinessAdministrator  ],              
+                newStatus = Status.Obsolete
+            },
+            new OperationCommand().{ 
+                status = [ Status.Ready ],
+                allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],              
+                newStatus = Status.Obsolete
+            },
+            new OperationCommand().{ 
+                status = [ Status.Reserved, Status.InProgress ],
+                allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],          
+                newStatus = Status.Obsolete
+            } ],
+    Operation.Delegate 
+        : [ new OperationCommand().{ 
+                status = [ Status.Ready ],
+                allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],
+                addTargetUserToPotentialOwners = true, 
+                setNewOwnerToTargetUser = true,            
+                newStatus = Status.Ready,
+                exec = Operation.Claim
+            },
+            new OperationCommand().{ 
+                status = [ Status.Reserved, Status.InProgress ],
+                allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
+                addTargetUserToPotentialOwners = true, 
+                setNewOwnerToTargetUser = true,                           
+                newStatus = Status.Ready,
+                exec = Operation.Claim
+            } ],
+    Operation.Forward 
+        : [ new OperationCommand().{ 
+                status = [ Status.Ready ],
+                allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],
+                userIsExplicitPotentialOwner = true,                
+                addTargetUserToPotentialOwners = true,     
+                removeUserFromPotentialOwners = true,   
+                setNewOwnerToNull = true,         
+                newStatus = Status.Ready
+            },
+            new OperationCommand().{ 
+                status = [ Status.Reserved, Status.InProgress ],
+                allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
+                userIsExplicitPotentialOwner = true,
+                addTargetUserToPotentialOwners = true,     
+                removeUserFromPotentialOwners = true, 
+                setNewOwnerToNull = true,                             
+                newStatus = Status.Ready
+            }],            
+    Operation.Complete 
+        : [ new OperationCommand().{ 
+                status = [ Status.InProgress ],
+                allowed = [ Allowed.Owner  ],      
+                newStatus = Status.Completed
+            } ],
+    Operation.Fail 
+        : [ new OperationCommand().{ 
+                status = [ Status.InProgress ],
+                allowed = [ Allowed.Owner  ],      
+                newStatus = Status.Failed
+            } ]                
+]          
+  

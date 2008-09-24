@@ -114,11 +114,12 @@ public class IcalTest extends BaseTest {
                         addTaskResponseHandler );
 
         long taskId = addTaskResponseHandler.getTaskId();
-
+        
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId,
-                      users.get( "steve" ).getId() );
-
-        Thread.sleep( 3000 );
+                      users.get( "steve" ).getId(),
+                      responseHandler );
+        responseHandler.waitTillDone( 5000 );
 
         assertEquals( 2,
                       wiser.getMessages().size() );
@@ -226,10 +227,11 @@ public class IcalTest extends BaseTest {
 
         long taskId = addTaskResponseHandler.getTaskId();
 
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId,
-                      users.get( "steve" ).getId() );
-
-        Thread.sleep( 3000 );
+                      users.get( "steve" ).getId(),
+                      responseHandler );
+        responseHandler.waitTillDone( 5000 );
 
         assertEquals( 1,
                       wiser.getMessages().size() );
@@ -267,26 +269,6 @@ public class IcalTest extends BaseTest {
         assertEqualsIgnoreWhitespace( "SUMMARY:\"Task Start : This is my task subject\"DESCRIPTION:\"This is my task description\"PRIORITY:55END:VEVENTEND:VCALENDAR", content.substring( content.length()-131, content.length()) );
     }    
     
-    private static void assertEqualsIgnoreWhitespace(final String expected,
-                                                     final String actual) {
-        assertEqualsIgnoreWhitespace(expected, actual, 0, actual.length());
-    }
-
-    private static void assertEqualsIgnoreWhitespace(final String expected,
-                                                     final String actual,
-                                                     int beginIndex,
-                                                     int endIndex) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" ).replaceAll( "\\n", "" ).replaceAll( "\\r", "" );
-        
-        final String cleanActual = actual.substring( beginIndex,
-                                                     endIndex ).replaceAll( "\\s+",
-                                                      "" ).replaceAll( "\\n", "" ).replaceAll( "\\r", "" );
-        System.out.println( cleanActual );
-        assertEquals( cleanExpected,
-                      cleanActual );
-    }
-
     public void testSendWithEndDeadline() throws Exception {
         Map vars = new HashedMap();
         vars.put( "users",
@@ -328,10 +310,12 @@ public class IcalTest extends BaseTest {
 
         long taskId = addTaskResponseHandler.getTaskId();
 
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId,
-                      users.get( "steve" ).getId() );
+                      users.get( "steve" ).getId(),
+                      responseHandler );
 
-        Thread.sleep( 3000 );
+        responseHandler.waitTillDone( 5000 );
 
         assertEquals( 1,
                       wiser.getMessages().size() );
@@ -405,14 +389,35 @@ public class IcalTest extends BaseTest {
 
         long taskId = addTaskResponseHandler.getTaskId();
 
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId,
-                      users.get( "steve" ).getId() );
+                      users.get( "steve" ).getId(),
+                      responseHandler );
 
-        Thread.sleep( 3000 );
+        responseHandler.waitTillDone( 5000 );
 
         assertEquals( 0,
                       wiser.getMessages().size() );        
-    }    
+    }       
+    
+    private static void assertEqualsIgnoreWhitespace(final String expected,
+                                                     final String actual) {
+        assertEqualsIgnoreWhitespace(expected, actual, 0, actual.length());
+    }
+
+    private static void assertEqualsIgnoreWhitespace(final String expected,
+                                                     final String actual,
+                                                     int beginIndex,
+                                                     int endIndex) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" ).replaceAll( "\\n", "" ).replaceAll( "\\r", "" );
+        
+        final String cleanActual = actual.substring( beginIndex,
+                                                     endIndex ).replaceAll( "\\s+",
+                                                      "" ).replaceAll( "\\n", "" ).replaceAll( "\\r", "" );
+        assertEquals( cleanExpected,
+                      cleanActual );
+    } 
     
     private static byte[] getBytes(InputStream inputStream) throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);

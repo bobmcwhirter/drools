@@ -172,7 +172,7 @@ public class ModelPersistenceTest extends BaseTest {
 
         Delegation delegation = new Delegation();
         task1.setDelegation( delegation );
-        delegation.setAllowed( Allowed.PotentialOwners );
+        delegation.setAllowed( AllowedToDelegate.PotentialOwners );
 
         List<OrganizationalEntity> delegates = new ArrayList<OrganizationalEntity>();
         delegation.setDelegates( delegates );

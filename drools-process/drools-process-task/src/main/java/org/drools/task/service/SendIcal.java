@@ -46,41 +46,71 @@ import org.drools.util.ChainedProperties;
 //import net.fortuna.ical4j.model.property.Version;
 
 public class SendIcal {
-    private static SimpleDateFormat df              = new SimpleDateFormat(  "yyyyMMdd'T'HHmmss'Z'" );
+    private static SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd'T'HHmmss'Z'" );
     static {
-        df.setTimeZone( TimeZone.getTimeZone("UTC") );
+        df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
     }
 
     private Properties              connection;
     private String                  defaultLanguage;
-    
-    private static SendIcal instance = new SendIcal();
-    
+
+    private static SendIcal         instance;
+
+    public static void initInstance(Properties properties) {
+        if ( instance == null ) {
+            instance = new SendIcal( properties );
+        }
+    }
+
     public static SendIcal getInstance() {
+        if ( instance == null ) {
+            instance = new SendIcal();
+        }
         return instance;
     }
 
     SendIcal() {
-        ChainedProperties conf = new ChainedProperties( "process.email.conf" );
-        String host = conf.getProperty( "host",
-                                        null );
-        String port = conf.getProperty( "port",
+        ChainedProperties conf = new ChainedProperties( "drools.email.conf" );
+        String host = conf.getProperty( "mail.smtp.host",
+                                        "localhost" );
+        String port = conf.getProperty( "mail.smtp.port",
                                         "25" );
-        //        userName = conf.getProperty( "userName", null );
-        //        password = conf.getProperty( "password", null );   
-        
+
         connection = new Properties();
-        connection.setProperty("mail.transport.protocol", "smtp");
-        
+        connection.setProperty( "mail.transport.protocol",
+                                "smtp" );
+
         if ( host != null && host.trim().length() > 0 ) {
             connection.setProperty( "mail.smtp.host",
-                            host );
+                                    host );
         }
         if ( port != null && port.trim().length() > 0 ) {
             connection.setProperty( "mail.smtp.port",
                                     port );
         }
 
+        defaultLanguage = conf.getProperty( "defaultLanguage",
+                                            "en-UK" );
+    }
+
+    SendIcal(Properties conf) {
+        String host = conf.getProperty( "mail.smtp.host",
+                                        "localhost" );
+        String port = conf.getProperty( "mail.smtp.port",
+                                        "25" );
+
+        connection = new Properties();
+        connection.setProperty( "mail.transport.protocol",
+                                "smtp" );
+
+        if ( host != null && host.trim().length() > 0 ) {
+            connection.setProperty( "mail.smtp.host",
+                                    host );
+        }
+        if ( port != null && port.trim().length() > 0 ) {
+            connection.setProperty( "mail.smtp.port",
+                                    port );
+        }
 
         defaultLanguage = conf.getProperty( "defaultLanguage",
                                             "en-UK" );
@@ -92,7 +122,7 @@ public class SendIcal {
         User owner = data.getActualOwner();
         User creator = data.getCreatedBy();
         Date createdOn = data.getCreatedOn();
-        
+
         if ( task.getDeadlines() == null ) {
             return;
         }
@@ -128,18 +158,38 @@ public class SendIcal {
         // send ical for start
         if ( start != null ) {
             try {
-                sendIcal(task.getId(), name, summary, description, task.getPriority(), start.getDate(), owner, creator, createdOn, userInfo, "Start");
+                sendIcal( task.getId(),
+                          name,
+                          summary,
+                          description,
+                          task.getPriority(),
+                          start.getDate(),
+                          owner,
+                          creator,
+                          createdOn,
+                          userInfo,
+                          "Start" );
             } catch ( Exception e ) {
-                
+
             }
         }
-        
+
         // send ical for end
         if ( end != null ) {
             try {
-                sendIcal(task.getId(), name, summary, description, task.getPriority(), end.getDate(), owner, creator, createdOn, userInfo, "End");
+                sendIcal( task.getId(),
+                          name,
+                          summary,
+                          description,
+                          task.getPriority(),
+                          end.getDate(),
+                          owner,
+                          creator,
+                          createdOn,
+                          userInfo,
+                          "End" );
             } catch ( Exception e ) {
-                
+
             }
         }
     }
@@ -149,10 +199,10 @@ public class SendIcal {
                          String summary,
                          String description,
                          int priority,
-                         Date startDate,                       
+                         Date startDate,
                          User owner,
                          User creator,
-                         Date createdOn,    
+                         Date createdOn,
                          UserInfo userInfo,
                          String type) throws Exception {
         MimetypesFileTypeMap mimetypes = (MimetypesFileTypeMap) MimetypesFileTypeMap.getDefaultFileTypeMap();
@@ -193,7 +243,7 @@ public class SendIcal {
 
         // Add ical
         messageBodyPart = new MimeBodyPart();
-        String filename = "ical-" + type + "-"+ taskId + ".ics";
+        String filename = "ical-" + type + "-" + taskId + ".ics";
         messageBodyPart.setFileName( filename );
         messageBodyPart.setHeader( "Content-Class",
                                    "urn:content-classes:calendarmessage" );
@@ -206,7 +256,7 @@ public class SendIcal {
                                   userInfo.getDisplayName( creator ),
                                   creatorEmail,
                                   type );
-        
+
         messageBodyPart.setDataHandler( new DataHandler( new ByteArrayDataSource( icalStr,
                                                                                   "text/calendar; charset=UTF8; " ) ) );
         multipart.addBodyPart( messageBodyPart );

@@ -5,28 +5,35 @@ package org.drools.task.service;
 
 import org.drools.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 
-public class BlockingAddAttachmentResponseHandler implements AddAttachmentResponseHandler {
+public class BlockingAddAttachmentResponseHandler extends AbstractBlockingResponseHandler implements AddAttachmentResponseHandler {
     private volatile long attachmentId ;
     private volatile long contentId;
-    private volatile boolean wait = true;
 
     public synchronized void execute(long attachmentId, long contentId) {
-        this.attachmentId = attachmentId;
-        this.contentId = contentId;
-        wait = false;
-        notifyAll();                
+        synchronized ( this.done ) {        
+            this.attachmentId = attachmentId;
+            this.contentId = contentId;
+            this.done = true;
+            notifyAll();     
+        }
     }
     
     public synchronized long getAttachmentId() {
-        if ( wait ) {                  
-            try {
-                wait( 3000 );
-            } catch ( InterruptedException e ) {
-                // swallow as this is just a notifiation
-            }
+        boolean isDone;
+        synchronized ( done ) {
+            isDone = this.done;
         }
-        
-        if ( wait ) {
+        if ( !isDone ) {                  
+            try {
+                wait( 10000 );
+            } catch ( InterruptedException e ) {
+                // swallow as this is just a notification
+            }
+        }        
+        synchronized ( done ) {
+            isDone = this.done;
+        }        
+        if ( !isDone ) {
             throw new RuntimeException("Timeout : unable to retrieve Attachment Id" );
         }
         
@@ -34,15 +41,21 @@ public class BlockingAddAttachmentResponseHandler implements AddAttachmentRespon
     }       
     
     public synchronized long getContentId() {
-        if ( wait ) {                  
+        boolean isDone;
+        synchronized ( done ) {
+            isDone = this.done;
+        }
+        if ( !isDone ) {                  
             try {
                 wait( 3000 );
             } catch ( InterruptedException e ) {
-                // swallow as this is just a notifiation
+                // swallow as this is just a notification
             }
-        }
-        
-        if ( wait ) {
+        }        
+        synchronized ( done ) {
+            isDone = this.done;
+        }        
+        if ( !isDone ) {
             throw new RuntimeException("Timeout : unable to retrieve Attachment Content Id" );
         }
         

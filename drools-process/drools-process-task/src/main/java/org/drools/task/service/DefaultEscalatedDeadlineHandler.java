@@ -50,17 +50,29 @@ public class DefaultEscalatedDeadlineHandler
 
     WorkItemManager      manager;
     
+    public DefaultEscalatedDeadlineHandler(Properties properties) {
+        handler = new EmailWorkItemHandler();
+        
+        String host = properties.getProperty( "mail.smtp.host", "localhost" );
+        String port = properties.getProperty( "mail.smtp.port", "25" );     
+        
+        from = properties.getProperty( "from", null );
+        replyTo = properties.getProperty( "replyTo", null );
+        
+        handler.setConnection( host, port, null, null );
+    }
+    
     public DefaultEscalatedDeadlineHandler() {
         handler = new EmailWorkItemHandler();
-        ChainedProperties conf = new ChainedProperties("process.email.conf");
-//        String host = conf.getProperty( "host", null );
-//        String port = conf.getProperty( "port", "25" );
-//        String userName = conf.getProperty( "userName", null );
-//        String password = conf.getProperty( "password", null );       
+        
+        ChainedProperties conf = new ChainedProperties("drools.email.conf");
+        String host = conf.getProperty( "host", null );
+        String port = conf.getProperty( "port", "25" );
         
         from = conf.getProperty( "from", null );
         replyTo = conf.getProperty( "replyTo", null );
         
+        handler.setConnection( host, port, null, null );
  
     }
     
@@ -86,14 +98,6 @@ public class DefaultEscalatedDeadlineHandler
 
     public void setReplyTo(String replyTo) {
         this.replyTo = replyTo;
-    }
-
-    public EmailWorkItemHandler getHandler() {
-        return handler;
-    }
-
-    public void setHandler(EmailWorkItemHandler handler) {
-        this.handler = handler;
     }
 
     public WorkItemManager getManager() {
@@ -129,7 +133,6 @@ public class DefaultEscalatedDeadlineHandler
                 em.getTransaction().begin();
                 task.getTaskData().setStatus( Status.Ready );
                 List potentialOwners = new ArrayList( reassignment.getPotentialOwners() );
-                System.out.println( potentialOwners );
                 task.getPeopleAssignments().setPotentialOwners( potentialOwners );
                 em.getTransaction().commit();
             }            

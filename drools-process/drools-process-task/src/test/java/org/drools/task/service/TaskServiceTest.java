@@ -7,6 +7,8 @@ import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Synchronization;
+
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.BaseTest;
@@ -199,6 +201,7 @@ public class TaskServiceTest extends BaseTest {
         implements
         TaskSummaryResponseHandler {
         private volatile List<TaskSummary> results;
+        private volatile String error;
 
         public synchronized void execute(List<TaskSummary> results) {
             this.results = results;
@@ -220,6 +223,20 @@ public class TaskServiceTest extends BaseTest {
 
             return results;
 
+        }
+
+        public boolean isDone() {
+            synchronized ( results ) {
+                return results != null;                
+            }
+        }
+
+        public void setError(String error) {
+            this.error = error;            
+        }
+        
+        public String getError() {
+            return error;
         }
 
     };

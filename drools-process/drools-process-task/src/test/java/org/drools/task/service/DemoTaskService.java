@@ -10,7 +10,7 @@ import javax.persistence.Persistence;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.drools.task.AccessType;
-import org.drools.task.Allowed;
+import org.drools.task.AllowedToDelegate;
 import org.drools.task.Attachment;
 import org.drools.task.BaseTest;
 import org.drools.task.BooleanExpression;
@@ -88,7 +88,7 @@ public class DemoTaskService {
         context.addPackageImport( "java.util" );
         
         context.addImport( "AccessType", AccessType.class );
-        context.addImport( "Allowed", Allowed.class );
+        context.addImport( "AllowedToDelegate", AllowedToDelegate.class );
         context.addImport( "Attachment", Attachment.class );
         context.addImport( "BooleanExpression", BooleanExpression.class );
         context.addImport( "Comment", Comment.class );

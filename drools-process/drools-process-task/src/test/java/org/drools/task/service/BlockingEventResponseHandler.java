@@ -6,26 +6,33 @@ package org.drools.task.service;
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
 
-public class BlockingEventResponseHandler implements EventResponseHandler {
+public class BlockingEventResponseHandler extends AbstractBlockingResponseHandler implements EventResponseHandler {
     private volatile Payload payload;
-    private volatile boolean wait;
 
     public synchronized void execute(Payload payload) {
-        this.payload = payload;
-        wait = true;
-        notifyAll();                
+        synchronized ( this.done ) {            
+            this.payload = payload;        
+            this.done = true;
+        }
+        notifyAll();        
     }
     
     public synchronized Payload getPayload() {
-        if ( !wait ) {                  
+        boolean isDone;
+        synchronized ( done ) {
+            isDone = this.done;
+        }
+        if ( !isDone ) {                  
             try {
-                wait( 3000 );
+                wait( 10000 );
             } catch ( InterruptedException e ) {
                 // swallow as this is just a notification
             }
-        }
-        
-        if ( !wait ) {
+        }        
+        synchronized ( done ) {
+            isDone = this.done;
+        }        
+        if ( !isDone ) {
             throw new RuntimeException("Timeout : unable to retrieve event payload" );
         }
         

@@ -29,9 +29,12 @@ import org.drools.task.User;
 import org.drools.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 import org.drools.task.service.TaskClientHandler.AddCommentResponseHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
+import org.drools.task.service.TaskClientHandler.DeleteAttachmentResponseHandler;
+import org.drools.task.service.TaskClientHandler.DeleteCommentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.drools.task.service.TaskClientHandler.SetDocumentResponseHandler;
+import org.drools.task.service.TaskClientHandler.TaskOperationResponseHandler;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
 public class MinaTaskClient extends BaseMinaClient {
@@ -88,13 +91,17 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void deleteComment(long taskId,
-                              long commentId) {
+                              long commentId,
+                              DeleteCommentResponseHandler responseHandler) {
         List args = new ArrayList( 2 );
         args.add( taskId );
         args.add( commentId );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.DeleteCommentRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
@@ -119,7 +126,8 @@ public class MinaTaskClient extends BaseMinaClient {
 
     public void deleteAttachment(long taskId,
                                  long attachmentId,
-                                 long contentId) {
+                                 long contentId,
+                                 DeleteAttachmentResponseHandler responseHandler ) {
         List args = new ArrayList( 3 );
         args.add( taskId );
         args.add( attachmentId );
@@ -127,7 +135,10 @@ public class MinaTaskClient extends BaseMinaClient {
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.DeleteAttachmentRequest,
                                    args );
-
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        
         session.write( cmd );
     }
 
@@ -162,109 +173,201 @@ public class MinaTaskClient extends BaseMinaClient {
     }
 
     public void claim(long taskId,
-                      String userId) {
-        List args = new ArrayList( 1 );
+                      String userId,
+                      TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Claim );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.ClaimRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
 
     public void start(long taskId,
-                      String userId) {
-        List args = new ArrayList( 1 );
+                      String userId,
+                      TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Start );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.StartRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
 
     public void stop(long taskId,
-                     String userId) {
-        List args = new ArrayList( 1 );
+                     String userId,
+                     TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Stop );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.StopRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
 
     public void release(long taskId,
-                        String userId) {
-        List args = new ArrayList( 1 );
+                        String userId,
+                        TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Release );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.ReleaseRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
 
     public void suspend(long taskId,
-                        String userId) {
-        List args = new ArrayList( 1 );
+                        String userId,
+                        TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Suspend );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.SuspendRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
 
     public void resume(long taskId,
-                       String userId) {
-        List args = new ArrayList( 1 );
+                       String userId,
+                       TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Resume );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.ResumeRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
 
     public void skip(long taskId,
-                     String userId) {
-        List args = new ArrayList( 1 );
+                     String userId,
+                     TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Skip );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.SkipRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
-
-    public void complete(long taskId,
-                         String userId) {
-        List args = new ArrayList( 1 );
+    
+    public void delegate(long taskId,
+                         String userId,
+                         String targetUserId,
+                         TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Delegate );
         args.add( taskId );
         args.add( userId );
+        args.add( targetUserId );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.CompleteRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+
+        session.write( cmd );      
+    }
+    
+    public void forward(long taskId,
+                        String userId,
+                        String targetEntityId,
+                        TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Forward );
+        args.add( taskId );
+        args.add( userId );
+        args.add( targetEntityId );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.OperationRequest,
+                                   args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+
+        session.write( cmd );      
+    }    
+
+    public void complete(long taskId,
+                         String userId,
+                         TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Complete );
+        args.add( taskId );
+        args.add( userId );
+        args.add( null );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.OperationRequest,
+                                   args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }
 
     public void fail(long taskId,
-                     String userId) {
-        List args = new ArrayList( 1 );
+                     String userId,
+                     TaskOperationResponseHandler responseHandler) {
+        List args = new ArrayList( 4 );
+        args.add( Operation.Fail );
         args.add( taskId );
         args.add( userId );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
-                                   CommandName.FailRequest,
+                                   CommandName.OperationRequest,
                                    args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
 
         session.write( cmd );
     }

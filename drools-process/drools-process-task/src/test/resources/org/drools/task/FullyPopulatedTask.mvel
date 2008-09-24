@@ -58,7 +58,7 @@ with ( new Task() ) {
     descriptions = [ new I18NText( "en-UK", "This is my task description" ),
                      new I18NText( "en-DK", "Das ist mein task Beschreibung" ) ],
     delegation = ( with( new Delegation() ) {
-        allowed = Allowed.PotentialOwners,
+        allowed = AllowedToDelegate.PotentialOwners,
         delegates = [ groups['crusaders' ], groups['knightsTempler' ] ]                                                                
     }),
     deadlines = ( with ( new Deadlines() ) {

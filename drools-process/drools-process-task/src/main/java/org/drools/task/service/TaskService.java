@@ -1,8 +1,11 @@
 package org.drools.task.service;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +21,9 @@ import org.drools.task.event.MessagingTaskEventListener;
 import org.drools.task.event.TaskEventListener;
 import org.drools.task.event.TaskEventSupport;
 import org.drools.task.query.DeadlineSummary;
+import org.mvel.MVEL;
+import org.mvel.ParserContext;
+import org.mvel.compiler.ExpressionCompiler;
 
 public class TaskService {
     EntityManagerFactory             emf;
@@ -31,10 +37,19 @@ public class TaskService {
 
     private TaskEventSupport         eventSupport;
     private EventKeys                eventKeys;
+    
+    Map<Operation, List<OperationCommand>> operations;
 
     public TaskService(EntityManagerFactory emf) {
+        this(emf, null);
+    }
+    
+    public TaskService(EntityManagerFactory emf, EscalatedDeadlineHandler escalationHandler) {
         this.emf = emf;
         this.em = emf.createEntityManager();
+        if ( escalationHandler != null ) {
+            this.escalatedDeadlineHandler = escalationHandler;
+        }
 
         eventSupport = new TaskEventSupport();
         eventKeys = new EventKeys();
@@ -49,6 +64,17 @@ public class TaskService {
                                                  this ),
                       summary.getDate().getTime() - now );
         }
+        
+        Map vars = new HashMap();
+        
+        //Reader reader;
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "operations-dsl.mvel" ) );
+        try {
+        operations  = (Map<Operation,  List<OperationCommand>>) eval( toString( reader ),
+                                                                      vars );        
+        } catch (IOException e) {
+            throw new RuntimeException( "Unable To initialise TaskService, could not load Operations DSL" );
+        }
     }
 
     public TaskServiceSession createSession() {
@@ -61,6 +87,10 @@ public class TaskService {
         scheduler.schedule( deadline,
                             delay,
                             TimeUnit.MILLISECONDS );
+    }
+    
+    public Map<Operation,  List<OperationCommand>> getOperations() {
+        return operations;
     }
 
     public EventKeys getEventKeys() {
@@ -126,11 +156,24 @@ public class TaskService {
         int charValue = 0;
         StringBuffer sb = new StringBuffer( 1024 );
         while ( (charValue = reader.read()) != -1 ) {
-            //result = result + (char) charValue;
             sb.append( (char) charValue );
         }
         return sb.toString();
     }
+    
+    public Object eval(String str,
+                       Map vars) {
+        ExpressionCompiler compiler = new ExpressionCompiler( str.trim() );
+
+        ParserContext context = new ParserContext();
+        context.addPackageImport( "org.drools.task" );
+        context.addPackageImport( "org.drools.task.service" );
+        context.addPackageImport( "org.drools.task.query" );
+        context.addPackageImport( "java.util" );
+
+        return MVEL.executeExpression( compiler.compile( context ),
+                                       vars );
+    }    
 
     public static class ScheduledTaskDeadline
         implements
