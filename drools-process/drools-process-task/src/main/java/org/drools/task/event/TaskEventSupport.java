@@ -17,17 +17,12 @@ package org.drools.task.event;
  */
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
 
 
 public class TaskEventSupport
@@ -73,26 +68,29 @@ public class TaskEventSupport
     }
     
     public void fireTaskClaimed(final long taskId, final String userId) {
-      if ( this.listeners.isEmpty() ) {
+    	System.out.println("Task " + taskId + " claimed");
+        if ( this.listeners.isEmpty() ) {
           return;
       }
 
       final TaskClaimedEvent event = new TaskClaimedEvent(taskId, userId);
       
       for ( TaskEventListener listener: listeners) {
+      	  System.out.println("notifying listener " + listener);
           listener.taskClaimed( event );
       }
   }    
 
-    public void fireTaskClosed(final long taskId, final String userId) {
+    public void fireTaskCompleted(final long taskId, final String userId) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final TaskClosedEvent event = new TaskClosedEvent( taskId, userId );
+        final TaskCompletedEvent event = new TaskCompletedEvent( taskId, userId );
         
         for ( TaskEventListener listener: listeners) {
-            listener.taskClosed( event );
+        	System.out.println("notifying listener " + listener);
+            listener.taskCompleted( event );
         }
     } 
     

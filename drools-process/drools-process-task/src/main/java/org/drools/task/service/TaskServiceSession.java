@@ -16,7 +16,6 @@ import org.drools.task.Attachment;
 import org.drools.task.Comment;
 import org.drools.task.Content;
 import org.drools.task.Deadline;
-import org.drools.task.Delegation;
 import org.drools.task.Group;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.PeopleAssignments;
@@ -324,6 +323,13 @@ public class TaskServiceSession {
                     // trigger event support
                     service.getEventSupport().fireTaskClaimed( task.getId(),
                                                                task.getTaskData().getActualOwner().getId() );
+                    break;
+                }
+                
+                case Complete : {
+                    // trigger event support
+                    service.getEventSupport().fireTaskCompleted( task.getId(),
+                                                                 task.getTaskData().getActualOwner().getId() );
                     break;
                 }
             }

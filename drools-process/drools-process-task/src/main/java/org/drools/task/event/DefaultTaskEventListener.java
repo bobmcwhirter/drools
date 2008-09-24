@@ -5,7 +5,7 @@ public class DefaultTaskEventListener implements TaskEventListener {
     public void taskClaimed(TaskClaimedEvent event) {        
     }
 
-    public void taskClosed(TaskClosedEvent event) {
+    public void taskCompleted(TaskCompletedEvent event) {
     }
 
 }

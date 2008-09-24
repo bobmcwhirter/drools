@@ -34,8 +34,8 @@ public class MessagingTaskEventListener implements TaskEventListener {
         }
     }
 
-    public void taskClosed(TaskClosedEvent event) {
-        EventKey key = new TaskEventKey(TaskClosedEvent.class, event.getTaskId() );
+    public void taskCompleted(TaskCompletedEvent event) {
+        EventKey key = new TaskEventKey(TaskCompletedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = keys.getTargets( key );
         if ( targets == null ){
             return;

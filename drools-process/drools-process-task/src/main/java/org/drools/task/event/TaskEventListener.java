@@ -24,6 +24,6 @@ public interface TaskEventListener
     
     void taskClaimed(TaskClaimedEvent event);
     
-    void taskClosed(TaskClosedEvent event);
+    void taskCompleted(TaskCompletedEvent event);
     
 }

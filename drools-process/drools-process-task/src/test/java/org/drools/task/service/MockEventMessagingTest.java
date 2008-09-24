@@ -18,7 +18,7 @@ import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.event.EventPayload;
 import org.drools.task.event.TaskClaimedEvent;
-import org.drools.task.event.TaskClosedEvent;
+import org.drools.task.event.TaskCompletedEvent;
 import org.drools.task.event.TaskEventKey;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.MinaTaskServer;
