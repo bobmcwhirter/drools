@@ -2,14 +2,14 @@
         : [ new OperationCommand().{ 
                 status = [ Status.Ready ],
                 allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator ],    
-                setNewOwnerToTargetUser = true,           
+                setNewOwnerToUser = true,           
                 newStatus = Status.Reserved
             } ],
     Operation.Start 
         : [ new OperationCommand().{ 
                 status = [ Status.Ready ],
                 allowed = [ Allowed.PotentialOwner ],  
-                setNewOwnerToTargetUser = true,              
+                setNewOwnerToUser = true,              
                 newStatus = Status.InProgress
             },
             new OperationCommand().{ 
@@ -72,16 +72,14 @@
         : [ new OperationCommand().{ 
                 status = [ Status.Ready ],
                 allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],
-                addTargetUserToPotentialOwners = true, 
-                setNewOwnerToTargetUser = true,            
+                addTargetUserToPotentialOwners = true,            
                 newStatus = Status.Ready,
                 exec = Operation.Claim
             },
             new OperationCommand().{ 
                 status = [ Status.Reserved, Status.InProgress ],
                 allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
-                addTargetUserToPotentialOwners = true, 
-                setNewOwnerToTargetUser = true,                           
+                addTargetUserToPotentialOwners = true,                         
                 newStatus = Status.Ready,
                 exec = Operation.Claim
             } ],

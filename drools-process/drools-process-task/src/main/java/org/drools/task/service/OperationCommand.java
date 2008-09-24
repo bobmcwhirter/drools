@@ -53,7 +53,7 @@ public class OperationCommand {
     public void setNewStatus(Status newStatus) {
         this.newStatus = newStatus;
     }
-    public boolean isSetNewOwnerToTargetUser() {
+    public boolean isSetNewOwnerToUser() {
         return setNewOwnerToTargetUser;
     }
     public void setSetNewOwnerToTargetUser(boolean setNewOwnerToTargetUser) {

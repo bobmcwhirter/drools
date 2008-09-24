@@ -261,7 +261,7 @@ public class TaskServiceSession {
             people.getPotentialOwners().remove( user );
         }
 
-        if ( command.isSetNewOwnerToTargetUser() ) {
+        if ( command.isSetNewOwnerToUser() ) {
             taskData.setActualOwner( (User) user );
         }
 
