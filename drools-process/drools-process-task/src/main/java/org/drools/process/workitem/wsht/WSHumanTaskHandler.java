@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.eventmessaging.EventKey;
+import org.drools.eventmessaging.EventResponseHandler;
+import org.drools.eventmessaging.Payload;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
@@ -18,10 +20,13 @@ import org.drools.task.PeopleAssignments;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
+import org.drools.task.event.EventPayload;
 import org.drools.task.event.TaskCompletedEvent;
+import org.drools.task.event.TaskEvent;
 import org.drools.task.event.TaskEventKey;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.TaskClientHandler;
+import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
 
 public class WSHumanTaskHandler implements WorkItemHandler {
 
@@ -85,13 +90,8 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 			task.setPeopleAssignments(assignments);
 		}
 		
-		BlockingAddTaskResponseHandler taskResponseHandler = new BlockingAddTaskResponseHandler();
+		TaskWorkItemAddTaskResponseHandler taskResponseHandler = new TaskWorkItemAddTaskResponseHandler(this.client, this.managers, manager, workItem.getId());
 		client.addTask(task, taskResponseHandler);
-		long taskId = taskResponseHandler.getTaskId();
-		managers.put(taskId, manager);
-		System.out.println("Created task " + taskId + " for work item " + workItem.getId());
-		
-		new Thread(new WaitForEvent(taskId)).run();
 	}
 	
 	public void dispose() {
@@ -104,25 +104,72 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		// TODO
 	}
 	
-	private class WaitForEvent implements Runnable {
-		private long taskId;
-		public WaitForEvent(long taskId) {
-			this.taskId = taskId;
-		}
-		public void run() {
-			EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
-	        BlockingEventResponseHandler eventResponseHandler = new BlockingEventResponseHandler(); 
-	        client.registerForEvent( key, true, eventResponseHandler );
-	        eventResponseHandler.getPayload();
-	        
-	        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
-	        client.getTask(taskId, getTaskResponseHandler);
-	        Task task = getTaskResponseHandler.getTask();
-	        long workItemId = task.getTaskData().getWorkItemId();
-        	System.out.println("Completing work item " + workItemId);
-	        
-	        managers.get(taskId).completeWorkItem(workItemId, null);
-		}
-	}
+    public static class TaskWorkItemAddTaskResponseHandler implements AddTaskResponseHandler {
+        private volatile String error;
+        private Map<Long, WorkItemManager> managers;
+        private WorkItemManager manager;
+        private long workItemId;
+        private MinaTaskClient client;
+        
+        public TaskWorkItemAddTaskResponseHandler(MinaTaskClient client, Map<Long, WorkItemManager> managers,  WorkItemManager manager, long workItemId) {
+            this.client = client;
+            this.managers = managers;
+            this.manager = manager;
+            this.workItemId = workItemId;
+        }
+        
+        public void execute(long taskId) {
+            synchronized ( managers ) {
+                managers.put(taskId, this.manager);           
+            }      
+            System.out.println("Created task " + taskId + " for work item " + workItemId);
+            
+            EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
+            TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(workItemId, taskId, managers); 
+            client.registerForEvent( key, true, eventResponseHandler );                       
+        }
+
+        public void setError(String error) {
+            this.error = error;         
+        }
+        
+        public String getError() {
+            return this.error;
+        }       
+    }
+    
+    private static class TaskCompletedHandler implements EventResponseHandler {
+        private volatile String error;
+        
+        private long workItemId;
+        private long taskId;
+        private Map<Long, WorkItemManager> managers;
+        
+        public TaskCompletedHandler(long workItemId, long taskId, Map<Long, WorkItemManager> managers) {
+            this.workItemId = workItemId;
+            this.taskId = taskId;
+            this.managers = managers;
+        }
+
+        public void execute(Payload payload) {
+            TaskEvent event = ( TaskEvent ) payload.get();
+            if ( event.getTaskId() != taskId ) {
+                // defensive check that should never happen, just here for testing                
+                this.error = "Expected task id and arrived task id do not march";
+                return;
+            }
+            synchronized ( this.managers ) {
+                this.managers.get(taskId).completeWorkItem(workItemId, null);   
+            }
+        }
+
+        public void setError(String error) {
+            this.error = error;
+        }
+        
+        public String getError() {
+            return this.error;
+        }
+    }
 
 }
