@@ -11,7 +11,7 @@ public class OperationCommand {
     private List<Status>        previousStatus;
     private List<Allowed> allowed;
     private Status        newStatus;
-    private boolean       setNewOwnerToTargetUser;
+    private boolean       setNewOwnerToUser;
     private boolean       setNewOwnerToNull;
     private boolean       setToPreviousStatus;
     private boolean       userIsExplicitPotentialOwner;
@@ -54,10 +54,10 @@ public class OperationCommand {
         this.newStatus = newStatus;
     }
     public boolean isSetNewOwnerToUser() {
-        return setNewOwnerToTargetUser;
+        return setNewOwnerToUser;
     }
-    public void setSetNewOwnerToTargetUser(boolean setNewOwnerToTargetUser) {
-        this.setNewOwnerToTargetUser = setNewOwnerToTargetUser;
+    public void setSetNewOwnerToUser(boolean setNewOwnerToTargetUser) {
+        this.setNewOwnerToUser = setNewOwnerToTargetUser;
     }
     public boolean isSetToPreviousStatus() {
         return setToPreviousStatus;
