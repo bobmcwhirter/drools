@@ -345,13 +345,14 @@ public class TaskServiceSession {
                 case Skip : {
                     // trigger event support
                     service.getEventSupport().fireTaskSkipped( task.getId(),
-                                                               task.getTaskData().getActualOwner().getId() );
+                                                               userId );
                     break;
                 }
                 
             }
 
         } catch ( Exception e ) {
+        	e.printStackTrace();
             em.getTransaction().rollback();
 
             em.getTransaction().begin();
