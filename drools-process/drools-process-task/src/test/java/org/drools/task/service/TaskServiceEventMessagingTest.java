@@ -3,24 +3,20 @@ package org.drools.task.service;
 import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.eventmessaging.EventKey;
-import org.drools.eventmessaging.EventResponseHandler;
-import org.drools.eventmessaging.EventTriggerTransport;
 import org.drools.eventmessaging.Payload;
 import org.drools.task.BaseTest;
 import org.drools.task.MockUserInfo;
 import org.drools.task.Status;
 import org.drools.task.Task;
-import org.drools.task.event.TaskUserEvent;
+import org.drools.task.event.TaskClaimedEvent;
 import org.drools.task.event.TaskEventKey;
-import org.drools.task.service.MockEventMessagingTest.MockEventTriggerTransport;
+import org.drools.task.event.TaskUserEvent;
 
 public class TaskServiceEventMessagingTest extends BaseTest {
     MinaTaskServer server;
@@ -84,7 +80,7 @@ public class TaskServiceEventMessagingTest extends BaseTest {
         Task task1 = getTaskResponseHandler.getTask();
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
         
-        EventKey key = new TaskEventKey(TaskUserEvent.class, taskId );           
+        EventKey key = new TaskEventKey(TaskClaimedEvent.class, taskId );           
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
         client.registerForEvent( key, true, handler );
         Thread.sleep( 3000 );

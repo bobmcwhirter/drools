@@ -1,28 +1,19 @@
 package org.drools.task.service;
 
 import java.io.StringReader;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.eventmessaging.EventKey;
 import org.drools.eventmessaging.EventTriggerTransport;
 import org.drools.eventmessaging.Payload;
 import org.drools.task.BaseTest;
-import org.drools.task.Status;
 import org.drools.task.Task;
-import org.drools.task.event.EventPayload;
-import org.drools.task.event.TaskUserEvent;
-import org.drools.task.event.TaskCompletedEvent;
+import org.drools.task.event.TaskClaimedEvent;
 import org.drools.task.event.TaskEventKey;
-import org.drools.task.service.MinaTaskClient;
-import org.drools.task.service.MinaTaskServer;
-import org.drools.task.service.TaskClientHandler;
 
 public class MockEventMessagingTest extends BaseTest {    
     public void testMockTransport() throws Exception {      
@@ -41,7 +32,7 @@ public class MockEventMessagingTest extends BaseTest {
         
         long taskId = task.getId();      
         
-        EventKey key = new TaskEventKey(TaskUserEvent.class, taskId );        
+        EventKey key = new TaskEventKey(TaskClaimedEvent.class, taskId );        
         MockEventTriggerTransport transport = new MockEventTriggerTransport();   
         taskService.getEventKeys().register( key, transport );      
         
@@ -49,8 +40,8 @@ public class MockEventMessagingTest extends BaseTest {
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null );        
         
         assertEquals( 1, transport.list.size() );
-        assertEquals( taskId, ((TaskUserEvent) ((Payload) transport.list.get(0)).get()).getTaskId() );
-        assertEquals( users.get( "darth" ).getId(), ((TaskUserEvent) ((Payload) transport.list.get(0)).get()).getUserId() );
+        assertEquals( taskId, ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getTaskId() );
+        assertEquals( users.get( "darth" ).getId(), ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getUserId() );
         
     }
     

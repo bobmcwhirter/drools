@@ -91,8 +91,7 @@ public class TaskLifeCycleTest extends BaseTest {
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(1, tasks.size());
-        assertEquals(Status.Completed, tasks.get(0).getStatus());
+        assertEquals(0, tasks.size());
         
         Payload payload = handler.getPayload();
         TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();
@@ -165,7 +164,7 @@ public class TaskLifeCycleTest extends BaseTest {
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(2, tasks.size());
+        assertEquals(1, tasks.size());
         
         Payload payload = handler.getPayload();
         TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();

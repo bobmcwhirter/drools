@@ -729,7 +729,6 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         vars.put( "groups", groups );        
         vars.put( "now", new Date() );
         
-        // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = true} ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ] }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
@@ -758,7 +757,6 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         vars.put( "groups", groups );        
         vars.put( "now", new Date() );
         
-        // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = true} ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ] }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
