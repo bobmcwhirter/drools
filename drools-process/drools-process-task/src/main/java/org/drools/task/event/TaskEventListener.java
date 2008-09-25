@@ -18,12 +18,14 @@ package org.drools.task.event;
 
 import java.util.EventListener;
 
-public interface TaskEventListener
-    extends
-    EventListener {
-    
-    void taskClaimed(TaskClaimedEvent event);
+public interface TaskEventListener extends EventListener {
+	
+	void taskClaimed(TaskClaimedEvent event);
     
     void taskCompleted(TaskCompletedEvent event);
+    
+    void taskFailed(TaskFailedEvent event);
+    
+    void taskSkipped(TaskSkippedEvent event);
     
 }

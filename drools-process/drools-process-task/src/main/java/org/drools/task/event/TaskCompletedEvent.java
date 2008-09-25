@@ -1,35 +1,13 @@
 package org.drools.task.event;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
-public class TaskCompletedEvent extends TaskEvent implements Externalizable {
+public class TaskCompletedEvent extends TaskUserEvent {
 	
-    private String userId;
-    
     public TaskCompletedEvent() {
-    	
     }
     
     public TaskCompletedEvent(long taskId, String userId) {
-        super( taskId );
-        this.userId = userId;
+        super( taskId, userId );
     }
     
-    public void writeExternal(ObjectOutput out) throws IOException {
-    	super.writeExternal(out);
-        out.writeUTF( userId );
-    }   
-    
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    	super.readExternal(in);
-    	userId = in.readUTF();
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
 }

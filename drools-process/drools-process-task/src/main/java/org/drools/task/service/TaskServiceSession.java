@@ -63,7 +63,7 @@ public class TaskServiceSession {
         taskData.setStatus( Status.Created );
 
         if ( task.getPeopleAssignments() != null ) {
-            List potentialOwners = task.getPeopleAssignments().getPotentialOwners();
+            List<OrganizationalEntity> potentialOwners = task.getPeopleAssignments().getPotentialOwners();
             if ( potentialOwners.size() == 1 ) {
                 // if there is a single potential owner, assign and set status to Reserved
                 taskData.setActualOwner( (User) potentialOwners.get( 0 ) );
@@ -135,13 +135,11 @@ public class TaskServiceSession {
     }
 
     public TaskError evalCommand(Operation operation,
-                                          List<OperationCommand> commands,
-                                          Task task,
-                                          User user,
-                                          OrganizationalEntity targetEntity) {
-        PeopleAssignments people = task.getPeopleAssignments();
+                                 List<OperationCommand> commands,
+                                 Task task,
+                                 User user,
+                                 OrganizationalEntity targetEntity) {
         TaskData taskData = task.getTaskData();
-        boolean operationAllowed = false;
         boolean statusMatched = false;
         for ( OperationCommand command : commands ) {
             // first find out if we have a matching status
@@ -235,6 +233,10 @@ public class TaskServiceSession {
             // if user has rights to execute the command, make sure user is explicitely specified (not as a group)
             operationAllowed = people.getPotentialOwners().contains( user );
         }
+        
+        if ( operationAllowed && command.isSkippable() ) {
+        	operationAllowed = taskData.isSkipable();
+        }
 
         return operationAllowed;
     }
@@ -286,9 +288,9 @@ public class TaskServiceSession {
     }
 
     public TaskError taskOperation(Operation operation,
-                                            long taskId,
-                                            String userId,
-                                            String targetEntityId) {
+                                   long taskId,
+                                   String userId,
+                                   String targetEntityId) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -332,6 +334,21 @@ public class TaskServiceSession {
                                                                  task.getTaskData().getActualOwner().getId() );
                     break;
                 }
+                
+                case Fail : {
+                    // trigger event support
+                    service.getEventSupport().fireTaskFailed( task.getId(),
+                                                              task.getTaskData().getActualOwner().getId() );
+                    break;
+                }
+
+                case Skip : {
+                    // trigger event support
+                    service.getEventSupport().fireTaskSkipped( task.getId(),
+                                                               task.getTaskData().getActualOwner().getId() );
+                    break;
+                }
+                
             }
 
         } catch ( Exception e ) {

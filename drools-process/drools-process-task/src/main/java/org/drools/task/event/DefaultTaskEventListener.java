@@ -8,4 +8,10 @@ public class DefaultTaskEventListener implements TaskEventListener {
     public void taskCompleted(TaskCompletedEvent event) {
     }
 
+	public void taskFailed(TaskFailedEvent event) {
+	}
+
+	public void taskSkipped(TaskSkippedEvent event) {
+	}
+
 }

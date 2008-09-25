@@ -17,7 +17,7 @@ import org.drools.task.BaseTest;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.event.EventPayload;
-import org.drools.task.event.TaskClaimedEvent;
+import org.drools.task.event.TaskUserEvent;
 import org.drools.task.event.TaskCompletedEvent;
 import org.drools.task.event.TaskEventKey;
 import org.drools.task.service.MinaTaskClient;
@@ -41,7 +41,7 @@ public class MockEventMessagingTest extends BaseTest {
         
         long taskId = task.getId();      
         
-        EventKey key = new TaskEventKey(TaskClaimedEvent.class, taskId );        
+        EventKey key = new TaskEventKey(TaskUserEvent.class, taskId );        
         MockEventTriggerTransport transport = new MockEventTriggerTransport();   
         taskService.getEventKeys().register( key, transport );      
         
@@ -49,8 +49,8 @@ public class MockEventMessagingTest extends BaseTest {
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null );        
         
         assertEquals( 1, transport.list.size() );
-        assertEquals( taskId, ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getTaskId() );
-        assertEquals( users.get( "darth" ).getId(), ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getUserId() );
+        assertEquals( taskId, ((TaskUserEvent) ((Payload) transport.list.get(0)).get()).getTaskId() );
+        assertEquals( users.get( "darth" ).getId(), ((TaskUserEvent) ((Payload) transport.list.get(0)).get()).getUserId() );
         
     }
     

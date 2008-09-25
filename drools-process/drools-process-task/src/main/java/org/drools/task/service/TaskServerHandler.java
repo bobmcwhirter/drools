@@ -1,7 +1,5 @@
 package org.drools.task.service;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -11,14 +9,13 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.service.IoHandlerAdapter;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.drools.eventmessaging.EventKey;
-import org.drools.task.AccessType;
 import org.drools.task.Attachment;
-import org.drools.task.Content;
 import org.drools.task.Comment;
+import org.drools.task.Content;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 

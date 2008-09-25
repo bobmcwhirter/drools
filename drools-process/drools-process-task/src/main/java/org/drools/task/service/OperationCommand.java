@@ -2,9 +2,7 @@ package org.drools.task.service;
 
 import java.util.List;
 
-import org.drools.task.OrganizationalEntity;
 import org.drools.task.Status;
-import org.drools.task.User;
 
 public class OperationCommand {
     private List<Status>        status;
@@ -17,6 +15,7 @@ public class OperationCommand {
     private boolean       userIsExplicitPotentialOwner;
     private boolean       addTargetUserToPotentialOwners;
     private boolean       removeUserFromPotentialOwners;
+    private boolean       skippable;
     private Operation     exec;
     
     public List<Status> getStatus() {
@@ -83,7 +82,13 @@ public class OperationCommand {
     public void setRemoveUserFromPotentialOwners(boolean removeUserFromPotentialOwners) {
         this.removeUserFromPotentialOwners = removeUserFromPotentialOwners;
     }
-    public Operation getExec() {
+    public boolean isSkippable() {
+		return skippable;
+	}
+	public void setSkippable(boolean skippable) {
+		this.skippable = skippable;
+	}
+	public Operation getExec() {
         return exec;
     }
     public void setExec(Operation exec) {

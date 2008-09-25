@@ -20,10 +20,11 @@ import org.drools.task.PeopleAssignments;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
-import org.drools.task.event.EventPayload;
 import org.drools.task.event.TaskCompletedEvent;
 import org.drools.task.event.TaskEvent;
 import org.drools.task.event.TaskEventKey;
+import org.drools.task.event.TaskFailedEvent;
+import org.drools.task.event.TaskSkippedEvent;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.TaskClientHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
@@ -34,24 +35,29 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	private int port = 9123;
 	private MinaTaskClient client;
 	private Map<Long, WorkItemManager> managers = new HashMap<Long, WorkItemManager>();
+	private Map<Long, Long> idMapping = new HashMap<Long, Long>();
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
 	
-	private void createClient() {
-		client = new MinaTaskClient(
-			"org.drools.process.workitem.wsht.WSHumanTaskHandler", new TaskClientHandler());
-		NioSocketConnector connector = new NioSocketConnector();
-		SocketAddress address = new InetSocketAddress(ipAddress, port);
-		client.connect(connector, address);
+	public void connect() {
+		if (client == null) {
+			client = new MinaTaskClient(
+				"org.drools.process.workitem.wsht.WSHumanTaskHandler", new TaskClientHandler());
+			NioSocketConnector connector = new NioSocketConnector();
+			SocketAddress address = new InetSocketAddress(ipAddress, port);
+			boolean connected = client.connect(connector, address);
+			if (!connected) {
+				throw new IllegalArgumentException(
+					"Could not connect task client");
+			}
+		}
 	}
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-		if (client == null) {
-			createClient();
-		}
+		connect();
 		Task task = new Task();
 		String taskName = (String) workItem.getParameter("TaskName");
 		if (taskName != null) {
@@ -78,19 +84,28 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		}
 		TaskData taskData = new TaskData();
 		taskData.setWorkItemId(workItem.getId());
+		taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
 		task.setTaskData(taskData);
 		String actorId = (String) workItem.getParameter("ActorId");
 		if (actorId != null) {
 			PeopleAssignments assignments = new PeopleAssignments();
 			List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-			User user = new User();
-			user.setId(actorId);
-			potentialOwners.add(user);
+			String[] actorIds = actorId.split(",");
+			for (String id: actorIds) {
+				User user = new User();
+				user.setId(id.trim());
+				potentialOwners.add(user);
+			}
 			assignments.setPotentialOwners(potentialOwners);
+			List<OrganizationalEntity> businessAdministrators = new ArrayList<OrganizationalEntity>();
+			businessAdministrators.add(new User("Administrator"));
+			assignments.setBusinessAdministrators(businessAdministrators);
 			task.setPeopleAssignments(assignments);
 		}
 		
-		TaskWorkItemAddTaskResponseHandler taskResponseHandler = new TaskWorkItemAddTaskResponseHandler(this.client, this.managers, manager, workItem.getId());
+		TaskWorkItemAddTaskResponseHandler taskResponseHandler =
+			new TaskWorkItemAddTaskResponseHandler(this.client, this.managers,
+				this.idMapping, manager, workItem.getId());
 		client.addTask(task, taskResponseHandler);
 	}
 	
@@ -101,32 +116,52 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	}
 
 	public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-		// TODO
+		Long taskId = idMapping.get(workItem.getId());
+		if (taskId != null) {
+			synchronized (idMapping) {
+				idMapping.remove(taskId);
+			}
+			synchronized (managers) {
+				managers.remove(taskId);
+			}
+			client.skip(taskId, "Administrator", null);
+		}
 	}
 	
     public static class TaskWorkItemAddTaskResponseHandler implements AddTaskResponseHandler {
         private volatile String error;
         private Map<Long, WorkItemManager> managers;
+        private Map<Long, Long> idMapping;
         private WorkItemManager manager;
         private long workItemId;
         private MinaTaskClient client;
         
-        public TaskWorkItemAddTaskResponseHandler(MinaTaskClient client, Map<Long, WorkItemManager> managers,  WorkItemManager manager, long workItemId) {
+        public TaskWorkItemAddTaskResponseHandler(MinaTaskClient client,
+        		Map<Long, WorkItemManager> managers,  Map<Long, Long> idMapping,
+        		WorkItemManager manager, long workItemId) {
             this.client = client;
             this.managers = managers;
+            this.idMapping = idMapping;
             this.manager = manager;
             this.workItemId = workItemId;
         }
         
         public void execute(long taskId) {
-            synchronized ( managers ) {
+        	synchronized ( managers ) {
                 managers.put(taskId, this.manager);           
-            }      
+            }
+            synchronized ( idMapping ) {
+                idMapping.put(workItemId, taskId);           
+            }
             System.out.println("Created task " + taskId + " for work item " + workItemId);
             
             EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
             TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(workItemId, taskId, managers); 
-            client.registerForEvent( key, true, eventResponseHandler );                       
+            client.registerForEvent( key, true, eventResponseHandler );
+            key = new TaskEventKey(TaskFailedEvent.class, taskId );           
+            client.registerForEvent( key, true, eventResponseHandler );
+            key = new TaskEventKey(TaskSkippedEvent.class, taskId );           
+            client.registerForEvent( key, true, eventResponseHandler );
         }
 
         public void setError(String error) {
@@ -153,14 +188,26 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 
         public void execute(Payload payload) {
             TaskEvent event = ( TaskEvent ) payload.get();
-            if ( event.getTaskId() != taskId ) {
+        	if ( event.getTaskId() != taskId ) {
                 // defensive check that should never happen, just here for testing                
                 this.error = "Expected task id and arrived task id do not march";
                 return;
             }
-            synchronized ( this.managers ) {
-                this.managers.get(taskId).completeWorkItem(workItemId, null);   
-            }
+        	if (event instanceof TaskCompletedEvent) {
+		        synchronized ( this.managers ) {
+		            WorkItemManager manager = this.managers.get(taskId);
+		            if (manager != null) {
+		            	manager.completeWorkItem(workItemId, null);   
+		            }
+		        }
+        	} else {
+        		synchronized ( this.managers ) {
+        			WorkItemManager manager = this.managers.get(taskId);
+		            if (manager != null) {
+		            	manager.abortWorkItem(workItemId);
+		            }
+		        }
+        	}
         }
 
         public void setError(String error) {

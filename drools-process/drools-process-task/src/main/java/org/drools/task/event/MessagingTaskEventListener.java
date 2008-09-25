@@ -9,7 +9,8 @@ import org.drools.eventmessaging.EventTriggerTransport;
 import org.drools.eventmessaging.Payload;
 
 public class MessagingTaskEventListener implements TaskEventListener {
-    EventKeys keys;
+	
+    private EventKeys keys;
     
     public MessagingTaskEventListener(EventKeys keys) {
         this.keys = keys;
@@ -52,5 +53,43 @@ public class MessagingTaskEventListener implements TaskEventListener {
             keys.removeKey( key );
         }   
     }
+
+	public void taskFailed(TaskFailedEvent event) {
+        EventKey key = new TaskEventKey(TaskFailedEvent.class, event.getTaskId() );
+        List<EventTriggerTransport> targets = keys.getTargets( key );
+        if ( targets == null ){
+            return;
+        }
+        Payload payload = new EventPayload( event );
+        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
+            EventTriggerTransport target = it.next();
+            target.trigger( payload );
+            if ( target.isRemove() ) {
+                it.remove();
+            }
+        }
+        if ( targets.isEmpty() ) {
+            keys.removeKey( key );
+        }
+	}
+
+	public void taskSkipped(TaskSkippedEvent event) {
+        EventKey key = new TaskEventKey(TaskSkippedEvent.class, event.getTaskId() );
+        List<EventTriggerTransport> targets = keys.getTargets( key );
+        if ( targets == null ){
+            return;
+        }
+        Payload payload = new EventPayload( event );
+        for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
+            EventTriggerTransport target = it.next();
+            target.trigger( payload );
+            if ( target.isRemove() ) {
+                it.remove();
+            }
+        }
+        if ( targets.isEmpty() ) {
+            keys.removeKey( key );
+        }
+	}
 
 }

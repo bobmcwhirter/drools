@@ -5,7 +5,7 @@ users = [ 'darth'  : new User('Darth Vader'),
           'peter'  : new User('Peter Parker'),   'steve'      : new User('Steve Rogers'),
           'sly'    : new User('Sly Stalone'),    'liz'        : new User('Elizabeth Windsor'),
           'bruce'  : new User('Bruce Wayne' ),   'tony'       : new User('Tony Stark'),
-          'luke'   : new User('Luke Cage')
+          'luke'   : new User('Luke Cage'),      'admin'      : new User('Administrator')
         ];       
 
 return users;

@@ -98,7 +98,7 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from 
-    Task t left join t.taskData.createdBy,
+    Task t left join t.taskData.createdBy left join t.taskData.actualOwner,
     I18NText names,
     I18NText subjects,
     I18NText descriptions, 
@@ -115,6 +115,8 @@ where
     
     descriptions.language = :language and
     descriptions in elements( t.descriptions) and
+    
+    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
      
     t.taskData.expirationTime is null              
           </query>

@@ -56,17 +56,20 @@
         : [ new OperationCommand().{ 
                 status = [ Status.Created ],
                 allowed = [ Allowed.Initiator, Allowed.BusinessAdministrator  ],              
-                newStatus = Status.Obsolete
+                newStatus = Status.Obsolete,
+                skippable = true
             },
             new OperationCommand().{ 
                 status = [ Status.Ready ],
                 allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],              
-                newStatus = Status.Obsolete
+                newStatus = Status.Obsolete,
+                skippable = true
             },
             new OperationCommand().{ 
                 status = [ Status.Reserved, Status.InProgress ],
                 allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],          
-                newStatus = Status.Obsolete
+                newStatus = Status.Obsolete,
+                skippable = true
             } ],
     Operation.Delegate 
         : [ new OperationCommand().{ 

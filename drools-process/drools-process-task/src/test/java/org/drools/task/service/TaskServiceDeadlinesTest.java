@@ -31,7 +31,7 @@ import org.drools.task.OrganizationalEntity;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.User;
-import org.drools.task.event.TaskClaimedEvent;
+import org.drools.task.event.TaskUserEvent;
 import org.drools.task.event.TaskEventKey;
 import org.drools.task.service.DefaultEscalatedDeadlineHandler;
 import org.drools.util.ChainedProperties;

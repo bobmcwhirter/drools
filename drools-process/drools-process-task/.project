@@ -1,11 +1,7 @@
 <projectDescription>
   <name>drools-process-task</name>
   <comment>A rule production system</comment>
-  <projects>
-    <project>drools-workitems</project>
-    <project>drools-core</project>
-    <project>drools-compiler</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

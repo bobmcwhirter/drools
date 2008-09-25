@@ -18,7 +18,7 @@ import org.drools.task.BaseTest;
 import org.drools.task.MockUserInfo;
 import org.drools.task.Status;
 import org.drools.task.Task;
-import org.drools.task.event.TaskClaimedEvent;
+import org.drools.task.event.TaskUserEvent;
 import org.drools.task.event.TaskEventKey;
 import org.drools.task.service.MockEventMessagingTest.MockEventTriggerTransport;
 
@@ -84,7 +84,7 @@ public class TaskServiceEventMessagingTest extends BaseTest {
         Task task1 = getTaskResponseHandler.getTask();
         assertEquals( Status.Ready , task1.getTaskData().getStatus() );         
         
-        EventKey key = new TaskEventKey(TaskClaimedEvent.class, taskId );           
+        EventKey key = new TaskEventKey(TaskUserEvent.class, taskId );           
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
         client.registerForEvent( key, true, handler );
         Thread.sleep( 3000 );
@@ -93,7 +93,7 @@ public class TaskServiceEventMessagingTest extends BaseTest {
         handler.waitTillDone( 5000 );
         
         Payload payload = handler.getPayload();
-        TaskClaimedEvent event = ( TaskClaimedEvent ) payload.get();
+        TaskUserEvent event = ( TaskUserEvent ) payload.get();
         assertNotNull( event );        
     }
   

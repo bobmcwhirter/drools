@@ -6,7 +6,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.EventObject;
 
-public abstract class TaskEvent  extends EventObject implements Externalizable {
+public abstract class TaskEvent extends EventObject implements Externalizable {
+	
     private static final String dummySource = "";
     private long taskId;
     

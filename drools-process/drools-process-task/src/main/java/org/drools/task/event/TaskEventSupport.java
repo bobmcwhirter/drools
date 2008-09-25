@@ -25,20 +25,15 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-public class TaskEventSupport
-    implements
-    Externalizable {
-    /**
-     *
-     */
+public class TaskEventSupport implements Externalizable {
+
     private static final long serialVersionUID = 400L;
+
     private List<TaskEventListener> listeners = new CopyOnWriteArrayList<TaskEventListener>();
 
-    public TaskEventSupport() {
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        listeners   = (List<TaskEventListener>)in.readObject();
+    @SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        listeners = (List<TaskEventListener>)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -68,18 +63,16 @@ public class TaskEventSupport
     }
     
     public void fireTaskClaimed(final long taskId, final String userId) {
-    	System.out.println("Task " + taskId + " claimed");
-        if ( this.listeners.isEmpty() ) {
-          return;
-      }
+        if (this.listeners.isEmpty()) {
+			return;
+		}
 
-      final TaskClaimedEvent event = new TaskClaimedEvent(taskId, userId);
-      
-      for ( TaskEventListener listener: listeners) {
-      	  System.out.println("notifying listener " + listener);
-          listener.taskClaimed( event );
-      }
-  }    
+		final TaskClaimedEvent event = new TaskClaimedEvent(taskId, userId);
+
+		for (TaskEventListener listener : listeners) {
+			listener.taskClaimed(event);
+		}
+    }    
 
     public void fireTaskCompleted(final long taskId, final String userId) {
         if ( this.listeners.isEmpty() ) {
@@ -89,13 +82,34 @@ public class TaskEventSupport
         final TaskCompletedEvent event = new TaskCompletedEvent( taskId, userId );
         
         for ( TaskEventListener listener: listeners) {
-        	System.out.println("notifying listener " + listener);
             listener.taskCompleted( event );
         }
     } 
     
-    
+    public void fireTaskFailed(final long taskId, final String userId) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
 
+        final TaskFailedEvent event = new TaskFailedEvent( taskId, userId );
+        
+        for ( TaskEventListener listener: listeners) {
+            listener.taskFailed( event );
+        }
+    } 
+    
+    public void fireTaskSkipped(final long taskId, final String userId) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final TaskSkippedEvent event = new TaskSkippedEvent( taskId, userId );
+        
+        for ( TaskEventListener listener: listeners) {
+            listener.taskSkipped( event );
+        }
+    } 
+    
     public void reset() {
         this.listeners.clear();
     }
