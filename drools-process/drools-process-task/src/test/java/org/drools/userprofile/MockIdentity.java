@@ -1,4 +1,4 @@
-package org.drools.task;
+package org.drools.userprofile;
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -87,5 +87,5 @@ public class MockIdentity extends Identity {
 			      return "mockedUser";
 			   }
 		};
-	}   
+	}
 }

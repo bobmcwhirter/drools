@@ -1,4 +1,4 @@
-package org.drools.task;
+package org.drools.userprofile;
 
 /**
  * UserProfile is a base class to represent user profile related information. As the user profile information various 

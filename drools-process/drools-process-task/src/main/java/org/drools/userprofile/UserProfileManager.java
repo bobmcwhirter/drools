@@ -1,4 +1,4 @@
-package org.drools.task;
+package org.drools.userprofile;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
 /**
- * userProfileManager retrieves and update user profile using a plugable UserProfileRepository. 
+ * userProfileManager retrieves and update user profile using a pluggable UserProfileRepository. 
  * UserProfileRepository is normally implemented by users based on the persistent mechanism 
- * (for example property file, RMDB, LDAP etc) as well as the data scheam that is used by 
+ * (for example property file, RMDB, LDAP etc) as well as the data schema that is used by 
  * users' application.
  * Following snippet shows how to configure UserProfileRepository in components.xml.
     <component name="userProfileManager">
@@ -29,39 +29,42 @@ public class UserProfileManager {
 	UserProfileRepository userProfileRepository = null;
 
 	//get current user
-	public UserProfile getUserProfile() {
+	public User getUser() {
 		String userName = "";
 		if (Contexts.isApplicationContextActive()) {
 			userName = Identity.instance().getCredentials().getUsername();
 		}
-		return userProfileRepository.getUserProfile(userName);
+		return getUser(userName);
 	}
 	
-	public UserProfile getUserProfile(String userName) {
+	public User getUser(String userName) {
 		if (userProfileRepository == null) {
 			//TODO: throws exception?
 			return null;
 		}
-
-		return userProfileRepository.getUserProfile(userName);
+		User user = new User();
+		user.setUserProfile(userProfileRepository.getUserProfile(userName));
+		return user;
 	}
 	
 	public void updateUserProfile(UserProfile info) {
 				
 	}
 	
-	public List<UserProfile> getUsers() {
-		//Not sure how to implement this yet. As the information of all registered users
-		//might be stored in a place different from where user profile info is stored,
-		//thus the UserProfileRepository may not be capable to do this job.
-		return null;
+	public List<User> getUsers() {
+		if (userProfileRepository == null) {
+			//TODO: throws exception?
+			return null;
+		}
+		return userProfileRepository.getUsers();
 	}
 
 	public List<Group> getGroups() {
-		//Not sure how to implement this yet. As the information of all registered groups
-		//might be stored in a place different from where user profile info is stored,
-		//thus the UserProfileRepository may not be capable to do this job.		
-		return null;
+		if (userProfileRepository == null) {
+			//TODO: throws exception?
+			return null;
+		}
+		return userProfileRepository.getGroups();
 	}
 	
 	public UserProfileRepository getUserProfileRepository() {

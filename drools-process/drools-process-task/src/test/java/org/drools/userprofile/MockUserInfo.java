@@ -1,11 +1,11 @@
-package org.drools.task;
+package org.drools.userprofile;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class MockUserInfo implements UserInfo {
+public class MockUserInfo extends UserProfile {
 
     private Map<Group, List<OrganizationalEntity>> groups = new HashMap<Group, List<OrganizationalEntity>>();
 
