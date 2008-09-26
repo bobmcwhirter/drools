@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="src/test/resources"/>
-	<classpathentry kind="lib" path="lib/osworkflow-2.8.0.jar" sourcepath="F:/Mijn documenten/projects/osworkflow/src/java"/>
+	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/bsh/bsh/1.2b7/bsh-1.2b7.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/opensymphony/oscore/2.2.5/oscore-2.2.5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/opensymphony/osworkflow/2.8.0/osworkflow-2.8.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/opensymphony/propertyset/1.4/propertyset-1.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.0.0.SNAPSHOT/drools-compiler-5.0.0.SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.0.0.SNAPSHOT/drools-core-5.0.0.SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/mvel/mvel/2.0M2/mvel-2.0M2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/oscore-2.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/propertyset-1.4.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/drools-compiler"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/drools-core"/>
-	<classpathentry kind="lib" path="lib/bsh-1.2b7.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
