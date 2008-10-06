@@ -4,12 +4,12 @@ import javax.transaction.xa.XAException;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.audit.WorkingMemoryConsoleLogger;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.persistence.Persister;
 import org.drools.persistence.Transaction;
 import org.drools.persistence.jpa.JPAPersister;
 import org.drools.persistence.processinstance.JPAProcessInstanceManager;
+import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
 import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
@@ -34,6 +34,8 @@ public class SingleSessionCommandService implements CommandService {
 			.setEntityManager(((JPAPersister<StatefulSession>) persister).getEntityManager());
 		((JPAWorkItemManager) ((InternalWorkingMemory) session).getWorkItemManager())
 			.setEntityManager(((JPAPersister<StatefulSession>) persister).getEntityManager());
+		((JPASignalManager) ((InternalWorkingMemory) session).getSignalManager())
+			.setEntityManager(((JPAPersister<StatefulSession>) persister).getEntityManager());
 	}
 	
 	public Object execute(Command command) {
@@ -45,6 +47,7 @@ public class SingleSessionCommandService implements CommandService {
 			transaction.commit();
 			return result;
 		} catch (Throwable t) {
+			t.printStackTrace();
 			try {
 				transaction.rollback();
 				throw new RuntimeException("Could not execute command", t);

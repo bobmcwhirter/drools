@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.process.core.Process;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
@@ -42,7 +43,12 @@ public class JPAProcessInstanceManager implements ProcessInstanceManager {
         }
         processInstanceInfo.updateLastReadDate();
         ProcessInstance processInstance = processInstanceInfo.getProcessInstance();
-        processInstance.setProcess(((InternalRuleBase) workingMemory.getRuleBase()).getProcess(processInstance.getProcessId()));
+        Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess(processInstance.getProcessId());
+        if (process == null) {
+        	throw new IllegalArgumentException(
+    			"Could not find process " + processInstance.getProcessId());
+        }
+        processInstance.setProcess(process);
         if (processInstance.getWorkingMemory() == null) {
             processInstance.setWorkingMemory((InternalWorkingMemory) workingMemory);
             ((ProcessInstanceImpl) processInstance).reconnect();

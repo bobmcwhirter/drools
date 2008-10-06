@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +22,7 @@ import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.marshalling.OutputMarshaller;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.hibernate.annotations.CollectionOfElements;
 
 @Entity
 public class ProcessInstanceInfo {
@@ -30,9 +33,11 @@ public class ProcessInstanceInfo {
 	private Date lastReadDate;
 	private Date lastModificationDate;
 	private int state;
-	private @Lob byte[] processInstanceByteArray;
 	// TODO How do I mark a process instance info as dirty when the process instance
 	// has changed (so that byte array is regenerated and saved) ?
+	private @Lob byte[] processInstanceByteArray;
+	@CollectionOfElements
+	private Set<String> eventTypes = new HashSet<String>();
 	private @Transient ProcessInstance processInstance;
 	
 	ProcessInstanceInfo() {
@@ -104,6 +109,10 @@ public class ProcessInstanceInfo {
 			this.state = processInstance.getState();
 			this.lastModificationDate = new Date();
 			this.processInstanceByteArray = newByteArray;
+			this.eventTypes.clear(); 
+			for (String type: processInstance.getEventTypes()) {
+				eventTypes.add(type);
+			}
 		}
 	}
 	
