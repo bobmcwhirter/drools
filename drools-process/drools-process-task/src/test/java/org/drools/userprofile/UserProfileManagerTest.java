@@ -31,8 +31,10 @@ public class UserProfileManagerTest extends TestCase {
     	upm.setUserProfileRepository(new MockFileBasedUserProfileRepository());
 
     	User user = (User)upm.getUser();
+    	assertEquals(user.getId(), "mockedUser");
+
     	DroolsTaskUserProfile userProfile = (DroolsTaskUserProfile)user.getUserProfile();
-    	assertEquals(userProfile.getID(), "mockedUser");
+    	//assertEquals(userProfile.getDisplayName(entity), "mockedUserName");
     }
 
 }

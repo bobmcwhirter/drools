@@ -47,8 +47,12 @@ public class UserProfileManager {
 		return user;
 	}
 	
-	public void updateUserProfile(UserProfile info) {
-				
+	public void updateUser(User user) {
+		if (userProfileRepository == null) {
+			//TODO: throws exception?
+			return;
+		}
+		userProfileRepository.setUserProfile(user.getUserProfile());			
 	}
 	
 	public List<User> getUsers() {

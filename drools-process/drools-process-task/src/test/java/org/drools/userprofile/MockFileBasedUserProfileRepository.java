@@ -1,5 +1,6 @@
 package org.drools.userprofile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MockFileBasedUserProfileRepository implements UserProfileRepository {
@@ -12,15 +13,29 @@ public class MockFileBasedUserProfileRepository implements UserProfileRepository
 	}
 
 	public void setUserProfile(UserProfile info) {
-		//NOT IMPLEMENTED;
+		if(!(info instanceof DroolsTaskUserProfile)) {
+			return;
+		}
+		DroolsTaskUserProfile dtup = (DroolsTaskUserProfile)info;
+		//update file properties
 	}
 	
 	
     public List<User> getUsers() {
+    	//may need to look into RMDB to get the list of all users
 		return null;
 	}
 	
 	public List<Group> getGroups() {
+		List<OrganizationalEntity> members = new ArrayList<OrganizationalEntity>();
+		members.add(new User());
+		
+		Group group = new Group();
+		group.setMembers(members);
+
+		List<Group> result = new ArrayList<Group>();
+		
+		result.add(group);
 		return null;
     }
 }
