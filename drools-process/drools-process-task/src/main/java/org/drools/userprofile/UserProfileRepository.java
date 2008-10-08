@@ -7,5 +7,7 @@ public interface UserProfileRepository {
 	void setUserProfile(UserProfile info);
 	
 	List<User> getUsers();
+	String[] getUserIds();
 	List<Group> getGroups();
+	String[] getGroupIds();
 }

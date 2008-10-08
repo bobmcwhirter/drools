@@ -11,9 +11,9 @@ import org.jboss.seam.security.Identity;
 
 /**
  * userProfileManager retrieves and update user profile using a pluggable UserProfileRepository. 
- * UserProfileRepository is normally implemented by users based on the persistent mechanism 
- * (for example property file, RMDB, LDAP etc) as well as the data schema that is used by 
- * users' application.
+ * UserProfileRepository is normally implemented by application users based on the persistent mechanism 
+ * (for example property file based, RMDB based, LDAP based etc) as well as the data schema that 
+ * is used by users' application.
  * Following snippet shows how to configure UserProfileRepository in components.xml.
     <component name="userProfileManager">
 	    <property name="userProfileRepository">org.drools.task.MockFileBasedUserProfileRepository</property>
@@ -28,7 +28,11 @@ import org.jboss.seam.security.Identity;
 public class UserProfileManager {
 	UserProfileRepository userProfileRepository = null;
 
-	//get current user
+    /**
+     * Return current user.
+     * 
+     * @return User 
+     */
 	public User getUser() {
 		String userName = "";
 		if (Contexts.isApplicationContextActive()) {
@@ -37,16 +41,27 @@ public class UserProfileManager {
 		return getUser(userName);
 	}
 	
-	public User getUser(String userName) {
+    /**
+     * Return the user according to the userId.
+     * 
+     * @return User 
+     */	
+	public User getUser(String userId) {
 		if (userProfileRepository == null) {
 			//TODO: throws exception?
 			return null;
 		}
 		User user = new User();
-		user.setUserProfile(userProfileRepository.getUserProfile(userName));
+		UserProfile profile = userProfileRepository.getUserProfile(userId);
+		user.setUserProfile(profile);
+		user.setId(profile.getID());
 		return user;
 	}
 	
+    /**
+     * Update user info
+     * 
+     */
 	public void updateUser(User user) {
 		if (userProfileRepository == null) {
 			//TODO: throws exception?
@@ -55,6 +70,11 @@ public class UserProfileManager {
 		userProfileRepository.setUserProfile(user.getUserProfile());			
 	}
 	
+    /**
+     * Return all registered users
+     * 
+     * @return List<User>, a list of all registered users
+     */
 	public List<User> getUsers() {
 		if (userProfileRepository == null) {
 			//TODO: throws exception?
@@ -62,13 +82,65 @@ public class UserProfileManager {
 		}
 		return userProfileRepository.getUsers();
 	}
+	
+    /**
+     * Return a list of Ids of all registered users instead of fully populated User classes.
+     * 
+     * @return String[], a list of all registered users' id. 
+     */
+	public String[] getUserIds() {
+		if (userProfileRepository == null) {
+			//TODO: throws exception?
+			return null;
+		}
+		return userProfileRepository.getUserIds();
+	}
 
+    /**
+     * Return all registered users
+     * 
+     * @return List<Group>, a list of all registered groups
+     */
 	public List<Group> getGroups() {
 		if (userProfileRepository == null) {
 			//TODO: throws exception?
 			return null;
 		}
 		return userProfileRepository.getGroups();
+	}
+	
+    /**
+     * Return a list of Ids of all registered groups instead of fully populated Group classes.
+     * 
+     * @return  String[], a list of all registered groups' id. 
+     */
+	public String[] getGroupIds() {
+		if (userProfileRepository == null) {
+			//TODO: throws exception?
+			return null;
+		}
+		return userProfileRepository.getUserIds();
+	}
+	
+    /**
+     * Return a list of all the groups that the user belongs to.
+     * 
+     * @param userId Id of the user.
+     * @return List<Group>, a list of groups that the user belongs to. 
+     */
+	public List<Group> getGroupsForUser(String userId) {
+		return null;
+	}
+	
+    /**
+     * Return a list of all the direct groups and all the sub groups that the user belongs to.
+     * 
+     * @param userId Id of the user.
+     * @return List<Group>, a list of all the direct groups and all the sub 
+     * groups that the user belongs to.
+     */
+	public List<Group> getFlattenedGroupsForUser(String userId) {
+		return null;
 	}
 	
 	public UserProfileRepository getUserProfileRepository() {

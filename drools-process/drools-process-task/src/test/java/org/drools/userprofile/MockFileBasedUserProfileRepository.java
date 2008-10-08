@@ -25,6 +25,11 @@ public class MockFileBasedUserProfileRepository implements UserProfileRepository
     	//may need to look into RMDB to get the list of all users
 		return null;
 	}
+    
+    public String[] getUserIds() {
+    	//may need to look into RMDB to get the list of all users
+		return null;
+	}
 	
 	public List<Group> getGroups() {
 		List<OrganizationalEntity> members = new ArrayList<OrganizationalEntity>();
@@ -36,6 +41,10 @@ public class MockFileBasedUserProfileRepository implements UserProfileRepository
 		List<Group> result = new ArrayList<Group>();
 		
 		result.add(group);
+		return null;
+    }
+	
+	public String[] getGroupIds() {
 		return null;
     }
 }
