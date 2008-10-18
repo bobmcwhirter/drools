@@ -14,6 +14,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.PackageBuildContext;
@@ -157,6 +158,10 @@ public class XPathDialect implements Dialect {
 
 	public void preCompileAddFunction(FunctionDescr functionDescr,
 			TypeResolver typeResolver) {
+	}
+
+	public EnabledBuilder getEnabledBuilder() {
+		return null;
 	}
 
 }
