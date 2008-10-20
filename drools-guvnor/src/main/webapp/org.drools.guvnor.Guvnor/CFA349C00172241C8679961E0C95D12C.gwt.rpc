@@ -74,6 +74,8 @@ org.drools.guvnor.client.modeldriven.brl.FreeFormLine, true
 org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint, true
 org.drools.guvnor.client.modeldriven.brl.RuleAttribute, true
 [Lorg.drools.guvnor.client.modeldriven.brl.RuleAttribute;, true
+org.drools.guvnor.client.modeldriven.brl.RuleMetadata, true
+[Lorg.drools.guvnor.client.modeldriven.brl.RuleMetadata;, true
 org.drools.guvnor.client.modeldriven.brl.RuleModel, true
 org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint, true
 [Lorg.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;, true
@@ -91,6 +93,8 @@ org.drools.guvnor.client.modeldriven.dt.ConditionCol, true
 [Lorg.drools.guvnor.client.modeldriven.dt.ConditionCol;, true
 org.drools.guvnor.client.modeldriven.dt.DTColumnConfig, true
 org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable, true
+org.drools.guvnor.client.modeldriven.dt.MetadataCol, true
+[Lorg.drools.guvnor.client.modeldriven.dt.MetadataCol;, true
 org.drools.guvnor.client.modeldriven.testing.ExecutionTrace, true
 [Lorg.drools.guvnor.client.modeldriven.testing.ExecutionTrace;, true
 [Lorg.drools.guvnor.client.modeldriven.testing.Expectation;, true
@@ -133,6 +137,7 @@ org.drools.guvnor.client.rpc.ScenarioResultSummary, true
 [Lorg.drools.guvnor.client.rpc.ScenarioResultSummary;, true
 org.drools.guvnor.client.rpc.ScenarioRunResult, true
 org.drools.guvnor.client.rpc.SessionExpiredException, true
+org.drools.guvnor.client.rpc.SingleScenarioResult, true
 org.drools.guvnor.client.rpc.SnapshotInfo, true
 [Lorg.drools.guvnor.client.rpc.SnapshotInfo;, true
 org.drools.guvnor.client.rpc.TableConfig, true
