@@ -18,10 +18,11 @@ import org.drools.bpel.xpath.XMLDataType;
 import org.drools.bpel.xpath.XPathReturnValueEvaluator;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -425,7 +426,8 @@ public class CopyOfBPELAssignInstance extends NodeInstanceImpl {
 			evaluator.setExpression(xpathString);
 			ProcessContext processContext = new ProcessContext();
 			processContext.setNodeInstance(this);
-			return (String) evaluator.evaluate(getProcessInstance().getWorkingMemory(), processContext, XPathConstants.STRING);
+			return (String) evaluator.evaluate(
+				((InternalProcessInstance) getProcessInstance()).getWorkingMemory(), processContext, XPathConstants.STRING);
     	} catch (Throwable t) {
     		throw new IllegalArgumentException(
 				"Could not evaluate expression " + expression, t);

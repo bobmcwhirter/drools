@@ -2,7 +2,7 @@ package org.drools.bpel.core;
 
 import java.util.List;
 
-import org.drools.workflow.core.Connection;
+import org.drools.knowledge.definitions.process.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.EventNodeInterface;

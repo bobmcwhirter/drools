@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Connection;
 import org.drools.osworkflow.core.OSWorkflowConnection;
 import org.drools.osworkflow.core.node.StepNode;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 import com.opensymphony.module.propertyset.map.MapPropertySet;
@@ -97,7 +99,8 @@ public class StepNodeInstance extends NodeInstanceImpl implements Step {
             }
         }
         if (action.isFinish()) {
-            getProcessInstance().setState(ProcessInstance.STATE_COMPLETED);
+            ((InternalProcessInstance) getProcessInstance())
+            	.setState(ProcessInstance.STATE_COMPLETED);
         }
     }
     
@@ -126,13 +129,15 @@ public class StepNodeInstance extends NodeInstanceImpl implements Step {
                     getOSWorkflowProcessInstance().executeFunction(postFunction, transientVars);
                 }
             }
-            getNodeInstanceContainer().removeNodeInstance(this);
+            ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             for (Connection connection: getNode().getOutgoingConnections(actionId + "")) {
-                NodeInstance nodeInstance = getNodeInstanceContainer().getNodeInstance(connection.getTo());
+                NodeInstance nodeInstance = ((NodeInstanceContainer) getNodeInstanceContainer())
+                	.getNodeInstance(connection.getTo());
                 if (nodeInstance instanceof StepNodeInstance) {
                     ((StepNodeInstance) nodeInstance).setOwner(owner);
                 }
-                nodeInstance.trigger(this, connection.getToType());
+                ((org.drools.workflow.instance.NodeInstance) nodeInstance)
+                	.trigger(this, connection.getToType());
             }
         }
         List<FunctionDescriptor> postFunctions = result.getPostFunctions();

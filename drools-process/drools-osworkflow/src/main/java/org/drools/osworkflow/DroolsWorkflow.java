@@ -11,9 +11,9 @@ import org.drools.WorkingMemory;
 import org.drools.osworkflow.core.OSWorkflowProcess;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
-import org.drools.workflow.instance.NodeInstance;
 
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.FactoryException;

@@ -224,7 +224,7 @@ public class BPELCoreTest extends TestCase {
         PackageBuilderConfiguration packageConf = new PackageBuilderConfiguration( properties );
         PackageBuilder packageBuilder = new PackageBuilder(packageConf);
         ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-        processBuilder.buildProcess(process);
+        processBuilder.buildProcess(process, null);
         return process;
     }
     

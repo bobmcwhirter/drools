@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.bpel.core.BPELFlow;
+import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.core.node.CompositeNode;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.node.CompositeNodeInstance;
 
 /**
@@ -30,7 +29,8 @@ public class BPELFlowInstance extends CompositeNodeInstance {
         activatedLinks.add(linkName);
         NodeInstance waitingActivityInstance = waitingActivityInstances.get(linkName);
         if (waitingActivityInstance != null) {
-            waitingActivityInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
+            ((org.drools.workflow.instance.NodeInstance) waitingActivityInstance)
+            	.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
         }
     }
     

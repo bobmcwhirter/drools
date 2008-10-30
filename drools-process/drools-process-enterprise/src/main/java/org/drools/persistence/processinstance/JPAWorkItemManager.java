@@ -1,7 +1,5 @@
 package org.drools.persistence.processinstance;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,13 +8,10 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.process.instance.impl.WorkItemImpl;
 
 public class JPAWorkItemManager implements WorkItemManager {
@@ -31,37 +26,6 @@ public class JPAWorkItemManager implements WorkItemManager {
     
     public void setEntityManager(EntityManager manager) {
         this.manager = manager;
-    }
-    
-    public void addProcessInstance(ProcessInstance processInstance) {
-        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo(processInstance);
-        manager.persist(processInstanceInfo);
-        processInstance.setId(processInstanceInfo.getId());
-    }
-
-    public ProcessInstance getProcessInstance(long id) {
-        ProcessInstanceInfo processInstanceInfo = manager.find(ProcessInstanceInfo.class, id);
-        if (processInstanceInfo == null) {
-            return null;
-        }
-        ProcessInstance processInstance = processInstanceInfo.getProcessInstance();
-        processInstance.setProcess(((InternalRuleBase) workingMemory.getRuleBase()).getProcess(processInstance.getProcessId()));
-        if (processInstance.getWorkingMemory() == null) {
-            processInstance.setWorkingMemory((InternalWorkingMemory) workingMemory);
-            ((ProcessInstanceImpl) processInstance).reconnect();
-        }
-        return processInstance;
-    }
-
-	public Collection<ProcessInstance> getProcessInstances() {
-        return new ArrayList<ProcessInstance>();
-    }
-
-    public void removeProcessInstance(ProcessInstance processInstance) {
-        ProcessInstanceInfo processInstanceInfo = manager.find(ProcessInstanceInfo.class, processInstance.getId());
-        if (processInstanceInfo != null) {
-            manager.remove(processInstanceInfo);
-        }
     }
 
 	public void internalExecuteWorkItem(WorkItem workItem) {

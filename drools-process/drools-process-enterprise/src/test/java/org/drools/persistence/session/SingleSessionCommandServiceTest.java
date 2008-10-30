@@ -19,6 +19,7 @@ import org.drools.process.command.StartProcessCommand;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.process.core.timer.Timer;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.rule.Package;
@@ -33,7 +34,6 @@ import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
 
 public class SingleSessionCommandServiceTest extends TestCase {
@@ -173,7 +173,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	
     	PackageBuilder packageBuilder = new PackageBuilder();
     	ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-    	processBuilder.buildProcess(process);
+    	processBuilder.buildProcess(process, null);
     	return packageBuilder.getPackage();
     }
     
@@ -269,7 +269,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	
     	PackageBuilder packageBuilder = new PackageBuilder();
     	ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-    	processBuilder.buildProcess(process);
+    	processBuilder.buildProcess(process, null);
 
     	process = new RuleFlowProcess();
     	process.setId("org.drools.test.SubProcess");
@@ -302,7 +302,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	process.addNode(end);
     	new ConnectionImpl(workItemNode, Node.CONNECTION_DEFAULT_TYPE, end, Node.CONNECTION_DEFAULT_TYPE);
 
-    	processBuilder.buildProcess(process);
+    	processBuilder.buildProcess(process, null);
     	return packageBuilder.getPackage();
     }
     
@@ -335,7 +335,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull(processInstance);
 
         service = new SingleSessionCommandService(ruleBase);
-        Thread.sleep(200);
+        Thread.sleep(2000);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
@@ -355,7 +355,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	timerNode.setId(2);
     	timerNode.setName("Timer");
     	Timer timer = new Timer();
-    	timer.setDelay(200);
+    	timer.setDelay(1000);
     	timerNode.setTimer(timer);
     	process.addNode(timerNode);
     	new ConnectionImpl(start, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
@@ -376,7 +376,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	
     	PackageBuilder packageBuilder = new PackageBuilder();
     	ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-    	processBuilder.buildProcess(process);
+    	processBuilder.buildProcess(process, null);
     	return packageBuilder.getPackage();
     }
     

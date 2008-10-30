@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.drools.WorkingMemory;
 import org.drools.bpel.instance.BPELProcessInstance;
+import org.drools.process.instance.InternalWorkItemManager;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
@@ -17,7 +18,8 @@ public class BPELTestUtil {
 	}
 
     public static WorkItem findWebServiceInvocation(WorkingMemory workingMemory, String partnerLink, String portType, String operation) {
-        Set<WorkItem> workItems = workingMemory.getWorkItemManager().getWorkItems();
+        Set<WorkItem> workItems =
+        	((InternalWorkItemManager) workingMemory.getWorkItemManager()).getWorkItems();
         for (Iterator<WorkItem> iterator = workItems.iterator(); iterator.hasNext(); ) {
             WorkItem workItem = iterator.next();
             if ("WebServiceInvocation".equals(workItem.getName())

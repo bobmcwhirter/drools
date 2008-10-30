@@ -3,11 +3,12 @@ package org.drools.bpel.instance;
 import org.drools.bpel.core.BPELFaultHandlerScope;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.NodeInstanceContainer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.FaultNodeInstance;
 
@@ -34,12 +35,13 @@ public class BPELRethrowInstance extends FaultNodeInstance {
 		NodeInstanceContainer nodeInstanceContainer = scopeInstance.getNodeInstanceContainer();
 		if (nodeInstanceContainer instanceof ProcessInstance) {
 			return (ExceptionScopeInstance) 
-				((ProcessInstance) nodeInstanceContainer)
+				((InternalProcessInstance) nodeInstanceContainer)
 					.getContextInstance(ExceptionScope.EXCEPTION_SCOPE);
 		}
 		if (nodeInstanceContainer instanceof NodeInstance) {
 	    	return (ExceptionScopeInstance) 
-	    		((NodeInstance) nodeInstanceContainer).resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
+	    		((org.drools.workflow.instance.NodeInstance) nodeInstanceContainer)
+	    			.resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
 		}
 		throw new IllegalArgumentException(
 			"Could not find enclosing exception scope");

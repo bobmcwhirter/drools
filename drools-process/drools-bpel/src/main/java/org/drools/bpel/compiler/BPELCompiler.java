@@ -85,7 +85,7 @@ public class BPELCompiler {
 			configuration.addDialect("XPath2.0", new XPathDialectConfiguration());
 			PackageBuilder packageBuilder = new PackageBuilder(configuration);
 			ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-			processBuilder.buildProcess(process);
+			processBuilder.buildProcess(process, fileName);
 	        if (!processBuilder.getErrors().isEmpty()) {
 	        	for (DroolsError error: processBuilder.getErrors()) {
 	        		System.err.println(error);

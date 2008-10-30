@@ -1,18 +1,8 @@
 package org.drools.bpel.instance;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELProcess;
-import org.drools.bpel.core.BPELReceive;
-import org.drools.common.EventSupport;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeContainer;
-import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 /**
@@ -91,7 +81,8 @@ public class BPELProcessInstance extends WorkflowProcessInstanceImpl {
     @Override
     protected void internalStart() {
     	NodeInstance nodeInstance = getNodeInstance(getBPELProcess().getActivity());
-        nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
+        ((org.drools.workflow.instance.NodeInstance) nodeInstance)
+        	.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
     }
 
 }

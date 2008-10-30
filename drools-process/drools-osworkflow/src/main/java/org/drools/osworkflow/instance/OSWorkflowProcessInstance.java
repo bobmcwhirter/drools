@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.osworkflow.core.OSWorkflowProcess;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 import com.opensymphony.module.propertyset.PropertySet;
@@ -118,10 +118,10 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
         String type = null;
         if (result.getSplit() != 0) {
             nodeId = result.getSplit();
-            type = Node.CONNECTION_DEFAULT_TYPE;
+            type = org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
         } else if (result.getJoin() != 0) {
             nodeId = result.getJoin();
-            type = Node.CONNECTION_DEFAULT_TYPE;
+            type = org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
         } else {
             nodeId = result.getStep();
             type = result.getStatus();
@@ -135,7 +135,7 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
         if (result.getOwner() != null && nodeInstance instanceof StepNodeInstance) {
             ((StepNodeInstance) nodeInstance).setOwner(result.getOwner());
         }
-        nodeInstance.trigger(null, type);
+        ((org.drools.workflow.instance.NodeInstance) nodeInstance).trigger(null, type);
         List<FunctionDescriptor> postFunctions = result.getPostFunctions();
         if (postFunctions != null) {
             for (FunctionDescriptor postFunction: postFunctions) {

@@ -1,10 +1,7 @@
 <projectDescription>
   <name>drools-bpel</name>
   <comment>A rule production system</comment>
-  <projects>
-    <project>drools-compiler</project>
-    <project>drools-core</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

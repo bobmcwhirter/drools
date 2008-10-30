@@ -28,7 +28,7 @@ public class BPELCompilerTest extends TestCase {
 		// Build process
         PackageBuilder packageBuilder = new PackageBuilder();
         ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-        processBuilder.buildProcess(process);
+        processBuilder.buildProcess(process, "/purchaseOrderProcess.bpel");
         
         // Load process
         AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();

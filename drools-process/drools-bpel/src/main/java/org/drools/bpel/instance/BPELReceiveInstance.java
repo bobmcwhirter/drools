@@ -2,9 +2,9 @@ package org.drools.bpel.instance;
 
 import org.drools.bpel.core.BPELReceive;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.node.EventNodeInstanceInterface;
 
