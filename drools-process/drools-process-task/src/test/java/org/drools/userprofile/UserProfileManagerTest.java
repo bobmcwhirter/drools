@@ -3,10 +3,10 @@ package org.drools.userprofile;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
-
-import junit.framework.TestCase;
 
 public class UserProfileManagerTest extends TestCase {
 

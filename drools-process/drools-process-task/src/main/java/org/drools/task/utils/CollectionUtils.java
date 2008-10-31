@@ -4,22 +4,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.print.attribute.HashAttributeSet;
 
 import org.drools.task.Attachment;
 import org.drools.task.BooleanExpression;
 import org.drools.task.Comment;
 import org.drools.task.Deadline;
-import org.drools.task.Deadlines;
 import org.drools.task.EmailNotification;
 import org.drools.task.Escalation;
 import org.drools.task.Group;
@@ -29,7 +20,6 @@ import org.drools.task.NotificationType;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.Reassignment;
 import org.drools.task.User;
-import org.hibernate.collection.PersistentBag;
 
 public class CollectionUtils {
     

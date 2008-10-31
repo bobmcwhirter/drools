@@ -1,35 +1,22 @@
 package org.drools.task.service;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.EntityManager;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.AccessType;
 import org.drools.task.Attachment;
-import org.drools.task.Content;
 import org.drools.task.BaseTest;
 import org.drools.task.Comment;
-import org.drools.task.Deadline;
+import org.drools.task.Content;
 import org.drools.task.Status;
 import org.drools.task.Task;
-import org.drools.task.query.TaskSummary;
-import org.drools.task.service.TaskClientHandler.DeleteCommentResponseHandler;
-import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
-import org.drools.task.service.TaskServiceEscalationTest.MockEscalatedDeadlineHandler.Item;
-import org.drools.task.service.TaskServiceTest.BlockingAllOpenTasksForUseResponseHandler;
 import org.drools.task.utils.CollectionUtils;
-
-import junit.framework.TestCase;
 
 public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
     MinaTaskServer server;

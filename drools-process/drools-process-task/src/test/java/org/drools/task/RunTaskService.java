@@ -15,9 +15,9 @@ import org.drools.task.service.MinaTaskServer;
 import org.drools.task.service.SendIcal;
 import org.drools.task.service.TaskService;
 import org.drools.task.service.TaskServiceSession;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class RunTaskService {
 

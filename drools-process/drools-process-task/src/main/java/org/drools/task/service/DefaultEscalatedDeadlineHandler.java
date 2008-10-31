@@ -14,14 +14,12 @@ import javax.persistence.EntityManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.process.workitem.email.EmailWorkItemHandler;
-import org.drools.task.AccessType;
 import org.drools.task.Content;
 import org.drools.task.Deadline;
 import org.drools.task.EmailNotification;
 import org.drools.task.EmailNotificationHeader;
 import org.drools.task.Escalation;
 import org.drools.task.Group;
-import org.drools.task.I18NText;
 import org.drools.task.Notification;
 import org.drools.task.NotificationType;
 import org.drools.task.OrganizationalEntity;
@@ -32,9 +30,9 @@ import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.UserInfo;
 import org.drools.util.ChainedProperties;
-import org.mvel.MVEL;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.MVEL;
+import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.templates.TemplateRuntime;
 
 public class DefaultEscalatedDeadlineHandler
     implements

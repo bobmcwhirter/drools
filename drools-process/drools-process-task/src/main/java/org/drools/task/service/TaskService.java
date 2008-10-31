@@ -21,9 +21,9 @@ import org.drools.task.event.MessagingTaskEventListener;
 import org.drools.task.event.TaskEventListener;
 import org.drools.task.event.TaskEventSupport;
 import org.drools.task.query.DeadlineSummary;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class TaskService {
     EntityManagerFactory             emf;

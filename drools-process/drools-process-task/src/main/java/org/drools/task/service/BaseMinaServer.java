@@ -3,9 +3,6 @@ package org.drools.task.service;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;

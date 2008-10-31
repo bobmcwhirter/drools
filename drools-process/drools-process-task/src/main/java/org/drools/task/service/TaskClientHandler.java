@@ -1,11 +1,7 @@
 package org.drools.task.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;

@@ -11,8 +11,8 @@ import javax.persistence.EntityManagerFactory;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
-import org.mvel.MVEL;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.MVEL;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class WorkItemNotification {
     private String workItemExp;

@@ -7,8 +7,6 @@ import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Synchronization;
-
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.task.BaseTest;
