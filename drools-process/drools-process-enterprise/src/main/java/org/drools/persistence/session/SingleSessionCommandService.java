@@ -36,6 +36,8 @@ public class SingleSessionCommandService implements CommandService {
 			.setEntityManager(((JPAPersister<StatefulSession>) persister).getEntityManager());
 		((JPASignalManager) ((InternalWorkingMemory) session).getSignalManager())
 			.setEntityManager(((JPAPersister<StatefulSession>) persister).getEntityManager());
+		((JPASignalManager) ((InternalWorkingMemory) session).getSignalManager())
+			.setPersister(persister);
 	}
 	
 	public Object execute(Command command) {

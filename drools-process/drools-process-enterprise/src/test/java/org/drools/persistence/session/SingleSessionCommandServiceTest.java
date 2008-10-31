@@ -380,4 +380,78 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	return packageBuilder.getPackage();
     }
     
+	public void testPersistenceTimer2() throws Exception {
+		Properties properties = new Properties();
+		properties.put(
+	        "processInstanceManagerFactory", 
+	        "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
+		properties.put(
+	        "workItemManagerFactory", 
+	        "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
+		properties.put(
+	        "processSignalManagerFactory", 
+	        "org.drools.persistence.processinstance.JPASignalManagerFactory");
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
+        Package pkg = getProcessTimer2();
+        ruleBase.addPackage(pkg);
+
+        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase);
+        StartProcessCommand startProcessCommand = new StartProcessCommand();
+        startProcessCommand.setProcessId("org.drools.test.TestProcess");
+        ProcessInstance processInstance = (ProcessInstance) service.execute(startProcessCommand);
+        System.out.println("Started process instance " + processInstance.getId());
+        
+        service = new SingleSessionCommandService(ruleBase);
+        GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
+        getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
+        processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
+        assertNotNull(processInstance);
+
+        service = new SingleSessionCommandService(ruleBase);
+        Thread.sleep(2000);
+        getProcessInstanceCommand = new GetProcessInstanceCommand();
+        getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
+        processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
+        assertNull(processInstance);
+	}
+
+    private Package getProcessTimer2() {
+    	RuleFlowProcess process = new RuleFlowProcess();
+    	process.setId("org.drools.test.TestProcess");
+    	process.setName("TestProcess");
+    	process.setPackageName("org.drools.test");
+    	StartNode start = new StartNode();
+    	start.setId(1);
+    	start.setName("Start");
+    	process.addNode(start);
+    	TimerNode timerNode = new TimerNode();
+    	timerNode.setId(2);
+    	timerNode.setName("Timer");
+    	Timer timer = new Timer();
+    	timer.setDelay(0);
+    	timerNode.setTimer(timer);
+    	process.addNode(timerNode);
+    	new ConnectionImpl(start, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
+    	ActionNode actionNode = new ActionNode();
+    	actionNode.setId(3);
+    	actionNode.setName("Action");
+    	DroolsConsequenceAction action = new DroolsConsequenceAction();
+    	action.setDialect("java");
+    	action.setConsequence("try { Thread.sleep(1000); } catch (Throwable t) {} System.out.println(\"Executed action\");");
+    	actionNode.setAction(action);
+    	process.addNode(actionNode);
+    	new ConnectionImpl(timerNode, Node.CONNECTION_DEFAULT_TYPE, actionNode, Node.CONNECTION_DEFAULT_TYPE);
+    	EndNode end = new EndNode();
+    	end.setId(6);
+    	end.setName("End");
+    	process.addNode(end);
+    	new ConnectionImpl(actionNode, Node.CONNECTION_DEFAULT_TYPE, end, Node.CONNECTION_DEFAULT_TYPE);
+    	
+    	PackageBuilder packageBuilder = new PackageBuilder();
+    	ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
+    	processBuilder.buildProcess(process, null);
+    	return packageBuilder.getPackage();
+    }
+    
 }
