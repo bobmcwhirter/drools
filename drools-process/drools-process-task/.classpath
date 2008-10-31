@@ -12,7 +12,7 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-M3/mina-core-2.0.0-M3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.2/slf4j-api-1.5.2.jar"/>
   <classpathentry kind="src" path="/drools-core"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel/2.0-SNAPSHOT/mvel-2.0-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.1-SNAPSHOT/mvel2-2.0.1-SNAPSHOT.jar"/>
   <classpathentry kind="src" path="/drools-api"/>
   <classpathentry kind="src" path="/drools-workitems"/>
   <classpathentry kind="src" path="/drools-compiler"/>
@@ -34,7 +34,6 @@
   <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/2.0.2/xml-apis-2.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/transaction/jta/1.1/jta-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.4.GA/javassist-3.4.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/seam/jboss-seam/2.1.0-SNAPSHOT/jboss-seam-2.1.0-SNAPSHOT.jar"/>

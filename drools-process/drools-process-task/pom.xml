@@ -48,6 +48,7 @@
     		<artifactId>hibernate-entitymanager</artifactId>
     		<version>3.4.0.GA</version>
     	</dependency>
+     	  
     	<!-- HSQLDB -->
     	<dependency>
     		<groupId>com.h2database</groupId>
@@ -55,7 +56,7 @@
     		<version>1.0.77</version>
     	</dependency>  
     	
-    		<dependency>
+    	<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
 			<version>2.1.0-SNAPSHOT</version>
@@ -77,15 +78,16 @@
         
         <dependency>
             <groupId>org.mvel</groupId>
-            <artifactId>mvel</artifactId>
+            <artifactId>mvel2</artifactId>
         </dependency>         
         
-      <dependency>
+        <dependency>
           <groupId>org.subethamail</groupId>
           <artifactId>subethasmtp-wiser</artifactId>
           <version>1.2</version>
           <scope>test</scope>
-    </dependency>     	  
+        </dependency>
+        
       </dependencies>              
                   
 </project>
