@@ -149,8 +149,8 @@ org.drools.guvnor.client.rpc.ValidatedResponse, true
 org.drools.guvnor.client.ruleeditor.PropertiesHolder, true
 org.drools.guvnor.client.ruleeditor.PropertyHolder, true
 [Lorg.drools.guvnor.client.ruleeditor.PropertyHolder;, true
-org.drools.guvnor.client.rulefloweditor.ForEachTransferNode, true
-[Lorg.drools.guvnor.client.rulefloweditor.ForEachTransferNode;, true
+org.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode, true
+[Lorg.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode;, true
 org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode, true
 [Lorg.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode;, true
 org.drools.guvnor.client.rulefloweditor.SplitNode$ConnectionRef, true
