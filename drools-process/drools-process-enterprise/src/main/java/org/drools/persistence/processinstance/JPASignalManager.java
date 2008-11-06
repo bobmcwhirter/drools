@@ -10,8 +10,8 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.persistence.Persister;
 import org.drools.persistence.Transaction;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.event.DefaultSignalManager;
+import org.drools.runtime.process.ProcessInstance;
 
 public class JPASignalManager extends DefaultSignalManager {
 

@@ -11,7 +11,6 @@ import org.drools.WorkingMemory;
 import org.drools.osworkflow.core.OSWorkflowProcess;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
 
@@ -86,7 +85,7 @@ public class DroolsWorkflow implements Workflow {
 	public int[] getAvailableActions(long id, Map inputs) {
         List<Integer> ids = new ArrayList<Integer>();
         OSWorkflowProcessInstance processInstance = findProcessInstance(id);
-        for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
+        for (org.drools.runtime.process.NodeInstance nodeInstance: processInstance.getNodeInstances()) {
             if (nodeInstance instanceof StepNodeInstance) {
                 StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
                 ids.addAll(stepNodeInstance.getAvailableActions());

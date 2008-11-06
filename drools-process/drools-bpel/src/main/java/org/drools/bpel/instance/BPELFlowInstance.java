@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.bpel.core.BPELFlow;
-import org.drools.process.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.node.CompositeNodeInstance;
 

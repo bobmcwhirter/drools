@@ -9,7 +9,6 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Process;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
@@ -30,7 +29,7 @@ public class JPAProcessInstanceManager implements ProcessInstanceManager {
     public void addProcessInstance(ProcessInstance processInstance) {
         ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo(processInstance);
         manager.persist(processInstanceInfo);
-        ((InternalProcessInstance) processInstance).setId(processInstanceInfo.getId());
+        ((ProcessInstance) processInstance).setId(processInstanceInfo.getId());
         processInstanceInfo.updateLastReadDate();
     }
     
@@ -43,7 +42,7 @@ public class JPAProcessInstanceManager implements ProcessInstanceManager {
             return null;
         }
         processInstanceInfo.updateLastReadDate();
-        InternalProcessInstance processInstance = (InternalProcessInstance) processInstanceInfo.getProcessInstance();
+        ProcessInstance processInstance = (ProcessInstance) processInstanceInfo.getProcessInstance();
         Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess(processInstance.getProcessId());
         if (process == null) {
         	throw new IllegalArgumentException(

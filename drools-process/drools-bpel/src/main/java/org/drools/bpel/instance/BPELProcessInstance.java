@@ -1,7 +1,7 @@
 package org.drools.bpel.instance;
 
 import org.drools.bpel.core.BPELProcess;
-import org.drools.process.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 

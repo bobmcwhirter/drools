@@ -4,9 +4,9 @@ import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELActivity.SourceLink;
 import org.drools.bpel.core.BPELActivity.TargetLink;
 import org.drools.bpel.xpath.XPathReturnValueEvaluator;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.NodeInstanceContainer;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.spi.ProcessContext;
 import org.drools.util.ArrayUtils;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -75,7 +75,7 @@ public final class BPELLinkManager {
 	    	evaluator.setExpression(transitionCondition);
 	    	ProcessContext processContext = new ProcessContext();
 	    	processContext.setNodeInstance(activityInstance);
-	    	return (Boolean) evaluator.evaluate(((InternalProcessInstance) activityInstance.getProcessInstance()).getWorkingMemory(), processContext);
+	    	return (Boolean) evaluator.evaluate(((ProcessInstance) activityInstance.getProcessInstance()).getWorkingMemory(), processContext);
     	} catch (Throwable t) {
     		throw new IllegalArgumentException("Could not evaluate transition condition " + transitionCondition, t);
     	}

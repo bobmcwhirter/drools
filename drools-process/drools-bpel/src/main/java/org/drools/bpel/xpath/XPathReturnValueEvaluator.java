@@ -21,7 +21,7 @@ import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.Namespaces;
 import org.drools.WorkingMemory;
 import org.drools.bpel.core.BPELProcess;
-import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.spi.ProcessContext;
 import org.drools.spi.ReturnValueEvaluator;
 import org.w3c.dom.Document;
@@ -85,7 +85,7 @@ public class XPathReturnValueEvaluator implements ReturnValueEvaluator {
 			}
         });
         XPathEvaluator xpe = (XPathEvaluator) xpf.newXPath();
-        xpe.setNamespaceContext(((BPELProcess) ((InternalProcessInstance)
+        xpe.setNamespaceContext(((BPELProcess) ((ProcessInstance)
     		processContext.getNodeInstance().getProcessInstance())
     			.getProcess()).getNamespaceContext());
         XPathExpression xpathExpression = xpe.compile(expression);

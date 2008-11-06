@@ -9,9 +9,9 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import junit.framework.TestCase;
 
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.util.ChainedProperties;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;

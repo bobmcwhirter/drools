@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.apache.commons.compress.Archive;
 import org.apache.commons.compress.ArchiverFactory;
-import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemManager;
 
 public class ArchiveWorkItemHandler implements WorkItemHandler {
 

@@ -3,12 +3,11 @@ package org.drools.bpel.instance;
 import org.drools.bpel.core.BPELFaultHandlerScope;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.NodeInstanceContainer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.FaultNodeInstance;
 
@@ -35,7 +34,7 @@ public class BPELRethrowInstance extends FaultNodeInstance {
 		NodeInstanceContainer nodeInstanceContainer = scopeInstance.getNodeInstanceContainer();
 		if (nodeInstanceContainer instanceof ProcessInstance) {
 			return (ExceptionScopeInstance) 
-				((InternalProcessInstance) nodeInstanceContainer)
+				((ProcessInstance) nodeInstanceContainer)
 					.getContextInstance(ExceptionScope.EXCEPTION_SCOPE);
 		}
 		if (nodeInstanceContainer instanceof NodeInstance) {

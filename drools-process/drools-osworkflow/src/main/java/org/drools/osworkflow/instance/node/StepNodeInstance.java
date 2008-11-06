@@ -11,9 +11,8 @@ import org.drools.definition.process.Connection;
 import org.drools.osworkflow.core.OSWorkflowConnection;
 import org.drools.osworkflow.core.node.StepNode;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
@@ -99,7 +98,7 @@ public class StepNodeInstance extends NodeInstanceImpl implements Step {
             }
         }
         if (action.isFinish()) {
-            ((InternalProcessInstance) getProcessInstance())
+            ((ProcessInstance) getProcessInstance())
             	.setState(ProcessInstance.STATE_COMPLETED);
         }
     }

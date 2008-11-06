@@ -10,7 +10,7 @@ import org.apache.ode.utils.xsd.Duration;
 import org.drools.bpel.core.BPELWait;
 import org.drools.bpel.xpath.XPathReturnValueEvaluator;
 import org.drools.process.core.timer.Timer;
-import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.node.TimerNodeInstance;
@@ -53,7 +53,7 @@ public class BPELWaitInstance extends TimerNodeInstance {
 	        ProcessContext processContext = new ProcessContext();
 	        processContext.setNodeInstance(this);
 	        String literal = (String) evaluator.evaluate(
-        		((InternalProcessInstance) getProcessInstance()).getWorkingMemory(), processContext, XPathConstants.STRING);
+        		((ProcessInstance) getProcessInstance()).getWorkingMemory(), processContext, XPathConstants.STRING);
 	        
 	        Calendar cal = Calendar.getInstance();
 	        Duration duration = new Duration(literal);
@@ -76,7 +76,7 @@ public class BPELWaitInstance extends TimerNodeInstance {
 		    ProcessContext processContext = new ProcessContext();
 		    processContext.setNodeInstance(this);
 		    List literal = (List) evaluator.evaluate(
-	    		((InternalProcessInstance) getProcessInstance()).getWorkingMemory(), processContext, XPathConstants.NODESET);
+	    		((ProcessInstance) getProcessInstance()).getWorkingMemory(), processContext, XPathConstants.NODESET);
 			Calendar calendar = null;
 		    if (literal.size() == 0) {
 		        throw new IllegalArgumentException("No results for timer until");

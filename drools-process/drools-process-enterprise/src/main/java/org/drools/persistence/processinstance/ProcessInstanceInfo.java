@@ -20,8 +20,8 @@ import org.drools.marshalling.InputMarshaller;
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.marshalling.OutputMarshaller;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.runtime.process.ProcessInstance;
 import org.hibernate.annotations.CollectionOfElements;
 
 @Entity

@@ -8,13 +8,13 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 
 import org.drools.WorkingMemory;
-import org.drools.process.instance.InternalWorkItemManager;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.process.WorkItemHandler;
 
-public class JPAWorkItemManager implements InternalWorkItemManager {
+public class JPAWorkItemManager implements WorkItemManager {
 
     private EntityManager manager;
     private WorkingMemory workingMemory;

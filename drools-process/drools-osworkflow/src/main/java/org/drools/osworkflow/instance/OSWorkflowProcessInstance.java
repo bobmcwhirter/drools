@@ -10,9 +10,9 @@ import org.drools.definition.process.Node;
 import org.drools.osworkflow.core.OSWorkflowProcess;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 import com.opensymphony.module.propertyset.PropertySet;
@@ -67,7 +67,7 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
     }
     
     public void doAction(int actionId, Map inputs) {
-        for (NodeInstance nodeInstance: getNodeInstances()) {
+        for (org.drools.runtime.process.NodeInstance nodeInstance: getNodeInstances()) {
             StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
             if (stepNodeInstance.isAvailableAction(actionId)) {
                 stepNodeInstance.doAction(actionId, inputs);
@@ -135,7 +135,7 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
         if (result.getOwner() != null && nodeInstance instanceof StepNodeInstance) {
             ((StepNodeInstance) nodeInstance).setOwner(result.getOwner());
         }
-        ((org.drools.workflow.instance.NodeInstance) nodeInstance).trigger(null, type);
+        nodeInstance.trigger(null, type);
         List<FunctionDescriptor> postFunctions = result.getPostFunctions();
         if (postFunctions != null) {
             for (FunctionDescriptor postFunction: postFunctions) {
@@ -240,7 +240,7 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
 
     public List<Step> getCurrentSteps() {
         List<Step> result = new ArrayList<Step>();
-        for (NodeInstance nodeInstance: getNodeInstances()) {
+        for (org.drools.runtime.process.NodeInstance nodeInstance: getNodeInstances()) {
             if (nodeInstance instanceof StepNodeInstance) {
                 result.add((StepNodeInstance) nodeInstance);
             }
@@ -257,7 +257,7 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
     
     private void checkImplicitFinish() {
         boolean finished = true;
-        for (NodeInstance nodeInstance: getNodeInstances()) {
+        for (org.drools.runtime.process.NodeInstance nodeInstance: getNodeInstances()) {
             if (nodeInstance instanceof StepNodeInstance) {
                 if (!((StepNodeInstance) nodeInstance).getAvailableActions().isEmpty()) {
                     finished = false;

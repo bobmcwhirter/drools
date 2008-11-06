@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.drools.WorkingMemory;
 import org.drools.bpel.instance.BPELProcessInstance;
-import org.drools.process.instance.InternalWorkItemManager;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
@@ -19,7 +18,7 @@ public class BPELTestUtil {
 
     public static WorkItem findWebServiceInvocation(WorkingMemory workingMemory, String partnerLink, String portType, String operation) {
         Set<WorkItem> workItems =
-        	((InternalWorkItemManager) workingMemory.getWorkItemManager()).getWorkItems();
+        	((WorkItemManager) workingMemory.getWorkItemManager()).getWorkItems();
         for (Iterator<WorkItem> iterator = workItems.iterator(); iterator.hasNext(); ) {
             WorkItem workItem = iterator.next();
             if ("WebServiceInvocation".equals(workItem.getName())
@@ -69,7 +68,7 @@ public class BPELTestUtil {
     
     public static class WebServiceInvocationHandler implements WorkItemHandler {
 
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        public void executeWorkItem(org.drools.runtime.process.WorkItem workItem, org.drools.runtime.process.WorkItemManager manager) {
             System.out.println("Web service invoked "
                 + workItem.getParameter("PartnerLink") + " "
                 + workItem.getParameter("PortType") + " "
@@ -79,7 +78,7 @@ public class BPELTestUtil {
                 + workItem.getParameter("Message"));
         }
         
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        public void abortWorkItem(org.drools.runtime.process.WorkItem workItem, org.drools.runtime.process.WorkItemManager manager) {
             System.out.println("Web service invocation aborted "
                 + workItem.getParameter("PartnerLink") + " "
                 + workItem.getParameter("PortType") + " "
