@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.process.core.Process;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;

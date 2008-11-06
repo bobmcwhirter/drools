@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.osworkflow.core.OSWorkflowConnection;
 import org.drools.osworkflow.core.node.StepNode;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;

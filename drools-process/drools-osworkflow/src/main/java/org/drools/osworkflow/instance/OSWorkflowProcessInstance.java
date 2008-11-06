@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.osworkflow.core.OSWorkflowProcess;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
 import org.drools.process.core.context.variable.VariableScope;
