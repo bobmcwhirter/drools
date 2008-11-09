@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.task.BaseTest;
 import org.drools.task.Status;
 import org.drools.task.query.TaskSummary;
