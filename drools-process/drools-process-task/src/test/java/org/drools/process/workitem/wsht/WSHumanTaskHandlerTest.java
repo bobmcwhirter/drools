@@ -78,7 +78,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
 		
 		System.out.println("Completing task " + task.getId());
 		operationResponseHandler = new BlockingTaskOperationResponseHandler();
-		client.complete(task.getId(), "Darth Vader", operationResponseHandler);
+		client.complete(task.getId(), "Darth Vader", null, operationResponseHandler);
 		operationResponseHandler.waitTillDone(5000);
 		System.out.println("Completed task " + task.getId());
 		
@@ -121,7 +121,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
 		
 		System.out.println("Completing task " + task.getId());
 		operationResponseHandler = new BlockingTaskOperationResponseHandler();
-		client.complete(task.getId(), "Darth Vader", operationResponseHandler);
+		client.complete(task.getId(), "Darth Vader", null, operationResponseHandler);
 		operationResponseHandler.waitTillDone(5000);
 		System.out.println("Completed task " + task.getId());
 		
@@ -159,7 +159,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
 		
 		System.out.println("Failing task " + task.getId());
 		operationResponseHandler = new BlockingTaskOperationResponseHandler();
-		client.fail(task.getId(), "Darth Vader", operationResponseHandler);
+		client.fail(task.getId(), "Darth Vader", null, operationResponseHandler);
 		operationResponseHandler.waitTillDone(5000);
 		System.out.println("Failed task " + task.getId());
 		

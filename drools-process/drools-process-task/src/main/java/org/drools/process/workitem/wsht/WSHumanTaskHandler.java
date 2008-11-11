@@ -1,5 +1,8 @@
 package org.drools.process.workitem.wsht;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import org.drools.eventmessaging.Payload;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.task.AccessType;
 import org.drools.task.I18NText;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.PeopleAssignments;
@@ -25,6 +29,7 @@ import org.drools.task.event.TaskEvent;
 import org.drools.task.event.TaskEventKey;
 import org.drools.task.event.TaskFailedEvent;
 import org.drools.task.event.TaskSkippedEvent;
+import org.drools.task.service.ContentData;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.TaskClientHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
@@ -103,10 +108,26 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 			task.setPeopleAssignments(assignments);
 		}
 		
+		ContentData content = null;
+		Object contentObject = workItem.getParameter("Content");
+		if (contentObject != null) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream out;
+			try {
+				out = new ObjectOutputStream(bos);
+				out.writeObject(contentObject);
+				out.close();
+				content = new ContentData();
+				content.setContent(bos.toByteArray());
+				content.setAccessType(AccessType.Inline);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		TaskWorkItemAddTaskResponseHandler taskResponseHandler =
 			new TaskWorkItemAddTaskResponseHandler(this.client, this.managers,
 				this.idMapping, manager, workItem.getId());
-		client.addTask(task, taskResponseHandler);
+		client.addTask(task, content, taskResponseHandler);
 	}
 	
 	public void dispose() {
