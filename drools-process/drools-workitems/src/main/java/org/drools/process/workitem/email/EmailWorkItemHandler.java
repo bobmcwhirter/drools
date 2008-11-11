@@ -1,7 +1,7 @@
 package org.drools.process.workitem.email;
 
+import org.drools.process.instance.WorkItemHandler;
 import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 
 /**
