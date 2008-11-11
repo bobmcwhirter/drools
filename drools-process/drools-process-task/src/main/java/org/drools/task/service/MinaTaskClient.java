@@ -28,10 +28,11 @@ public class MinaTaskClient extends BaseMinaClient {
                handler );
     }
 
-    public void addTask(Task task,
+    public void addTask(Task task, ContentData content, 
                         AddTaskResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 1 );
+        List<Object> args = new ArrayList<Object>( 2 );
         args.add( task );
+        args.add( content );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.AddTaskRequest,
                                    args );
@@ -158,11 +159,10 @@ public class MinaTaskClient extends BaseMinaClient {
     public void claim(long taskId,
                       String userId,
                       TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 3 );
         args.add( Operation.Claim );
         args.add( taskId );
         args.add( userId );
-        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -176,11 +176,10 @@ public class MinaTaskClient extends BaseMinaClient {
     public void start(long taskId,
                       String userId,
                       TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 3 );
         args.add( Operation.Start );
         args.add( taskId );
         args.add( userId );
-        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -194,11 +193,10 @@ public class MinaTaskClient extends BaseMinaClient {
     public void stop(long taskId,
                      String userId,
                      TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 3 );
         args.add( Operation.Stop );
         args.add( taskId );
         args.add( userId );
-        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -212,11 +210,10 @@ public class MinaTaskClient extends BaseMinaClient {
     public void release(long taskId,
                         String userId,
                         TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 3 );
         args.add( Operation.Release );
         args.add( taskId );
         args.add( userId );
-        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -230,11 +227,10 @@ public class MinaTaskClient extends BaseMinaClient {
     public void suspend(long taskId,
                         String userId,
                         TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 3 );
         args.add( Operation.Suspend );
         args.add( taskId );
         args.add( userId );
-        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -248,11 +244,10 @@ public class MinaTaskClient extends BaseMinaClient {
     public void resume(long taskId,
                        String userId,
                        TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 3 );
         args.add( Operation.Resume );
         args.add( taskId );
         args.add( userId );
-        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -266,11 +261,10 @@ public class MinaTaskClient extends BaseMinaClient {
     public void skip(long taskId,
                      String userId,
                      TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 3 );
         args.add( Operation.Skip );
         args.add( taskId );
         args.add( userId );
-        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -321,12 +315,14 @@ public class MinaTaskClient extends BaseMinaClient {
 
     public void complete(long taskId,
                          String userId,
+                         ContentData outputData,
                          TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 5 );
         args.add( Operation.Complete );
         args.add( taskId );
         args.add( userId );
         args.add( null );
+        args.add( outputData );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );
@@ -339,12 +335,14 @@ public class MinaTaskClient extends BaseMinaClient {
 
     public void fail(long taskId,
                      String userId,
+                     FaultData faultData,
                      TaskOperationResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 4 );
+        List<Object> args = new ArrayList<Object>( 5 );
         args.add( Operation.Fail );
         args.add( taskId );
         args.add( userId );
         args.add( null );
+        args.add( faultData );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.OperationRequest,
                                    args );

@@ -20,8 +20,9 @@ public class MinaKnowledgeBaseClient extends BaseMinaClient {
 
     public void addPackage(Task task,
                         AddTaskResponseHandler responseHandler) {
-        List args = new ArrayList( 1 );
+        List args = new ArrayList( 2 );
         args.add( task );
+        args.add( null );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.AddTaskRequest,
                                    args );

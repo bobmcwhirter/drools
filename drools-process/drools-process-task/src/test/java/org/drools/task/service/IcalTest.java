@@ -107,7 +107,7 @@ public class IcalTest extends BaseTest {
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
-        client.addTask( task,
+        client.addTask( task, null,
                         addTaskResponseHandler );
 
         long taskId = addTaskResponseHandler.getTaskId();
@@ -219,7 +219,7 @@ public class IcalTest extends BaseTest {
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
-        client.addTask( task,
+        client.addTask( task, null,
                         addTaskResponseHandler );
 
         long taskId = addTaskResponseHandler.getTaskId();
@@ -302,7 +302,7 @@ public class IcalTest extends BaseTest {
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
-        client.addTask( task,
+        client.addTask( task, null,
                         addTaskResponseHandler );
 
         long taskId = addTaskResponseHandler.getTaskId();
@@ -381,7 +381,7 @@ public class IcalTest extends BaseTest {
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
-        client.addTask( task,
+        client.addTask( task, null,
                         addTaskResponseHandler );
 
         long taskId = addTaskResponseHandler.getTaskId();

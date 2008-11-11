@@ -59,7 +59,7 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -140,7 +140,7 @@ public class TaskServiceCommentsAndAttachmentsTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         

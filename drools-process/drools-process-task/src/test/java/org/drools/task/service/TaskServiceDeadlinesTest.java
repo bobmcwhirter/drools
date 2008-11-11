@@ -16,8 +16,8 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.task.BaseTest;
 import org.drools.task.Content;
 import org.drools.task.MockUserInfo;
@@ -96,7 +96,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( string ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         long taskId = addTaskResponseHandler.getTaskId();    
                                         
         Content content = new Content();
@@ -104,6 +104,10 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         BlockingSetContentResponseHandler setContentResponseHandler  = new BlockingSetContentResponseHandler();
         client.setDocumentContent( taskId, content, setContentResponseHandler );
         long contentId = setContentResponseHandler.getContentId();
+        BlockingGetContentResponseHandler  getResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent( contentId, getResponseHandler );
+        content = getResponseHandler.getContent();
+        assertEquals( "['subject' : 'My Subject', 'body' : 'My Body']", new String( content.getContent() ) );
         
         // emails should not be set yet
         assertEquals(0, wiser.getMessages().size() );             
@@ -167,7 +171,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( string ), vars );               
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         long taskId = addTaskResponseHandler.getTaskId();    
         
         // Shouldn't have re-assigned yet

@@ -29,7 +29,7 @@ public class QueryTest extends BaseTest {
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
-            taskSession.addTask( task );
+            taskSession.addTask( task, null );
         }
         long now = ((Date)vars.get( "now" )).getTime();
         

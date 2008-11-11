@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
 import org.drools.task.Attachment;
 import org.drools.task.Comment;
 import org.drools.task.Content;
@@ -28,8 +31,11 @@ import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskService.ScheduledTaskDeadline;
 
 public class TaskServiceSession {
-    TaskService   service;
-    EntityManager em;
+	
+    private TaskService service;
+    private EntityManager em;
+    private Map<String, RuleBase> ruleBases;  
+    private Map<String, Map<String, Object>> globals;  
 
     public TaskServiceSession(TaskService service,
                               EntityManager em) {
@@ -44,6 +50,20 @@ public class TaskServiceSession {
     public EntityManager getEntityManager() {
         return em;
     }
+    
+    public void setRuleBase(String type, RuleBase ruleBase) {
+    	if (ruleBases == null) {
+    		ruleBases = new HashMap<String, RuleBase>();
+    	}
+    	ruleBases.put(type, ruleBase);
+    }
+    
+    public void setGlobals(String type, Map<String, Object> globals) {
+    	if (this.globals == null) {
+    		this.globals = new HashMap<String, Map<String, Object>>();
+    	}
+    	this.globals.put(type, globals);
+    }
 
     public void addUser(User user) {
         em.getTransaction().begin();
@@ -57,10 +77,38 @@ public class TaskServiceSession {
         em.getTransaction().commit();
     }
 
-    public void addTask(Task task) {
+    public void addTask(Task task, ContentData contentData) {
         TaskData taskData = task.getTaskData();
         // new tasks start off with status created
         taskData.setStatus( Status.Created );
+
+        // execute "addTask" rules
+        if (ruleBases != null) {
+        	RuleBase ruleBase = ruleBases.get("addTask");
+        	if (ruleBase != null) {
+        		StatefulSession session = ruleBase.newStatefulSession();
+    			Map<String, Object> globals = this.globals.get("addTask");
+    			if (globals != null) {
+    				for (Map.Entry<String, Object> entry: globals.entrySet()) {
+    					session.setGlobal(entry.getKey(), entry.getValue());
+    				}
+    			}
+    			TaskServiceRequest request = new TaskServiceRequest("addTask", null, null);
+    			session.setGlobal("request", request);
+        		session.insert(task);
+        		session.insert(contentData);
+        		session.fireAllRules();
+        		if (!request.isAllowed()) {
+        			String error = "Cannot add Task:\n";
+        			if (request.getReasons() != null) {
+        				for (String reason: request.getReasons()) {
+        					error += reason + "\n";
+        				}
+        			}
+        			throw new RuntimeException(error);
+        		}
+        	}
+        }
 
         if ( task.getPeopleAssignments() != null ) {
             List<OrganizationalEntity> potentialOwners = task.getPeopleAssignments().getPotentialOwners();
@@ -87,10 +135,19 @@ public class TaskServiceSession {
         if ( taskData.getActivationTime() == null ) {
             taskData.setActivationTime( taskData.getCreatedOn() );
         }
-
+        
         em.getTransaction().begin();
         em.persist( task );
+        if (contentData != null) {
+        	Content content = new Content();
+        	content.setContent(contentData.getContent());
+        	em.persist( content );
+            taskData.setDocumentAccessType( contentData.getAccessType() );
+            taskData.setDocumentType( contentData.getType() );
+            taskData.setDocumentContentId( content.getId() );
+        }
         em.getTransaction().commit();
+
         long now = System.currentTimeMillis();
         // schedule after it's been persisted, otherwise the id's won't be assigned
         if ( task.getDeadlines() != null ) {
@@ -160,7 +217,7 @@ public class TaskServiceSession {
                         commands( command,
                                   task,
                                   user,
-                                  targetEntity );
+                                  targetEntity);
                         return null;
                     }
                 }
@@ -182,7 +239,7 @@ public class TaskServiceSession {
                         commands( command,
                                   task,
                                   user,
-                                  targetEntity );
+                                  targetEntity);
                         return null;
                     }
                 }
@@ -290,7 +347,8 @@ public class TaskServiceSession {
     public TaskError taskOperation(Operation operation,
                                    long taskId,
                                    String userId,
-                                   String targetEntityId) {
+                                   String targetEntityId,
+                                   ContentData data) {
         Task task = em.find( Task.class,
                              taskId );
 
@@ -302,7 +360,7 @@ public class TaskServiceSession {
             targetEntity = em.find( OrganizationalEntity.class,
                                     targetEntityId );
         }
-
+        
         em.getTransaction().begin();
         TaskError error = null;
         try {
@@ -312,7 +370,7 @@ public class TaskServiceSession {
                                  commands,
                                  task,
                                  user,
-                                 targetEntity );
+                                 targetEntity);
 
             if ( error != null ) {
                 throw new RuntimeException( "TaskOperationException" );
@@ -329,13 +387,36 @@ public class TaskServiceSession {
                 }
                 
                 case Complete : {
-                    // trigger event support
+                	// set output data 
+                	if (data != null) {
+	                	TaskData taskData = task.getTaskData();
+	                	Content content = new Content();
+	                	content.setContent( data.getContent() );
+	                	em.persist( content );
+	                	taskData.setOutputContentId( content.getId() );
+	                	taskData.setOutputAccessType( data.getAccessType() );
+	                	taskData.setOutputType( data.getType() );
+                	}
+
+                	// trigger event support
                     service.getEventSupport().fireTaskCompleted( task.getId(),
                                                                  task.getTaskData().getActualOwner().getId() );
                     break;
                 }
                 
                 case Fail : {
+                	// set fault data 
+                	if (data != null) {
+	                	TaskData taskData = task.getTaskData();
+	                	Content content = new Content();
+	                	content.setContent( data.getContent() );
+	                	em.persist( content );
+	                	taskData.setFaultContentId( content.getId() );
+	                	taskData.setFaultAccessType( data.getAccessType() );
+	                	taskData.setFaultType( data.getType() );
+	                	taskData.setFaultName( ((FaultData) data).getFaultName() );
+                	}
+
                     // trigger event support
                     service.getEventSupport().fireTaskFailed( task.getId(),
                                                               task.getTaskData().getActualOwner().getId() );

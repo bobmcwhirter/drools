@@ -8,7 +8,9 @@ import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.drools.task.AccessType;
 import org.drools.task.BaseTest;
+import org.drools.task.Content;
 import org.drools.task.Status;
 import org.drools.task.Task;
 
@@ -52,7 +54,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -77,7 +79,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -87,6 +89,41 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         Task task1 = getTaskResponseHandler.getTask();
         assertEquals( Status.Reserved, task1.getTaskData().getStatus() );     
         assertEquals( users.get( "bobba" ), task1.getTaskData().getActualOwner() );
+    }
+    
+    public void testNewTaskWithContent() {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        ContentData data = new ContentData();
+        data.setAccessType(AccessType.Inline);
+        data.setType("type");
+        data.setContent("content".getBytes());
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, data, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        // Task should be assigned to the single potential owner and state set to Reserved
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
+        assertEquals( "type", task1.getTaskData().getDocumentType() );
+        long contentId = task1.getTaskData().getDocumentContentId();
+        assertTrue( contentId != -1 ); 
+
+        BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent(contentId, getContentResponseHandler);
+        Content content = getContentResponseHandler.getContent();
+        assertEquals("content", new String(content.getContent()));
     }
     
     public void testClaimWithMultiplePotentialOwners() throws Exception {
@@ -102,7 +139,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -136,7 +173,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -171,7 +208,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -206,7 +243,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -242,7 +279,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -278,7 +315,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -316,7 +353,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -356,7 +393,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -396,7 +433,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -436,7 +473,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -476,7 +513,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -513,7 +550,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -554,7 +591,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -594,7 +631,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -643,7 +680,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -696,7 +733,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -735,7 +772,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();                     
         
@@ -751,7 +788,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         assertNull(  task1.getTaskData().getActualOwner() );                  
     }    
     
-    public void testSkipFromReseerved() {
+    public void testSkipFromReserved() {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );        
@@ -763,7 +800,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -797,7 +834,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );        
+        client.addTask( task, null, addTaskResponseHandler );        
         long taskId = addTaskResponseHandler.getTaskId();                     
         
         // Check is Delegated
@@ -827,7 +864,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -869,7 +906,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );        
+        client.addTask( task, null, addTaskResponseHandler );        
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Claim and Reserved
@@ -910,7 +947,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();                     
         
@@ -941,7 +978,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -983,7 +1020,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1025,7 +1062,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1042,7 +1079,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         
         // Check is Complete
         responseHandler = new BlockingTaskOperationResponseHandler();
-        client.complete( taskId, users.get( "darth" ).getId(), responseHandler ); 
+        client.complete( taskId, users.get( "darth" ).getId(), null, responseHandler ); 
         responseHandler.waitTillDone( 3000 );
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
@@ -1065,7 +1102,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1082,7 +1119,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         
         // Should not complete as wrong user
         responseHandler = new BlockingTaskOperationResponseHandler();
-        client.complete( taskId, users.get( "bobba" ).getId(), responseHandler );  
+        client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );  
         responseHandler.waitTillDone( 3000 );
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
@@ -1092,6 +1129,56 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         assertEquals( users.get( "darth" ), task2.getTaskData().getActualOwner() );                  
     }    
 
+    public void testCompleteWithContent() {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();             
+        
+        // Go straight from Ready to Inprogress
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        client.start( taskId, users.get( "darth" ).getId(), responseHandler );
+        responseHandler.waitTillDone( 3000 );
+        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );  
+        
+        ContentData data = new ContentData();
+        data.setAccessType(AccessType.Inline);
+        data.setType("type");
+        data.setContent("content".getBytes());
+        responseHandler = new BlockingTaskOperationResponseHandler();
+        client.complete( taskId, users.get( "darth" ).getId(), data, responseHandler ); 
+        responseHandler.waitTillDone( 3000 );
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task2 = getTaskResponseHandler.getTask();
+        assertEquals( AccessType.Inline, task2.getTaskData().getOutputAccessType() );
+        assertEquals( "type", task2.getTaskData().getOutputType() );
+        long contentId = task2.getTaskData().getOutputContentId();
+        assertTrue( contentId != -1 ); 
+        
+        BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent(contentId, getContentResponseHandler);
+        Content content = getContentResponseHandler.getContent();
+        assertEquals("content", new String(content.getContent()));
+    }
+        
     public void testFail() {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
@@ -1105,7 +1192,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1122,7 +1209,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         
         // Check is Failed
         responseHandler = new BlockingTaskOperationResponseHandler();
-        client.fail( taskId, users.get( "darth" ).getId(), responseHandler );
+        client.fail( taskId, users.get( "darth" ).getId(), null, responseHandler );
         responseHandler.waitTillDone( 3000 );
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
@@ -1145,7 +1232,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1162,7 +1249,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         
         // Should not fail as wrong user
         responseHandler = new BlockingTaskOperationResponseHandler();
-        client.fail( taskId, users.get( "bobba" ).getId(), responseHandler );
+        client.fail( taskId, users.get( "bobba" ).getId(), null, responseHandler );
         responseHandler.waitTillDone( 3000 );
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
@@ -1171,4 +1258,58 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         assertEquals(  Status.InProgress, task2.getTaskData().getStatus() );
         assertEquals( users.get( "darth" ), task2.getTaskData().getActualOwner() );                  
     }    
+
+    public void testFailWithContent() {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();             
+        
+        // Go straight from Ready to Inprogress
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        client.start( taskId, users.get( "darth" ).getId(), responseHandler );
+        responseHandler.waitTillDone( 3000 );
+        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task1.getTaskData().getActualOwner() );  
+        
+        FaultData data = new FaultData();
+        data.setAccessType(AccessType.Inline);
+        data.setType("type");
+        data.setFaultName("faultName");
+        data.setContent("content".getBytes());
+        responseHandler = new BlockingTaskOperationResponseHandler();
+        client.fail( taskId, users.get( "darth" ).getId(), data, responseHandler );
+        responseHandler.waitTillDone( 3000 );
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task2 = getTaskResponseHandler.getTask();
+        assertEquals( Status.Failed, task2.getTaskData().getStatus() );
+        assertEquals( AccessType.Inline, task2.getTaskData().getFaultAccessType() );
+        assertEquals( "type", task2.getTaskData().getFaultType() );
+        assertEquals( "faultName", task2.getTaskData().getFaultName() );
+        long contentId = task2.getTaskData().getFaultContentId();
+        assertTrue( contentId != -1 ); 
+        
+        BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent(contentId, getContentResponseHandler);
+        Content content = getContentResponseHandler.getContent();
+        assertEquals("content", new String(content.getContent()));
+    }
+    
 }

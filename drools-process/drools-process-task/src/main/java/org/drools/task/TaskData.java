@@ -47,8 +47,22 @@ public class TaskData
 
     private String           documentType;
 
-    private long             documentContentId;
+    private long             documentContentId = -1;
 
+    private AccessType       outputAccessType;
+
+    private String           outputType;
+
+    private long             outputContentId = -1;
+    
+    private String 	         faultName;
+
+    private AccessType       faultAccessType;
+
+    private String           faultType;
+
+    private long             faultContentId = -1;
+    
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
     private List<Comment>    comments    = Collections.emptyList();
@@ -116,6 +130,76 @@ public class TaskData
             out.writeBoolean( false );
         }
         
+        if ( documentAccessType != null ) {
+            out.writeBoolean( true );
+            out.writeObject( documentAccessType );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( documentType != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( documentType );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( documentContentId != -1 ) {
+            out.writeBoolean( true );
+            out.writeLong( documentContentId );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( outputAccessType != null ) {
+            out.writeBoolean( true );
+            out.writeObject( outputAccessType );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( outputType != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( outputType );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( outputContentId != -1 ) {
+            out.writeBoolean( true );
+            out.writeLong( outputContentId );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( faultName != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( faultName );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( faultAccessType != null ) {
+            out.writeBoolean( true );
+            out.writeObject( faultAccessType );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( faultType != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( faultType );
+        } else {
+            out.writeBoolean( false );
+        }
+        
+        if ( faultContentId != -1 ) {
+            out.writeBoolean( true );
+            out.writeLong( faultContentId );
+        } else {
+            out.writeBoolean( false );
+        }
+        
         CollectionUtils.writeCommentList( comments,
                                           out );
         CollectionUtils.writeAttachmentList( attachments,
@@ -159,7 +243,47 @@ public class TaskData
         if ( in.readBoolean() ) {
             workItemId = in.readLong();
         }
+        
+        if ( in.readBoolean() ) {
+            documentAccessType = (AccessType) in.readObject();
+        }
 
+        if ( in.readBoolean() ) {
+            documentType = in.readUTF();
+        }
+        
+        if ( in.readBoolean() ) {
+            documentContentId = in.readLong();
+        }
+        
+        if ( in.readBoolean() ) {
+            outputAccessType = (AccessType) in.readObject();
+        }
+
+        if ( in.readBoolean() ) {
+            outputType = in.readUTF();
+        }
+        
+        if ( in.readBoolean() ) {
+            outputContentId = in.readLong();
+        }
+        
+        if ( in.readBoolean() ) {
+            faultName = in.readUTF();
+        }
+        
+        if ( in.readBoolean() ) {
+            faultAccessType = (AccessType) in.readObject();
+        }
+
+        if ( in.readBoolean() ) {
+            faultType = in.readUTF();
+        }
+        
+        if ( in.readBoolean() ) {
+            faultContentId = in.readLong();
+        }
+        
         comments = CollectionUtils.readCommentList( in );
         attachments = CollectionUtils.readAttachmentList( in );
 
@@ -262,7 +386,63 @@ public class TaskData
         this.documentType = documentType;
     }
 
-    public List<Comment> getComments() {
+    public AccessType getOutputAccessType() {
+		return outputAccessType;
+	}
+
+	public void setOutputAccessType(AccessType outputAccessType) {
+		this.outputAccessType = outputAccessType;
+	}
+
+	public String getOutputType() {
+		return outputType;
+	}
+
+	public void setOutputType(String outputType) {
+		this.outputType = outputType;
+	}
+
+	public long getOutputContentId() {
+		return outputContentId;
+	}
+
+	public void setOutputContentId(long outputContentId) {
+		this.outputContentId = outputContentId;
+	}
+
+	public String getFaultName() {
+		return faultName;
+	}
+
+	public void setFaultName(String faultName) {
+		this.faultName = faultName;
+	}
+
+	public AccessType getFaultAccessType() {
+		return faultAccessType;
+	}
+
+	public void setFaultAccessType(AccessType faultAccessType) {
+		this.faultAccessType = faultAccessType;
+	}
+
+	public String getFaultType() {
+		return faultType;
+	}
+
+	public void setFaultType(String faultType) {
+		this.faultType = faultType;
+	}
+
+	public long getFaultContentId() {
+		return faultContentId;
+	}
+
+	public void setFaultContentId(long faultContentId) {
+		this.faultContentId = faultContentId;
+	}
+
+	public List<Comment> getComments() {
         return comments;
     }
 

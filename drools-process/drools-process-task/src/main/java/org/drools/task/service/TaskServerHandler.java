@@ -52,22 +52,27 @@ public class TaskServerHandler extends IoHandlerAdapter {
                     if ( cmd.getArguments().size() > 3 ) {
                         targetEntityId = (String) cmd.getArguments().get( 3 );
                     }
-                        error = taskSession.taskOperation( operation,
-                                                           taskId,
-                                                           userId,
-                                                           targetEntityId );
-                        List args = null;
-                        if ( error != null ) {
-                            args = new ArrayList( 1 );
-                            args.add( error );
-                        } else {
-                            args = Collections.emptyList();
-                        }
+                    ContentData data = null;
+                    if ( cmd.getArguments().size() > 4 ) {
+                        data = (ContentData) cmd.getArguments().get( 4 );
+                    }
+                    error = taskSession.taskOperation( operation,
+                                                       taskId,
+                                                       userId,
+                                                       targetEntityId,
+                                                       data);
+                    List args = null;
+                    if ( error != null ) {
+                        args = new ArrayList( 1 );
+                        args.add( error );
+                    } else {
+                        args = Collections.emptyList();
+                    }
 
-                        Command resultsCmnd = new Command( cmd.getId(),
-                                                           CommandName.OperationResponse,
-                                                           args );
-                        session.write( resultsCmnd );
+                    Command resultsCmnd = new Command( cmd.getId(),
+                                                       CommandName.OperationResponse,
+                                                       args );
+                    session.write( resultsCmnd );
                     break;
                 }
                 case GetTaskRequest : {
@@ -90,7 +95,8 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 case AddTaskRequest : {
                     response = CommandName.AddTaskResponse;
                     Task task = (Task) cmd.getArguments().get( 0 );
-                    taskSession.addTask( task );
+                    ContentData content = (ContentData) cmd.getArguments().get( 1 );
+                    taskSession.addTask( task, content );
 
                     List args = new ArrayList( 1 );
                     args.add( task.getId() );

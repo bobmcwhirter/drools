@@ -63,7 +63,7 @@ public class TaskServiceEscalationTest extends BaseTest {
         
         for ( Task task : tasks ) {  
             BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();            
-            client.addTask( task, addTaskResponseHandler ); 
+            client.addTask( task, null, addTaskResponseHandler ); 
             addTaskResponseHandler.waitTillDone( 3000 );
         }
 

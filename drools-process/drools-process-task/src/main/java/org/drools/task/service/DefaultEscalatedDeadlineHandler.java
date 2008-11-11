@@ -11,9 +11,9 @@ import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.process.workitem.email.EmailWorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.task.Content;
 import org.drools.task.Deadline;
 import org.drools.task.EmailNotification;

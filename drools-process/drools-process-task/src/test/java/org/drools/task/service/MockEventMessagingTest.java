@@ -28,7 +28,7 @@ public class MockEventMessagingTest extends BaseTest {
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        taskSession.addTask( task );
+        taskSession.addTask( task, null );
         
         long taskId = task.getId();      
         
@@ -37,7 +37,7 @@ public class MockEventMessagingTest extends BaseTest {
         taskService.getEventKeys().register( key, transport );      
         
         
-        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null );        
+        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null );        
         
         assertEquals( 1, transport.list.size() );
         assertEquals( taskId, ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getTaskId() );

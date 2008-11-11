@@ -303,7 +303,7 @@ public class ModelPersistenceTest extends BaseTest {
         potentialOwners.add( users.get( "stuart" ) );
         potentialOwners.add( users.get( "dalai" ) );        
 
-        session.addTask( task1 );
+        session.addTask( task1, null );
         
         session.dispose();        
         session = taskService.createSession();

@@ -54,7 +54,7 @@ public class TaskServiceTest extends BaseTest {
                                               vars );
         for ( Task task : tasks ) {
             BlockingAddTaskResponseHandler responseHandler = new BlockingAddTaskResponseHandler();
-            client.addTask( task, responseHandler );
+            client.addTask( task, null, responseHandler );
         }
 
         // Test UK I18N  
@@ -139,7 +139,7 @@ public class TaskServiceTest extends BaseTest {
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
-            taskSession.addTask( task );
+            taskSession.addTask( task, null );
         }
 
         reader = new InputStreamReader( getClass().getResourceAsStream( "QueryResults_PeopleAssignmentQuerries.mvel" ) );

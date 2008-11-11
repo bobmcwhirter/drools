@@ -70,7 +70,7 @@ public class TaskServiceEventMessagingTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -85,7 +85,7 @@ public class TaskServiceEventMessagingTest extends BaseTest {
         client.registerForEvent( key, true, handler );
         Thread.sleep( 3000 );
         
-        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null );          
+        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null );          
         handler.waitTillDone( 5000 );
         
         Payload payload = handler.getPayload();

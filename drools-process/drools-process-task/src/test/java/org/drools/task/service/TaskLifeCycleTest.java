@@ -62,7 +62,7 @@ public class TaskLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -86,7 +86,7 @@ public class TaskLifeCycleTest extends BaseTest {
         assertEquals(Status.InProgress, tasks.get(0).getStatus());
         
         responseHandler = new BlockingTaskOperationResponseHandler();
-        client.complete( taskId, users.get( "bobba" ).getId(), responseHandler );
+        client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );
         
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
@@ -119,7 +119,7 @@ public class TaskLifeCycleTest extends BaseTest {
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, addTaskResponseHandler );
+        client.addTask( task, null, addTaskResponseHandler );
         long taskId = addTaskResponseHandler.getTaskId();
         
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
@@ -143,7 +143,7 @@ public class TaskLifeCycleTest extends BaseTest {
         
         BlockingAddTaskResponseHandler addTaskResponseHandler2 = new BlockingAddTaskResponseHandler();
         Task task2 = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task2, addTaskResponseHandler2 );
+        client.addTask( task2, null, addTaskResponseHandler2 );
         long taskId2 = addTaskResponseHandler.getTaskId();
         
         EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2 );           
@@ -156,7 +156,7 @@ public class TaskLifeCycleTest extends BaseTest {
         assertEquals(2, tasks.size());
         
         responseHandler = new BlockingTaskOperationResponseHandler();
-        client.complete( taskId, users.get( "bobba" ).getId(), responseHandler );
+        client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );
         
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId2, users.get( "bobba" ).getId(), responseHandler );  
@@ -176,7 +176,7 @@ public class TaskLifeCycleTest extends BaseTest {
         assertEquals( Status.Completed , task.getTaskData().getStatus() );
         
         responseHandler = new BlockingTaskOperationResponseHandler();
-        client.complete( taskId2, users.get( "bobba" ).getId(), responseHandler );
+        client.complete( taskId2, users.get( "bobba" ).getId(), null, responseHandler );
         
         payload = handler.getPayload();
         event = ( TaskCompletedEvent ) payload.get();
