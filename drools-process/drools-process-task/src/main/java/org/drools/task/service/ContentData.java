@@ -38,18 +38,39 @@ public class ContentData implements Externalizable {
 	}
 
 	public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( accessType );
-        out.writeUTF( type );
-        out.writeInt( content.length );
-        out.write( content );        
+		if ( accessType != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( accessType.toString() );
+		} else {
+            out.writeBoolean( false );
+        }
+		if ( type != null ) {
+            out.writeBoolean( true );
+            out.writeUTF( type );
+		} else {
+            out.writeBoolean( false );
+        }
+		if ( content != null ) {
+            out.writeBoolean( true );
+            out.writeInt( content.length );
+            out.write( content );
+		} else {
+            out.writeBoolean( false );
+        }
     }
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        accessType = (AccessType) in.readObject();
-        type = in.readUTF();
-        content = new byte[ in.readInt() ];
-        in.read( content );
+    	if (in.readBoolean()) {
+    		accessType = AccessType.valueOf(in.readUTF());
+    	}
+    	if (in.readBoolean()) {
+    		type = in.readUTF();
+    	}
+    	if (in.readBoolean()) {
+    		content = new byte[ in.readInt() ];
+    		in.read( content );
+    	}
     }
 
 }

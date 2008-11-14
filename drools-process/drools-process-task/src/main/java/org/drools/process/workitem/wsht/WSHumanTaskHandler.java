@@ -1,7 +1,9 @@
 package org.drools.process.workitem.wsht;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -18,6 +20,7 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.task.AccessType;
+import org.drools.task.Content;
 import org.drools.task.I18NText;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.PeopleAssignments;
@@ -33,6 +36,8 @@ import org.drools.task.service.ContentData;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.TaskClientHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
+import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
+import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
 
 public class WSHumanTaskHandler implements WorkItemHandler {
 
@@ -177,7 +182,8 @@ public class WSHumanTaskHandler implements WorkItemHandler {
             System.out.println("Created task " + taskId + " for work item " + workItemId);
             
             EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
-            TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(workItemId, taskId, managers); 
+            TaskCompletedHandler eventResponseHandler =
+            	new TaskCompletedHandler(workItemId, taskId, managers, client); 
             client.registerForEvent( key, true, eventResponseHandler );
             key = new TaskEventKey(TaskFailedEvent.class, taskId );           
             client.registerForEvent( key, true, eventResponseHandler );
@@ -186,7 +192,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
         }
 
         public void setError(String error) {
-            this.error = error;         
+            this.error = error;
         }
         
         public String getError() {
@@ -200,11 +206,14 @@ public class WSHumanTaskHandler implements WorkItemHandler {
         private long workItemId;
         private long taskId;
         private Map<Long, WorkItemManager> managers;
+        private MinaTaskClient client;
         
-        public TaskCompletedHandler(long workItemId, long taskId, Map<Long, WorkItemManager> managers) {
+        public TaskCompletedHandler(long workItemId, long taskId, Map<Long, WorkItemManager> managers,
+        		MinaTaskClient client) {
             this.workItemId = workItemId;
             this.taskId = taskId;
             this.managers = managers;
+            this.client = client;
         }
 
         public void execute(Payload payload) {
@@ -218,7 +227,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		        synchronized ( this.managers ) {
 		            WorkItemManager manager = this.managers.get(taskId);
 		            if (manager != null) {
-		            	manager.completeWorkItem(workItemId, null);   
+		            	GetTaskResponseHandler getTaskResponseHandler =
+		            		new GetCompletedTaskResponseHandler(manager, client);
+		            	client.getTask(taskId, getTaskResponseHandler);   
 		            }
 		        }
         	} else {
@@ -232,6 +243,79 @@ public class WSHumanTaskHandler implements WorkItemHandler {
         }
 
         public void setError(String error) {
+            this.error = error;
+        }
+        
+        public String getError() {
+            return this.error;
+        }
+    }
+    
+    private static class GetCompletedTaskResponseHandler implements GetTaskResponseHandler {
+
+    	private WorkItemManager manager;
+    	private String error;
+    	private MinaTaskClient client;
+    	
+    	public GetCompletedTaskResponseHandler(WorkItemManager manager, MinaTaskClient client) {
+    		this.manager = manager;
+    		this.client = client;
+    	}
+    	
+		public void execute(Task task) {
+			long workItemId = task.getTaskData().getWorkItemId();
+			String userId = task.getTaskData().getActualOwner().getId();
+			Map<String, Object> results = new HashMap<String, Object>();
+			results.put("ActorId", userId);
+			long contentId = task.getTaskData().getOutputContentId();
+			if (contentId != -1) {
+				GetContentResponseHandler getContentResponseHandler =
+					new GetResultContentResponseHandler(manager, task, results);
+				client.getContent(contentId, getContentResponseHandler);
+			} else {
+				manager.completeWorkItem(workItemId, results);
+			}
+		}
+
+		public void setError(String error) {
+            this.error = error;
+        }
+        
+        public String getError() {
+            return this.error;
+        }
+    }
+    
+    private static class GetResultContentResponseHandler implements GetContentResponseHandler {
+
+    	private WorkItemManager manager;
+    	private Task task;
+    	private Map<String, Object> results;
+    	private String error;
+    	
+    	public GetResultContentResponseHandler(WorkItemManager manager, Task task, Map<String, Object> results) {
+    		this.manager = manager;
+    		this.task = task;
+    		this.results = results;
+    	}
+    	
+		public void execute(Content content) {
+			ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
+			ObjectInputStream in;
+			try {
+				in = new ObjectInputStream(bis);
+				Object result = in.readObject();
+				in.close();
+				results.put("Result", result);
+				manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void setError(String error) {
             this.error = error;
         }
         
