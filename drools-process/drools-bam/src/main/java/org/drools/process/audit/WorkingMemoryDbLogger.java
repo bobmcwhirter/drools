@@ -6,12 +6,17 @@ import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
+import org.drools.event.KnowledgeRuntimeEventManager;
 import org.hibernate.Session;
 
 public class WorkingMemoryDbLogger extends WorkingMemoryLogger {
     
     public WorkingMemoryDbLogger(WorkingMemory workingMemory) {
         super(workingMemory);
+    }
+    
+    public WorkingMemoryDbLogger(KnowledgeRuntimeEventManager session) {
+    	super(session);
     }
 
     public void logEventCreated(LogEvent logEvent) {
