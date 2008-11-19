@@ -24,8 +24,8 @@
 	    <properties>
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
 	        <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>	        
-	        <!--property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" /-->
-	        <property name="hibernate.connection.url" value="jdbc:h2:file:/home/kverlaen/NotBackedUp/development/drools/drools-process/drools-process-enterprise/bin/mydb" />
+	        <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
+	        <!--property name="hibernate.connection.url" value="jdbc:h2:file:/home/kverlaen/NotBackedUp/development/drools/drools-process/drools-process-enterprise/bin/mydb" /-->
 	        
 <!--			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>-->
 <!--	        <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>	  	        -->
