@@ -179,7 +179,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
             synchronized ( idMapping ) {
                 idMapping.put(workItemId, taskId);           
             }
-            System.out.println("Created task " + taskId + " for work item " + workItemId);
+//            System.out.println("Created task " + taskId + " for work item " + workItemId);
             
             EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
             TaskCompletedHandler eventResponseHandler =

@@ -380,8 +380,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	return packageBuilder.getPackage();
     }
     
-    // FIXME mdp
-	public void FIXME_testPersistenceTimer2() throws Exception {
+	public void testPersistenceTimer2() throws Exception {
 		Properties properties = new Properties();
 		properties.put(
 	        "processInstanceManagerFactory", 
