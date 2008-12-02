@@ -68,6 +68,13 @@ public class SingleSessionCommandService implements CommandService {
 		}
 	}
 	
+	public void dispose() {
+		StatefulSession session = persister.getObject();
+		if (session != null) {
+			session.dispose();
+		}
+	}
+	
 	public String getSessionId() {
 		return persister.getUniqueId(); 
 	}
