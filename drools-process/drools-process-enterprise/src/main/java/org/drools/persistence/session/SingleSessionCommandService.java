@@ -2,9 +2,11 @@ package org.drools.persistence.session;
 
 import javax.transaction.xa.XAException;
 
+import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.marshalling.PlaceholderResolverStrategyFactory;
 import org.drools.persistence.Persister;
 import org.drools.persistence.Transaction;
@@ -35,6 +37,22 @@ public class SingleSessionCommandService implements CommandService {
 	public SingleSessionCommandService(RuleBase ruleBase, String sessionId, PlaceholderResolverStrategyFactory factory) {
 		persister = new JPAPersisterManager(factory).getSessionPersister(sessionId, ruleBase);
 		init();
+	}
+	
+	public SingleSessionCommandService(KnowledgeBase kbase) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), (PlaceholderResolverStrategyFactory) null);
+	}
+	
+	public SingleSessionCommandService(KnowledgeBase kbase, PlaceholderResolverStrategyFactory factory) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), factory);
+	}
+	
+	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, null);
+	}
+	
+	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId, PlaceholderResolverStrategyFactory factory) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, factory);
 	}
 	
 	private void init() {
