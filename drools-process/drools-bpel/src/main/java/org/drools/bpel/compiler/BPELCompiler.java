@@ -67,6 +67,7 @@ import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ProcessBuilder;
+import org.drools.io.ResourceFactory;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
@@ -85,7 +86,7 @@ public class BPELCompiler {
 			configuration.addDialect("XPath2.0", new XPathDialectConfiguration());
 			PackageBuilder packageBuilder = new PackageBuilder(configuration);
 			ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-			processBuilder.buildProcess(process, fileName);
+			processBuilder.buildProcess(process, ResourceFactory.newClassPathResource(fileName));
 	        if (!processBuilder.getErrors().isEmpty()) {
 	        	for (DroolsError error: processBuilder.getErrors()) {
 	        		System.err.println(error);

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.Dialect;
+import org.drools.io.Resource;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ProcessDescr;
@@ -48,9 +49,6 @@ public class XPathDialect implements Dialect {
 
 	public ActionBuilder getActionBuilder() {
 		return null;
-	}
-
-	public void addFunction(FunctionDescr functionDescr, TypeResolver typeResolver) {
 	}
 
 	public void addImport(String importEntry) {
@@ -162,6 +160,9 @@ public class XPathDialect implements Dialect {
 
 	public EnabledBuilder getEnabledBuilder() {
 		return null;
+	}
+
+	public void addFunction(FunctionDescr functionDescr, TypeResolver typeResolver, Resource resource) {
 	}
 
 }

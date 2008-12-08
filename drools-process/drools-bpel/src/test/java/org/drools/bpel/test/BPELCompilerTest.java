@@ -12,6 +12,7 @@ import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ProcessBuilder;
+import org.drools.io.ResourceFactory;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
@@ -28,7 +29,7 @@ public class BPELCompilerTest extends TestCase {
 		// Build process
         PackageBuilder packageBuilder = new PackageBuilder();
         ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
-        processBuilder.buildProcess(process, "/purchaseOrderProcess.bpel");
+        processBuilder.buildProcess(process, ResourceFactory.newClassPathResource("/purchaseOrderProcess.bpel"));
         
         // Load process
         AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
