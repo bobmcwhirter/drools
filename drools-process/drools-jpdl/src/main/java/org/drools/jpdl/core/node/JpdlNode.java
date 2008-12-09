@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.definition.process.Connection;
 import org.drools.process.core.context.exception.ExceptionScope;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.jbpm.graph.def.Action;
 import org.jbpm.graph.def.Event;
@@ -119,13 +119,26 @@ public class JpdlNode extends NodeImpl {
 	}
 
 	private class JpdlExceptionHandler implements org.drools.process.core.context.exception.ExceptionHandler {
+
 		private ExceptionHandler exceptionHandler;
+		private String faultVariable;
+		
 		private JpdlExceptionHandler(ExceptionHandler exceptionHandler) {
 			this.exceptionHandler = exceptionHandler;
 		}
+		
 		public ExceptionHandler getExceptionHandler() {
 			return exceptionHandler;
 		}
+		
+		public String getFaultVariable() {
+			return faultVariable;
+		}
+		
+		public void setFaultVariable(String faultVariable) {
+			this.faultVariable = faultVariable;
+		}
+		
 	}
 
 }

@@ -1,8 +1,8 @@
 package org.drools.jpdl.core;
 
+import org.drools.definition.process.Node;
 import org.drools.jpdl.core.node.StartState;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 
 public class JpdlProcess extends WorkflowProcessImpl {

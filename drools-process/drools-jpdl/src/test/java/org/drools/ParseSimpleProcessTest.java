@@ -6,10 +6,10 @@ import org.drools.jpdl.JpdlParser;
 import org.drools.jpdl.core.JpdlProcess;
 import org.drools.process.core.validation.ProcessValidationError;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.Package;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemManager;
 
 public class ParseSimpleProcessTest extends TestCase {
 

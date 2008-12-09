@@ -6,18 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.Process;
 import org.drools.jpdl.core.JpdlProcess;
 import org.drools.jpdl.core.node.EndState;
 import org.drools.jpdl.core.node.StartState;
-import org.drools.process.core.Process;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.validation.ProcessValidationError;
 import org.drools.process.core.validation.ProcessValidator;
 import org.drools.process.core.validation.impl.ProcessValidationErrorImpl;
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.Join;
@@ -26,9 +27,9 @@ import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.WorkItemNode;
-import org.mvel.ErrorDetail;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.ErrorDetail;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class JpdlProcessValidator implements ProcessValidator {
     
@@ -91,7 +92,7 @@ public class JpdlProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Start state '" + node.getName() + "' [" + node.getId() + "] has more than one type of outgoing connections."));
                 }
-                List<Connection> connections = startState.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE);  
+                List<Connection> connections = startState.getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);  
                 if (connections == null || connections.size() == 0) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Start state '" + node.getName() + "' [" + node.getId() + "] has no default outgoing connections."));
@@ -106,7 +107,7 @@ public class JpdlProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "End state '" + node.getName() + "' [" + node.getId() + "] has more than one type of incoming connections."));
                 }
-                List<Connection> connections = endState.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE);  
+                List<Connection> connections = endState.getIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);  
                 if (connections == null || connections.size() == 0) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "End state '" + node.getName() + "' [" + node.getId() + "] has no default incoming connections."));

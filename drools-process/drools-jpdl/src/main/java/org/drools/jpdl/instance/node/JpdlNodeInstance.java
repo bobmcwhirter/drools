@@ -10,13 +10,14 @@ import org.drools.jpdl.core.JpdlConnection;
 import org.drools.jpdl.core.node.JpdlNode;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.process.instance.timer.TimerListener;
+import org.drools.process.instance.timer.TimerInstance;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.JbpmException;
 import org.jbpm.calendar.BusinessCalendar;
@@ -25,6 +26,7 @@ import org.jbpm.graph.def.Action;
 import org.jbpm.graph.def.DelegationException;
 import org.jbpm.graph.def.Event;
 import org.jbpm.graph.def.ExceptionHandler;
+import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.exe.Token;
@@ -32,13 +34,13 @@ import org.jbpm.jpdl.el.impl.JbpmExpressionEvaluator;
 import org.jbpm.scheduler.def.CancelTimerAction;
 import org.jbpm.scheduler.def.CreateTimerAction;
 
-public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener {
+public class JpdlNodeInstance extends NodeInstanceImpl implements EventListener {
 
 	private static final long serialVersionUID = 1L;
 	private static final BusinessCalendar BUSINESS_CALENDAR = new BusinessCalendar();
 	
     private Map<Long, Action> timerActions = new HashMap<Long, Action>();
-	private Map<String, List<Timer>> timers = new HashMap<String, List<Timer>>();
+	private Map<String, List<TimerInstance>> timers = new HashMap<String, List<TimerInstance>>();
 	
 	public JpdlNode getJpdlNode() {
 		return (JpdlNode) getNode();
@@ -86,7 +88,7 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener 
 				+ "' is not a leaving transition of node '" + this + "'");
 		}
 		fireEvent(Event.EVENTTYPE_NODE_LEAVE);
-        getNodeInstanceContainer().removeNodeInstance(this);
+        ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         Event event = connection.getEvent(Event.EVENTTYPE_TRANSITION);
         if (event != null) {
             List<Action> actions = event.getActions();
@@ -100,7 +102,7 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener 
                         try {
                             for (ExceptionHandler exceptionHandler: exceptionHandlers) {
                                 if (exceptionHandler.matches(exception)) {
-                                    exceptionHandler.handleException(new JpdlExecutionContext());
+                                    exceptionHandler.handleException(null, new JpdlExecutionContext());
                                     handled = true;
                                 }
                             }
@@ -134,8 +136,8 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener 
                         + " evaluated to 'false'");
             }
         }
-        getNodeInstanceContainer().getNodeInstance(connection.getTo())
-            .trigger(this, connection.getToType());
+        ((NodeInstanceContainer) getNodeInstanceContainer())
+        	.getNodeInstance(connection.getTo()).trigger(this, connection.getToType());
 	}
 
     public void fireEvent(String eventType) {
@@ -162,7 +164,7 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener 
 	    if (action instanceof CreateTimerAction) {
 	        CreateTimerAction createTimerAction = (CreateTimerAction) action; 
 	        String timerName = createTimerAction.getTimerName();
-	        Timer timer = new Timer();
+	        TimerInstance timer = new TimerInstance();
 	        long delay = BUSINESS_CALENDAR.add(new Date(0),
                 new Duration(createTimerAction.getDueDate())).getTime();
             timer.setDelay(delay);
@@ -177,20 +179,20 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener 
 	        getProcessInstance().getWorkingMemory().getTimerManager()
 	            .registerTimer(timer, getProcessInstance());
 	        timerActions.put(timer.getId(), createTimerAction.getTimerAction());
-	        List<Timer> timerList = timers.get(timerName);
+	        List<TimerInstance> timerList = timers.get(timerName);
 	        if (timerList == null) {
-	            timerList = new ArrayList<Timer>();
+	            timerList = new ArrayList<TimerInstance>();
 	            timers.put(timerName, timerList);
 	        }
 	        timerList.add(timer);
 	    } else if (action instanceof CancelTimerAction) {
 	        String timerName = ((CancelTimerAction) action).getTimerName();
-	        List<Timer> timerList = timers.get(timerName);
+	        List<TimerInstance> timerList = timers.get(timerName);
 	        if (timerList != null) {
-	            for (Timer timer: timerList) {
+	            for (TimerInstance timer: timerList) {
 	                timerActions.remove(timer.getId());
 	                getProcessInstance().getWorkingMemory().getTimerManager()
-	                    .cancelTimer(timer);
+	                    .cancelTimer(timer.getId());
 	            }
                 timers.remove(timerName);
                 if (timerActions.isEmpty()) {
@@ -225,24 +227,27 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener 
 	}
 	
     public void registerTimerListener() {
-        getProcessInstance().addTimerListener(this);
+        getProcessInstance().addEventListener("timerTriggered", this, false);
     }
     
     public void removeTimerListener() {
-        getProcessInstance().removeTimerListener(this);
+        getProcessInstance().removeEventListener("timerTriggered", this, false);
     }
 
-    public void timerTriggered(Timer timer) {
-        timerTriggered(timer, new JpdlExecutionContext());
+    public String[] getEventTypes() {
+    	return new String[] { "timerTriggered" };
     }
     
-    protected void timerTriggered(Timer timer, ExecutionContext executionContext) {
-        Action action = timerActions.get(timer.getId());
-        if (action != null) {
-            executeAction(action, executionContext);
-        }
+    public void signalEvent(String type, Object event) {
+    	if ("timerTriggered".equals(type)) {
+    		TimerInstance timer = (TimerInstance) event;
+            Action action = timerActions.get(timer.getId());
+            if (action != null) {
+                executeAction(action, new JpdlExecutionContext());
+            }
+    	}
     }
-
+    
 	public class JpdlExecutionContext extends ExecutionContext {
 	    public JpdlExecutionContext() {
 	        super((Token) null);
@@ -271,6 +276,9 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements TimerListener 
         }
         public NodeInstance getDroolsNodeInstance() {
             return JpdlNodeInstance.this;
+        }
+        public ProcessDefinition getProcessDefinition() {
+        	return null;
         }
 	}
 

@@ -13,6 +13,7 @@ import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
 import org.drools.jpdl.core.node.ProcessState;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.instance.NodeInstance;
 import org.jbpm.context.def.VariableAccess;
@@ -72,7 +73,8 @@ public class ProcessStateInstance extends JpdlNodeInstance implements RuleFlowEv
     				if (variableAccess.isWritable()) {
     					String mappedName = variableAccess.getMappedName();
     					VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-							event.getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
+							((ProcessInstance) event.getProcessInstance())
+								.getContextInstance(VariableScope.VARIABLE_SCOPE);
     					Object value = variableScopeInstance.getVariable(mappedName);
     					if (value != null) {
         					String variableName = variableAccess.getVariableName();
@@ -103,6 +105,11 @@ public class ProcessStateInstance extends JpdlNodeInstance implements RuleFlowEv
         // Do nothing
     }
 
+    public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+            WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
     public void afterRuleFlowStarted(RuleFlowStartedEvent event,
             WorkingMemory workingMemory) {
         // Do nothing
@@ -124,6 +131,11 @@ public class ProcessStateInstance extends JpdlNodeInstance implements RuleFlowEv
     }
 
     public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+            WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
             WorkingMemory workingMemory) {
         // Do nothing
     }

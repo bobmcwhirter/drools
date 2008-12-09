@@ -8,13 +8,14 @@ import java.util.Set;
 import org.drools.jpdl.core.node.TaskNode;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemListener;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.WorkItem;
 import org.jbpm.JbpmException;
 import org.jbpm.calendar.BusinessCalendar;
 import org.jbpm.calendar.Duration;
@@ -230,11 +231,13 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
 	}
 
     public void addEventListeners() {
-        getProcessInstance().addWorkItemListener(this);
+    	((ProcessInstance) getProcessInstance()).addEventListener("workItemCompleted", this, false);
+    	((ProcessInstance) getProcessInstance()).addEventListener("workItemAborted", this, false);
     }
     
     public void removeEventListeners() {
-        getProcessInstance().removeWorkItemListener(this);
+        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemCompleted", this, false);
+        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemAborted", this, false);
     }
 
     public void workItemAborted(WorkItem workItem) {
