@@ -46,6 +46,8 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldList, false
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldList;, true
 org.drools.guvnor.client.modeldriven.brl.ActionFieldValue, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionFieldValue;, true
+org.drools.guvnor.client.modeldriven.brl.ActionGlobalCollectionAdd, true
+[Lorg.drools.guvnor.client.modeldriven.brl.ActionGlobalCollectionAdd;, true
 org.drools.guvnor.client.modeldriven.brl.ActionInsertFact, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionInsertFact;, true
 org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact, true
