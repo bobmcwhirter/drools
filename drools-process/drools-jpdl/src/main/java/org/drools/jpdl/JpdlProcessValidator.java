@@ -88,18 +88,20 @@ public class JpdlProcessValidator implements ProcessValidator {
             final Node node = nodes[i];
             if (node instanceof StartState) {
                 final StartState startState = (StartState) node;
-                if (startState.getOutgoingConnections().size() != 1) {
+                if (startState.getOutgoingConnections().size() == 0) {
                     errors.add(new ProcessValidationErrorImpl(process,
-                        "Start state '" + node.getName() + "' [" + node.getId() + "] has more than one type of outgoing connections."));
+                        "Start state '" + node.getName() + "' [" + node.getId() + "] has no outgoing connections."));
                 }
-                List<Connection> connections = startState.getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);  
-                if (connections == null || connections.size() == 0) {
+                boolean outgoingConnection = false;
+                for (List<Connection> connections: startState.getOutgoingConnections().values()) {
+                	if (connections.size() > 0) {
+                		outgoingConnection = true;
+                		break;
+                	}
+                }
+                if (!outgoingConnection) {
                     errors.add(new ProcessValidationErrorImpl(process,
-                        "Start state '" + node.getName() + "' [" + node.getId() + "] has no default outgoing connections."));
-                }
-                if (connections.size() != 1) {
-                	errors.add(new ProcessValidationErrorImpl(process,
-                        "Start state '" + node.getName() + "' [" + node.getId() + "] has more than one default outgoing connection."));
+                        "Start state '" + node.getName() + "' [" + node.getId() + "] has no outgoing connections."));
                 }
             } else if (node instanceof EndState) {
                 final EndState endState = (EndState) node;
@@ -111,10 +113,6 @@ public class JpdlProcessValidator implements ProcessValidator {
                 if (connections == null || connections.size() == 0) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "End state '" + node.getName() + "' [" + node.getId() + "] has no default incoming connections."));
-                }
-                if (connections.size() != 1) {
-                    errors.add(new ProcessValidationErrorImpl(process,
-                        "End state '" + node.getName() + "' [" + node.getId() + "] has more than one default incoming connection."));
                 }
             } else if (node instanceof RuleSetNode) {
                 final RuleSetNode ruleSetNode = (RuleSetNode) node;

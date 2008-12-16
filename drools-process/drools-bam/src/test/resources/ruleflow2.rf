@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<process xmlns="http://drools.org/drools-4.0/process"
+<process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
          type="RuleFlow" name="ruleflow2" id="com.sample.ruleflow2" package-name="org.drools.process.workflow" >
 
   <header>
@@ -11,10 +11,19 @@
     <start id="1" name="Start" />
     <workItem id="2" name="Task" >
       <work name="Human Task" >
-        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Task</parameter>
-        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="ActorId" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="TaskName" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>Task</value>
+        </parameter>
+        <parameter name="Comment" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
       </work>
     </workItem>
     <end id="3" name="End" />

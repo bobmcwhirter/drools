@@ -26,6 +26,7 @@ import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.validation.ProcessValidationError;
+import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.workflow.core.Node;
 import org.jbpm.graph.def.Event;
 import org.jbpm.graph.def.ExceptionHandler;
@@ -61,8 +62,8 @@ public class JpdlParser {
         process.setId(processDefinition.getName());
         process.setName(processDefinition.getName());
         process.setPackageName("org.drools");
-        SwimlaneContext swimlaneContext = new SwimlaneContext();
-        process.addContext(swimlaneContext);
+        SwimlaneContext swimlaneContext = (SwimlaneContext)
+        	process.getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE);
         process.setDefaultContext(swimlaneContext);
         org.jbpm.graph.def.Node startState = processDefinition.getStartState();
         String startStateName = startState == null ? null : startState.getName();
@@ -73,7 +74,23 @@ public class JpdlParser {
         for (org.jbpm.graph.def.Node jPDLnode: nodes) {
             JpdlNode node = null;
             if (jPDLnode instanceof org.jbpm.graph.node.StartState) {
-                node = new StartState();
+                StartState newNode = new StartState();
+                Task task = processDefinition.getTaskMgmtDefinition().getStartTask();
+                if (task != null) {
+                	newNode.setTask(task);
+                	org.jbpm.taskmgmt.def.Swimlane jPDLswimlane = task.getSwimlane();
+            	    if (jPDLswimlane != null) {
+            	        String swimlaneName = jPDLswimlane.getName();
+            	        if (swimlaneContext.getSwimlane(swimlaneName) == null) {
+            	            Swimlane swimlane = new Swimlane();
+            	            swimlane.setName(swimlaneName);
+            	            swimlane.setActorId(jPDLswimlane.getActorIdExpression());
+            	            // TODO support other types of actor expressions as well
+            	            swimlaneContext.addSwimlane(swimlane);
+            	        }
+            	    }
+                }
+                node = newNode;
             } else if (jPDLnode instanceof org.jbpm.graph.node.EndState) {
                 node = new EndState();
             } else if (org.jbpm.graph.def.Node.class.equals(jPDLnode.getClass())) {

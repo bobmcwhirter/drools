@@ -19,9 +19,11 @@ import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
+import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.JbpmException;
 import org.jbpm.calendar.BusinessCalendar;
 import org.jbpm.calendar.Duration;
+import org.jbpm.context.exe.ContextInstance;
 import org.jbpm.graph.def.Action;
 import org.jbpm.graph.def.DelegationException;
 import org.jbpm.graph.def.Event;
@@ -34,7 +36,7 @@ import org.jbpm.jpdl.el.impl.JbpmExpressionEvaluator;
 import org.jbpm.scheduler.def.CancelTimerAction;
 import org.jbpm.scheduler.def.CreateTimerAction;
 
-public class JpdlNodeInstance extends NodeInstanceImpl implements EventListener {
+public class JpdlNodeInstance extends NodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {
 
 	private static final long serialVersionUID = 1L;
 	private static final BusinessCalendar BUSINESS_CALENDAR = new BusinessCalendar();
@@ -87,6 +89,7 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventListener 
 			throw new JbpmException("transition '" + type
 				+ "' is not a leaving transition of node '" + this + "'");
 		}
+		removeEventListeners();
 		fireEvent(Event.EVENTTYPE_NODE_LEAVE);
         ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         Event event = connection.getEvent(Event.EVENTTYPE_TRANSITION);
@@ -174,7 +177,7 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventListener 
                 timer.setPeriod(period);
             }
 	        if (timerActions.isEmpty()) {
-	            registerTimerListener();
+	            addTimerListener();
 	        }
 	        getProcessInstance().getWorkingMemory().getTimerManager()
 	            .registerTimer(timer, getProcessInstance());
@@ -226,14 +229,6 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventListener 
 		}
 	}
 	
-    public void registerTimerListener() {
-        getProcessInstance().addEventListener("timerTriggered", this, false);
-    }
-    
-    public void removeTimerListener() {
-        getProcessInstance().removeEventListener("timerTriggered", this, false);
-    }
-
     public String[] getEventTypes() {
     	return new String[] { "timerTriggered" };
     }
@@ -269,7 +264,20 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventListener 
         public Object getVariable(String name) {
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, name);
+            if (variableScopeInstance == null) {
+            	variableScopeInstance = (VariableScopeInstance) 
+            		((ProcessInstance) JpdlNodeInstance.this.getProcessInstance())
+            			.getContextInstance(VariableScope.VARIABLE_SCOPE);
+            }
             return variableScopeInstance.getVariable(name);
+        }
+        public ContextInstance getContextInstance() {
+        	ContextInstance contextInstance = new ContextInstance() {
+        		public Object getVariable(String name) {
+        			return JpdlExecutionContext.this.getVariable(name);
+        		}
+        	};
+        	return contextInstance;
         }
         public ProcessInstance getDroolsProcessInstance() {
             return JpdlNodeInstance.this.getProcessInstance();
@@ -281,5 +289,25 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventListener 
         	return null;
         }
 	}
+
+	public void addEventListeners() {
+        if (timers.size() > 0) {
+        	addTimerListener();
+        }
+    }
+
+	public void addTimerListener() {
+    	((ProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
+	}
+	
+    public void removeEventListeners() {
+        if (timers.size() > 0) {
+        	removeTimerListener();
+        }
+    }
+    
+    public void removeTimerListener() {
+    	((ProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+    }
 
 }

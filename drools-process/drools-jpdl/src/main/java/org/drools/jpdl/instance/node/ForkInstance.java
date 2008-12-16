@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.drools.jpdl.core.node.Fork;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.jbpm.JbpmException;
 import org.jbpm.graph.action.Script;
 

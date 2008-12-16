@@ -1,32 +1,21 @@
 package org.drools.jpdl.instance.node;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.drools.jpdl.core.node.TaskNode;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
-import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItemListener;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
-import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.WorkItem;
-import org.jbpm.JbpmException;
-import org.jbpm.calendar.BusinessCalendar;
-import org.jbpm.calendar.Duration;
-import org.jbpm.context.def.VariableAccess;
 import org.jbpm.graph.def.Event;
-import org.jbpm.instantiation.Delegation;
 import org.jbpm.jpdl.el.impl.JbpmExpressionEvaluator;
 import org.jbpm.taskmgmt.def.Task;
-import org.jbpm.taskmgmt.def.TaskController;
 
-public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListener {
+public class TaskNodeInstance extends JpdlNodeInstance {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -42,46 +31,10 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
 			addEventListeners();
 			for (Task task: tasks) {
 				if (evaluateTaskCondition(task.getCondition())) {
-					WorkItemManager workItemManager = getProcessInstance().getWorkingMemory().getWorkItemManager();
-					WorkItemImpl workItem = new WorkItemImpl();
-					workItem.setName("JpdlTask");
-					workItem.setProcessInstanceId(getProcessInstance().getId());
-					workItem.setParameter("name", task.getName());
-					String description = task.getDescription();
-					workItem.setParameter("signalling", task.isSignalling());
-					workItem.setParameter("blocking", task.isBlocking());
-					if ((description != null) && (description.indexOf("#{") != -1)) {
-						Object result = JbpmExpressionEvaluator.evaluate(
-							description, new JpdlExecutionContext());
-						if (result != null) {
-							description = result.toString();
-						}
-					}
-					workItem.setParameter("Description", description);
-					initializeVariables(workItem, task);
-					if (task.getDueDate() != null) {
-					    BusinessCalendar businessCalendar = new BusinessCalendar();
-					    workItem.setParameter("dueDate", 
-				            businessCalendar.add(new Date(), new Duration(task.getDueDate())));
-				    }
-					if (task.getSwimlane() != null) {
-					    String swimlaneName = task.getSwimlane().getName();
-					    SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance)
-					        resolveContextInstance(SwimlaneContext.SWIMLANE_SCOPE, swimlaneName);
-					    String actorId = swimlaneContextInstance.getActorId(swimlaneName);
-					    if (actorId == null) {
-					        actorId = assignTask(task);
-					    }
-					    workItem.setParameter("ActorId", actorId);
-					}
+					WorkItemImpl workItem = (WorkItemImpl) TaskUtils.createWorkItem(task, this);
 					workItems.add(workItem);
-					Event event = task.getEvent(Event.EVENTTYPE_TASK_CREATE);
-			        if (event != null) {
-			            // TODO this doesn't take event handlers of task itself
-			            // into account
-			            executeActions(event.getActions(), new JpdlTaskExecutionContext(task));
-			        }
-					workItemManager.internalExecuteWorkItem(workItem);
+			        getProcessInstance().getWorkingMemory()
+			        	.getWorkItemManager().internalExecuteWorkItem(workItem);
 				}
 			}
 		}
@@ -116,59 +69,6 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
 		return false;
 	}
 	
-	private void initializeVariables(WorkItemImpl workItem, Task task) {
-		TaskController taskController = task.getTaskController();
-		if (taskController != null) {
-			Delegation taskControllerDelegation = taskController.getTaskControllerDelegation();
-		    if (taskControllerDelegation != null) {
-		    	// TODO: delegation (API mismatch!)
-		    } else {
-		    	List<VariableAccess> variableAccesses = taskController.getVariableAccesses();
-		    	if (variableAccesses != null) {
-		    		for (VariableAccess variableAccess: variableAccesses) {
-		    			String mappedName = variableAccess.getMappedName();
-		    			if (variableAccess.isReadable()) {
-		    				String variableName = variableAccess.getVariableName();
-		    				VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-		    					resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-		    				Object value = variableScopeInstance.getVariable(variableName);
-		    				workItem.setParameter(mappedName, value);
-		    			}
-			        }
-		    	}
-		    }
-		}
-	}
-	
-	private String assignTask(Task task) {
-	    Event event = task.getEvent(Event.EVENTTYPE_TASK_ASSIGN);
-        if (event != null) {
-            executeActions(event.getActions(), new JpdlTaskExecutionContext(task));
-        }
-	    if (task.getActorIdExpression() != null) {
-            return resolveActor(task.getActorIdExpression());
-	    } else if (task.getSwimlane().getActorIdExpression() != null) {
-	        return resolveActor(task.getSwimlane().getActorIdExpression());
-	    }
-	    // TODO support other assignment types
-	    return null;
-	}
-	
-	private String resolveActor(String expression) {
-	    Object result = JbpmExpressionEvaluator.evaluate(expression, new JpdlExecutionContext());
-        if (result == null) {
-            throw new JbpmException("actor-id expression '" + expression + "' returned null");
-        }
-        if (result instanceof String) {
-            return (String) result;
-        } else {
-            throw new JbpmException(
-                "actor-id expression '" + expression + 
-                "' didn't resolve to a java.lang.String: '" + result + 
-                "' (" + result.getClass().getName() + ")");
-        }
-	}
-	
 	private boolean hasSignallingWorkItems() {
 	    for (WorkItem workItem: workItems) {
 	        if ((Boolean) workItem.getParameter("signalling") == true) {
@@ -187,49 +87,6 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
         return false; 
     }
 
-	private void restoreVariables(WorkItemImpl workItem, Task task) {
-		TaskController taskController = task.getTaskController();
-		if (taskController != null) {
-			Delegation taskControllerDelegation = taskController.getTaskControllerDelegation();
-			if (taskControllerDelegation != null) {
-				// TODO: delegation (API mismatch!)
-		    } else {
-		    	List<VariableAccess> variableAccesses = taskController.getVariableAccesses();
-		    	if (variableAccesses != null) {
-			        String missingTaskVariables = null;
-		    		for (VariableAccess variableAccess: variableAccesses) {
-		    			String mappedName = variableAccess.getMappedName();
-		    			Object value = workItem.getParameter(mappedName);
-		    			if (variableAccess.isRequired() && (value != null)) {
-		    				if (missingTaskVariables == null) {
-		    					missingTaskVariables = mappedName;
-		    				} else {
-		    					missingTaskVariables += ", "+mappedName;
-		    				}
-		    			}
-		    		}
-			        if (missingTaskVariables != null) {
-			        	throw new IllegalArgumentException(
-		        			"missing task variables: " + missingTaskVariables);
-			        }
-
-			        for (VariableAccess variableAccess: variableAccesses) {
-			        	String mappedName = variableAccess.getMappedName();
-			        	String variableName = variableAccess.getVariableName();
-			        	if (variableAccess.isWritable()) {
-			        		Object value = workItem.getParameter(mappedName);
-			        		if (value != null) {
-			        			VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-		    						resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-			        			variableScopeInstance.setVariable(variableName, value);
-			        		}
-			        	}
-			        }
-		    	}
-		    }
-		}
-	}
-
     public void addEventListeners() {
     	((ProcessInstance) getProcessInstance()).addEventListener("workItemCompleted", this, false);
     	((ProcessInstance) getProcessInstance()).addEventListener("workItemAborted", this, false);
@@ -240,6 +97,16 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
         ((ProcessInstance) getProcessInstance()).removeEventListener("workItemAborted", this, false);
     }
 
+    public void signalEvent(String type, Object event) {
+    	if ("workItemCompleted".equals(type)) {
+    		workItemCompleted((WorkItem) event);
+    	} else if ("workItemAborted".equals(type)) {
+    		workItemAborted((WorkItem) event);
+    	} else {
+    		super.signalEvent(type, event);
+    	}
+    }
+    
     public void workItemAborted(WorkItem workItem) {
         if (workItems.remove(workItem)) {
             if (!hasBlockingWorkItems()) {
@@ -255,7 +122,7 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
     		Set<Task> tasks = getTaskNode().getTasks();
 			for (Task task: tasks) {
 				if (taskName.equals(task.getName())) {
-		    		restoreVariables((WorkItemImpl) workItem, task);
+		    		TaskUtils.restoreVariables((WorkItemImpl) workItem, task, this);
 		    		if (task.getSwimlane() != null) {
 		    		    String swimlaneName = task.getSwimlane().getName();
 		    		    SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance)
@@ -270,7 +137,9 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
 		    		}
 	                Event event = task.getEvent(Event.EVENTTYPE_TASK_END);
 	                if (event != null) {
-	                    executeActions(event.getActions(), new JpdlTaskExecutionContext(task));
+	                	JpdlExecutionContext context = new JpdlExecutionContext();
+	                	context.setTask(task);
+	                    executeActions(event.getActions(), context);
 	                }
 		            break;
 				}
@@ -310,13 +179,4 @@ public class TaskNodeInstance extends JpdlNodeInstance implements WorkItemListen
 		super.leave(type);
 	}
 	
-	public class JpdlTaskExecutionContext extends JpdlExecutionContext {
-	    private Task task;
-	    public JpdlTaskExecutionContext(Task task) {
-	        this.task = task;
-	    }
-	    public Task getTask() {
-	        return task;
-	    }
-	}
 }
