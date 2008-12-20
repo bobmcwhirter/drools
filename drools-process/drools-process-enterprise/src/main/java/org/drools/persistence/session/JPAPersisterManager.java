@@ -14,9 +14,13 @@ public class JPAPersisterManager {
 	private EntityManagerFactory emf;
 	private PlaceholderResolverStrategyFactory factory;
 	
-	public JPAPersisterManager(PlaceholderResolverStrategyFactory factory) {
-		emf = Persistence.createEntityManagerFactory("org.drools.persistence.jpa");
+	public JPAPersisterManager(PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
+		this.emf = emf;
 		this.factory = factory;
+	}
+	
+	public JPAPersisterManager(PlaceholderResolverStrategyFactory factory) {
+		this(factory, Persistence.createEntityManagerFactory("org.drools.persistence.jpa"));
 	}
 	
 	public void dispose() {

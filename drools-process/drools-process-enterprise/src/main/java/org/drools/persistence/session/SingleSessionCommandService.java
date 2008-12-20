@@ -1,5 +1,6 @@
 package org.drools.persistence.session;
 
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.xa.XAException;
 
 import org.drools.KnowledgeBase;
@@ -30,8 +31,17 @@ public class SingleSessionCommandService implements CommandService {
 		init();
 	}
 	
+	public SingleSessionCommandService(RuleBase ruleBase, EntityManagerFactory emf) {
+		this(ruleBase, (PlaceholderResolverStrategyFactory)null, emf);
+	}
+	
+	public SingleSessionCommandService(RuleBase ruleBase, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
+		persister = new JPAPersisterManager(factory, emf).getSessionPersister(ruleBase);
+		init();
+	}
+	
 	public SingleSessionCommandService(RuleBase ruleBase, String sessionId) {
-		this(ruleBase, sessionId, null);
+		this(ruleBase, sessionId, (PlaceholderResolverStrategyFactory)null);
 	}
 	
 	public SingleSessionCommandService(RuleBase ruleBase, String sessionId, PlaceholderResolverStrategyFactory factory) {
@@ -39,20 +49,45 @@ public class SingleSessionCommandService implements CommandService {
 		init();
 	}
 	
+	public SingleSessionCommandService(RuleBase ruleBase, String sessionId,  EntityManagerFactory emf) {
+		this(ruleBase, sessionId, null, emf);
+	}
+	
+	public SingleSessionCommandService(RuleBase ruleBase, String sessionId, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
+		persister = new JPAPersisterManager(factory, emf).getSessionPersister(sessionId, ruleBase);
+		init();
+	}
+	
 	public SingleSessionCommandService(KnowledgeBase kbase) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), (PlaceholderResolverStrategyFactory) null);
+		this(((KnowledgeBaseImpl) kbase).getRuleBase());
 	}
 	
 	public SingleSessionCommandService(KnowledgeBase kbase, PlaceholderResolverStrategyFactory factory) {
 		this(((KnowledgeBaseImpl) kbase).getRuleBase(), factory);
 	}
 	
+	public SingleSessionCommandService(KnowledgeBase kbase, EntityManagerFactory emf) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), emf);
+	}
+	
+	public SingleSessionCommandService(KnowledgeBase kbase, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), factory, emf);
+	}
+	
 	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, null);
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId);
 	}
 	
 	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId, PlaceholderResolverStrategyFactory factory) {
 		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, factory);
+	}
+	
+	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId, EntityManagerFactory emf) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, emf);
+	}
+	
+	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, factory, emf);
 	}
 	
 	private void init() {
