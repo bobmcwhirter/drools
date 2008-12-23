@@ -45,7 +45,7 @@ public class TaskServiceEscalationTest extends BaseTest {
         server.stop();
     }
 
-    public void testUnescalatedDeadlines() throws Exception {
+    public void FIXME_testUnescalatedDeadlines() throws Exception {
         Map vars = new HashedMap();
         vars.put( "users",
                   users );
@@ -84,7 +84,7 @@ public class TaskServiceEscalationTest extends BaseTest {
                       item2.getDeadline().getDate().getTime() );        
     }
     
-    public void testUnescalatedDeadlinesOnStartup() throws Exception {
+    public void FIXME_testUnescalatedDeadlinesOnStartup() throws Exception {
         Map vars = new HashedMap();
         vars.put( "users",
                   users );

@@ -14,13 +14,37 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.eventmessaging.EventKeys;
+import org.drools.task.AccessType;
+import org.drools.task.AllowedToDelegate;
+import org.drools.task.Attachment;
+import org.drools.task.BooleanExpression;
+import org.drools.task.Comment;
+import org.drools.task.Content;
 import org.drools.task.Deadline;
+import org.drools.task.Deadlines;
+import org.drools.task.Delegation;
+import org.drools.task.EmailNotification;
+import org.drools.task.EmailNotificationHeader;
+import org.drools.task.Escalation;
+import org.drools.task.Group;
+import org.drools.task.I18NText;
+import org.drools.task.Notification;
+import org.drools.task.NotificationType;
+import org.drools.task.OrganizationalEntity;
+import org.drools.task.PeopleAssignments;
+import org.drools.task.Reassignment;
+import org.drools.task.Status;
+import org.drools.task.StatusChange;
 import org.drools.task.Task;
+import org.drools.task.TaskData;
+import org.drools.task.User;
 import org.drools.task.UserInfo;
+import org.drools.task.WorkItemNotification;
 import org.drools.task.event.MessagingTaskEventListener;
 import org.drools.task.event.TaskEventListener;
 import org.drools.task.event.TaskEventSupport;
 import org.drools.task.query.DeadlineSummary;
+import org.drools.task.query.TaskSummary;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -159,6 +183,56 @@ public class TaskService {
             sb.append( (char) charValue );
         }
         return sb.toString();
+    }
+    
+    private static Map<String, Class> inputs = new HashMap<String, Class>();
+    
+    public static Map<String, Class> getInputs() {
+        synchronized ( inputs ) {
+            if ( inputs.isEmpty() ) {
+                // org.drools.task
+                inputs.put( "AccessType", AccessType.class );
+                inputs.put( "AllowedToDelegate", AllowedToDelegate.class );
+                inputs.put( "Attachment", Attachment.class );
+                inputs.put( "BooleanExpression", BooleanExpression.class );
+                inputs.put( "Comment", Comment.class );
+                inputs.put( "Content", Content.class );
+                inputs.put( "Deadline", Deadline.class );
+                inputs.put( "Deadlines", Deadlines.class );
+                inputs.put( "Delegation", Delegation.class );
+                inputs.put( "EmailNotification", EmailNotification.class );
+                inputs.put( "EmailNotificationHeader", EmailNotificationHeader.class );
+                inputs.put( "Escalation", Escalation.class );
+                inputs.put( "Group", Group.class );
+                inputs.put( "I18NText", I18NText.class );
+                inputs.put( "Notification", Notification.class );
+                inputs.put( "NotificationType", NotificationType.class );
+                inputs.put( "OrganizationalEntity", OrganizationalEntity.class );
+                inputs.put( "PeopleAssignments", PeopleAssignments.class );
+                inputs.put( "Reassignment", Reassignment.class );
+                inputs.put( "Status", Status.class );
+                inputs.put( "StatusChange", StatusChange.class );
+                inputs.put( "Task", Task.class );
+                inputs.put( "TaskData", TaskData.class );
+                inputs.put( "User", User.class );
+                inputs.put( "UserInfo", UserInfo.class );
+                inputs.put( "WorkItemNotification", WorkItemNotification.class );
+                
+                // org.drools.task.service
+                inputs.put( "Allowed", Allowed.class );
+                inputs.put( "Command", Command.class );
+                inputs.put( "CommandName", CommandName.class );
+                inputs.put( "ContentData", ContentData.class );
+                inputs.put( "Operation", Operation.class );
+                inputs.put( "Operation.Claim", Operation.class );
+                inputs.put( "OperationCommand", OperationCommand.class );
+                
+                // org.drools.task.query
+                inputs.put( "DeadlineSummary", DeadlineSummary.class );
+                inputs.put( "TaskSummary", TaskSummary.class );                
+            }
+            return inputs;
+        }
     }
     
     public Object eval(String str,
