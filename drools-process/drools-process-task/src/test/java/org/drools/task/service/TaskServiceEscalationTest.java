@@ -44,6 +44,10 @@ public class TaskServiceEscalationTest extends BaseTest {
         client.disconnect();
         server.stop();
     }
+    
+    public void testDummy() {
+        assertTrue( true );
+    }
 
     public void FIXME_testUnescalatedDeadlines() throws Exception {
         Map vars = new HashedMap();
