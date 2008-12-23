@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>drools-dataloaders-smooks</name>
+  <name>drools-transformer-jaxb</name>
   <comment>A rule production system</comment>
   <projects>
     <project>drools-api</project>

@@ -13,8 +13,8 @@
   <name>Drools :: DataLoaders</name>
   
   <modules>
-      <module>drools-dataloaders-smooks</module>
-      <module>drools-dataloaders-jaxb</module>
+      <module>drools-transformer-smooks</module>
+      <module>drools-transformer-jaxb</module>
   </modules>
   
 </project>

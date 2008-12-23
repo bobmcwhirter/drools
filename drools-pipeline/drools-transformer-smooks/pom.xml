@@ -8,9 +8,9 @@
     <version>5.0.0.SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-dataloaders-jaxb</artifactId>
+  <artifactId>drools-transformer-smooks</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: DataLoaders :: JAXB</name>
+  <name>Drools :: Transformer :: Smooks</name>
   
       <dependencies>
          <dependency>
@@ -23,19 +23,14 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
             <version>${project.version}</version>  
+            <scope>test</scope>
          </dependency>   
 
         <dependency>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-impl</artifactId>
-          <version>2.0.3</version>
-        </dependency>  
-        
-        <dependency>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-xjc</artifactId>
-          <version>2.0.3</version>
-        </dependency>                
+          <groupId>org.milyn</groupId>
+          <artifactId>milyn-smooks-javabean</artifactId>
+          <version>1.1</version>
+        </dependency>         
       </dependencies>     
 
     <repositories>
