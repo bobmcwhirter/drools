@@ -14,14 +14,14 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.definition.pipeline.Expression;
-import org.drools.definition.pipeline.PipelineFactory;
-import org.drools.definition.pipeline.Splitter;
-import org.drools.definition.pipeline.Transformer;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.dataloader.StatelessKnowledgeSessionDataLoader;
 import org.drools.runtime.dataloader.impl.StatelessKnowledgeSessionDataLoaderImpl;
+import org.drools.runtime.pipeline.Expression;
+import org.drools.runtime.pipeline.PipelineFactory;
+import org.drools.runtime.pipeline.Splitter;
+import org.drools.runtime.pipeline.Transformer;
 import org.milyn.Smooks;
 import org.milyn.io.StreamUtils;
 
