@@ -15,8 +15,7 @@ public class QueryTest extends BaseTest {
 
     public void testUnescalatedDeadlines() throws Exception {
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
-        taskService.setEscalatedDeadlineHandler( handler );
-        TaskServiceSession taskSession = taskService.createSession();        
+        taskService.setEscalatedDeadlineHandler( handler );       
         Map vars = new HashedMap();
         vars.put( "users",
                   users );
@@ -50,7 +49,6 @@ public class QueryTest extends BaseTest {
         result = list.get( 2 );
         assertEquals( now + 24000,
                       result.getDate().getTime());    
-        taskSession.dispose();
     }
     
 
