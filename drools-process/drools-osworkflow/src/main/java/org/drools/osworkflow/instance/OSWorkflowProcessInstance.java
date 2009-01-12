@@ -68,11 +68,13 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
     
     public void doAction(int actionId, Map inputs) {
         for (org.drools.runtime.process.NodeInstance nodeInstance: getNodeInstances()) {
-            StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
-            if (stepNodeInstance.isAvailableAction(actionId)) {
-                stepNodeInstance.doAction(actionId, inputs);
-                break;
-            }
+        	if (nodeInstance instanceof StepNodeInstance) {
+		        StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
+		        if (stepNodeInstance.isAvailableAction(actionId)) {
+		            stepNodeInstance.doAction(actionId, inputs);
+		            break;
+		        }
+        	}
         }
         checkImplicitFinish();
     }

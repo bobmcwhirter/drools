@@ -7,11 +7,23 @@
 
 	<class name="org.drools.process.audit.ProcessInstanceLog" >
         <id name="processInstanceId">
-            <generator class="native"/>
+            <generator class="assigned"/>
         </id>
         <property name="processId"/>
         <property name="start" type="timestamp" column="START_DATE"/>
         <property name="end" type="timestamp" column="END_DATE"/>
+    </class>
+
+	<class name="org.drools.process.audit.NodeInstanceLog" >
+        <id name="id">
+            <generator class="native"/>
+        </id>
+        <property name="type"/>
+        <property name="nodeInstanceId"/>
+        <property name="nodeId"/>
+        <property name="processInstanceId"/>
+        <property name="processId"/>
+        <property name="date" type="timestamp" column="DATE"/>
     </class>
 
 </hibernate-mapping>

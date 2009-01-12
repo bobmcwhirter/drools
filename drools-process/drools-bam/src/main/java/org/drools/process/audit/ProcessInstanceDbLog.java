@@ -37,4 +37,44 @@ public class ProcessInstanceDbLog {
         return result == null || result.size() == 0 ? null : result.get(0);
     }
 
+    @SuppressWarnings("unchecked")
+	public static List<NodeInstanceLog> findNodeInstances(long processInstanceId) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        List<NodeInstanceLog> result = session.createQuery(
+            "from NodeInstanceLog as log where log.processInstanceId = ?")
+                .setLong(0, processInstanceId).list();
+        session.getTransaction().commit();
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+	public static List<NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        List<NodeInstanceLog> result = session.createQuery(
+            "from NodeInstanceLog as log where log.processInstanceId = ? and log.nodeId = ?")
+                .setLong(0, processInstanceId)
+                .setString(1, nodeId).list();
+        session.getTransaction().commit();
+        return result;
+    }
+
+	@SuppressWarnings("unchecked")
+	public static void clear() {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        List<ProcessInstanceLog> processInstances =
+        	session.createQuery("from ProcessInstanceLog").list();
+        for (ProcessInstanceLog processInstance: processInstances) {
+        	session.delete(processInstance);
+        }
+        List<NodeInstanceLog> nodeInstances =
+        	session.createQuery("from NodeInstanceLog").list();
+        for (NodeInstanceLog nodeInstance: nodeInstances) {
+        	session.delete(nodeInstance);
+        }
+        session.getTransaction().commit();
+    }
+
 }
