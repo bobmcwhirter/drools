@@ -102,12 +102,16 @@ public class SingleSessionCommandService implements CommandService {
 			.setPersister(persister);
 	}
 	
-	public Object execute(Command command) {
+	public StatefulSession getSession() {
+		return persister.getObject();
+	}
+	
+	public <T> T execute(Command<T> command) {
 		StatefulSession session = persister.getObject();
 		Transaction transaction = persister.getTransaction();
 		try {
 			transaction.start();
-			Object result = command.execute(session);
+			T result = command.execute(session);
 			transaction.commit();
 			return result;
 		} catch (Throwable t) {
