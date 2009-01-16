@@ -4,6 +4,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.RuleBase;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.marshalling.PlaceholderResolverStrategyFactory;
 import org.drools.persistence.Persister;
@@ -33,6 +34,10 @@ public class JPAPersisterManager {
 	
 	public Persister<StatefulSession> getSessionPersister(RuleBase ruleBase) {
 		return new JPAPersister<StatefulSession>(emf, new StatefulSessionSnapshotter(ruleBase.newStatefulSession(), factory));
+	}
+	
+	public Persister<StatefulSession> getSessionPersister(RuleBase ruleBase, SessionConfiguration conf) {
+		return new JPAPersister<StatefulSession>(emf, new StatefulSessionSnapshotter(ruleBase.newStatefulSession(conf), factory));
 	}
 	
 	public Persister<StatefulSession> getSessionPersister(String uniqueId, RuleBase ruleBase) {

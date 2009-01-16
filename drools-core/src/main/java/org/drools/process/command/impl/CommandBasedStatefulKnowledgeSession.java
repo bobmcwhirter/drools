@@ -1,4 +1,4 @@
-package org.drools.persistence.session;
+package org.drools.process.command.impl;
 
 import java.util.Collection;
 import java.util.Map;
@@ -122,11 +122,7 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 		throw new UnsupportedOperationException();
 	}
 
-    public Object getGlobal(String identifier) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setGlobalResolver(GlobalResolver globalResolver) {
+	public void setGlobalResolver(GlobalResolver globalResolver) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -142,11 +138,7 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 		throw new UnsupportedOperationException();
 	}
 
-    public Object getObject(FactHandle factHandle) {
-        throw new UnsupportedOperationException();
-    }
-
-    public Collection<? extends FactHandle> getFactHandles() {
+	public Collection<? extends FactHandle> getFactHandles() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -219,6 +211,14 @@ public class CommandBasedStatefulKnowledgeSession implements StatefulKnowledgeSe
 	}
 
 	public void removeEventListener(ProcessEventListener listener) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object getGlobal(String identifier) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object getObject(FactHandle factHandle) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -8,9 +8,11 @@ import javax.persistence.Persistence;
 
 import junit.framework.TestCase;
 
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ProcessBuilder;
 import org.drools.process.command.CompleteWorkItemCommand;
@@ -22,6 +24,7 @@ import org.drools.process.core.timer.Timer;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
@@ -49,22 +52,18 @@ public class SingleSessionCommandServiceTest extends TestCase {
     }
 	
 	public void testPersistenceWorkItems() {
-		Properties properties = new Properties();
-		properties.put(
-	        "processInstanceManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
-		properties.put(
-	        "workItemManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
-		properties.put(
-	        "processSignalManagerFactory", 
-	        "org.drools.persistence.processinstance.JPASignalManagerFactory");
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package pkg = getProcessWorkItems();
         ruleBase.addPackage(pkg);
 
-        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase);
+		Properties properties = new Properties();
+		properties.setProperty("drools.commandService", "org.drools.persistence.session.SingleSessionCommandService");
+		properties.setProperty("drools.processInstanceManagerFactory", "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
+		properties.setProperty("drools.workItemManagerFactory", "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
+		properties.setProperty("drools.processSignalManagerFactory", "org.drools.persistence.processinstance.JPASignalManagerFactory");
+		SessionConfiguration config = new SessionConfiguration(properties);
+
+		SingleSessionCommandService service = new SingleSessionCommandService(ruleBase, config);
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId("org.drools.test.TestProcess");
         ProcessInstance processInstance = (ProcessInstance) service.execute(startProcessCommand);
@@ -74,13 +73,13 @@ public class SingleSessionCommandServiceTest extends TestCase {
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
         assertNotNull(processInstance);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         CompleteWorkItemCommand completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId(workItem.getId());
         service.execute(completeWorkItemCommand);
@@ -88,13 +87,13 @@ public class SingleSessionCommandServiceTest extends TestCase {
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
         assertNotNull(processInstance);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId(workItem.getId());
         service.execute(completeWorkItemCommand);
@@ -102,13 +101,13 @@ public class SingleSessionCommandServiceTest extends TestCase {
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
         assertNotNull(processInstance);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId(workItem.getId());
         service.execute(completeWorkItemCommand);
@@ -116,7 +115,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         workItem = handler.getWorkItem();
         assertNull(workItem);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
@@ -179,21 +178,17 @@ public class SingleSessionCommandServiceTest extends TestCase {
     
 	public void testPersistenceSubProcess() {
 		Properties properties = new Properties();
-		properties.put(
-	        "processInstanceManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
-		properties.put(
-	        "workItemManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
-		properties.put(
-	        "processSignalManagerFactory", 
-	        "org.drools.persistence.processinstance.JPASignalManagerFactory");
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
+		properties.setProperty("drools.commandService", "org.drools.persistence.session.SingleSessionCommandService");
+		properties.setProperty("drools.processInstanceManagerFactory", "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
+		properties.setProperty("drools.workItemManagerFactory", "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
+		properties.setProperty("drools.processSignalManagerFactory", "org.drools.persistence.processinstance.JPASignalManagerFactory");
+		SessionConfiguration config = new SessionConfiguration(properties);
+
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package pkg = getProcessSubProcess();
         ruleBase.addPackage(pkg);
 
-        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase);
+        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase, config);
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId("org.drools.test.TestProcess");
         RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) service.execute(startProcessCommand);
@@ -204,7 +199,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstanceId);
         processInstance = (RuleFlowProcessInstance) service.execute(getProcessInstanceCommand);
@@ -219,13 +214,12 @@ public class SingleSessionCommandServiceTest extends TestCase {
         RuleFlowProcessInstance subProcessInstance = (RuleFlowProcessInstance) service.execute(getProcessInstanceCommand);
         assertNotNull(subProcessInstance);
 
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         CompleteWorkItemCommand completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId(workItem.getId());
         service.execute(completeWorkItemCommand);
 
-        service = new SingleSessionCommandService(ruleBase);
-
+        service = new SingleSessionCommandService(ruleBase, config);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(subProcessInstanceId);
         subProcessInstance = (RuleFlowProcessInstance) service.execute(getProcessInstanceCommand);
@@ -308,33 +302,29 @@ public class SingleSessionCommandServiceTest extends TestCase {
     
 	public void testPersistenceTimer() throws Exception {
 		Properties properties = new Properties();
-		properties.put(
-	        "processInstanceManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
-		properties.put(
-	        "workItemManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
-		properties.put(
-	        "processSignalManagerFactory", 
-	        "org.drools.persistence.processinstance.JPASignalManagerFactory");
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
+		properties.setProperty("drools.commandService", "org.drools.persistence.session.SingleSessionCommandService");
+		properties.setProperty("drools.processInstanceManagerFactory", "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
+		properties.setProperty("drools.workItemManagerFactory", "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
+		properties.setProperty("drools.processSignalManagerFactory", "org.drools.persistence.processinstance.JPASignalManagerFactory");
+		SessionConfiguration config = new SessionConfiguration(properties);
+		
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package pkg = getProcessTimer();
         ruleBase.addPackage(pkg);
 
-        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase);
+        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase, config);
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId("org.drools.test.TestProcess");
         ProcessInstance processInstance = (ProcessInstance) service.execute(startProcessCommand);
         System.out.println("Started process instance " + processInstance.getId());
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
         assertNotNull(processInstance);
 
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         Thread.sleep(2000);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
@@ -382,33 +372,29 @@ public class SingleSessionCommandServiceTest extends TestCase {
     // @FIXME krisv this fails due to nested transactions
 	public void FIXME_testPersistenceTimer2() throws Exception {
 		Properties properties = new Properties();
-		properties.put(
-	        "processInstanceManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
-		properties.put(
-	        "workItemManagerFactory", 
-	        "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
-		properties.put(
-	        "processSignalManagerFactory", 
-	        "org.drools.persistence.processinstance.JPASignalManagerFactory");
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
+		properties.setProperty("drools.commandService", "org.drools.persistence.session.SingleSessionCommandService");
+		properties.setProperty("drools.processInstanceManagerFactory", "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
+		properties.setProperty("drools.workItemManagerFactory", "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
+		properties.setProperty("drools.processSignalManagerFactory", "org.drools.persistence.processinstance.JPASignalManagerFactory");
+		SessionConfiguration config = new SessionConfiguration(properties);
+
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package pkg = getProcessTimer2();
         ruleBase.addPackage(pkg);
 
-        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase);
+        SingleSessionCommandService service = new SingleSessionCommandService(ruleBase, config);
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId("org.drools.test.TestProcess");
         ProcessInstance processInstance = (ProcessInstance) service.execute(startProcessCommand);
         System.out.println("Started process instance " + processInstance.getId());
         
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
         assertNotNull(processInstance);
 
-        service = new SingleSessionCommandService(ruleBase);
+        service = new SingleSessionCommandService(ruleBase, config);
         Thread.sleep(2000);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
