@@ -1,6 +1,5 @@
 package org.drools.persistence.session;
 
-import javax.persistence.EntityManagerFactory;
 import javax.transaction.xa.XAException;
 
 import org.drools.KnowledgeBase;
@@ -8,8 +7,8 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.marshalling.PlaceholderResolverStrategyFactory;
 import org.drools.persistence.Persister;
 import org.drools.persistence.Transaction;
 import org.drools.persistence.jpa.JPAPersister;
@@ -18,53 +17,34 @@ import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
 import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
+import org.drools.runtime.Environment;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 
 public class SingleSessionCommandService implements CommandService {
 
 	private Persister<StatefulSession> persister;
+	private PersistenceConfig pconfig;
 	
 	public SingleSessionCommandService(RuleBase ruleBase) {
-		this(ruleBase, (PlaceholderResolverStrategyFactory) null);
+		this(ruleBase, null);
 	}
 	
 	public SingleSessionCommandService(RuleBase ruleBase, SessionConfiguration conf) {
-		this(ruleBase, conf, (PlaceholderResolverStrategyFactory) null);
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, PlaceholderResolverStrategyFactory factory) {
-		persister = new JPAPersisterManager(factory).getSessionPersister(ruleBase);
-		init();
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, SessionConfiguration conf, PlaceholderResolverStrategyFactory factory) {
-		persister = new JPAPersisterManager(factory).getSessionPersister(ruleBase, conf);
-		init();
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, EntityManagerFactory emf) {
-		this(ruleBase, (PlaceholderResolverStrategyFactory)null, emf);
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
-		persister = new JPAPersisterManager(factory, emf).getSessionPersister(ruleBase);
-		init();
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, String sessionId) {
-		this(ruleBase, sessionId, (PlaceholderResolverStrategyFactory)null);
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, String sessionId, PlaceholderResolverStrategyFactory factory) {
-		persister = new JPAPersisterManager(factory).getSessionPersister(sessionId, ruleBase);
-		init();
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, String sessionId,  EntityManagerFactory emf) {
-		this(ruleBase, sessionId, null, emf);
-	}
-	
-	public SingleSessionCommandService(RuleBase ruleBase, String sessionId, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
-		persister = new JPAPersisterManager(factory, emf).getSessionPersister(sessionId, ruleBase);
+		if (conf == null) {
+			conf = new SessionConfiguration();
+		}
+		PersistenceConfig pconfig = getPersistenceConfig();
+		if (pconfig.getSessionId() != null) { 
+			persister = new JPAPersisterManager(
+				pconfig.getPlaceholderResolverStrategyFactory(),
+				pconfig.getEntityManagerFactory())
+					.getSessionPersister(pconfig.getSessionId(), ruleBase, conf);
+		} else {
+			persister = new JPAPersisterManager(
+				pconfig.getPlaceholderResolverStrategyFactory(),
+				pconfig.getEntityManagerFactory())
+					.getSessionPersister(ruleBase, conf);
+		}
 		init();
 	}
 	
@@ -72,32 +52,8 @@ public class SingleSessionCommandService implements CommandService {
 		this(((KnowledgeBaseImpl) kbase).getRuleBase());
 	}
 	
-	public SingleSessionCommandService(KnowledgeBase kbase, PlaceholderResolverStrategyFactory factory) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), factory);
-	}
-	
-	public SingleSessionCommandService(KnowledgeBase kbase, EntityManagerFactory emf) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), emf);
-	}
-	
-	public SingleSessionCommandService(KnowledgeBase kbase, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), factory, emf);
-	}
-	
-	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId);
-	}
-	
-	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId, PlaceholderResolverStrategyFactory factory) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, factory);
-	}
-	
-	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId, EntityManagerFactory emf) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, emf);
-	}
-	
-	public SingleSessionCommandService(KnowledgeBase kbase, String sessionId, PlaceholderResolverStrategyFactory factory, EntityManagerFactory emf) {
-		this(((KnowledgeBaseImpl) kbase).getRuleBase(), sessionId, factory, emf);
+	public SingleSessionCommandService(KnowledgeBase kbase, KnowledgeSessionConfiguration conf) {
+		this(((KnowledgeBaseImpl) kbase).getRuleBase(), (SessionConfiguration) conf);
 	}
 	
 	private void init() {
@@ -123,6 +79,9 @@ public class SingleSessionCommandService implements CommandService {
 			transaction.start();
 			T result = command.execute(session);
 			transaction.commit();
+			if (pconfig.getSessionId() == null) {
+				pconfig.setSessionId(getSessionId());
+			}
 			return result;
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -145,5 +104,14 @@ public class SingleSessionCommandService implements CommandService {
 	public String getSessionId() {
 		return persister.getUniqueId(); 
 	}
-
+	
+	public PersistenceConfig getPersistenceConfig() {
+		Environment environment = EnvironmentFactory.newEnvironment();
+		pconfig = (PersistenceConfig) environment.get(PersistenceConfig.class.getName());
+		if (pconfig == null) {
+			pconfig = new PersistenceConfig();
+			environment.set(PersistenceConfig.class.getName(), pconfig);
+		}
+		return pconfig;
+	}
 }

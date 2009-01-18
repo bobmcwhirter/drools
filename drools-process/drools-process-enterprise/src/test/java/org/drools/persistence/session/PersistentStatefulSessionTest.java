@@ -32,8 +32,8 @@ public class PersistentStatefulSessionTest extends TestCase {
         
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession(config);
         ProcessInstance processInstance = session.startProcess("org.drools.test.TestProcess");
+        session.insert("TestString");
         System.out.println("Started process instance " + processInstance.getId());
-//        String sessionId = commandService.getSessionId();
         
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -71,6 +71,10 @@ public class PersistentStatefulSessionTest extends TestCase {
         
         session = kbase.newStatefulKnowledgeSession(config);
         processInstance = session.getProcessInstance(processInstance.getId());
+        assertEquals(1, session.getObjects().size());
+        for (Object o: session.getObjects()) {
+        	System.out.println(o);
+        }
         assertNull(processInstance);
 	}
     

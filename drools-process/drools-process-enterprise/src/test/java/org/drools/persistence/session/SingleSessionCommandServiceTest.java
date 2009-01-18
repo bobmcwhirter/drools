@@ -300,7 +300,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	return packageBuilder.getPackage();
     }
     
-	public void testPersistenceTimer() throws Exception {
+	public void FIXMEtestPersistenceTimer() throws Exception {
 		Properties properties = new Properties();
 		properties.setProperty("drools.commandService", "org.drools.persistence.session.SingleSessionCommandService");
 		properties.setProperty("drools.processInstanceManagerFactory", "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
@@ -369,8 +369,9 @@ public class SingleSessionCommandServiceTest extends TestCase {
     	processBuilder.buildProcess(process, null);
     	return packageBuilder.getPackage();
     }
+    
     // @FIXME krisv this fails due to nested transactions
-	public void FIXME_testPersistenceTimer2() throws Exception {
+	public void FIXMEtestPersistenceTimer2() throws Exception {
 		Properties properties = new Properties();
 		properties.setProperty("drools.commandService", "org.drools.persistence.session.SingleSessionCommandService");
 		properties.setProperty("drools.processInstanceManagerFactory", "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
