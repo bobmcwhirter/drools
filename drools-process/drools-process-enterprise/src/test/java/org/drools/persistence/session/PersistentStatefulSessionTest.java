@@ -9,6 +9,7 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -76,6 +77,10 @@ public class PersistentStatefulSessionTest extends TestCase {
         	System.out.println(o);
         }
         assertNull(processInstance);
+        
+        PersistenceConfig pconfig = (PersistenceConfig)
+        	EnvironmentFactory.newEnvironment().get(PersistenceConfig.class.getName());
+        pconfig.setSessionId(null);
 	}
     
 }
