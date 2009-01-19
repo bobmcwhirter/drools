@@ -22,6 +22,7 @@
           </activation>
           <modules>
               <module>drools-bpel</module>
+              <module>drools-jpdl</module>
           </modules>
       </profile>
   </profiles>
@@ -30,10 +31,7 @@
       <module>drools-process-task</module>
       <module>drools-workitems</module>
       <module>drools-process-enterprise</module>
-      <module>drools-bpel</module>
       <module>drools-bam</module>
-      <module>drools-osworkflow</module>
-      <module>drools-jpdl</module>
   </modules>
   
 </project>
