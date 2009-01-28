@@ -4,12 +4,15 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,11 +24,11 @@ import org.drools.task.utils.CollectionUtils;
 @Entity
 public class Task implements Externalizable {
     /**
-     * WSHT uses a name for the unique identifier, for now we use a generated ID which is also the key, which can be 
+     * WSHT uses a name for the unique identifier, for now we use a generated ID which is also the key, which can be
      * mapped to the name or a unique name field added later.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)        
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long                 id;
 
     /**
@@ -33,102 +36,122 @@ public class Task implements Externalizable {
      * default value is 0.
      */
     private int                  priority;
-    
+
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Task_Names_Id", nullable = true)    
+    @JoinColumn(name = "Task_Names_Id", nullable = true)
     private List<I18NText> names        = Collections.emptyList();
-    
+
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Task_Subjects_Id", nullable = true)    
+    @JoinColumn(name = "Task_Subjects_Id", nullable = true)
     private List<I18NText> subjects     = Collections.emptyList();
-    
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Task_Descriptions_Id", nullable = true)
-    private List<I18NText> descriptions = Collections.emptyList();      
-    
+    private List<I18NText> descriptions = Collections.emptyList();
+
 
     @Embedded
-    private PeopleAssignments    peopleAssignments;        
+    private PeopleAssignments    peopleAssignments;
 
-    @Embedded    
+    @Embedded
     private Delegation           delegation;
 
     @Embedded
-    private TaskData             taskData;   
-    
-    @Embedded 
+    private TaskData             taskData;
+
+    @Embedded
     private Deadlines            deadlines;
-    
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Task_Id", nullable = true)
+    private List<SubTasksStrategy> subTaskStrategies = Collections.emptyList();
+
     public Task() {
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
         out.writeInt( priority );
-        
+
         CollectionUtils.writeI18NTextList( names, out );
         CollectionUtils.writeI18NTextList( subjects, out );
         CollectionUtils.writeI18NTextList( descriptions, out );
-        
+
         if ( peopleAssignments != null ) {
             out.writeBoolean( true );
             peopleAssignments.writeExternal( out );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( delegation != null ) {
             out.writeBoolean( true );
             delegation.writeExternal( out );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( taskData != null ) {
             out.writeBoolean( true );
             taskData.writeExternal( out );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( deadlines != null ) {
             out.writeBoolean( true );
             deadlines.writeExternal( out );
         } else {
             out.writeBoolean( false );
         }
-        
-    } 
-    
+
+        out.writeInt( subTaskStrategies.size() );
+        for( SubTasksStrategy strategy : subTaskStrategies ) {
+            out.writeUTF(strategy.getName());
+            strategy.writeExternal( out );
+        }
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         id = in.readLong();
         priority = in.readInt();
-        
+
         names = CollectionUtils.readI18NTextList( in );
         subjects = CollectionUtils.readI18NTextList( in );
         descriptions = CollectionUtils.readI18NTextList( in );
-        
+
         if ( in.readBoolean() ) {
             peopleAssignments = new PeopleAssignments();
             peopleAssignments.readExternal( in );
         }
-        
+
         if ( in.readBoolean() ) {
             delegation = new Delegation();
             delegation.readExternal( in );
         }
-        
+
         if ( in.readBoolean() ) {
             taskData = new TaskData();
             taskData.readExternal( in );
         }
-        
+
         if ( in.readBoolean() ) {
             deadlines = new Deadlines();
             deadlines.readExternal( in );
         }
-    }    
+
+        int size = in.readInt();
+        List<SubTasksStrategy> list = new ArrayList<SubTasksStrategy>(size);
+        for ( int i = 0; i < size; i++ ) {
+            String name = in.readUTF();
+            SubTasksStrategy strategy = SubTasksStrategyFactory.newStrategy(name) ;
+            strategy.readExternal( in );
+            list.add( strategy );
+        }
+       subTaskStrategies = list;
+
+    }
 
     public Long getId() {
         return id;
@@ -145,7 +168,7 @@ public class Task implements Externalizable {
     public void setPriority(int priority) {
         this.priority = priority;
     }
-    
+
     public List<I18NText> getNames() {
         return names;
     }
@@ -161,14 +184,14 @@ public class Task implements Externalizable {
     public void setSubjects(List<I18NText> subjects) {
         this.subjects = subjects;
     }
-    
+
     public List<I18NText> getDescriptions() {
         return descriptions;
-    }    
+    }
 
     public void setDescriptions(List<I18NText> descriptions) {
         this.descriptions = descriptions;
-    }    
+    }
 
     public PeopleAssignments getPeopleAssignments() {
         return peopleAssignments;
@@ -206,14 +229,14 @@ public class Task implements Externalizable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + priority;        
+        result = prime * result + priority;
         result = prime * result + CollectionUtils.hashCode( descriptions );
         result = prime * result + CollectionUtils.hashCode( names );
-        result = prime * result + CollectionUtils.hashCode( subjects );        
+        result = prime * result + CollectionUtils.hashCode( subjects );
         result = prime * result + ((peopleAssignments == null) ? 0 : peopleAssignments.hashCode());
         result = prime * result + ((delegation == null) ? 0 : delegation.hashCode());
         result = prime * result + ((taskData == null) ? 0 : taskData.hashCode());
-        result = prime * result + ((deadlines == null) ? 0 : deadlines.hashCode());        
+        result = prime * result + ((deadlines == null) ? 0 : deadlines.hashCode());
         return result;
     }
 
@@ -225,7 +248,7 @@ public class Task implements Externalizable {
         Task other = (Task) obj;
         if ( deadlines == null ) {
             if ( other.deadlines != null ) {
-                
+
             }
         } else if ( !deadlines.equals( other.deadlines ) ) return false;
         if ( delegation == null ) {
@@ -233,8 +256,8 @@ public class Task implements Externalizable {
         } else if ( !delegation.equals( other.delegation ) ) return false;
         if ( peopleAssignments == null ) {
             if ( other.peopleAssignments != null ) return false;
-        } else if ( !peopleAssignments.equals( other.peopleAssignments ) ) return false;       
-        
+        } else if ( !peopleAssignments.equals( other.peopleAssignments ) ) return false;
+
         if ( priority != other.priority ) return false;
         if ( taskData == null ) {
             if ( other.taskData != null ) return false;
@@ -242,5 +265,21 @@ public class Task implements Externalizable {
         return ( CollectionUtils.equals( descriptions, other.descriptions ) && CollectionUtils.equals( names, other.names )
         && CollectionUtils.equals( subjects, other.subjects ));
     }
-               
+
+    /**
+     * @return the subTaskStrategies
+     */
+    public List<SubTasksStrategy> getSubTaskStrategies() {
+        return subTaskStrategies;
+    }
+
+    /**
+     * @param subTaskStrategies the subTaskStrategies to set
+     */
+    public void setSubTaskStrategies(List<SubTasksStrategy> subTaskStrategies) {
+        this.subTaskStrategies = subTaskStrategies;
+    }
+
+   
+
 }

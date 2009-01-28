@@ -63,6 +63,8 @@ public enum CommandName {
     QueryTasksAssignedAsBusinessAdministrator,
     QueryTasksAssignedAsExcludedOwner,
     QueryTasksAssignedAsPotentialOwner,
+    QuerySubTasksAssignedAsPotentialOwner,
+    QueryGetSubTasksByParentTaskId,
     QueryTasksAssignedAsRecipient,
     QueryTasksAssignedAsTaskInitiator,
     QueryTasksAssignedAsTaskStakeholder,    

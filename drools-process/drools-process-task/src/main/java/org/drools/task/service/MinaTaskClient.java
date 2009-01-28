@@ -409,6 +409,33 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
+
+    public void getSubTasksAssignedAsPotentialOwner(long parentId, String userId,
+                                                 String language,
+                                                 TaskSummaryResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 2 );
+        args.add( parentId );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.QuerySubTasksAssignedAsPotentialOwner,
+                                   args );
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        session.write( cmd );
+    }
+    public void getSubTasksByParent(long parentId, TaskSummaryResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 2 );
+        args.add( parentId );
+        //@TODO: un hard code this
+        args.add( "en-UK" );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.QueryGetSubTasksByParentTaskId,
+                                   args );
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        session.write( cmd );
+    }
     public void getTasksAssignedAsRecipient(String userId,
                                             String language,
                                             TaskSummaryResponseHandler responseHandler) {

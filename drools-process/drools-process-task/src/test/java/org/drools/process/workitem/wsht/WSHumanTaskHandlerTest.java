@@ -2,7 +2,6 @@ package org.drools.process.workitem.wsht;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
@@ -18,7 +17,6 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.task.AccessType;
 import org.drools.task.BaseTest;
-import org.drools.task.Content;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
@@ -90,7 +88,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
 		System.out.println("Completing task " + task.getId());
 		operationResponseHandler = new BlockingTaskOperationResponseHandler();
 		client.complete(task.getId(), "Darth Vader", null, operationResponseHandler);
-		operationResponseHandler.waitTillDone(5000);
+		operationResponseHandler.waitTillDone(15000);
 		System.out.println("Completed task " + task.getId());
 		
 		assertTrue(manager.isCompleted());
@@ -323,7 +321,305 @@ public class WSHumanTaskHandlerTest extends BaseTest {
 		assertEquals("Darth Vader", results.get("ActorId"));
 		assertEquals("This is the result", results.get("Result"));
 	}
-	
+
+    public void testOnAllSubTasksEndParentEndStrategy() throws Exception {
+
+        TestWorkItemManager manager = new TestWorkItemManager();
+        //Create the parent task
+		WorkItemImpl workItem = new WorkItemImpl();
+		workItem.setName("Human Task");
+		workItem.setParameter("TaskName", "TaskNameParent");
+		workItem.setParameter("Comment", "CommentParent");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+        //Set the subtask policy
+        workItem.setParameter("SubTaskStrategies", "OnAllSubTasksEndParentEnd");
+        handler.executeWorkItem(workItem, manager);
+
+
+		Thread.sleep(500);
+
+        //Test if the task is succesfully created
+		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+		client.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+		List<TaskSummary> tasks = responseHandler.getResults();
+		assertEquals(1, tasks.size());
+		TaskSummary task = tasks.get(0);
+		assertEquals("TaskNameParent", task.getName());
+		assertEquals(10, task.getPriority());
+		assertEquals("CommentParent", task.getDescription());
+		assertEquals(Status.Reserved, task.getStatus());
+		assertEquals("Darth Vader", task.getActualOwner().getId());
+
+
+        //Create the child task
+        workItem = new WorkItemImpl();
+		workItem.setName("Human Task");
+		workItem.setParameter("TaskName", "TaskNameChild1");
+		workItem.setParameter("Comment", "CommentChild1");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("ParentId", task.getId());
+		handler.executeWorkItem(workItem, manager);
+
+        Thread.sleep(500);
+
+        //Create the child task2
+        workItem = new WorkItemImpl();
+		workItem.setName("Human Task2");
+		workItem.setParameter("TaskName", "TaskNameChild2");
+		workItem.setParameter("Comment", "CommentChild2");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("ParentId", task.getId());
+		handler.executeWorkItem(workItem, manager);
+
+        Thread.sleep(500);
+
+        //Start the parent task
+        System.out.println("Starting task " + task.getId());
+		BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		client.start(task.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(5000);
+		System.out.println("Started task " + task.getId());
+
+        //Check if the parent task is InProgress
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( task.getId(), getTaskResponseHandler );
+        Task parentTask = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, parentTask.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), parentTask.getTaskData().getActualOwner() );
+
+        //Get all the subtask created for the parent task based on the potential owner
+        responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getSubTasksAssignedAsPotentialOwner(parentTask.getId(),"Darth Vader", "en-UK", responseHandler);
+        List<TaskSummary> subTasks = responseHandler.getResults();
+        assertEquals(2, subTasks.size());
+        TaskSummary subTaskSummary1 = subTasks.get(0);
+        TaskSummary subTaskSummary2 = subTasks.get(1);
+        assertNotNull(subTaskSummary1);
+        assertNotNull(subTaskSummary2);
+
+        //Starting the sub task 1
+        System.out.println("Starting sub task " + subTaskSummary1.getId());
+		operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		client.start(subTaskSummary1.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(5000);
+		System.out.println("Started sub task " + subTaskSummary1.getId());
+
+        //Starting the sub task 2
+        System.out.println("Starting sub task " + subTaskSummary2.getId());
+		operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		client.start(subTaskSummary2.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(5000);
+		System.out.println("Started sub task " + subTaskSummary2.getId());
+
+
+
+        //Check if the child task 1 is InProgress
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTaskSummary1.getId(), getTaskResponseHandler );
+        Task subTask1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, subTask1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask1.getTaskData().getActualOwner() );
+
+
+         //Check if the child task 2 is InProgress
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTaskSummary2.getId(), getTaskResponseHandler );
+        Task subTask2 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, subTask2.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask2.getTaskData().getActualOwner() );
+
+        // Complete the child task 1
+        System.out.println("Completing sub task " + subTask1.getId());
+        operationResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.complete( subTask1.getId(),"Darth Vader" , null, operationResponseHandler );
+        operationResponseHandler.waitTillDone( 5000 );
+        System.out.println("Completed sub task " + subTask1.getId());
+
+         // Complete the child task 2
+        System.out.println("Completing sub task " + subTask2.getId());
+        operationResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.complete( subTask2.getId(),"Darth Vader" , null, operationResponseHandler );
+        operationResponseHandler.waitTillDone( 5000 );
+        System.out.println("Completed sub task " + subTask2.getId());
+
+
+
+         //Check if the child task 1 is Completed
+
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTask1.getId(), getTaskResponseHandler );
+        subTask1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Completed, subTask1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask1.getTaskData().getActualOwner() );
+
+          //Check if the child task 2 is Completed
+
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTask2.getId(), getTaskResponseHandler );
+        subTask2 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Completed, subTask2.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask2.getTaskData().getActualOwner() );
+
+
+
+        // Check is the parent task is Complete
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( parentTask.getId(), getTaskResponseHandler );
+        parentTask = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Completed, parentTask.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), parentTask.getTaskData().getActualOwner() );
+
+
+
+
+
+        assertTrue(manager.isCompleted());
+	}
+
+        public void testOnParentAbortAllSubTasksEndStrategy() throws Exception {
+
+        TestWorkItemManager manager = new TestWorkItemManager();
+        //Create the parent task
+		WorkItemImpl workItem = new WorkItemImpl();
+		workItem.setName("Human Task");
+		workItem.setParameter("TaskName", "TaskNameParent");
+		workItem.setParameter("Comment", "CommentParent");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+        //Set the subtask policy
+        workItem.setParameter("SubTaskStrategies", "OnParentAbortAllSubTasksEnd");
+        handler.executeWorkItem(workItem, manager);
+
+
+		Thread.sleep(500);
+
+        //Test if the task is succesfully created
+		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+		client.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+		List<TaskSummary> tasks = responseHandler.getResults();
+		assertEquals(1, tasks.size());
+		TaskSummary task = tasks.get(0);
+		assertEquals("TaskNameParent", task.getName());
+		assertEquals(10, task.getPriority());
+		assertEquals("CommentParent", task.getDescription());
+		assertEquals(Status.Reserved, task.getStatus());
+		assertEquals("Darth Vader", task.getActualOwner().getId());
+
+
+        //Create the child task
+        workItem = new WorkItemImpl();
+		workItem.setName("Human Task");
+		workItem.setParameter("TaskName", "TaskNameChild1");
+		workItem.setParameter("Comment", "CommentChild1");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("ParentId", task.getId());
+		handler.executeWorkItem(workItem, manager);
+
+        Thread.sleep(500);
+
+        //Create the child task2
+        workItem = new WorkItemImpl();
+		workItem.setName("Human Task2");
+		workItem.setParameter("TaskName", "TaskNameChild2");
+		workItem.setParameter("Comment", "CommentChild2");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("ParentId", task.getId());
+		handler.executeWorkItem(workItem, manager);
+
+        Thread.sleep(500);
+
+        //Start the parent task
+        System.out.println("Starting task " + task.getId());
+		BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		client.start(task.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(5000);
+		System.out.println("Started task " + task.getId());
+
+        //Check if the parent task is InProgress
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( task.getId(), getTaskResponseHandler );
+        Task parentTask = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, parentTask.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), parentTask.getTaskData().getActualOwner() );
+
+        //Get all the subtask created for the parent task based on the potential owner
+        responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getSubTasksAssignedAsPotentialOwner(parentTask.getId(),"Darth Vader", "en-UK", responseHandler);
+        List<TaskSummary> subTasks = responseHandler.getResults();
+        assertEquals(2, subTasks.size());
+        TaskSummary subTaskSummary1 = subTasks.get(0);
+        TaskSummary subTaskSummary2 = subTasks.get(1);
+        assertNotNull(subTaskSummary1);
+        assertNotNull(subTaskSummary2);
+
+        //Starting the sub task 1
+        System.out.println("Starting sub task " + subTaskSummary1.getId());
+		operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		client.start(subTaskSummary1.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(5000);
+		System.out.println("Started sub task " + subTaskSummary1.getId());
+
+        //Starting the sub task 2
+        System.out.println("Starting sub task " + subTaskSummary2.getId());
+		operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		client.start(subTaskSummary2.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(5000);
+		System.out.println("Started sub task " + subTaskSummary2.getId());
+
+
+
+        //Check if the child task 1 is InProgress
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTaskSummary1.getId(), getTaskResponseHandler );
+        Task subTask1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, subTask1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask1.getTaskData().getActualOwner() );
+
+
+         //Check if the child task 2 is InProgress
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTaskSummary2.getId(), getTaskResponseHandler );
+        Task subTask2 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.InProgress, subTask2.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask2.getTaskData().getActualOwner() );
+
+        // Complete the parent task
+        System.out.println("Completing parent task " + parentTask.getId());
+        operationResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.skip( parentTask.getId(), "Darth Vader", operationResponseHandler );
+        operationResponseHandler.waitTillDone( 5000 );
+        System.out.println("Completed parent task " + parentTask.getId());
+
+
+
+
+        //Check if the child task 1 is Completed
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTaskSummary1.getId(), getTaskResponseHandler );
+        subTask1 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Completed, subTask1.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask1.getTaskData().getActualOwner() );
+
+
+         //Check if the child task 2 is Completed
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( subTaskSummary2.getId(), getTaskResponseHandler );
+        subTask2 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Completed, subTask2.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), subTask2.getTaskData().getActualOwner() );
+
+
+
+        assertTrue(manager.isCompleted());
+	}
+
+
+
 	private class TestWorkItemManager implements WorkItemManager  {
 		
 		private boolean completed;

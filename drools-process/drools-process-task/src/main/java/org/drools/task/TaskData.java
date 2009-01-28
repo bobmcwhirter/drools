@@ -24,7 +24,7 @@ public class TaskData
     Externalizable {
     @Enumerated(EnumType.STRING)
     private Status           status      = Status.Created;         // initial default state
-    
+
     private Status           previousStatus = null;
 
     @ManyToOne()
@@ -40,9 +40,9 @@ public class TaskData
     private Date             expirationTime;
 
     private boolean          skipable;
-    
+
     private long             workItemId = -1;
-    
+
     private AccessType       documentAccessType;
 
     private String           documentType;
@@ -54,7 +54,7 @@ public class TaskData
     private String           outputType;
 
     private long             outputContentId = -1;
-    
+
     private String 	         faultName;
 
     private AccessType       faultAccessType;
@@ -62,7 +62,9 @@ public class TaskData
     private String           faultType;
 
     private long             faultContentId = -1;
-    
+
+    private long             parentId = -1;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
     private List<Comment>    comments    = Collections.emptyList();
@@ -78,13 +80,13 @@ public class TaskData
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( previousStatus != null ) {
             out.writeBoolean( true );
             out.writeUTF( previousStatus.toString() );
         } else {
             out.writeBoolean( false );
-        }        
+        }
 
         if ( actualOwner != null ) {
             out.writeBoolean( true );
@@ -120,86 +122,93 @@ public class TaskData
         } else {
             out.writeBoolean( false );
         }
-        
+
         out.writeBoolean( skipable );
-        
+
         if ( workItemId != -1 ) {
             out.writeBoolean( true );
             out.writeLong( workItemId );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( documentAccessType != null ) {
             out.writeBoolean( true );
             out.writeObject( documentAccessType );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( documentType != null ) {
             out.writeBoolean( true );
             out.writeUTF( documentType );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( documentContentId != -1 ) {
             out.writeBoolean( true );
             out.writeLong( documentContentId );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( outputAccessType != null ) {
             out.writeBoolean( true );
             out.writeObject( outputAccessType );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( outputType != null ) {
             out.writeBoolean( true );
             out.writeUTF( outputType );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( outputContentId != -1 ) {
             out.writeBoolean( true );
             out.writeLong( outputContentId );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( faultName != null ) {
             out.writeBoolean( true );
             out.writeUTF( faultName );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( faultAccessType != null ) {
             out.writeBoolean( true );
             out.writeObject( faultAccessType );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( faultType != null ) {
             out.writeBoolean( true );
             out.writeUTF( faultType );
         } else {
             out.writeBoolean( false );
         }
-        
+
         if ( faultContentId != -1 ) {
             out.writeBoolean( true );
             out.writeLong( faultContentId );
         } else {
             out.writeBoolean( false );
         }
-        
+
+        if ( parentId != -1 ) {
+            out.writeBoolean( true );
+            out.writeLong( parentId );
+        } else {
+            out.writeBoolean( false );
+        }
+
         CollectionUtils.writeCommentList( comments,
                                           out );
         CollectionUtils.writeAttachmentList( attachments,
@@ -211,7 +220,7 @@ public class TaskData
         if ( in.readBoolean() ) {
             status = Status.valueOf( in.readUTF() );
         }
-        
+
         if ( in.readBoolean() ) {
             previousStatus = Status.valueOf( in.readUTF() );
         }
@@ -243,7 +252,7 @@ public class TaskData
         if ( in.readBoolean() ) {
             workItemId = in.readLong();
         }
-        
+
         if ( in.readBoolean() ) {
             documentAccessType = (AccessType) in.readObject();
         }
@@ -251,11 +260,11 @@ public class TaskData
         if ( in.readBoolean() ) {
             documentType = in.readUTF();
         }
-        
+
         if ( in.readBoolean() ) {
             documentContentId = in.readLong();
         }
-        
+
         if ( in.readBoolean() ) {
             outputAccessType = (AccessType) in.readObject();
         }
@@ -263,15 +272,15 @@ public class TaskData
         if ( in.readBoolean() ) {
             outputType = in.readUTF();
         }
-        
+
         if ( in.readBoolean() ) {
             outputContentId = in.readLong();
         }
-        
+
         if ( in.readBoolean() ) {
             faultName = in.readUTF();
         }
-        
+
         if ( in.readBoolean() ) {
             faultAccessType = (AccessType) in.readObject();
         }
@@ -279,11 +288,14 @@ public class TaskData
         if ( in.readBoolean() ) {
             faultType = in.readUTF();
         }
-        
+
         if ( in.readBoolean() ) {
             faultContentId = in.readLong();
         }
-        
+
+        if ( in.readBoolean() ) {
+            parentId = in.readLong();
+        }
         comments = CollectionUtils.readCommentList( in );
         attachments = CollectionUtils.readAttachmentList( in );
 
@@ -296,7 +308,7 @@ public class TaskData
     public void setStatus(Status status) {
         previousStatus = this.status;
         this.status = status;
-    }        
+    }
 
     public Status getPreviousStatus() {
         return previousStatus;
@@ -353,15 +365,15 @@ public class TaskData
     public void setSkipable(boolean isSkipable) {
         this.skipable = isSkipable;
     }
-    
+
     public void setWorkItemId(long workItemId) {
     	this.workItemId = workItemId;
     }
-    
+
     public long getWorkItemId() {
     	return workItemId;
     }
-             
+
     public AccessType getDocumentAccessType() {
         return documentAccessType;
     }
@@ -372,7 +384,7 @@ public class TaskData
 
     public String getDocumentType() {
         return documentType;
-    }        
+    }
 
     public long getDocumentContentId() {
         return documentContentId;
@@ -458,6 +470,14 @@ public class TaskData
         this.attachments = attachments;
     }
 
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -471,6 +491,7 @@ public class TaskData
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((previousStatus == null) ? 0 : previousStatus.hashCode());
         result = prime * result + ((workItemId == -1) ? 0 : (int) workItemId);
+        //Should I add parentId to this hashCode?
         return result;
     }
 
@@ -506,22 +527,24 @@ public class TaskData
         } else if ( !status.equals( other.status ) ) return false;
         if ( previousStatus == null ) {
             if ( other.previousStatus != null ) return false;
-        } else if ( !previousStatus.equals( other.previousStatus ) ) return false;        
+        } else if ( !previousStatus.equals( other.previousStatus ) ) return false;
         if ( activationTime == null ) {
             if ( other.activationTime != null ) return false;
         } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;
-                
+
         if ( workItemId != other.workItemId ) return false;
-        
+
         if ( documentAccessType == null ) {
             if ( other.documentAccessType != null ) return false;
         } else if ( !documentAccessType.equals( other.documentAccessType ) ) return false;
-        
+
         if ( documentContentId != other.documentContentId ) return false;
         if ( documentType == null ) {
             if ( other.documentType != null ) return false;
-        } else if ( !documentType.equals( other.documentType ) ) return false;                
-        
+        } else if ( !documentType.equals( other.documentType ) ) return false;
+        // I think this is OK!
+        if ( parentId != other.parentId ) return false;
+
         return CollectionUtils.equals( attachments,
                                        other.attachments ) && CollectionUtils.equals( comments,
                                                                                       other.comments );
