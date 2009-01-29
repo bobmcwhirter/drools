@@ -123,6 +123,90 @@ where
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
+            <named-query name="TasksAssignedAsPotentialOwnerWithGroup">
+          <query>
+select
+     new org.drools.task.query.TaskSummary(
+     t.id,
+     names.text,
+     subjects.text,
+     descriptions.text,
+     t.taskData.status,
+     t.priority,
+     t.taskData.skipable,
+     t.taskData.actualOwner,
+     t.taskData.createdBy,
+     t.taskData.createdOn,
+     t.taskData.activationTime,
+     t.taskData.expirationTime)
+from
+    Task t left join t.taskData.createdBy left join t.taskData.actualOwner,
+    I18NText names,
+    I18NText subjects,
+    I18NText descriptions,
+    OrganizationalEntity potentialOwners
+where
+    (potentialOwners.id = :userId or potentialOwners.id = :groupId) and
+    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+
+    names.language = :language and
+    names in elements( t.names) and
+
+    subjects.language = :language and
+    subjects in elements( t.subjects) and
+
+    descriptions.language = :language and
+    descriptions in elements( t.descriptions) and
+
+    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
+
+    t.taskData.expirationTime is null
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+
+       <named-query name="TasksAssignedAsPotentialOwnerByGroup">
+          <query>
+select
+     new org.drools.task.query.TaskSummary(
+     t.id,
+     names.text,
+     subjects.text,
+     descriptions.text,
+     t.taskData.status,
+     t.priority,
+     t.taskData.skipable,
+     t.taskData.actualOwner,
+     t.taskData.createdBy,
+     t.taskData.createdOn,
+     t.taskData.activationTime,
+     t.taskData.expirationTime)
+from
+    Task t left join t.taskData.createdBy left join t.taskData.actualOwner,
+    I18NText names,
+    I18NText subjects,
+    I18NText descriptions,
+    OrganizationalEntity potentialOwners
+where
+    potentialOwners.id = :groupId and
+    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+
+    names.language = :language and
+    names in elements( t.names) and
+
+    subjects.language = :language and
+    subjects in elements( t.subjects) and
+
+    descriptions.language = :language and
+    descriptions in elements( t.descriptions) and
+
+    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
+
+    t.taskData.expirationTime is null
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+
       <named-query name="SubTasksAssignedAsPotentialOwner">
           <query>
 select

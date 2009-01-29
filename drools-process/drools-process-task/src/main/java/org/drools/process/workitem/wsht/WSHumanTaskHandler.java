@@ -21,6 +21,7 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.task.AccessType;
 import org.drools.task.Content;
+import org.drools.task.Group;
 import org.drools.task.I18NText;
 import org.drools.task.OnParentAbortAllSubTasksEndStrategy;
 import org.drools.task.OrganizationalEntity;
@@ -115,10 +116,12 @@ public class WSHumanTaskHandler implements WorkItemHandler {
             task.setSubTaskStrategies(strategies);
         }
 
-		String actorId = (String) workItem.getParameter("ActorId");
+        PeopleAssignments assignments = new PeopleAssignments();
+		List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+
+        String actorId = (String) workItem.getParameter("ActorId");
 		if (actorId != null) {
-			PeopleAssignments assignments = new PeopleAssignments();
-			List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+			
 			String[] actorIds = actorId.split(",");
 			for (String id: actorIds) {
 				User user = new User();
@@ -129,14 +132,24 @@ public class WSHumanTaskHandler implements WorkItemHandler {
             if (potentialOwners.size() > 0){
                 taskData.setCreatedBy((User)potentialOwners.get(0));
             }
+        }
+        String groupId = (String) workItem.getParameter("GroupId");
+		if (groupId != null) {
+			
+			String[] groupIds = groupId.split(",");
+			for (String id: groupIds) {
 
-			assignments.setPotentialOwners(potentialOwners);
-			List<OrganizationalEntity> businessAdministrators = new ArrayList<OrganizationalEntity>();
-			businessAdministrators.add(new User("Administrator"));
-			assignments.setBusinessAdministrators(businessAdministrators);
-			task.setPeopleAssignments(assignments);
+				potentialOwners.add(new Group(id));
+			}
+			
 		}
 
+        assignments.setPotentialOwners(potentialOwners);
+		List<OrganizationalEntity> businessAdministrators = new ArrayList<OrganizationalEntity>();
+		businessAdministrators.add(new User("Administrator"));
+		assignments.setBusinessAdministrators(businessAdministrators);
+		task.setPeopleAssignments(assignments);
+        
 		task.setTaskData(taskData);
 
 		ContentData content = null;

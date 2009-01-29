@@ -137,6 +137,74 @@ public class WSHumanTaskHandlerTest extends BaseTest {
 		assertTrue(manager.isCompleted());
 	}
 	
+    public void testTaskGroupActors() throws Exception {
+		TestWorkItemManager manager = new TestWorkItemManager();
+		WorkItemImpl workItem = new WorkItemImpl();
+		workItem.setName("Human Task");
+		workItem.setParameter("TaskName", "TaskName");
+		workItem.setParameter("Comment", "Comment");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("GroupId", "Crusaders");
+		handler.executeWorkItem(workItem, manager);
+
+		Thread.sleep(500);
+
+		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+		client.getTasksAssignedAsPotentialOwner(null,"Crusaders", "en-UK", responseHandler);
+		List<TaskSummary> tasks = responseHandler.getResults();
+		assertEquals(1, tasks.size());
+		TaskSummary taskSummary = tasks.get(0);
+		assertEquals("TaskName", taskSummary.getName());
+		assertEquals(10, taskSummary.getPriority());
+		assertEquals("Comment", taskSummary.getDescription());
+		assertEquals(Status.Ready, taskSummary.getStatus());
+
+		System.out.println("Claiming task " + taskSummary.getId());
+		BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		client.claim(taskSummary.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(5000);
+		System.out.println("Claimed task " + taskSummary.getId());
+
+        //Check if the parent task is InProgress
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask( taskSummary.getId(), getTaskResponseHandler );
+        Task task = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Ready, task.getTaskData().getStatus() );
+        
+
+
+	}
+
+    public void testTaskSingleAndGroupActors() throws Exception {
+		TestWorkItemManager manager = new TestWorkItemManager();
+		WorkItemImpl workItem = new WorkItemImpl();
+		workItem.setName("Human Task One");
+		workItem.setParameter("TaskName", "TaskNameOne");
+		workItem.setParameter("Comment", "Comment");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("GroupId", "Crusaders");
+		handler.executeWorkItem(workItem, manager);
+
+		Thread.sleep(500);
+
+
+		workItem = new WorkItemImpl();
+		workItem.setName("Human Task Two");
+		workItem.setParameter("TaskName", "TaskNameTwo");
+		workItem.setParameter("Comment", "Comment");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+		handler.executeWorkItem(workItem, manager);
+
+		Thread.sleep(500);
+
+		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+		client.getTasksAssignedAsPotentialOwner("Darth Vader","Crusaders", "en-UK", responseHandler);
+		List<TaskSummary> tasks = responseHandler.getResults();
+		assertEquals(2, tasks.size());
+
+	}
+
 	public void testTaskFail() throws Exception {
 		TestWorkItemManager manager = new TestWorkItemManager();
 		WorkItemImpl workItem = new WorkItemImpl();

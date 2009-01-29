@@ -227,6 +227,31 @@ public class TaskServerHandler extends IoHandlerAdapter {
                     session.write( resultsCmnd );
                     break;
                 }
+                case QueryTasksAssignedAsPotentialOwnerWithGroup : {
+                    response = CommandName.QueryTaskSummaryResponse;
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwner( (String) cmd.getArguments().get( 0 ),
+                                                                                              (String) cmd.getArguments().get( 1 ),
+                                                                                              (String) cmd.getArguments().get( 2 ));
+                    List args = new ArrayList( 1 );
+                    args.add( results );
+                    Command resultsCmnd = new Command( cmd.getId(),
+                                                       CommandName.QueryTaskSummaryResponse,
+                                                       args );
+                    session.write( resultsCmnd );
+                    break;
+                }
+                case QueryTasksAssignedAsPotentialOwnerByGroup : {
+                    response = CommandName.QueryTaskSummaryResponse;
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwnerByGroup((String) cmd.getArguments().get( 0 ),
+                                                                                              (String) cmd.getArguments().get( 1 ) );
+                    List args = new ArrayList( 1 );
+                    args.add( results );
+                    Command resultsCmnd = new Command( cmd.getId(),
+                                                       CommandName.QueryTaskSummaryResponse,
+                                                       args );
+                    session.write( resultsCmnd );
+                    break;
+                }
                 case QuerySubTasksAssignedAsPotentialOwner : {
                     response = CommandName.QueryTaskSummaryResponse;
                     List<TaskSummary> results = taskSession.getSubTasksAssignedAsPotentialOwner( (Long) cmd.getArguments().get( 0 ),
