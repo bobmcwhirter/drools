@@ -83,4 +83,55 @@ public class PersistentStatefulSessionTest extends TestCase {
         pconfig.setSessionId(null);
 	}
     
+	public void testPersistenceSubProcess() {
+		Properties properties = new Properties();
+		properties.setProperty("drools.commandService", "org.drools.persistence.session.SingleSessionCommandService");
+		properties.setProperty("drools.processInstanceManagerFactory", "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory");
+		properties.setProperty("drools.workItemManagerFactory", "org.drools.persistence.processinstance.JPAWorkItemManagerFactory");
+		properties.setProperty("drools.processSignalManagerFactory", "org.drools.persistence.processinstance.JPASignalManagerFactory");
+		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+		
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ClassPathResource("SuperProcess.rf"), ResourceType.DRF);
+        kbuilder.add(new ClassPathResource("SubProcess.rf"), ResourceType.DRF);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession(config);
+        ProcessInstance processInstance = session.startProcess("com.sample.SuperProcess");
+        System.out.println("Started process instance " + processInstance.getId());
+        
+        TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+        
+        session = kbase.newStatefulKnowledgeSession(config);
+        processInstance = session.getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        session = kbase.newStatefulKnowledgeSession(config);
+        session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+        
+        session = kbase.newStatefulKnowledgeSession(config);
+        processInstance = session.getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        session = kbase.newStatefulKnowledgeSession(config);
+        session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        workItem = handler.getWorkItem();
+        assertNull(workItem);
+        
+        session = kbase.newStatefulKnowledgeSession(config);
+        processInstance = session.getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+        
+        PersistenceConfig pconfig = (PersistenceConfig)
+        	EnvironmentFactory.newEnvironment().get(PersistenceConfig.class.getName());
+        pconfig.setSessionId(null);
+	}
+    
 }
