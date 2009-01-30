@@ -1,6 +1,7 @@
 package org.drools.osworkflow.xml;
 
 import org.drools.xml.DefaultSemanticModule;
+import org.drools.xml.processes.ActionNodeHandler;
 import org.drools.xml.processes.CompositeNodeHandler;
 import org.drools.xml.processes.ConnectionHandler;
 import org.drools.xml.processes.ConstraintHandler;
@@ -35,6 +36,8 @@ public class OSWorkflowSemanticModule extends DefaultSemanticModule {
                            new StartNodeHandler() );
         addHandler( "end",
                            new EndNodeHandler() );
+        addHandler( "initial-actions",
+        				new InitialActionsHandler() );
 //        addHandler( "action",
 //                           new ActionNodeHandler() );
         addHandler( "ruleSet",

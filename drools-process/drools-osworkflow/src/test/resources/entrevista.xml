@@ -1,0 +1,227 @@
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_6.dtd">
+<workflow>
+	<initial-actions>
+		<action id="1" name="Crear Entrevista">
+			<pre-functions>
+				<function type="class">
+					<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+					<arg name="name">EntrevistaSUBA.IdFilial</arg>
+					<arg name="message">filialAsignada</arg>
+				</function>
+			</pre-functions>
+			<results>
+				<unconditional-result old-status="Entrevista Pendiente"
+					status="Entrevista Pendiente" step="1" owner="AO-FILIAL-${filialAsignada}" />
+			</results>
+		</action>
+	</initial-actions>
+	<steps>
+		<step id="1" name="Esperar Afiliado">
+			<actions>
+				<action id="9" name="Cerrar Entrevista">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Cerrada"
+							status="Entrevista Cerrada" step="3" owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="2" name="Postergar Llamado">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Pendiente 1er Contacto con Afiliado"
+							status="Pendiente 1er Contacto con Afiliado" step="2"
+							owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="3" name="Replanificar Entrevista">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Pendiente" status="Entrevista Pendiente" step="1" owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="10" name="Cerrar sin entrevista">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Cerrada sin Entrevista" status="Cerrada sin Entrevista" step="3" owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="11" name="Confirmar Replanificacion Entrevista">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="beanshell">
+								<arg name="script">true</arg>
+							</condition>
+							<condition type="class">
+								<arg name="class.name">org.drools.osworkflow.dummy.DummyCondition</arg>
+								<arg name="message">GEN@SUB</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Pendiente"	status="Entrevista Pendiente" step="1" />
+					</results>
+				</action>
+				<action id="12" name="Confirmar Cierre de Entrevista">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="beanshell">
+								<arg name="script">true</arg>
+							</condition>
+							<condition type="class">
+								<arg name="class.name">org.drools.osworkflow.dummy.DummyCondition</arg>
+								<arg name="message">GEN@SUB</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Cerrada" status="Entrevista Cerrada" step="3" />
+					</results>
+				</action>
+			</actions>
+		</step>
+		<step id="2" name="Esperar 2do Contacto">
+			<actions>
+				<action id="4" name="Cerrar Entrevista">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Cerrada"
+							status="Entrevista Cerrada" step="3" owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="5" name="Replanificar">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Pendiente"
+							status="Entrevista Pendiente" step="1" owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="6" name="Cerrar sin entrevista">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Cerrada sin Entrevista"
+							status="Cerrada sin Entrevista" step="3"
+							owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="7" name="Cerrar sin contacto">
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Cerrada sin Contacto"
+							status="Cerrada sin Contacto" step="3" owner="AO-FILIAL-${filialAsignada}" />
+					</results>
+				</action>
+				<action id="13" name="Confirmar Replanificacion Entrevista">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="beanshell">
+								<arg name="script">true</arg>
+							</condition>
+							<condition type="class">
+								<arg name="class.name">org.drools.osworkflow.dummy.DummyCondition</arg>
+								<arg name="message">GEN@SUB</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Pendiente"
+							status="Entrevista Pendiente" step="1" />
+					</results>
+				</action>
+				<action id="14" name="Confirmar Cierre de Entrevista">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="beanshell">
+								<arg name="script">true</arg>
+							</condition>
+							<condition type="class">
+								<arg name="class.name">org.drools.osworkflow.dummy.DummyCondition</arg>
+								<arg name="message">GEN@SUB</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.DummyFunctionProvider</arg>
+							<arg name="name">EntrevistaSUBA.IdFilial</arg>
+							<arg name="message">filialAsignada</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Entrevista Cerrada"
+							status="Entrevista Cerrada" step="3" />
+					</results>
+				</action>
+			</actions>
+		</step>
+		<step id="3" name="Cerrado" />
+	</steps>
+</workflow>

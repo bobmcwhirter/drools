@@ -79,7 +79,7 @@ public class DroolsWorkflow implements Workflow {
 	}
 	
 	public int[] getAvailableActions(long id) {
-	    return getAvailableActions(id, null);
+	    return getAvailableActions(id, null);   
 	}
 
 	public int[] getAvailableActions(long id, Map inputs) {

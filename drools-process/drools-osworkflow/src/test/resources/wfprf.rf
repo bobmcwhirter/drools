@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-4.0/osworkflow"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/osworkflow drools-osworkflow-4.0.xsd"
+         type="OSWorkflow" name="wfp" id="wfp" package-name="org.drools.osworkflow" >
+
+  <header>
+<initial-actions>
+      <action id="1" name="Crear">
+        <results>
+          <unconditional-result old-status="Documento Iniciado" status="Iniciada" step="1"/>
+        </results>
+      </action>
+    </initial-actions>
+  </header>
+
+  <nodes>
+    <step id="1" name="Revision" >
+      <action id="2" name="Aceptar solicitud">
+        <results>
+          <unconditional-result old-status="Revisada" status="Pend. Finalizacion" step="100"/>
+        </results>
+      </action>
+      <action id="3" name="Rechazar solicitud">
+        <results>
+          <unconditional-result old-status="Rechazada" status="Pendiente de Revision" step="1"/>
+        </results>
+      </action>
+      <action id="4" name="Rechazar por Aplicacion">
+        <restrict-to>
+          <conditions type="AND">
+            <condition type="beanshell">
+              <arg name="script"><![CDATA[true]]></arg>
+            </condition>
+            <condition type="class">
+              <arg name="class.name">org.drools.osworkflow.dummy.CallerPrincipalCondition</arg>
+              <arg name="PRINCIPAL">GEN@WFP</arg>
+            </condition>
+          </conditions>
+        </restrict-to>
+        <results>
+          <unconditional-result old-status="Rechazada" status="Pend. de Finalizacion" step="101"/>
+        </results>
+      </action>
+      <action id="7" name="Modificar Documento">
+        <results>
+          <unconditional-result old-status="Documento Modificado" status="Pendiente de Revision" step="1"/>
+        </results>
+      </action>
+      <action id="10" name="Ejecutar Evento">
+        <results>
+          <unconditional-result old-status="Evento Ejecutado" status="Pendiente de Revision" step="1"/>
+        </results>
+      </action>
+    </step>
+    <step id="100" name="Pendiente de Finalizacion - Aceptada" >
+      <action id="5" name="Finalizar solicitud - aceptada">
+        <results>
+          <unconditional-result old-status="Aceptada" status="Finalizada y Aceptada" step="200"/>
+        </results>
+        <post-functions>
+          <function type="class">
+            <arg name="propertyName">nothing</arg>
+            <arg name="variableName">nothing</arg>
+            <arg name="class.name">org.drools.osworkflow.dummy.AutomaticReleaseFunctionProvider</arg>
+          </function>
+        </post-functions>
+      </action>
+      <action id="8" name="Modificar Documento">
+        <results>
+          <unconditional-result old-status="Documento Modificado" status="Pendiente de Finalizacion" step="100"/>
+        </results>
+      </action>
+    </step>
+    <step id="101" name="Pendiente de Finalizacion - Rechazada" >
+      <action id="6" name="Finalizar solicitud - rechazada">
+        <results>
+          <unconditional-result old-status="Rechazada" status="Finalizada y Rechazada" step="200"/>
+        </results>
+        <post-functions>
+          <function type="class">
+            <arg name="propertyName">nothing</arg>
+            <arg name="variableName">nothing</arg>
+            <arg name="class.name">org.drools.osworkflow.dummy.AutomaticReleaseFunctionProvider</arg>
+          </function>
+        </post-functions>
+      </action>
+      <action id="9" name="Modificar Documento">
+        <results>
+          <unconditional-result old-status="Documento Modificado" status="Pendiente de Finalizacion" step="101"/>
+        </results>
+      </action>
+    </step>
+    <step id="200" name="Finalizado" >
+    </step>
+  </nodes>
+
+  <connections>
+    <connection from="1" fromType="2" to="100" toType="Pend. Finalizacion" />
+    <connection from="1" fromType="4" to="101" toType="Pend. de Finalizacion" />
+    <connection from="100" fromType="5" to="200" toType="Finalizada y Aceptada" />
+    <connection from="101" fromType="6" to="200" toType="Finalizada y Rechazada" />
+  </connections>
+
+</process>

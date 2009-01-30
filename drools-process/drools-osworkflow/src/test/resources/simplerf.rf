@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-4.0/osworkflow"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/osworkflow drools-osworkflow-4.0.xsd"
+         type="OSWorkflow" name="simple" id="simple" package-name="org.drools.osworkflow" >
+
+  <header>
+  	<initial-actions>
+		<action id="1" name="Start Workflow">
+			<results>
+				<unconditional-result old-status="Finished"
+					status="Queued" step="1" />
+			</results>
+		</action>
+	</initial-actions>
+  </header>
+	
+	
+	
+  <nodes>
+  	
+    <step id="2" name="finished" >
+    </step>
+    <step id="1" name="First Draft" >
+      <action id="2" name="Start First Draft">
+        <restrict-to>
+          <conditions>
+            <condition type="class">
+              <arg name="class.name">
+									com.opensymphony.workflow.util.StatusCondition
+								</arg>
+              <arg name="status">Queued</arg>
+            </condition>
+          </conditions>
+        </restrict-to>
+        <pre-functions>
+          <function type="class">
+            <arg name="class.name">
+								com.opensymphony.workflow.util.Caller
+							</arg>
+          </function>
+          <function type="beanshell">
+            <arg name="script"><![CDATA[
+								System.out.println("Antes de ejecutar el actionId 2");
+							]]></arg>
+          </function>
+        </pre-functions>
+        <results>
+          <unconditional-result old-status="Finished" status="Underway" step="1" owner="${caller}"/>
+        </results>
+      </action>
+      <action id="3" name="Finish First Draft">
+        <restrict-to>
+          <conditions type="AND">
+            <condition type="class">
+              <arg name="class.name">
+									com.opensymphony.workflow.util.StatusCondition
+								</arg>
+              <arg name="status">Underway</arg>
+            </condition>
+            <condition type="class">
+              <arg name="class.name">
+									com.opensymphony.workflow.util.AllowOwnerOnlyCondition
+								</arg>
+            </condition>
+          </conditions>
+        </restrict-to>
+        <results>
+          <unconditional-result old-status="Finished" status="Queued" step="2"/>
+        </results>
+      </action>
+    </step>
+  </nodes>
+
+  <connections>
+    <connection from="1" fromType="3" to="2" toType="Queued" />
+  </connections>
+
+</process>

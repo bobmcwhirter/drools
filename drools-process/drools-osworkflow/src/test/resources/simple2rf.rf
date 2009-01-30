@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-4.0/osworkflow"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/osworkflow drools-osworkflow-4.0.xsd"
+         type="OSWorkflow" name="simple2" id="simple2" package-name="org.drools.osworkflow" >
+
+  <header>
+  		<initial-actions>
+		<action id="1" name="Start Workflow">
+			<results>
+				<unconditional-result old-status="Finished"
+					status="Active" step="1" />
+			</results>
+		</action>
+	</initial-actions>
+  </header>
+
+  <nodes>
+    <split id="1001" name="split" type="1" />
+    
+    <step id="1" name="Stage 1" >
+      <action id="2" name="Finish Stage 1">
+        <restrict-to>
+          <conditions>
+            <condition type="class">
+              <arg name="status">Active</arg>
+              <arg name="class.name">
+                   com.opensymphony.workflow.util.StatusCondition
+                </arg>
+            </condition>
+          </conditions>
+        </restrict-to>
+        <results>
+          <unconditional-result old-status="Finished" split="1001"/>
+        </results>
+      </action>
+    </step>
+    
+    <step id="2" name="Stage 2" >
+      <action id="3" name="Finish Stage 2">
+        <restrict-to>
+          <conditions>
+            <condition type="class">
+              <arg name="status">Active</arg>
+              <arg name="class.name">
+                   com.opensymphony.workflow.util.StatusCondition
+                </arg>
+            </condition>
+          </conditions>
+        </restrict-to>
+        <results>
+          <unconditional-result old-status="Finished" join="2001"/>
+        </results>
+      </action>
+    </step>
+    
+    <join id="2001" name="join"  type="1" />
+    
+    <step id="3" name="Stage 3" >
+      <action id="4" name="Finish Stage 3">
+        <restrict-to>
+          <conditions>
+            <condition type="class">
+              <arg name="status">Active</arg>
+              <arg name="class.name">
+                   com.opensymphony.workflow.util.StatusCondition
+                </arg>
+            </condition>
+          </conditions>
+        </restrict-to>
+        <results>
+          <unconditional-result old-status="Finished" join="2001"/>
+        </results>
+      </action>
+    </step>
+    
+    <step id="4" name="Stage 4" >
+    <action id="5" name="Finish Stage 4">
+        <restrict-to>
+          <conditions>
+            <condition type="class">
+              <arg name="status">Active</arg>
+              <arg name="class.name">
+                   com.opensymphony.workflow.util.StatusCondition
+                </arg>
+            </condition>
+          </conditions>
+        </restrict-to>
+        <results>
+          <unconditional-result old-status="Finished" step="5"/>
+        </results>
+      </action>
+    </step>
+    
+    <step id="5" name="Stage 5" >
+    </step>
+  </nodes>
+
+  <connections>
+    <connection from="1" fromType="2" to="1001" />
+    <connection from="1001" to="2" toType="Active" />
+    <connection from="2" fromType="3" to="2001" />
+    <connection from="3" fromType="4" to="2001" />
+    <connection from="1001" to="3" toType="Active" />
+    <connection from="2001" to="4" toType="Active" />
+  </connections>
+  
+
+</process>

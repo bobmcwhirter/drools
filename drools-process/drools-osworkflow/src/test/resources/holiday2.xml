@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	<initial-actions>
+		<action id="100" name="Start Workflow">
+			<results>
+				<unconditional-result old-status="Finished" status="Underway" step="1"/>
+			</results>
+		</action>
+	</initial-actions>
+	<steps>
+		<step id="1" name="Employee request">
+			<actions>
+				<action id="1" name="Request holidays">
+					<results>
+						<unconditional-result old-status="Finished" split="1" status="Requested"/>
+					</results>
+				</action>
+			</actions>
+		</step>
+		<step id="2" name="Line Manager revision">
+			<actions>
+				<action id="2" name="Approve" >
+					<results>
+						<unconditional-result old-status="Line aproved" status="joining" join="1" />
+					</results>
+				</action>
+				<action id="3" name="Deny" >
+					<results>
+						<unconditional-result old-status="Line denied" status="joining" join="1"/>
+					</results>
+				</action>
+			</actions>
+		</step>
+		<step id="3" name="HR Manager revision">
+			<actions>
+				<action id="4" name="HR Approve" >
+					<results>
+						<unconditional-result old-status="HR aproved" status="joining" join="1"/>
+					</results>
+				</action>
+				<action id="5" name="HR Deny" >
+					<results>
+						<unconditional-result old-status="HR denied" status="joining" join="1"/>
+					</results>
+				</action>
+			</actions>
+		</step>
+		<step id="4" name="Notify employee">
+			<actions>
+				<action id="6" name="Notify"  finish="TRUE" >
+					<results>
+						<unconditional-result old-status="Finished" status="Line approval"  step="-1"/>
+					</results>
+				</action>
+			</actions>
+		</step>
+	</steps>
+	<splits>
+		<split id="1">
+			<unconditional-result old-status="Finished" status="Underway" step="2"/>
+			<unconditional-result old-status="Finished" status="Underway" step="3"/>
+		</split>
+	</splits>
+	<joins>
+		<join id="1">
+			<conditions type="AND">
+				<condition type="beanshell">
+					<arg name="script"><![CDATA[
+					propertySet.setString("result", "denied");
+					if(jn.getStep(2).getStatus().endsWith("aproved") && jn.getStep(3).getStatus().endsWith("aproved")){
+					propertySet.setString("result", "aproved");
+					}
+					 !("Underway".equals(jn.getStep(2).getStatus())) && !("Underway".equals(jn.getStep(3).getStatus()))					]]></arg>
+				</condition>
+			</conditions>
+			<unconditional-result old-status="JoinFinished" status="${result}" step="4"/>
+		</join>
+	</joins>
+</workflow>

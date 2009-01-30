@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.osworkflow.test;
 
 import java.io.StringReader;
 import java.util.Collection;
@@ -9,10 +9,9 @@ import junit.framework.TestCase;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.osworkflow.DroolsWorkflow;
 import org.drools.osworkflow.OSWorkflowParser;
+import org.drools.osworkflow.composite.CompositeWorkflow;
 import org.drools.osworkflow.core.OSWorkflowProcess;
-import org.drools.osworkflow.xml.OSWorkflowSemanticModule;
 import org.drools.osworkflow.xml.XmlOSWorkflowProcessDumper;
-import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlProcessReader;
 
 import com.opensymphony.workflow.InvalidInputException;

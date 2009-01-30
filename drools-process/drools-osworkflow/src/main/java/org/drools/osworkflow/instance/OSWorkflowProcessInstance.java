@@ -49,9 +49,9 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
     protected void internalStart() {
         Map<String, Object> transientVars = new HashMap<String, Object>();
         for (ActionDescriptor action: getOSWorkflowProcess().getInitialActions()) {
-            if (action.getAutoExecute()) {
+          //  if (action.getAutoExecute()) {
                 executeAction(action, 0, transientVars);
-            }
+          //  }
         }
     }
 
@@ -68,13 +68,11 @@ public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl imple
     
     public void doAction(int actionId, Map inputs) {
         for (org.drools.runtime.process.NodeInstance nodeInstance: getNodeInstances()) {
-        	if (nodeInstance instanceof StepNodeInstance) {
-		        StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
-		        if (stepNodeInstance.isAvailableAction(actionId)) {
-		            stepNodeInstance.doAction(actionId, inputs);
-		            break;
-		        }
-        	}
+            StepNodeInstance stepNodeInstance = (StepNodeInstance) nodeInstance;
+            if (stepNodeInstance.isAvailableAction(actionId)) {
+                stepNodeInstance.doAction(actionId, inputs);
+                break;
+            }
         }
         checkImplicitFinish();
     }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_6.dtd">
+
+
+<workflow>
+	<initial-actions>
+		<action id="1" name="Crear">
+			<results>
+				<unconditional-result old-status="Documento Iniciado" status="Iniciada" step="1" owner="" />
+			</results>
+		</action>
+	</initial-actions>
+
+	<steps>
+		<step id="1" name="Revision">
+			<actions>
+				<action id="10" name="Ejecutar Evento">
+					<results>
+						<unconditional-result old-status="Evento Ejecutado" status="Pendiente de Revision" step="1" owner="" />
+					</results>
+				</action>
+				<action id="7" name="Modificar Documento">
+					<results>
+						<unconditional-result old-status="Documento Modificado" status="Pendiente de Revision" step="1" owner="" />
+					</results>
+				</action>
+				<action id="2" name="Aceptar solicitud">
+					<results>
+						<unconditional-result old-status="Revisada" status="Pend. Finalizacion" step="100" owner="" />
+					</results>
+				</action>
+				<action id="3" name="Rechazar solicitud">
+					<results>
+						<unconditional-result old-status="Rechazada" status="Pendiente de Revision" step="1" owner="" />
+					</results>
+				</action>
+				<action id="4" name="Rechazar por Aplicacion">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="beanshell">
+								<arg name="script">true</arg>
+							</condition>
+							<condition type="class">
+								<arg name="class.name">org.drools.osworkflow.dummy.CallerPrincipalCondition</arg>
+								<arg name="PRINCIPAL">GEN@WFP</arg>
+							</condition>
+						</conditions>
+					</restrict-to>				
+					<results>
+						<unconditional-result old-status="Rechazada" status="Pend. de Finalizacion" step="101" owner="" />
+					</results>
+				</action>
+			</actions>
+		</step>
+		
+		<step id="100" name="Pendiente de Finalizacion - Aceptada">
+			<actions>
+				<action id="5" name="Finalizar solicitud - aceptada">
+					<results>
+						<unconditional-result old-status="Aceptada" status="Finalizada y Aceptada" step="200" owner=""/>
+					</results>
+					<post-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.AutomaticReleaseFunctionProvider</arg>
+							<arg name="propertyName">nothing</arg>
+							<arg name="variableName">nothing</arg>
+						</function>
+					</post-functions>
+				</action>
+				<action id="8" name="Modificar Documento">
+					<results>
+						<unconditional-result old-status="Documento Modificado" status="Pendiente de Finalizacion" step="100" owner="" />
+					</results>
+				</action>
+			</actions>
+		</step>
+		
+		<step id="101" name="Pendiente de Finalizacion - Rechazada">
+			<actions>
+				<action id="9" name="Modificar Documento">
+					<results>
+						<unconditional-result old-status="Documento Modificado" status="Pendiente de Finalizacion" step="101" owner="" />
+					</results>
+				</action>
+				<action id="6" name="Finalizar solicitud - rechazada">
+					<results>
+						<unconditional-result old-status="Rechazada" status="Finalizada y Rechazada" step="200" owner=""/>
+					</results>
+					<post-functions>
+						<function type="class">
+							<arg name="class.name">org.drools.osworkflow.dummy.AutomaticReleaseFunctionProvider</arg>
+							<arg name="propertyName">nothing</arg>
+							<arg name="variableName">nothing</arg>
+						</function>
+					</post-functions>
+				</action>
+			</actions>
+		</step>
+		
+		<step id="200" name="Finalizado" />
+		
+	</steps>
+</workflow>

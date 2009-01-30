@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+   <initial-actions>
+      <action id="1" name="Curriculum Vitae Ingresado">
+         <pre-functions>
+            <function type="class">
+               <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+               <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+               <arg name="variableName">filialTramite</arg>
+            </function>
+         </pre-functions>
+         <results>
+            <unconditional-result old-status="Finished" status="Curriculum Vitae Ingresado" step="1" owner="JA-FILIAL-${filialTramite}"/>
+         </results>
+      </action>
+   </initial-actions>
+   <steps>
+
+      <step id="1" name="A evaluar por Servicios">
+         <actions>
+
+			<action id="3" name="Pasar a Auditor Medico">
+			<pre-functions>
+				<function type="class">
+					<arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+					<arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+					<arg name="variableName">filialTramite</arg>
+				</function>
+			</pre-functions>
+				<restrict-to>
+					<conditions type="AND">
+					<condition type="beanshell">
+					<arg name="script">true</arg>
+					</condition>
+					<condition type="class">
+					<arg name="class.name">dummy.GroupMembershipCondition</arg>
+					<arg name="GROUP_KEY">JA</arg>
+					</condition>
+					</conditions>
+				</restrict-to>
+					<results>
+					<unconditional-result old-status="CV derivado por Jefe de auditores" status="CV a analizar por Auditoria Medica" step="2" owner="AM-FILIAL-${filialTramite}"/>
+					</results>
+				<post-functions>
+					<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					<arg name="variableName">nothing</arg>
+					</function>
+				</post-functions>		
+			</action>
+
+
+            <action id="7" name="Rechazar">
+		         <pre-functions>
+			          <function type="class">
+				      <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+					  <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+					  <arg name="variableName">filialTramite</arg>
+						</function>
+				  </pre-functions>
+				  <restrict-to>
+						<conditions type="AND">
+						<condition type="beanshell">
+					    <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					    <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					    <arg name="GROUP_KEY">JA</arg>
+						</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result old-status="Pedido de Rechazo Jefe de Auditores" status="A Evaluar por Servicios" step="1" owner="JA-FILIAL-${filialTramite}"/>
+					</results>
+						 	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+
+			<action id="20" name="Confirmar Rechazo">
+					<restrict-to>
+						<conditions type="AND">
+						<condition type="beanshell">
+						<arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					    <arg name="class.name">dummy.CallerPrincipalCondition</arg>
+					    <arg name="PRINCIPAL">GEN@CVP</arg>
+						</condition>
+						</conditions>
+					</restrict-to>
+					<pre-functions>
+						<function type="class">
+						<arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+						<arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+						<arg name="variableName">filialTramite</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Confirma Rechaza Jefe de Auditores" status="Rechazado por Servicios, Carta no impresa" step="25" owner="AM-FILIAL-${filialTramite}"/>
+					</results>
+					<post-functions>
+						<function type="class">
+							<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+							<arg name="propertyName">nothing</arg>
+							<arg name="variableName">nothing</arg>
+						</function>
+					</post-functions>	
+				</action>
+
+            <action id="12" name="Rechazar y excepcionar">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">JA</arg>
+						</condition>
+					</conditions>
+				</restrict-to>
+				<results>
+                  <unconditional-result old-status="Pedido de Rechazo y excepcion por Jefe de Auditores" status="A Evaluar por Servicios" step="1" owner="JA-FILIAL-${filialTramite}"/>
+				</results>
+					 	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+
+
+            <action id="9" name="Aprobar">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">JA</arg>
+						</condition>
+					</conditions>
+				</restrict-to>
+               <results>
+                  <unconditional-result old-status="Aprobado por Jefe de Auditores" status="Esperando Auditoria Tecnica/Calidad" step="27" owner="AM-FILIAL-${filialTramite}"/>
+               </results>
+			   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+				</post-functions>	
+		     </action>
+
+			<action id="21" name="Confirmar Aprobacion">
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+					</condition>
+						 <condition type="class">
+					       <arg name="class.name">dummy.CallerPrincipalCondition</arg>
+					       <arg name="PRINCIPAL">GEN@CVP</arg>
+					</condition>
+					</conditions>
+				</restrict-to>
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+			   <results>
+                  <unconditional-result old-status="Confirma Aprobacion Jefe de Auditores" status="Esperando Auditoria Tecnica/Calidad" step="27" owner="AM-FILIAL-${filialTramite}"/>
+               </results>
+			   <post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+				</post-functions>	
+            </action>
+	 		 
+            <action id="11" name="Aprobar y excepcionar">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">JA</arg>
+						</condition>
+					</conditions>
+				</restrict-to>
+		           <results>
+			          <unconditional-result old-status="Pedido de aprobacion y excepcion por Jefe de Auditores" status="A Evaluar por Servicios" step="1" owner="JA-FILIAL-${filialTramite}"/>
+				   </results>
+				   	 	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+			 </action>
+
+         <action id="24" name="Finalizar ya es Prestador">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">JA</arg>
+						</condition>
+					</conditions>
+				</restrict-to>
+               <results>
+                  <unconditional-result old-status="Finalizado es prestador" status="Finalizado es prestador" step="4" owner="AE-FILIAL-${filialTramite}"/>
+               </results>
+				<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>		
+			</action>
+         </actions>
+   	  </step>
+      
+	  <step id="2" name="A evaluar por Auditor Medico">
+         <pre-functions>
+            <function type="class">
+               <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+               <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+               <arg name="variableName">filialTramite</arg>
+            </function>
+         </pre-functions>
+
+         <actions>
+       
+			<action id="14" name="Aprobar por Auditoria Medica">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AM</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+               <results>
+                  <unconditional-result old-status="Aprueba Auditor Medico" status="Aprobado por Auditoria Medica" step="1" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+			   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+            
+		
+			<action id="15" name="Rechazar auditor Medico">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AM</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+               <results>
+                  <unconditional-result old-status="Rechaza Auditor Medico" status="En evaluacion por Auditoria medica" step="2" owner="AM-FILIAL-${filialTramite}"/>
+               </results>
+			   	 	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+			</action>
+            
+			<action id="23" name="Confirmacion Rechazo auditor Medico">
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+					</condition>
+						 <condition type="class">
+					       <arg name="class.name">dummy.CallerPrincipalCondition</arg>
+					       <arg name="PRINCIPAL">GEN@CVP</arg>
+					</condition>
+					</conditions>
+				</restrict-to>
+				<pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+				<results>
+                  <unconditional-result old-status="Confirma rechazo Auditor Medico" status="Rechazado por Auditoria  Medica" step="1" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+			   	   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+
+			<action id="13" name="Cambiar filial">
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+					</condition>
+						 <condition type="class">
+					       <arg name="class.name">dummy.CallerPrincipalCondition</arg>
+					       <arg name="PRINCIPAL">GEN@CVP</arg>
+					</condition>
+					</conditions>
+				</restrict-to>  
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+               <results>
+                  <unconditional-result old-status="Cambio Filial de consultorio" status="Cambio Filial de consultorio" step="1" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+			   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+
+		 </actions>
+   	  </step>
+   
+	  
+	  <!-- ESTE PASO NO LO EJECUTA UN USUARIO -->
+      <step id="4" name="Rechazado">
+         <actions>
+
+            <action id="8" name="Cambio de filial">
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+					</condition>
+					<condition type="class">
+					       <arg name="class.name">dummy.CallerPrincipalCondition</arg>
+					       <arg name="PRINCIPAL">GEN@CVP</arg>
+					</condition>
+					</conditions>
+				</restrict-to> 
+				<pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+               <results>
+                  <unconditional-result old-status="Cambio Filial de consultorio" status="Cambio Filial de consultorio" step="1" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+			   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+
+
+            <action id="10" name="Postulante modifica el CV">
+		       <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+               <results>
+                  <unconditional-result old-status="Rechazado" status="Postulante modifica CV" step="1" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+			   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+          
+
+			<action id="19" name="Anular rechazo">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+					<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AE</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+
+		       <results>
+                  <unconditional-result old-status="Rechazado" status="Reversion de rechazo" step="1" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+			   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+    			 
+		 </actions>
+      </step>
+      
+	  
+
+	  <step id="5" name="Esperando Alta de Prestador">
+         <actions>
+          
+		<action id="16" name="Ingresar numero de Prestador">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AA</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+			   <results>
+                  <unconditional-result old-status="Pedido de Ingreso numero de prestador" status="Esperando Alta de Prestador" step="05" owner="AA-FILIAL-${filialTramite}"/>
+               </results>
+		 	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+			   
+		<action id="22" name="Confirmacion Ingresar numero">
+				<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+					</condition>
+						 <condition type="class">
+					       <arg name="class.name">dummy.CallerPrincipalCondition</arg>
+					       <arg name="PRINCIPAL">GEN@CVP</arg>
+					</condition>
+					</conditions>
+				</restrict-to>
+		          <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+                <results>
+                  <unconditional-result old-status="Ingresa numero de prestador" status="Postulante ingresado" step="17" owner=""/>
+               </results>
+			   	   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+      
+	
+         </actions>
+      </step>
+
+
+
+<step id="25" name="Pendiente Imprimir Rechazo">
+         <actions>
+            
+			<action id="26" name="Imprimir Carta Rechazo">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+      
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AM</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+			   
+			   <results>
+                  <unconditional-result old-status="Imprimir Carta de Rechazo" status="Rechazado,Carta de rechazo Impresa" step="04" owner="AE-FILIAL-${filialTramite}"/>
+               </results>
+
+					<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+           </action>
+
+		<action id="32" name="Anular Rechazo">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+        
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AM</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+			   
+			   <results>
+                  <unconditional-result old-status="Rechazo Anulado" status="Rechazo Anulado" step="01" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+
+					<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+
+            </action>
+
+	
+         </actions>
+      </step>
+
+
+
+
+<step id="27" name="Auditoria de Calidad / Tecnica">
+         <actions>
+            
+			<action id="28" name="Aceptar Auditoria de Calidad / Tecnica">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+        
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AM</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+			   
+			   <results>
+                  <unconditional-result old-status="Auditoria de Calidad/Tecnica realizada" status="Auditoria de Calidad / Tecnica Aprobada" step="30" owner="AA-FILIAL-${filialTramite}"/>
+               </results>
+
+					<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+
+            </action>
+	
+	<action id="29" name="Rechazar Auditoria de Calidad / Tecnica">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+        
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AM</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+			   
+			   <results>
+                  <unconditional-result old-status="Auditoria de Calidad/Tecnica rechazada" status="Auditoria de Calidad / Tecnica Rechazada" step="01" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+
+					<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+
+            </action>
+
+
+         </actions>
+      </step>
+
+
+<step id="30" name="Nota de Alta pendiente">
+         <actions>
+            
+			<action id="31" name="Emitir nota de alta">
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+        
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AA</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+			   
+			   <results>
+                  <unconditional-result old-status="Nota de Alta realizada" status="Nota de Alta realizada - Esperando Alta" step="05" owner="AA-FILIAL-${filialTramite}"/>
+               </results>
+
+					<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+
+            </action>
+
+
+		<action id="18" name="Anular Alta">
+		
+               <pre-functions>
+                  <function type="class">
+                     <arg name="class.name">dummy.EntityPropertyFunctionProvider</arg>
+                     <arg name="propertyName">CUV.DatosConsultorio.FilialConsultorio</arg>
+                     <arg name="variableName">filialTramite</arg>
+                  </function>
+               </pre-functions>
+
+			<restrict-to>
+					<conditions type="AND">
+						<condition type="beanshell">
+					       <arg name="script">true</arg>
+						</condition>
+						<condition type="class">
+					       <arg name="class.name">dummy.GroupMembershipCondition</arg>
+					       <arg name="GROUP_KEY">AA</arg>
+						</condition>
+					</conditions>
+			</restrict-to>
+			   
+			   <results>
+                  <unconditional-result old-status="" status="Anulacion de Alta" step="01" owner="JA-FILIAL-${filialTramite}"/>
+               </results>
+			   	<post-functions>
+				<function type="class">
+					<arg name="class.name">dummy.AutomaticReleaseFunctionProvider</arg>
+					<arg name="propertyName">nothing</arg>
+					 <arg name="variableName">nothing</arg>
+				 </function>
+			</post-functions>	
+            </action>
+	
+         </actions>
+      </step>
+
+
+
+      <step id="17" name="Finalizado"/>
+   </steps>
+</workflow>

@@ -1,11 +1,23 @@
 package org.drools.osworkflow.xml;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.List;
+
+import org.drools.definition.process.WorkflowProcess;
+import org.drools.osworkflow.core.OSWorkflowProcess;
+import org.drools.process.core.context.exception.ExceptionScope;
+import org.drools.process.core.context.swimlane.SwimlaneContext;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.xml.XmlWorkflowProcessDumper;
+
+import com.opensymphony.workflow.loader.ActionDescriptor;
 
 public class XmlOSWorkflowProcessDumper extends XmlWorkflowProcessDumper {
 
     public static final XmlOSWorkflowProcessDumper INSTANCE = new XmlOSWorkflowProcessDumper();
-    
+    private final static String EOL = System.getProperty( "line.separator" );
     private XmlOSWorkflowProcessDumper() {
         super(
             "OSWorkflow",
@@ -13,6 +25,26 @@ public class XmlOSWorkflowProcessDumper extends XmlWorkflowProcessDumper {
             "drools-osworkflow-4.0.xsd",
             new OSWorkflowSemanticModule()
         );
+    }
+    @Override
+    protected void visitHeader(WorkflowProcess process, StringBuffer xmlDump, boolean includeMeta) {
+        xmlDump.append("  <header>" + EOL);
+        visitInitialActions(((OSWorkflowProcess) process).getInitialActions(), xmlDump);
+        
+        xmlDump.append("  </header>" + EOL + EOL);
+    }
+    private void visitInitialActions(Collection<ActionDescriptor> initialActions, StringBuffer xmlDump) {
+        if (initialActions != null && initialActions.size() > 0) {
+            xmlDump.append("<initial-actions>" + EOL);
+            for (ActionDescriptor action: initialActions) {
+            	StringWriter stringWriter = new StringWriter();
+            	PrintWriter writer = new PrintWriter(stringWriter);
+                action.writeXML(writer, 3);
+                writer.close();
+                xmlDump.append(stringWriter.toString());
+            }
+            xmlDump.append("    </initial-actions>" + EOL);
+        }
     }
     
 }
