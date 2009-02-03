@@ -62,14 +62,14 @@ public class StartStateInstance extends StateInstance {
     }
     
     private void addWorkItemListener() {
-    	((ProcessInstance) getProcessInstance()).addEventListener("workItemCompleted", this, false);
-    	((ProcessInstance) getProcessInstance()).addEventListener("workItemAborted", this, false);
+    	getProcessInstance().addEventListener("workItemCompleted", this, false);
+    	getProcessInstance().addEventListener("workItemAborted", this, false);
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemCompleted", this, false);
-        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemAborted", this, false);
+        getProcessInstance().removeEventListener("workItemCompleted", this, false);
+        getProcessInstance().removeEventListener("workItemAborted", this, false);
     }
 
     public void signalEvent(String type, Object event) {

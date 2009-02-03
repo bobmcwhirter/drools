@@ -297,7 +297,7 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventBasedNode
     }
 
 	public void addTimerListener() {
-    	((ProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
+    	getProcessInstance().addEventListener("timerTriggered", this, false);
 	}
 	
     public void removeEventListeners() {
@@ -307,7 +307,7 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventBasedNode
     }
     
     public void removeTimerListener() {
-    	((ProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+    	getProcessInstance().removeEventListener("timerTriggered", this, false);
     }
 
 }

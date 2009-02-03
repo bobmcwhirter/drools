@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.drools.jpdl.core.node.TaskNode;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.NodeInstance;
@@ -88,13 +87,13 @@ public class TaskNodeInstance extends JpdlNodeInstance {
     }
 
     public void addEventListeners() {
-    	((ProcessInstance) getProcessInstance()).addEventListener("workItemCompleted", this, false);
-    	((ProcessInstance) getProcessInstance()).addEventListener("workItemAborted", this, false);
+    	getProcessInstance().addEventListener("workItemCompleted", this, false);
+    	getProcessInstance().addEventListener("workItemAborted", this, false);
     }
     
     public void removeEventListeners() {
-        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemCompleted", this, false);
-        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemAborted", this, false);
+        getProcessInstance().removeEventListener("workItemCompleted", this, false);
+        getProcessInstance().removeEventListener("workItemAborted", this, false);
     }
 
     public void signalEvent(String type, Object event) {
