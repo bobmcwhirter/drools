@@ -8,7 +8,7 @@ import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemManager;
 
-
+// @author: salaboy
 public class RSSWorkItemHandlerTest extends TestCase {
     
   
