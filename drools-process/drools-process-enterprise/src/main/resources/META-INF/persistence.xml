@@ -17,26 +17,17 @@
   </properties>
  </persistence-unit-->
 
-    <persistence-unit name="org.drools.persistence.jpa">
+    <persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>org.drools.persistence.jpa.ByteArrayObject</class>
+        <jta-data-source>jdbc/testDS1</jta-data-source>        
+        <class>org.drools.persistence.session.SessionInfo</class>
 
 	    <properties>
-	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-	        <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>	        
-	        <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
-	        <!--property name="hibernate.connection.url" value="jdbc:h2:file:/home/kverlaen/NotBackedUp/development/drools/drools-process/drools-process-enterprise/bin/mydb" /-->
-	        
-<!--			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>-->
-<!--	        <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>	  	        -->
-<!--	        <property name="hibernate.connection.url" value="jdbc:postgresql://localhost/postgres"/>-->
-	        
-	        <property name="hibernate.connection.username" value="sa"/>
-	        <property name="hibernate.connection.password" value="sasa"/>	
-	        <property name="hibernate.connection.autocommit" value="false" /> 	               
+	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
 	        <property name="hibernate.max_fetch_depth" value="3"/>
 		    <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="false" />		    
+            <property name="hibernate.show_sql" value="true" />	
+            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
 	    </properties>        
     </persistence-unit>
     

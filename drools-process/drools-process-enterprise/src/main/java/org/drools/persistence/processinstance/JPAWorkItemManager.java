@@ -12,11 +12,11 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.WorkItemHandler;
 
 public class JPAWorkItemManager implements WorkItemManager {
 
-    private EntityManager manager;
     private WorkingMemory workingMemory;
 	private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
     
@@ -24,13 +24,12 @@ public class JPAWorkItemManager implements WorkItemManager {
     	this.workingMemory = workingMemory;
     }
     
-    public void setEntityManager(EntityManager manager) {
-        this.manager = manager;
-    }
 
 	public void internalExecuteWorkItem(WorkItem workItem) {
+	    EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+	    
 		WorkItemInfo workItemInfo = new WorkItemInfo(workItem);
-        manager.persist(workItemInfo);
+        em.persist(workItemInfo);
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
         workItemInfo.update();
         WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
@@ -42,7 +41,9 @@ public class JPAWorkItemManager implements WorkItemManager {
 	}
 
 	public void internalAbortWorkItem(long id) {
-        WorkItemInfo workItemInfo = manager.find(WorkItemInfo.class, id);
+	    EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+	    
+        WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
         // work item may have been aborted
         if (workItemInfo != null) {
         	WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem();
@@ -52,7 +53,7 @@ public class JPAWorkItemManager implements WorkItemManager {
             } else {
                 System.err.println("Could not find work item handler for " + workItem.getName());
             }
-            manager.remove(workItemInfo);
+            em.remove(workItemInfo);
         }
 	}
 
@@ -60,7 +61,9 @@ public class JPAWorkItemManager implements WorkItemManager {
 	}
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        WorkItemInfo workItemInfo = manager.find(WorkItemInfo.class, id);
+        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        
+        WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
         // work item may have been aborted
         if (workItemInfo != null) {
         	WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem();
@@ -71,13 +74,15 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
-            manager.remove(workItemInfo);
+            em.remove(workItemInfo);
             workingMemory.fireAllRules();
     	}
     }
 
     public void abortWorkItem(long id) {
-        WorkItemInfo workItemInfo = manager.find(WorkItemInfo.class, id);
+        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+        
+        WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
         // work item may have been aborted
         if (workItemInfo != null) {
         	WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem();
@@ -87,13 +92,15 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (processInstance != null) {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
-            manager.remove(workItemInfo);
+            em.remove(workItemInfo);
             workingMemory.fireAllRules();
         }
     }
 
 	public WorkItem getWorkItem(long id) {
-		WorkItemInfo workItemInfo = manager.find(WorkItemInfo.class, id);
+	    EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.ENTITY_MANAGER );
+	    
+		WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
         if (workItemInfo == null) {
             return null;
         }
