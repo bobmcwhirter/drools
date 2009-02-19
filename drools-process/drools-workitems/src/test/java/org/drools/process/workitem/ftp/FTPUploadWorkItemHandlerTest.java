@@ -5,9 +5,12 @@ package org.drools.process.workitem.ftp;
 import java.io.File;
 import junit.framework.TestCase;
 
+import org.apache.ftpserver.ConnectionConfig;
+import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.UserManager;
+import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.ClearTextPasswordEncryptor;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
@@ -27,19 +30,33 @@ public class FTPUploadWorkItemHandlerTest extends TestCase {
     protected void setUp() throws Exception {
         ChainedProperties props = new ChainedProperties( "ftp.conf" );
         ftpHost = props.getProperty( "host", "localhost" );
-        ftpPort = props.getProperty( "port", "21" );
+        ftpPort = props.getProperty( "port", "2121" );
         serverFactory = new FtpServerFactory();
-        
+
+
+
         //Set properties to the server factory
         PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
         //Users information
         userManagerFactory.setFile(new File("myusers.properties"));
+        
         //We are using clear text passwords
         userManagerFactory.setPasswordEncryptor(new ClearTextPasswordEncryptor());
         UserManager userManager = userManagerFactory.createUserManager();
         serverFactory.setUserManager(userManager);
 
+        ListenerFactory factory = new ListenerFactory();
+
+        // set the port of the listener
+        factory.setPort(Integer.valueOf(ftpPort));
+        factory.setServerAddress(ftpHost);
+        // replace the default listener
+        serverFactory.addListener("default", factory.createListener());
+
+
+
         server = serverFactory.createServer();
+        
         // start the server
         server.start();
         
