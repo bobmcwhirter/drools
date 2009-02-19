@@ -33,7 +33,7 @@ public class FTPUploadWorkItemHandlerTest extends TestCase {
         //Set properties to the server factory
         PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
         //Users information
-        userManagerFactory.setFile(new File("META-INF/myusers.properties"));
+        userManagerFactory.setFile(new File("myusers.properties"));
         //We are using clear text passwords
         userManagerFactory.setPasswordEncryptor(new ClearTextPasswordEncryptor());
         UserManager userManager = userManagerFactory.createUserManager();
