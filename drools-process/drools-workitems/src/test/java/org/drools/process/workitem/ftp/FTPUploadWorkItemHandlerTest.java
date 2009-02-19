@@ -17,7 +17,7 @@ import org.drools.util.ChainedProperties;
 
 
 
-public class FTPWorkItemHandlerTest extends TestCase {
+public class FTPUploadWorkItemHandlerTest extends TestCase {
     FtpServerFactory serverFactory;
     FtpServer server;
     String ftpHost;
@@ -33,7 +33,7 @@ public class FTPWorkItemHandlerTest extends TestCase {
         //Set properties to the server factory
         PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
         //Users information
-        userManagerFactory.setFile(new File("myusers.properties"));
+        userManagerFactory.setFile(new File("META-INF/myusers.properties"));
         //We are using clear text passwords
         userManagerFactory.setPasswordEncryptor(new ClearTextPasswordEncryptor());
         UserManager userManager = userManagerFactory.createUserManager();
@@ -55,7 +55,7 @@ public class FTPWorkItemHandlerTest extends TestCase {
     	
     }
     
-    public void FIXMEtestUploadFile() throws Exception {
+    public void testUploadFile() throws Exception {
         FTPUploadWorkItemHandler handler = new FTPUploadWorkItemHandler();
         handler.setConnection( ftpHost, ftpPort, null, null );
         
