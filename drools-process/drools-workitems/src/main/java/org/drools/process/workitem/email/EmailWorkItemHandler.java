@@ -31,6 +31,10 @@ public class EmailWorkItemHandler implements WorkItemHandler {
 		connection.setPassword(password);
 	}
 	
+	public Connection getConnection() {
+		return connection;
+	}
+	
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 		if (connection == null) {
 			throw new IllegalArgumentException(

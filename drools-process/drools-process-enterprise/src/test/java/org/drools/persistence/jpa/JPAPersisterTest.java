@@ -9,7 +9,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.persistence.session.JPASessionMashallingHelper;
+import org.drools.persistence.session.JPASessionMarshallingHelper;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.rule.Package;

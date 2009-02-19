@@ -44,7 +44,7 @@ public class SessionInfo {
     MarshallingConfiguration   marshallingConfiguration;
 
     @Transient
-    JPASessionMashallingHelper helper;
+    JPASessionMarshallingHelper helper;
     
     public SessionInfo() {
         this.startDate = new Date();
@@ -58,7 +58,7 @@ public class SessionInfo {
 //        return this.version;
 //    }
 
-    public void setJPASessionMashallingHelper(JPASessionMashallingHelper helper) {
+    public void setJPASessionMashallingHelper(JPASessionMarshallingHelper helper) {
         this.helper = helper;
     }
 

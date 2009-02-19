@@ -9,7 +9,6 @@ import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
-import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
@@ -22,6 +21,7 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.marshalling.MarshallingConfiguration;
 import org.drools.marshalling.MarshallingConfigurationImpl;
 import org.drools.marshalling.PlaceholderResolverStrategyFactory;
+import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
 import org.drools.reteoo.ReteooRuleBase;
@@ -37,7 +37,7 @@ public class SingleSessionCommandService
     private EntityManagerFactory       emf;
     private EntityManager              em;
     private SessionInfo                sessionInfo;
-    private JPASessionMashallingHelper marshallingHelper;
+    private JPASessionMarshallingHelper marshallingHelper;
     private StatefulSession            session;
     private Environment                env;
 
@@ -52,32 +52,22 @@ public class SingleSessionCommandService
     public SingleSessionCommandService(RuleBase ruleBase,
                                        SessionConfiguration conf,
                                        Environment env) {
-        if ( conf == null ) {
+        if (conf == null) {
             conf = new SessionConfiguration();
         }
-        
         this.env = env;
-
         this.sessionInfo = new SessionInfo();
-
-        this.session = ((ReteooRuleBase) ruleBase).newStatefulSession( this.sessionInfo.getId(),
-                                                                       conf,
-                                                                       env );
-
-        MarshallingConfiguration marshallingConf = new MarshallingConfigurationImpl( (PlaceholderResolverStrategyFactory) env.get( EnvironmentName.PLACEHOLDER_RESOLVER_STRATEGY_FACTORY ),
-                                                                                     false,
-                                                                                     false,
-                                                                                     false );
-
-        this.marshallingHelper = new JPASessionMashallingHelper( this.session,
-                                                                 conf,
-                                                                 marshallingConf );
-        
-        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
+        this.session = ((ReteooRuleBase) ruleBase).newStatefulSession(this.sessionInfo.getId(), conf, env);
+        ((JPASignalManager) this.session.getSignalManager()).setCommandService(this);
+        MarshallingConfiguration marshallingConf = new MarshallingConfigurationImpl(
+    		(PlaceholderResolverStrategyFactory) env.get(EnvironmentName.PLACEHOLDER_RESOLVER_STRATEGY_FACTORY),
+            false, false);
+        this.marshallingHelper = new JPASessionMarshallingHelper(this.session, conf, marshallingConf);
+        this.sessionInfo.setJPASessionMashallingHelper(this.marshallingHelper);        
 
         this.emf = (EntityManagerFactory) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
         this.em = emf.createEntityManager(); // how can I ensure this is an extended entity?
-        System.out.println( ((EntityManagerImpl) this.em).getFlushMode() );
+//        System.out.println( ((EntityManagerImpl) this.em).getFlushMode() );
         UserTransaction ut = null;
         try {
             InitialContext ctx = new InitialContext();
@@ -88,15 +78,15 @@ public class SingleSessionCommandService
             
             this.em.persist( this.sessionInfo );
 
-            System.out.println( "committing" );
+//            System.out.println( "committing" );
             ut.commit();
-            System.out.println( "commit complete" );
+//            System.out.println( "commit complete" );
         } catch ( Throwable t1 ) {
-            try {
+        	try {
                 if ( ut != null ) {
                     ut.rollback();
                 }
-                throw new RuntimeException( "Could insert session data",
+                throw new RuntimeException( "Could not insert session data",
                                             t1 );
             } catch ( Throwable t2 ) {
                 throw new RuntimeException( "Could not rollback transaction",
@@ -104,21 +94,70 @@ public class SingleSessionCommandService
             }
         }
         
-        EntityManager localEm = this.emf.createEntityManager();
-       // System.out.println( "1) version " + localEm.find( SessionInfo.class, sessionInfo.getId() ).getVersion() );
-        localEm.close();
+        new Thread(new Runnable() {
+			public void run() {
+				session.fireUntilHalt();
+			}
+    	});
     }
     
-    
-    public void init() {
-        
-    }
+    public SingleSessionCommandService(RuleBase ruleBase, SessionConfiguration conf, Environment env, int sessionId) {
+		if (conf == null) {
+			conf = new SessionConfiguration();
+		}
 
+		this.env = env;
+
+		this.emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+		this.em = emf.createEntityManager(); // how can I ensure this is an extended entity?
+		//System.out.println(((EntityManagerImpl) this.em).getFlushMode());
+		UserTransaction ut = null;
+		try {
+			InitialContext ctx = new InitialContext();
+			ut = (UserTransaction) ctx.lookup("java:comp/UserTransaction");
+			ut.begin();
+			registerRollbackSync();
+			this.em.joinTransaction();
+		
+			sessionInfo = this.em.find(SessionInfo.class, sessionId);
+		
+		//	System.out.println("committing");
+			ut.commit();
+		//	System.out.println("commit complete");
+		} catch (Throwable t1) {
+			try {
+				if (ut != null) {
+					ut.rollback();
+				}
+				throw new RuntimeException("Could insert session data", t1);
+			} catch (Throwable t2) {
+				throw new RuntimeException("Could not rollback transaction", t2);
+			}
+		}
+		
+		MarshallingConfiguration marshallingConf = new MarshallingConfigurationImpl(
+			(PlaceholderResolverStrategyFactory) env.get(EnvironmentName.PLACEHOLDER_RESOLVER_STRATEGY_FACTORY),
+			false, false);
+		this.marshallingHelper = new JPASessionMarshallingHelper(sessionInfo, ruleBase, conf, marshallingConf, env);
+		this.sessionInfo.setJPASessionMashallingHelper(this.marshallingHelper);
+		this.session = this.marshallingHelper.getObject();
+		((JPASignalManager) this.session.getSignalManager()).setCommandService(this);
+
+		new Thread(new Runnable() {
+			public void run() {
+				session.fireUntilHalt();
+			}
+		});
+	}
+
+    
     public StatefulSession getSession() {
         return this.session;
     }
 
-    public <T> T execute(Command<T> command) {
+    public synchronized <T> T execute(Command<T> command) {
+    	session.halt();
+    	
         boolean localTransaction = false;
         UserTransaction ut = null;
         try {
@@ -128,10 +167,10 @@ public class SingleSessionCommandService
                 // If there is no transaction then start one, we will commit within the same Command
                 ut.begin();
                 localTransaction = true;
-                
-                EntityManager localEm = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
-                this.env.set( EnvironmentName.ENTITY_MANAGER, localEm );
             } 
+
+            EntityManager localEm = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
+            this.env.set( EnvironmentName.ENTITY_MANAGER, localEm );
 
             this.em.joinTransaction();
             //System.out.println( "1) exec ver : " + this.sessionInfo.getVersion() );
@@ -148,17 +187,11 @@ public class SingleSessionCommandService
                 ut.commit();
             }
 
-            EntityManager localEm = this.emf.createEntityManager();
-            //System.out.println( "2) version " + localEm.find( SessionInfo.class, sessionInfo.getId() ).getVersion() );
-            localEm.close();
-            
-            //System.out.println( "4) exec ver : " + this.sessionInfo.getVersion() );
-            //            System.out.println( "exec" + this.sessionInfo.getVersion() );
-
             return result;
 
         } catch ( Throwable t1 ) {
-            if ( localTransaction ) {
+        	t1.printStackTrace();
+        	if ( localTransaction ) {
                 try {
                     if ( ut != null ) {
                         ut.rollback();
@@ -173,6 +206,12 @@ public class SingleSessionCommandService
                 throw new RuntimeException( "Could not execute command",
                                             t1 );
             }
+        } finally {
+        	new Thread(new Runnable() {
+				public void run() {
+					session.fireUntilHalt();
+				}
+        	});
         }
     }
 
@@ -182,7 +221,7 @@ public class SingleSessionCommandService
         }
     }
 
-    public long getSessionId() {
+    public int getSessionId() {
         return sessionInfo.getId();
     }
     
