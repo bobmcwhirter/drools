@@ -2,7 +2,6 @@ package org.drools.process.workitem.rest;
 
 
 
-import org.drools.process.workitem.rest.*;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +12,7 @@ import org.drools.process.instance.impl.WorkItemImpl;
 
 
 
-
+/*@author: salaboy*/
 public class RestGeoCodeApiCallWorkItemHandlerTest extends TestCase {
 
     
@@ -21,7 +20,7 @@ public class RestGeoCodeApiCallWorkItemHandlerTest extends TestCase {
     public void testEmpty(){
 
     }
-    public void FIXMEtestYahooGeoCode() throws Exception {
+    public void testYahooGeoCode() throws Exception {
         RestGeoCodeApiCallWorkItemHandler handler = new RestGeoCodeApiCallWorkItemHandler();
         Map<String, Object> queryParams = new HashMap<String, Object>();
         queryParams.put( "URL","http://local.yahooapis.com/" );

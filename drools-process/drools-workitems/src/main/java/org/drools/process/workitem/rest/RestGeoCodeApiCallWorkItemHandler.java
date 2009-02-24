@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,8 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-
+/*@author: salaboy*/
 public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
 
     private List<ResultGeoCodeApi> results;
@@ -47,7 +45,7 @@ public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
 
 
             HttpURLConnection connection;
-            System.out.println("*** GET Created Customer **");
+            
             URL getUrl = new URL(URL);
             connection = (HttpURLConnection) getUrl.openConnection();
             connection.setRequestMethod("GET");
@@ -56,16 +54,17 @@ public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
             String line = reader.readLine();
-            while (line != null) {
-                System.out.println(line);
-                line = reader.readLine();
-            }
+            String response = "";
+            while ((line = reader.readLine()) != null) { 
+                response +=line;
+            } 
+
             setHttpResponseCode(connection.getResponseCode());
 
-            //
-            this.results = parseResults(line);
             
-            System.out.println("" + line);
+            this.results = parseResults(response);
+            
+            System.out.println("" + response);
             connection.disconnect();
 
         } catch (MalformedURLException ex) {
@@ -97,34 +96,43 @@ public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
                     Element elementResult = (Element)nodeResult;
                     result.setPrecision(elementResult.getAttribute("precision"));
 
-
+                    
                     NodeList latitudes = elementResult.getElementsByTagName("Latitude");
                     Element latitudeElement = (Element)latitudes.item(0);
-                    result.setLatitude(latitudeElement.getNodeValue().trim());
+                    NodeList latitudeNodes = latitudeElement.getChildNodes();
+                    result.setLatitude(((Node)latitudeNodes.item(0)).getNodeValue().trim());
 
                     NodeList longitudes = elementResult.getElementsByTagName("Longitude");
                     Element longitudeElement = (Element)longitudes.item(0);
-                    result.setLongitude(longitudeElement.getNodeValue().trim());
+                    NodeList longitudeNodes = longitudeElement.getChildNodes();
+                    result.setLongitude(((Node)longitudeNodes.item(0)).getNodeValue().trim());
 
                     NodeList addresses = elementResult.getElementsByTagName("Address");
                     Element addressElement = (Element)addresses.item(0);
-                    result.setAddress(addressElement.getNodeValue().trim());
+                    NodeList addressNodes = addressElement.getChildNodes();
+                    result.setAddress(((Node)addressNodes.item(0)).getNodeValue().trim());
+
+
                     
                     NodeList cities = elementResult.getElementsByTagName("City");
                     Element cityElement = (Element)cities.item(0);
-                    result.setCity(cityElement.getNodeValue().trim());
+                    NodeList cityNodes = cityElement.getChildNodes();
+                    result.setCity(((Node)cityNodes.item(0)).getNodeValue().trim());
 
                     NodeList states = elementResult.getElementsByTagName("State");
                     Element stateElement = (Element)states.item(0);
-                    result.setState(stateElement.getNodeValue().trim());
+                    NodeList stateNodes = stateElement.getChildNodes();
+                    result.setState(((Node)stateNodes.item(0)).getNodeValue().trim());
 
                     NodeList zips = elementResult.getElementsByTagName("Zip");
                     Element zipElement = (Element)zips.item(0);
-                    result.setZip(zipElement.getNodeValue().trim());
+                    NodeList zipNodes = zipElement.getChildNodes();
+                    result.setZip(((Node)zipNodes.item(0)).getNodeValue().trim());
 
                     NodeList countries = elementResult.getElementsByTagName("Country");
                     Element countryElement = (Element)countries.item(0);
-                    result.setCountry(countryElement.getNodeValue().trim());
+                    NodeList countryNodes = countryElement.getChildNodes();
+                    result.setCountry(((Node)countryNodes.item(0)).getNodeValue().trim());
 
                     results.add(result);
                    }
