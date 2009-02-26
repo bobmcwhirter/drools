@@ -6,10 +6,10 @@ import java.io.ObjectOutputStream;
 
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.marshalling.AbstractProcessInstanceMarshaller;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
-import org.drools.marshalling.PersisterEnums;
+import org.drools.marshalling.impl.AbstractProcessInstanceMarshaller;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterEnums;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
 import org.drools.process.core.context.variable.VariableScope;

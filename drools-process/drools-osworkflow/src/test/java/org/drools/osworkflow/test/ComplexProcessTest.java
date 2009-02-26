@@ -23,7 +23,7 @@ import com.opensymphony.workflow.config.DefaultConfiguration;
 import com.opensymphony.workflow.loader.WorkflowDescriptor;
 import com.opensymphony.workflow.spi.Step;
 
-public class ComplexProcessTestCase extends TestCase {
+public class ComplexProcessTest extends TestCase {
 
 	public void testComplexProcess() {
 		Workflow workflow = new DroolsWorkflow();

@@ -11,7 +11,7 @@ import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
  
-public class SimpleDroolsFlowTestCase extends TestCase {
+public class SimpleDroolsFlowTest extends TestCase {
  
 	public void testSimple() {
 		try {
@@ -30,7 +30,7 @@ public class SimpleDroolsFlowTestCase extends TestCase {
 		// create a builder
 		PackageBuilder builder = new PackageBuilder();
 		// load the process
-		Reader source = new InputStreamReader(SimpleDroolsFlowTestCase.class
+		Reader source = new InputStreamReader(SimpleDroolsFlowTest.class
 				.getResourceAsStream("/simple.rf"));
 		builder.addProcessFromXml(source);
 		// create the knowledge base
