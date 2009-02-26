@@ -20,11 +20,11 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
-import org.drools.marshalling.ProcessInstanceMarshaller;
-import org.drools.marshalling.ProcessMarshallerRegistry;
-import org.drools.marshalling.RuleFlowProcessInstanceMarshaller;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.ProcessInstanceMarshaller;
+import org.drools.marshalling.impl.ProcessMarshallerRegistry;
+import org.drools.marshalling.impl.RuleFlowProcessInstanceMarshaller;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.runtime.process.ProcessInstance;

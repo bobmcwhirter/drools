@@ -15,7 +15,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.drools.marshalling.MarshallingConfiguration;
+import org.drools.marshalling.impl.MarshallingConfiguration;
 
 @Entity
 public class SessionInfo {
@@ -39,9 +39,6 @@ public class SessionInfo {
     private Date               lastModificationDateShadow;  
     @Transient
     private byte[]             rulesByteArrayShadow;
-
-    @Transient
-    MarshallingConfiguration   marshallingConfiguration;
 
     @Transient
     JPASessionMarshallingHelper helper;

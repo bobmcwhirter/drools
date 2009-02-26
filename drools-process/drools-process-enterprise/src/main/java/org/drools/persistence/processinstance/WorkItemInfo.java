@@ -15,10 +15,10 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.drools.marshalling.InputMarshaller;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
-import org.drools.marshalling.OutputMarshaller;
+import org.drools.marshalling.impl.InputMarshaller;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.process.instance.WorkItem;
 
 @Entity

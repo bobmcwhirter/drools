@@ -4,23 +4,23 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.common.InternalRuleBase;
-import org.drools.marshalling.DefaultMarshaller;
+import org.drools.KnowledgeBase;
 import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.MarshallingConfiguration;
+import org.drools.marshalling.MarshallerFactory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class JPASessionMarshallingHelper {
 
-    private RuleBase             ruleBase;
-    private SessionConfiguration conf;
-    private StatefulSession      session;
-    private Marshaller           marshaller;
-    private Environment          environment;
-    
+    private KnowledgeBase                 kbase;
+    private KnowledgeSessionConfiguration conf;
+    private StatefulKnowledgeSession      ksession;
+    private Marshaller                    marshaller;
+    private Environment                   env;
+
     /**
      * Exist Info, so load session from here
      * @param info
@@ -29,18 +29,23 @@ public class JPASessionMarshallingHelper {
      * @param marshallingConfiguration
      */
     public JPASessionMarshallingHelper(SessionInfo info,
-                                      RuleBase    ruleBase,
-                                      SessionConfiguration conf,
-                                      MarshallingConfiguration marshallingConfiguration,
-                                      Environment environment) {   
-        this.ruleBase = ruleBase;
+                                       KnowledgeBase kbase,
+                                       KnowledgeSessionConfiguration conf,
+                                       Environment env) {
+        this.kbase = kbase;
         this.conf = conf;
-        this.environment = environment;
-        this.marshaller = new DefaultMarshaller( ((InternalRuleBase) ruleBase).getConfiguration(),
-                                                 marshallingConfiguration );
-        loadSnapshot( info.getData() );       
-        info.setJPASessionMashallingHelper( this );         
-    }    
+        this.env = env;
+        ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
+        if (strategies  != null ) {
+            // use strategies if provided in the environment
+            this.marshaller = MarshallerFactory.newMarshaller( kbase, strategies );
+        } else {
+            this.marshaller = MarshallerFactory.newMarshaller( kbase ) ;  
+        }
+
+        loadSnapshot( info.getData() );
+        info.setJPASessionMashallingHelper( this );
+    }
 
     /** 
      * new session, don't write now as info will request it on update callback
@@ -49,23 +54,27 @@ public class JPASessionMarshallingHelper {
      * @param conf
      * @param marshallingConfiguration
      */
-    public JPASessionMarshallingHelper(StatefulSession session,
-                                      SessionConfiguration conf,
-                                      MarshallingConfiguration marshallingConfiguration) {   
-        this.session = session;     
-        this.ruleBase = session.getRuleBase();
-        this.environment = session.getEnvironment();
+    public JPASessionMarshallingHelper(StatefulKnowledgeSession ksession,
+                                       KnowledgeSessionConfiguration conf) {
+        this.ksession = ksession;
+        this.kbase = ksession.getKnowledgeBase();
         this.conf = conf;
-        this.marshaller = new DefaultMarshaller( ((InternalRuleBase) ruleBase).getConfiguration(),
-                                                 marshallingConfiguration );   
+        this.env = ksession.getEnvironment();
+        ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) this.env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
+        if (strategies  != null ) {
+            // use strategies if provided in the environment
+            this.marshaller = MarshallerFactory.newMarshaller( kbase, strategies );
+        } else {
+            this.marshaller = MarshallerFactory.newMarshaller( kbase ) ;  
+        }
+        
     }
 
     public byte[] getSnapshot() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            marshaller.write( baos,
-                              (InternalRuleBase) ruleBase,
-                              session );
+            marshaller.marshall( baos,
+                                 ksession );
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to get session snapshot",
                                         e );
@@ -74,39 +83,40 @@ public class JPASessionMarshallingHelper {
         return baos.toByteArray();
     }
 
-    public StatefulSession loadSnapshot(byte[] bytes,
-                                        StatefulSession session) {
-        this.session = session;
+    public StatefulKnowledgeSession loadSnapshot(byte[] bytes,
+                                                 StatefulKnowledgeSession ksession) {
+        this.ksession = ksession;
         ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
         try {
-            marshaller.read( bais,
-                             (InternalRuleBase) ruleBase,
-                             session );
+            this.marshaller.unmarshall( bais,
+                                        ksession );
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to load session snapshot",
                                         e );
         }
-        return this.session;
+        return this.ksession;
     }
 
-    public StatefulSession loadSnapshot(byte[] bytes) {
+    public StatefulKnowledgeSession loadSnapshot(byte[] bytes) {
         try {
             ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-            if ( this.session == null ) {
-                this.session = this.ruleBase.readStatefulSession( bais, true, marshaller, conf, environment );
+            if ( this.ksession == null ) {
+                this.ksession = this.marshaller.unmarshall( bais,
+                                                            this.conf,
+                                                            this.env );
             } else {
                 loadSnapshot( bytes,
-                              this.session );
+                              this.ksession );
             }
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to load session snapshot",
                                         e );
         }
-        return this.session;
+        return this.ksession;
     }
 
-    public StatefulSession getObject() {
-        return session;
+    public StatefulKnowledgeSession getObject() {
+        return ksession;
     }
 
 }
