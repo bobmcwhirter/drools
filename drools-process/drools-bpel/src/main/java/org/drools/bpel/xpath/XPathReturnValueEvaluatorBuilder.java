@@ -18,6 +18,7 @@ import org.apache.ode.bpel.elang.xpath20.compiler.Constants;
 import org.apache.ode.utils.Namespaces;
 import org.drools.bpel.core.BPELProcess;
 import org.drools.compiler.ReturnValueDescr;
+import org.drools.process.core.ContextResolver;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
@@ -29,7 +30,8 @@ public class XPathReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBui
 
 	public void build(PackageBuildContext context,
 			ReturnValueConstraintEvaluator returnValueConstraintEvaluator,
-			ReturnValueDescr returnValueDescr) {
+			ReturnValueDescr returnValueDescr,
+			ContextResolver contextResolver) {
 		try {
 			XPathReturnValueEvaluator evaluator = new XPathReturnValueEvaluator();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
