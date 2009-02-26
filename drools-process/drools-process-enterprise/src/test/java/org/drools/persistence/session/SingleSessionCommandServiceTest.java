@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
@@ -390,7 +389,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        List list = new ArrayList<KnowledgePackage>();
+        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
         list.add( new KnowledgePackageImp( packageBuilder.getPackage() ) );
         return list;
     }
@@ -562,7 +561,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         return packageBuilder.getPackage();
     }
 
-    public void FIXME_testPersistenceTimer() throws Exception {
+    public void testPersistenceTimer() throws Exception {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -581,7 +580,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         SessionConfiguration config = new SessionConfiguration( properties );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
+        Collection<KnowledgePackage> kpkgs = getProcessTimer();
         kbase.addKnowledgePackages( kpkgs );
 
         SingleSessionCommandService service = new SingleSessionCommandService( kbase,
@@ -615,7 +614,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNull( processInstance );
     }
 
-    private Package getProcessTimer() {
+    private List<KnowledgePackage> getProcessTimer() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -660,10 +659,12 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        return packageBuilder.getPackage();
+        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
+        list.add( new KnowledgePackageImp( packageBuilder.getPackage() ) );
+        return list;
     }
 
-    public void FIXME_testPersistenceTimer2() throws Exception {
+    public void testPersistenceTimer2() throws Exception {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -682,7 +683,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         SessionConfiguration config = new SessionConfiguration( properties );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
+        Collection<KnowledgePackage> kpkgs = getProcessTimer2();
         kbase.addKnowledgePackages( kpkgs );
 
         SingleSessionCommandService service = new SingleSessionCommandService( kbase,
@@ -706,7 +707,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNull( processInstance );
     }
 
-    private Package getProcessTimer2() {
+    private List<KnowledgePackage> getProcessTimer2() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -751,7 +752,9 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        return packageBuilder.getPackage();
+        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
+        list.add( new KnowledgePackageImp( packageBuilder.getPackage() ) );
+        return list;
     }
 
 }

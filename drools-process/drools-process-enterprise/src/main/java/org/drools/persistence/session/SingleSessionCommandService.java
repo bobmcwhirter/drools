@@ -22,7 +22,6 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -38,8 +37,6 @@ public class SingleSessionCommandService
     private SessionInfo                 sessionInfo;
     private JPASessionMarshallingHelper marshallingHelper;
     private StatefulSession             session;
-
-    private KnowledgeBase               kbase;
     private StatefulKnowledgeSession    ksession;
     private Environment                 env;
 
@@ -147,16 +144,15 @@ public class SingleSessionCommandService
             }
         }
 
-        this.session = ((KnowledgeBaseImpl) kbase).ruleBase.newStatefulSession( (SessionConfiguration) conf,
-                                                                                this.env );
-        
-        this.ksession = new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session );
-        ((JPASignalManager) this.session.getSignalManager()).setCommandService( this );
-        
-        this.marshallingHelper = new JPASessionMarshallingHelper( this.ksession,
-                                                                  conf );
+        this.marshallingHelper = new JPASessionMarshallingHelper( this.sessionInfo,
+                                                                  kbase,
+                                                                  conf,
+                                                                  env );
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
+		this.ksession = this.marshallingHelper.getObject();
+		this.session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
+        ((JPASignalManager) this.session.getSignalManager()).setCommandService( this );
 
         new Thread( new Runnable() {
             public void run() {
