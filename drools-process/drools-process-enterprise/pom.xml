@@ -8,9 +8,9 @@
     <version>5.0.0.SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-process-enterprise</artifactId>
+  <artifactId>drools-persistence-jpa</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: Process :: Enterprise</name> 
+  <name>Drools :: Persistence :: JPA</name> 
     
       <dependencies> 	       
     	<dependency>
