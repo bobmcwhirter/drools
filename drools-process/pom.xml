@@ -30,7 +30,6 @@
   <modules>
       <module>drools-process-task</module>
       <module>drools-workitems</module>
-      <module>drools-process-enterprise</module>
       <module>drools-bam</module>
   </modules>
   
