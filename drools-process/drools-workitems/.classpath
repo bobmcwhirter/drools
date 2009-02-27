@@ -15,13 +15,17 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-finder/1.0-SNAPSHOT/commons-finder-1.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-net/commons-net/2.0/commons-net-2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.4.2.v_883_R34x/core-3.4.2.v_883_R34x.jar"/>
   <classpathentry kind="src" path="/drools-api"/>
   <classpathentry kind="src" path="/drools-compiler"/>
   <classpathentry kind="src" path="/drools-core"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/ftpserver/ftplet-api/1.0.0-RC2/ftplet-api-1.0.0-RC2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/ftpserver/ftpserver-core/1.0.0-RC2/ftpserver-core-1.0.0-RC2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.1/jmock-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jmock/jmock-legacy/2.5.1/jmock-legacy-2.5.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/joda-time/joda-time/1.5.2/joda-time-1.5.2.jar"/>
@@ -29,9 +33,14 @@
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
   <classpathentry kind="var" path="M2_REPO/logkit/logkit/1.0.1/logkit-1.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4/mail-1.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.6/mvel2-2.0.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-M4/mina-core-2.0.0-M4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.7-SNAPSHOT/mvel2-2.0.7-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/rome/rome/0.9/rome-0.9.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.6/slf4j-api-1.5.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.5.6/slf4j-log4j12-1.5.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jivesoftware/smack/3.0.4/smack-3.0.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/subethamail/subethasmtp-smtp/1.2/subethasmtp-smtp-1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/subethamail/subethasmtp-wiser/1.2/subethasmtp-wiser-1.2.jar"/>
 </classpath>
