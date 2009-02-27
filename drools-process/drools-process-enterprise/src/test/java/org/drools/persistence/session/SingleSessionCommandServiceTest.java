@@ -114,20 +114,20 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
         processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         CompleteWorkItemCommand completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId( workItem.getId() );
         service.execute( completeWorkItemCommand );
@@ -136,20 +136,20 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
         processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId( workItem.getId() );
         service.execute( completeWorkItemCommand );
@@ -158,20 +158,20 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
         processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId( workItem.getId() );
         service.execute( completeWorkItemCommand );
@@ -180,10 +180,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
         processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
@@ -231,10 +231,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         ut.begin();
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
@@ -243,10 +243,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         ut.commit();
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         ut.begin();
         CompleteWorkItemCommand completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId( workItem.getId() );
@@ -257,10 +257,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         ut.begin();
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
@@ -269,10 +269,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         ut.begin();
         completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId( workItem.getId() );
@@ -283,10 +283,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         ut.begin();
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
@@ -295,10 +295,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         ut.begin();
         completeWorkItemCommand = new CompleteWorkItemCommand();
         completeWorkItemCommand.setWorkItemId( workItem.getId() );
@@ -309,10 +309,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
         assertNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         ut.begin();
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
@@ -593,20 +593,20 @@ public class SingleSessionCommandServiceTest extends TestCase {
         System.out.println( "Started process instance " + processInstance.getId() );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
         processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         Thread.sleep( 3000 );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
@@ -697,10 +697,10 @@ public class SingleSessionCommandServiceTest extends TestCase {
 
         Thread.sleep( 2000 );
 
-        service = new SingleSessionCommandService( kbase,
+        service = new SingleSessionCommandService( sessionId,
+                                                   kbase,
                                                    config,
-                                                   env,
-                                                   sessionId );
+                                                   env );
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
         processInstance = (ProcessInstance) service.execute( getProcessInstanceCommand );

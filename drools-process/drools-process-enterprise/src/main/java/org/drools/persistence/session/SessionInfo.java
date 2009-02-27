@@ -99,6 +99,7 @@ public class SessionInfo {
     }
     
     public void rollback() {
+        this.dirty = false;
         this.lastModificationDate = this.lastModificationDateShadow;
         this.rulesByteArray = this.rulesByteArrayShadow;
 //        this.version = this.versionShadow;

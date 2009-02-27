@@ -22,6 +22,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.processinstance.JPASignalManager;
 import org.drools.process.command.Command;
 import org.drools.process.command.CommandService;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -40,6 +41,17 @@ public class SingleSessionCommandService
     private StatefulKnowledgeSession    ksession;
     private Environment                 env;
 
+    public void checkEnvironment(Environment env) {        
+        if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null ) {
+            throw new IllegalArgumentException( "Environment must have an EntityManagerFactory" );
+        }
+        
+        // @TODO log a warning that all transactions will be locally scoped using the EntityTransaction
+//        if ( env.get( EnvironmentName.TRANSACTION_MANAGER ) == null ) {
+//            throw new IllegalArgumentException( "Environment must have an EntityManagerFactory" );
+//        }        
+    }
+    
     public SingleSessionCommandService(RuleBase ruleBase,
                                        SessionConfiguration conf,
                                        Environment env) {
@@ -59,6 +71,7 @@ public class SingleSessionCommandService
 
         this.session = ((KnowledgeBaseImpl) kbase).ruleBase.newStatefulSession( (SessionConfiguration) conf,
                                                                                 this.env );
+        
         this.ksession = new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session );
 
         ((JPASignalManager) this.session.getSignalManager()).setCommandService( this );
@@ -96,6 +109,9 @@ public class SingleSessionCommandService
                                             t2 );
             }
         }
+        
+        // update the session id to be the same as the session info id
+        ((ReteooStatefulSession) this.session).setId( this.sessionInfo.getId() );
 
         new Thread( new Runnable() {
             public void run() {
@@ -104,10 +120,10 @@ public class SingleSessionCommandService
         } );
     }
 
-    public SingleSessionCommandService(KnowledgeBase kbase,
+    public SingleSessionCommandService(int sessionId,
+                                       KnowledgeBase kbase,
                                        KnowledgeSessionConfiguration conf,
-                                       Environment env,
-                                       int sessionId) {
+                                       Environment env) {
         if ( conf == null ) {
             conf = new SessionConfiguration();
         }
@@ -144,10 +160,20 @@ public class SingleSessionCommandService
             }
         }
 
+        this.session = ((KnowledgeBaseImpl) kbase).ruleBase.newStatefulSession( (SessionConfiguration) conf,
+                                                                                this.env );
+        
+        // update the session id to be the same as the session info id
+        ((ReteooStatefulSession) this.session).setId( sessionId );
+        
+        this.ksession = new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session );
+        ((JPASignalManager) this.session.getSignalManager()).setCommandService( this );
+        
         this.marshallingHelper = new JPASessionMarshallingHelper( this.sessionInfo,
                                                                   kbase,
                                                                   conf,
                                                                   env );
+
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );        
 		this.ksession = this.marshallingHelper.getObject();
@@ -182,6 +208,18 @@ public class SingleSessionCommandService
             EntityManager localEm = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
             this.env.set( EnvironmentName.ENTITY_MANAGER,
                           localEm );
+            
+            if ( this.em == null ) {
+                // there must have been a rollback to lazily re-initialise the state
+                this.em = this.emf.createEntityManager();
+                this.sessionInfo = this.em.find( SessionInfo.class, this.sessionInfo.getId() );
+                this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
+                // have to create a new localEM as an EM part of a transaction cannot do a find.
+                // this.sessionInfo.rollback();
+                this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
+                                                     this.ksession );
+                this.session = (StatefulSession) ((StatefulKnowledgeSessionImpl) this.ksession).session;                
+            }
 
             this.em.joinTransaction();
             //System.out.println( "1) exec ver : " + this.sessionInfo.getVersion() );
@@ -239,7 +277,7 @@ public class SingleSessionCommandService
     public void registerRollbackSync() throws IllegalStateException,
                                       RollbackException,
                                       SystemException {
-        TransactionManager txm = (TransactionManager) env.get( "drools.TransactionManager" );
+        TransactionManager txm = (TransactionManager) env.get( EnvironmentName.TRANSACTION_MANAGER );
         if ( txm == null ) {
             return;
         }
@@ -338,10 +376,8 @@ public class SingleSessionCommandService
     //}     
 
     public void rollback() {
-        // have to create a new localEM as an EM part of a transaction cannot do a find.
-        this.sessionInfo.rollback();
-        this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
-                                             this.ksession );
-        this.session = (StatefulSession) ((StatefulKnowledgeSessionImpl) this.ksession).session;
+        // with em null, if someone tries to use this session it'll first restore it's state
+        this.em.close();
+        this.em = null;
     }
 }
