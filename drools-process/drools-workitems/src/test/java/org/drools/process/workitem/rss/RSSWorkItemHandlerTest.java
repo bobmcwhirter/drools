@@ -15,7 +15,7 @@ public class RSSWorkItemHandlerTest extends TestCase {
     public void testReadRSSFeed() throws Exception {
         RSSWorkItemHandler handler = new RSSWorkItemHandler();
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "URL", "http://feeds.athico.com/DroolsRSS;http://salaboy.wordpress.com/feed/" );
+        workItem.setParameter( "URL", "http://salaboy.wordpress.com/feed/;http://salaboy.wordpress.com/feed/" );
 
         
         WorkItemManager manager = new DefaultWorkItemManager(null);
