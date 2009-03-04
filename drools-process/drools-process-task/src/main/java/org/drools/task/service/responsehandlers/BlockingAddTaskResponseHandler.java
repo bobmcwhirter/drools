@@ -1,22 +1,22 @@
 /**
  * 
  */
-package org.drools.task.service;
+package org.drools.task.service.responsehandlers;
 
-import org.drools.task.service.TaskClientHandler.SetDocumentResponseHandler;
+import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
 
-public class BlockingSetContentResponseHandler extends AbstractBlockingResponseHandler implements SetDocumentResponseHandler {
-    private volatile long contentId;
+public class BlockingAddTaskResponseHandler extends AbstractBlockingResponseHandler implements AddTaskResponseHandler {
+    private volatile long taskId;
 
-    public synchronized void execute(long contentId) {
+    public synchronized void execute(long taskId) {
         synchronized ( this.done ) {        
-            this.contentId = contentId;
+            this.taskId = taskId;
             this.done = true;
-            notifyAll();
+            notifyAll(); 
         }
-    }    
+    }
     
-    public synchronized long getContentId() {
+    public synchronized long getTaskId() {
         boolean isDone;
         synchronized ( done ) {
             isDone = this.done;
@@ -32,9 +32,9 @@ public class BlockingSetContentResponseHandler extends AbstractBlockingResponseH
             isDone = this.done;
         }        
         if ( !isDone ) {
-            throw new RuntimeException("Timeout : unable to retrieve Content Id" );
+            throw new RuntimeException("Timeout : unable to retrieve Task Id" );
         }
         
-        return contentId;
-    }
+        return taskId;
+    }       
 }

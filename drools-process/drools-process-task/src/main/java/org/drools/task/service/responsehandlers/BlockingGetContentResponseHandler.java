@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.drools.task.service;
+package org.drools.task.service.responsehandlers;
 
 import org.drools.task.Content;
 import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;

@@ -1,5 +1,7 @@
 package org.drools.task.service;
 
+import org.drools.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringReader;

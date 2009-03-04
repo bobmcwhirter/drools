@@ -1,5 +1,12 @@
 package org.drools.task.service;
 
+import org.drools.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingDeleteCommentResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingAddAttachmentResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingAddCommentResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingDeleteAttachmentResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;

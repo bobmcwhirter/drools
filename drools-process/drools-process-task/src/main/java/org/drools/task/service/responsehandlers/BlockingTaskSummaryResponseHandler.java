@@ -1,4 +1,4 @@
-package org.drools.task.service;
+package org.drools.task.service.responsehandlers;
 
 import java.util.List;
 

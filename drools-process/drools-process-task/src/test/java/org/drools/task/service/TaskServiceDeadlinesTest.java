@@ -1,5 +1,9 @@
 package org.drools.task.service;
 
+import org.drools.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingSetContentResponseHandler;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.InetSocketAddress;
