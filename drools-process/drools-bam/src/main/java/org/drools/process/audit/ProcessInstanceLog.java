@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class ProcessInstanceLog {
     
+	private String id;
     private long processInstanceId;
     private String processId;
     private Date start;
@@ -18,6 +19,14 @@ public class ProcessInstanceLog {
         setStart(new Date());
     }
     
+    public String getId() {
+    	return id;
+    }
+    
+    void setId(String id) {
+		this.id = id;
+	}
+
     public long getProcessInstanceId() {
         return processInstanceId;
     }

@@ -1,6 +1,7 @@
 package org.drools.process.audit;
 
 import java.util.Date;
+import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryLogger;
@@ -54,9 +55,14 @@ public class WorkingMemoryDbLogger extends WorkingMemoryLogger {
     private void updateProcessLog(long processInstanceId) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        ProcessInstanceLog log = (ProcessInstanceLog) session.load(ProcessInstanceLog.class, processInstanceId);
-        log.setEnd(new Date());
-        session.update(log);
+        List<ProcessInstanceLog> result = session.createQuery(
+        "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
+            .setLong(0, processInstanceId).list();
+        if (result != null && result.size() != 0) {
+        	ProcessInstanceLog log = result.get(result.size() - 1);
+	        log.setEnd(new Date());
+	        session.update(log);
+        }
         session.getTransaction().commit();
     }
     
@@ -74,6 +80,11 @@ public class WorkingMemoryDbLogger extends WorkingMemoryLogger {
         session.beginTransaction();
         session.save(log);
         session.getTransaction().commit();
+    }
+    
+    public void dispose() {
+    	HibernateUtil.getSessionFactory().getCurrentSession().close();
+    	HibernateUtil.close();
     }
 
 }

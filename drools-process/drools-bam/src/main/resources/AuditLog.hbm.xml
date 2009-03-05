@@ -6,9 +6,10 @@
 <hibernate-mapping>
 
 	<class name="org.drools.process.audit.ProcessInstanceLog" >
-        <id name="processInstanceId">
-            <generator class="assigned"/>
+        <id name="id">
+            <generator class="native"/>
         </id>
+        <property name="processInstanceId"/>
         <property name="processId"/>
         <property name="start" type="timestamp" column="START_DATE"/>
         <property name="end" type="timestamp" column="END_DATE"/>
