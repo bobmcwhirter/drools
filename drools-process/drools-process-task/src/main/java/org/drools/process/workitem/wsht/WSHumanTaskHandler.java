@@ -88,14 +88,17 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 			subjects.add(new I18NText("en-UK", comment));
 			task.setSubjects(subjects);
 		}
-		String priority = (String) workItem.getParameter("Priority");
-		if (priority != null) {
+		String priorityString = (String) workItem.getParameter("Priority");
+		int priority = 0;
+		if (priorityString != null) {
 			try {
-				task.setPriority(new Integer(priority));
+				priority = new Integer(priorityString);
 			} catch (NumberFormatException e) {
 				// do nothing
 			}
 		}
+		task.setPriority(priority);
+		
 		TaskData taskData = new TaskData();
 		taskData.setWorkItemId(workItem.getId());
 		taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
