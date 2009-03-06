@@ -16,6 +16,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
+import org.drools.rule.builder.EngineElementBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.PackageBuildContext;
@@ -63,16 +64,6 @@ public class XPathDialect implements Dialect {
 	public void addStaticImport(String importEntry) {
 	}
 
-	public AnalysisResult analyzeBlock(PackageBuildContext context,
-			BaseDescr descr, String text, Set[] availableIdentifiers) {
-		return null;
-	}
-
-	public AnalysisResult analyzeExpression(PackageBuildContext context,
-			BaseDescr descr, Object content, Set[] availableIdentifiers) {
-		return null;
-	}
-
 	public void compileAll() {
 	}
 
@@ -85,10 +76,6 @@ public class XPathDialect implements Dialect {
 	}
 
 	public Map getBuilders() {
-		return null;
-	}
-
-	public ClassFieldAccessorCache getClassFieldExtractorCache() {
 		return null;
 	}
 
@@ -163,6 +150,25 @@ public class XPathDialect implements Dialect {
 	}
 
 	public void addFunction(FunctionDescr functionDescr, TypeResolver typeResolver, Resource resource) {
+	}
+
+	public AnalysisResult analyzeBlock(PackageBuildContext context,
+			BaseDescr descr, String text,
+			Map<String, Class<?>>[] availableIdentifiers) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public AnalysisResult analyzeExpression(PackageBuildContext context,
+			BaseDescr descr, Object content,
+			Map<String, Class<?>>[] availableIdentifiers) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public EngineElementBuilder getBuilder(Class<?> clazz) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
