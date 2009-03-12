@@ -8,6 +8,7 @@ import org.drools.WorkingMemory;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
 import org.drools.process.command.Command;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.reteoo.ReteooWorkingMemory;
 
 /*Author: salaboy, mfossati */
 
@@ -41,7 +42,7 @@ public class DoActionCommand implements Command {
 		return processInstanceId;
 	}
 	
-	public Object execute(WorkingMemory workingMemory) {
+	public Object execute(ReteooWorkingMemory workingMemory) {
 		ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance(getProcessInstanceId());
 		if (processInstance != null) {
 			((OSWorkflowProcessInstance)processInstance).doAction(actionId, new HashMap());
@@ -51,7 +52,7 @@ public class DoActionCommand implements Command {
 	}
 
 	public Object execute(StatefulSession session) {
-		return this.execute((WorkingMemory)session);
+		return this.execute((ReteooWorkingMemory)session);
 	}
 
 	
