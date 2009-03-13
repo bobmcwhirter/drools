@@ -1,40 +1,29 @@
 /**
- * 
+ *
  */
 package org.drools.task.service.responsehandlers;
 
 import org.drools.task.service.TaskClientHandler.AddCommentResponseHandler;
 
 public class BlockingAddCommentResponseHandler extends AbstractBlockingResponseHandler
-    implements
-    AddCommentResponseHandler {
-    private volatile long    commentId;
+        implements AddCommentResponseHandler {
+
+    private static final int COMMENT_ID_WAIT_TIME = 10000;
+
+    private volatile long commentId;
 
     public synchronized void execute(long commentId) {
-        synchronized ( this.done ) {
-            this.commentId = commentId;
-            this.done = true;
-            notifyAll();
-        }
+        this.commentId = commentId;
+        setDone(true);
     }
 
-    public synchronized long getCommentId() {
-        boolean isDone;
-        synchronized ( done ) {
-            isDone = this.done;
-        }
-        if ( !isDone ) {                  
-            try {
-                wait( 10000 );
-            } catch ( InterruptedException e ) {
-                // swallow as this is just a notification
-            }
-        }        
-        synchronized ( done ) {
-            isDone = this.done;
-        }        
-        if ( !isDone ) {
-            throw new RuntimeException( "Timeout : unable to retrieve Task Id" );
+    public long getCommentId() {
+        // note that this method doesn't need to be synced because if waitTillDone returns true,
+        // it means commentId is available 
+        boolean done = waitTillDone(COMMENT_ID_WAIT_TIME);
+
+        if (!done) {
+            throw new RuntimeException("Timeout : unable to retrieve Comment Id");
         }
 
         return commentId;

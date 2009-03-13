@@ -1,43 +1,32 @@
 package org.drools.task.service.responsehandlers;
 
-import java.util.List;
-
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
+import java.util.List;
+
 public class BlockingTaskSummaryResponseHandler extends AbstractBlockingResponseHandler implements TaskSummaryResponseHandler {
-	
-	private volatile List<TaskSummary> results;
 
-	public synchronized void execute(List<TaskSummary> results) {
-        synchronized ( this.done ) {        
-    		this.results = results;
-            this.done = true;
-            notifyAll(); 
-        }
-	}
+    private static final int RESULTS_WAIT_TIME = 10000;
 
-	public synchronized List<TaskSummary> getResults() {
-        boolean isDone;
-        synchronized ( done ) {
-            isDone = this.done;
+    private volatile List<TaskSummary> results;
+
+    public synchronized void execute(List<TaskSummary> results) {
+        this.results = results;
+        setDone(true);
+    }
+
+    public List<TaskSummary> getResults() {
+        // note that this method doesn't need to be synced because if waitTillDone returns true,
+        // it means results is available 
+        boolean done = waitTillDone(RESULTS_WAIT_TIME);
+
+        if (!done) {
+            throw new RuntimeException("Timeout : unable to retrieve results");
         }
-        if ( !isDone ) {                  
-            try {
-                wait( 10000 );
-            } catch ( InterruptedException e ) {
-                // swallow as this is just a notification
-            }
-        }        
-        synchronized ( done ) {
-            isDone = this.done;
-        }        
-        if ( !isDone ) {
-            throw new RuntimeException("Timeout : unable to retrieve results" );
-        }
-        
+
         return results;
-	}
+    }
 
-};
+}
 

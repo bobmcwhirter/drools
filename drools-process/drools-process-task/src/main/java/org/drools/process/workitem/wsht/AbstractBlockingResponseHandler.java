@@ -1,16 +1,15 @@
 /**
- * 
+ *
  */
 package org.drools.process.workitem.wsht;
 
 import org.drools.task.service.BaseMinaHandler.ResponseHandler;
 
-public abstract class AbstractBlockingResponseHandler
-    implements
-    ResponseHandler {
-    protected volatile Boolean done = Boolean.FALSE;
+public abstract class AbstractBlockingResponseHandler implements ResponseHandler {
+
+    private volatile boolean done;
     private String error;
-    
+
     public boolean hasError() {
         return error != null;
     }
@@ -23,31 +22,33 @@ public abstract class AbstractBlockingResponseHandler
         this.error = error;
     }
 
-    public boolean isDone() {
-        synchronized ( done ) {
-            return done;
-        }
+    public synchronized boolean isDone() {
+        return done;
     }
 
-    public boolean waitTillDone(long time) {
-        long totalWaitTime = 0;
-        try {
-            while ( true ) {
-                synchronized ( done ) {
-                    if ( done ) {
-                        return true;
-                    }
-                }
-                if ( totalWaitTime >= time ) {
-                    break;
-                }
-                Thread.sleep( 250 );
-                totalWaitTime += 250;
+    protected synchronized void setDone(boolean done) {
+        this.done = done;
+        notifyAll();
+    }
+
+    /**
+     * This method will wait the specified amount of time in milliseconds for the response to
+     * be completed. Completed is determined via the <field>done</field>. Returns true if the
+     * reponse was completed in time, false otherwise
+     *
+     * @param time max time to wait
+     * @return true if response is available, false otherwise
+     */
+    public synchronized boolean waitTillDone(long time) {
+
+        if (!isDone()) {
+            try {
+                wait(time);
+            } catch (InterruptedException e) {
+                // swallow and return state of done
             }
-        } catch ( Exception e ) {
-            // swallow, as we are either true or false
         }
-        return false;
-    }
 
+        return isDone();
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.drools.process.workitem.wsht;
 
@@ -7,35 +7,26 @@ import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
 
 public class BlockingEventResponseHandler extends AbstractBlockingResponseHandler implements EventResponseHandler {
+    // todo why is this timeout different from the others?? - also, if this should be the same
+    // they can be collasped into the base class
+    private static final int DEFAULT_WAIT_TIME = 1000000;
+
     private volatile Payload payload;
 
     public synchronized void execute(Payload payload) {
-        synchronized ( this.done ) {            
-            this.payload = payload;        
-            this.done = true;
-        }
-        notifyAll();        
+        this.payload = payload;
+        setDone(true);
     }
-    
-    public synchronized Payload getPayload() {
-        boolean isDone;
-        synchronized ( done ) {
-            isDone = this.done;
+
+    public Payload getPayload() {
+        // note that this method doesn't need to be synced because if waitTillDone returns true,
+        // it means payload is available 
+        boolean done = waitTillDone(DEFAULT_WAIT_TIME);
+
+        if (!done) {
+            throw new RuntimeException("Timeout : unable to retrieve event payload");
         }
-        if ( !isDone ) {                  
-            try {
-                wait( 1000000 );
-            } catch ( InterruptedException e ) {
-                // swallow as this is just a notification
-            }
-        }        
-        synchronized ( done ) {
-            isDone = this.done;
-        }        
-        if ( !isDone ) {
-            throw new RuntimeException("Timeout : unable to retrieve event payload" );
-        }
-        
+
         return payload;
-    }       
+    }
 }

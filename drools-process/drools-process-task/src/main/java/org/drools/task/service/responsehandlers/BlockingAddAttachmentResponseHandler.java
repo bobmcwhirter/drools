@@ -1,64 +1,44 @@
 /**
- * 
+ *
  */
 package org.drools.task.service.responsehandlers;
 
 import org.drools.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 
 public class BlockingAddAttachmentResponseHandler extends AbstractBlockingResponseHandler implements AddAttachmentResponseHandler {
-    private volatile long attachmentId ;
+    private static final int ATTACHMENT_ID_WAIT_TIME = 10000;
+    private static final int CONTENT_ID_WAIT_TIME = 3000;
+
+    private volatile long attachmentId;
     private volatile long contentId;
 
     public synchronized void execute(long attachmentId, long contentId) {
-        synchronized ( this.done ) {        
-            this.attachmentId = attachmentId;
-            this.contentId = contentId;
-            this.done = true;
-            notifyAll();     
-        }
+        this.attachmentId = attachmentId;
+        this.contentId = contentId;
+        setDone(true);
     }
-    
-    public synchronized long getAttachmentId() {
-        boolean isDone;
-        synchronized ( done ) {
-            isDone = this.done;
+
+    public  long getAttachmentId() {
+        // note that this method doesn't need to be synced because if waitTillDone returns true,
+        // it means attachmentId is available
+        boolean done = waitTillDone(ATTACHMENT_ID_WAIT_TIME);
+
+        if (!done) {
+            throw new RuntimeException("Timeout : unable to retrieve Attachment Id");
         }
-        if ( !isDone ) {                  
-            try {
-                wait( 10000 );
-            } catch ( InterruptedException e ) {
-                // swallow as this is just a notification
-            }
-        }        
-        synchronized ( done ) {
-            isDone = this.done;
-        }        
-        if ( !isDone ) {
-            throw new RuntimeException("Timeout : unable to retrieve Attachment Id" );
-        }
-        
+
         return attachmentId;
-    }       
-    
-    public synchronized long getContentId() {
-        boolean isDone;
-        synchronized ( done ) {
-            isDone = this.done;
+    }
+
+    public long getContentId() {
+        // note that this method doesn't need to be synced because if waitTillDone returns true,
+        // it means contentId is available
+        boolean done = waitTillDone(CONTENT_ID_WAIT_TIME);
+
+        if (!done) {
+            throw new RuntimeException("Timeout : unable to retrieve Attachment Content Id");
         }
-        if ( !isDone ) {                  
-            try {
-                wait( 3000 );
-            } catch ( InterruptedException e ) {
-                // swallow as this is just a notification
-            }
-        }        
-        synchronized ( done ) {
-            isDone = this.done;
-        }        
-        if ( !isDone ) {
-            throw new RuntimeException("Timeout : unable to retrieve Attachment Content Id" );
-        }
-        
+
         return contentId;
     }
 }
