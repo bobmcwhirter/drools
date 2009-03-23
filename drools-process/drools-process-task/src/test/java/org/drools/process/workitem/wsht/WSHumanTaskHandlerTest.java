@@ -1,15 +1,5 @@
 package org.drools.process.workitem.wsht;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItem;
@@ -20,17 +10,28 @@ import org.drools.task.BaseTest;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
-import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
-import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
-import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.MinaTaskServer;
 import org.drools.task.service.TaskClientHandler;
+import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class WSHumanTaskHandlerTest extends BaseTest {
     private static final int MANAGER_COMPLETION_WAIT_TIME = 5000;
+    private static final int MANAGER_ABORT_WAIT_TIME = 5000;
 
     MinaTaskServer server;
     MinaTaskClient client;
@@ -171,8 +172,6 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         client.getTask(taskSummary.getId(), getTaskResponseHandler);
         Task task = getTaskResponseHandler.getTask();
         assertEquals(Status.Ready, task.getTaskData().getStatus());
-
-
     }
 
     public void testTaskSingleAndGroupActors() throws Exception {
@@ -186,7 +185,6 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         handler.executeWorkItem(workItem, manager);
 
         Thread.sleep(500);
-
 
         workItem = new WorkItemImpl();
         workItem.setName("Human Task Two");
@@ -202,7 +200,6 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         client.getTasksAssignedAsPotentialOwner("Darth Vader", "Crusaders", "en-UK", responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(2, tasks.size());
-
     }
 
     public void testTaskFail() throws Exception {
@@ -240,7 +237,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         operationResponseHandler.waitTillDone(5000);
         System.out.println("Failed task " + task.getId());
 
-        assertTrue(manager.isAborted());
+        assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
     }
 
     public void testTaskSkip() throws Exception {
@@ -272,7 +269,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         operationResponseHandler.waitTillDone(5000);
         System.out.println("Skipped task " + task.getId());
 
-        assertTrue(manager.isAborted());
+        assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
     }
 
     public void testTaskAbortSkippable() throws Exception {
@@ -670,7 +667,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         private volatile boolean aborted;
         private volatile Map<String, Object> results;
 
-        public synchronized boolean waitTillCompleted(long time) {
+        public synchronized boolean waitTillCompleted(long time) {            
             if (!isCompleted()) {
                 try {
                     wait(time);
@@ -680,14 +677,31 @@ public class WSHumanTaskHandlerTest extends BaseTest {
             }
 
             return isCompleted();
+        }       
+
+        public synchronized boolean waitTillAborted(long time) {
+            if (!isAborted()) {
+                try {
+                    wait(time);
+                } catch (InterruptedException e) {
+                    // swallow and return state of aborted
+                }
+            }
+
+            return isAborted();
         }
 
         public void abortWorkItem(long id) {
-            aborted = true;
+            setAborted(true);
         }
 
-        public boolean isAborted() {
+        public synchronized boolean isAborted() {
             return aborted;
+        }
+
+        private synchronized void setAborted(boolean aborted) {
+            this.aborted = aborted;
+            notifyAll();
         }
 
         public void completeWorkItem(long id, Map<String, Object> results) {
@@ -697,6 +711,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
 
         private synchronized void setCompleted(boolean completed) {
             this.completed = completed;
+            notifyAll();
         }
 
         public synchronized boolean isCompleted() {
