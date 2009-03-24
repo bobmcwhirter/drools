@@ -115,7 +115,7 @@ public class TaskServiceDeadlinesTest extends BaseTest {
         
         // emails should not be set yet
         assertEquals(0, wiser.getMessages().size() );             
-        Thread.sleep( 1000 );
+        Thread.sleep( 100 );
         
         // nor yet
         assertEquals(0, wiser.getMessages().size() );     
