@@ -16,101 +16,64 @@ package org.drools.task.event;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.drools.event.AbstractEventSupport;
 
+import java.util.Iterator;
 
-public class TaskEventSupport implements Externalizable {
+/**
+ * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
+ */
+public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
 
-    private static final long serialVersionUID = 400L;
+    public void fireTaskClaimed(final long taskId, final String userId) {
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
-    private List<TaskEventListener> listeners = new CopyOnWriteArrayList<TaskEventListener>();
+        if (iter.hasNext()) {
+            final TaskClaimedEvent event = new TaskClaimedEvent(taskId, userId);
 
-    @SuppressWarnings("unchecked")
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        listeners = (List<TaskEventListener>)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(listeners);
-    }
-
-    public void addEventListener(final TaskEventListener listener) {
-        if ( !this.listeners.contains( listener ) ) {
-            this.listeners.add( listener );
+            do {
+                iter.next().taskClaimed(event);
+            } while (iter.hasNext());
         }
     }
-
-    public void removeEventListener(final TaskEventListener listener) {
-        this.listeners.remove( listener );
-    }
-
-    public List<TaskEventListener> getEventListeners() {
-        return Collections.unmodifiableList( this.listeners );
-    }
-
-    public int size() {
-        return this.listeners.size();
-    }
-
-    public boolean isEmpty() {
-        return this.listeners.isEmpty();
-    }
-    
-    public void fireTaskClaimed(final long taskId, final String userId) {
-        if (this.listeners.isEmpty()) {
-			return;
-		}
-
-		final TaskClaimedEvent event = new TaskClaimedEvent(taskId, userId);
-
-		for (TaskEventListener listener : listeners) {
-			listener.taskClaimed(event);
-		}
-    }    
 
     public void fireTaskCompleted(final long taskId, final String userId) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
-        final TaskCompletedEvent event = new TaskCompletedEvent( taskId, userId );
-        
-        for ( TaskEventListener listener: listeners) {
-            listener.taskCompleted( event );
+        if (iter.hasNext()) {
+            final TaskCompletedEvent event = new TaskCompletedEvent(taskId, userId);
+
+            do {
+                iter.next().taskCompleted(event);
+            } while (iter.hasNext());
         }
-    } 
-    
+    }
+
     public void fireTaskFailed(final long taskId, final String userId) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
-        final TaskFailedEvent event = new TaskFailedEvent( taskId, userId );
-        
-        for ( TaskEventListener listener: listeners) {
-            listener.taskFailed( event );
+        if (iter.hasNext()) {
+            final TaskFailedEvent event = new TaskFailedEvent(taskId, userId);
+
+            do {
+                iter.next().taskFailed(event);
+            } while (iter.hasNext());
         }
-    } 
-    
+    }
+
     public void fireTaskSkipped(final long taskId, final String userId) {
-        if ( this.listeners.isEmpty() ) {
-            return;
-        }
+        final Iterator<TaskEventListener> iter = getEventListenersIterator();
 
-        final TaskSkippedEvent event = new TaskSkippedEvent( taskId, userId );
-        
-        for ( TaskEventListener listener: listeners) {
-            listener.taskSkipped( event );
+        if (iter.hasNext()) {
+            final TaskSkippedEvent event = new TaskSkippedEvent(taskId, userId);
+
+            do {
+                iter.next().taskSkipped(event);
+            } while (iter.hasNext());
         }
-    } 
-    
+    }
+
     public void reset() {
-        this.listeners.clear();
+        this.clear();
     }
 }
