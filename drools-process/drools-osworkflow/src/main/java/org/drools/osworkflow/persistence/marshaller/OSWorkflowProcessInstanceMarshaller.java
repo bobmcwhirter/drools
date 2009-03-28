@@ -4,20 +4,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.marshalling.impl.AbstractProcessInstanceMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.PersisterEnums;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
 import org.drools.osworkflow.instance.node.StepNodeInstance;
-import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.ProcessInstance;
 import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
+import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 public class OSWorkflowProcessInstanceMarshaller extends
 		AbstractProcessInstanceMarshaller {
@@ -28,49 +23,8 @@ public class OSWorkflowProcessInstanceMarshaller extends
 
 	}
 
-	@Override
-	public ProcessInstance readProcessInstance(MarshallerReaderContext context)
-			throws IOException {
-		ObjectInputStream stream = context.stream;
-		InternalRuleBase ruleBase = context.ruleBase;
-		InternalWorkingMemory wm = context.wm;
-
-		OSWorkflowProcessInstance processInstance = new OSWorkflowProcessInstance();
-		processInstance.setId(stream.readLong());
-		String processId = stream.readUTF();
-		processInstance.setProcessId(processId);
-		if (ruleBase != null) {
-			processInstance.setProcess(ruleBase.getProcess(processId));
-		}
-		processInstance.setState(stream.readInt());
-		long nodeInstanceCounter = stream.readLong();
-		processInstance.setWorkingMemory(wm);
-
-		int nbVariables = stream.readInt();
-		if (nbVariables > 0) {
-			VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance
-					.getContextInstance(VariableScope.VARIABLE_SCOPE);
-			for (int i = 0; i < nbVariables; i++) {
-				String name = stream.readUTF();
-				try {
-					Object value = stream.readObject();
-					variableScopeInstance.setVariable(name, value);
-				} catch (ClassNotFoundException e) {
-					throw new IllegalArgumentException(
-							"Could not reload variable " + name);
-				}
-			}
-		}
-
-		while (stream.readShort() == PersisterEnums.NODE_INSTANCE) {
-			readNodeInstance(context, processInstance, processInstance);
-		}
-
-		processInstance.internalSetNodeInstanceCounter(nodeInstanceCounter);
-		if (wm != null) {
-			processInstance.reconnect();
-		}
-		return processInstance;
+	public WorkflowProcessInstanceImpl createProcessInstance() {
+		return new OSWorkflowProcessInstance();
 	}
 
 	protected NodeInstanceImpl readNodeInstanceContent(int nodeType,
