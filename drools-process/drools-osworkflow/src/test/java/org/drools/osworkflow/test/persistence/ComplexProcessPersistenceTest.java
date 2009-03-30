@@ -15,6 +15,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.ProcessInstance;
 
 import bitronix.tm.TransactionManagerServices;
+import org.drools.KnowledgeBase;
 
 public class ComplexProcessPersistenceTest extends AbstractJPAPersistenceTest {
 	
@@ -27,7 +28,7 @@ public class ComplexProcessPersistenceTest extends AbstractJPAPersistenceTest {
         Properties properties = setupCommonProperties();
 		RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
 		// load the process
-		RuleBase ruleBase = createKnowledgeBase(conf,"/entrevistarf.rf");
+		KnowledgeBase ruleBase = createKnowledgeBase(conf,"entrevistarf.rf");
 		
 		SessionConfiguration config = new SessionConfiguration(properties);
 		
@@ -38,20 +39,20 @@ public class ComplexProcessPersistenceTest extends AbstractJPAPersistenceTest {
 		ProcessInstance processInstance = (ProcessInstance) service.execute(startProcessCommand);
 		System.out.println("Started process instance " + processInstance.getId());
 
-		service = new SingleSessionCommandService(ruleBase, config, environment, sessionId);
+		service = new SingleSessionCommandService(sessionId, ruleBase, config, environment);
         GetProcessInstanceCommand getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
         assertNotNull(processInstance);
 		System.out.println("Now working with processInstance " + processInstance.getId());
 
-        service = new SingleSessionCommandService(ruleBase, config, environment, sessionId);
+        service = new SingleSessionCommandService(sessionId, ruleBase, config, environment);
         DoActionCommand doActionCmd = new DoActionCommand();
         doActionCmd.setProcessInstanceId(processInstance.getId());
         doActionCmd.setActionId(2); //Action to be executed at current step
         service.execute(doActionCmd);
         
-        service = new SingleSessionCommandService(ruleBase, config, environment, sessionId);
+        service = new SingleSessionCommandService(sessionId, ruleBase, config, environment);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);
@@ -59,13 +60,13 @@ public class ComplexProcessPersistenceTest extends AbstractJPAPersistenceTest {
 		System.out.println("Now working with processInstance " + processInstance.getId());
         
         
-        service = new SingleSessionCommandService(ruleBase, config, environment, sessionId);
+        service = new SingleSessionCommandService(sessionId, ruleBase, config, environment);
         doActionCmd = new DoActionCommand();
         doActionCmd.setProcessInstanceId(processInstance.getId());
         doActionCmd.setActionId(4); //Action to be executed at current step
         service.execute(doActionCmd);
         
-        service = new SingleSessionCommandService(ruleBase, config, environment, sessionId);
+        service = new SingleSessionCommandService(sessionId, ruleBase, config, environment);
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId(processInstance.getId());
         processInstance = (ProcessInstance) service.execute(getProcessInstanceCommand);

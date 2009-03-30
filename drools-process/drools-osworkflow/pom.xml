@@ -12,7 +12,19 @@
   <packaging>jar</packaging>
   <name>Drools :: Process :: OSWorkflow</name>
 
-  <build/>
+  <build>
+      <!--plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <argLine>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</argLine>
+                    </configuration>
+                </plugin>
+        </plugins-->
+      
+  </build>
 
   <dependencies>
   
@@ -35,7 +47,7 @@
     
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-process-enterprise</artifactId>
+      <artifactId>drools-persistence-jpa</artifactId>
       <version>5.0.0.SNAPSHOT</version>
     </dependency>
 

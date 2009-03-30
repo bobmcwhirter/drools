@@ -19,6 +19,18 @@ import org.drools.osworkflow.persistence.marshaller.OSWorkflowProcessInstanceMar
 import org.drools.rule.Package;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import java.util.ArrayList;
+import java.util.List;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 
 public abstract class AbstractJPAPersistenceTest extends TestCase {
 
@@ -65,18 +77,28 @@ public abstract class AbstractJPAPersistenceTest extends TestCase {
 	/**
 	 * Process definition.
 	 */
-	protected static RuleBase createKnowledgeBase(RuleBaseConfiguration conf, String resourceName) {
+	protected static KnowledgeBase createKnowledgeBase(RuleBaseConfiguration conf, String resourceName) {
 		try {
 			// create a builder
-			PackageBuilder builder = new PackageBuilder();
-			// load the process
-			Reader source = new InputStreamReader(OSWorkFlowPersistenceTest.class
-					.getResourceAsStream(resourceName));
-			builder.addProcessFromXml(source);
+			
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+            kbuilder.add(ResourceFactory.newClassPathResource(resourceName), ResourceType.DRF);
+
+            KnowledgeBuilderErrors errors = kbuilder.getErrors();
+            if (errors.size() > 0) {
+                for (KnowledgeBuilderError error: errors) {
+                    System.err.println(error);
+                }
+                throw new IllegalArgumentException("Could not parse knowledge.");
+            }
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+			
 			// create the knowledge base
-			Package pkg = builder.getPackage();
-			RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
-			ruleBase.addPackage(pkg);
+			KnowledgeBase ruleBase = KnowledgeBaseFactory.newKnowledgeBase(conf);
+            
+			ruleBase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 			return ruleBase;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

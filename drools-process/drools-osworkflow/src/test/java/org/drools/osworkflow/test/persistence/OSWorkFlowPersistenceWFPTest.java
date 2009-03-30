@@ -19,6 +19,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.ProcessInstance;
 
 import bitronix.tm.TransactionManagerServices;
+import org.drools.KnowledgeBase;
 
 public class OSWorkFlowPersistenceWFPTest extends AbstractJPAPersistenceTest {
 
@@ -31,7 +32,7 @@ public class OSWorkFlowPersistenceWFPTest extends AbstractJPAPersistenceTest {
         Properties properties = setupCommonProperties();
 		RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
 		// load the process
-		RuleBase ruleBase = createKnowledgeBase(conf, "/wfprf.rf");
+		KnowledgeBase ruleBase = createKnowledgeBase(conf, "wfprf.rf");
 
 		SessionConfiguration config = new SessionConfiguration(properties);
 

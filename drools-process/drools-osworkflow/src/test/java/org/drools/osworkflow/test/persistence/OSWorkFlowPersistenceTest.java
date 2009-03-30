@@ -21,6 +21,7 @@ import org.drools.runtime.process.ProcessInstance;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.drools.KnowledgeBase;
 
 public class OSWorkFlowPersistenceTest extends AbstractJPAPersistenceTest {
 
@@ -33,7 +34,7 @@ public class OSWorkFlowPersistenceTest extends AbstractJPAPersistenceTest {
         Properties properties = setupCommonProperties();
 		RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
 		// load the process
-		RuleBase ruleBase = createKnowledgeBase(conf,"/simplerf.rf");
+		KnowledgeBase ruleBase = createKnowledgeBase(conf,"simplerf.rf");
 
 		SessionConfiguration config = new SessionConfiguration(properties);
 		

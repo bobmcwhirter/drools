@@ -17,6 +17,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.ProcessInstance;
 
 import bitronix.tm.TransactionManagerServices;
+import org.drools.KnowledgeBase;
 
 public class OSWorkFlowPersistenceSplitJoinTest extends AbstractJPAPersistenceTest {
 
@@ -29,7 +30,7 @@ public class OSWorkFlowPersistenceSplitJoinTest extends AbstractJPAPersistenceTe
 		Properties properties = setupCommonProperties();
 		RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
 		// load the process
-		RuleBase ruleBase = createKnowledgeBase(conf,"/simple2rf.rf");
+		KnowledgeBase ruleBase = createKnowledgeBase(conf,"simple2rf.rf");
 		
 		SessionConfiguration config = new SessionConfiguration(properties);
 
