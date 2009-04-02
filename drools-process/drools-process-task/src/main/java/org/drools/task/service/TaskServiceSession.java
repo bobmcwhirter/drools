@@ -15,6 +15,7 @@ import javax.persistence.Query;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.SystemEventListener;
 import org.drools.eventmessaging.EventKeys;
 import org.drools.task.Attachment;
 import org.drools.task.Comment;
@@ -40,10 +41,15 @@ public class TaskServiceSession {
     private Map<String, Map<String, Object>> globals;
     private EventKeys eventKeys;
 
-    public TaskServiceSession(TaskService service,
-                              EntityManager em) {
+    /**
+     * Listener used for logging
+     */
+    private SystemEventListener systemEventListener;
+
+    public TaskServiceSession(TaskService service, EntityManager em, SystemEventListener systemEventListener) {
         this.service = service;
         this.em = em;
+        this.systemEventListener = systemEventListener;
     }
 
     public void dispose() {
@@ -218,12 +224,11 @@ public class TaskServiceSession {
                         statusMatched = true;
 
                         // next find out if the user can execute this operation                
-                        if (!isAllowed(command,
-                                task,
-                                user
-                        )) {
-                            return new TaskError("User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId());
+                        if (!isAllowed(command, task, user)) {
+                            String errorMessage = "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId();
+                            systemEventListener.debug("Task error: " + errorMessage);
 
+                            return new TaskError(errorMessage);
                         }
 
                         commands(command,
@@ -241,11 +246,11 @@ public class TaskServiceSession {
                         statusMatched = true;
 
                         // next find out if the user can execute this operation                
-                        if (!isAllowed(command,
-                                task,
-                                user
-                        )) {
-                            return new TaskError("User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId());
+                        if (!isAllowed(command, task, user)) {
+                            String errorMessage = "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId();
+                            systemEventListener.debug("Task error: " + errorMessage);
+
+                            return new TaskError(errorMessage);
                         }
 
                         commands(command, task, user, targetEntity);
@@ -255,7 +260,10 @@ public class TaskServiceSession {
             }
         }
         if (!statusMatched) {
-            return new TaskError("User '" + user + "' was unable to execution operation '" + operation + "' on task id " + task.getId() + " due to no 'current status' matchines");
+            String errorMessage = "User '" + user + "' was unable to execution operation '" + operation + "' on task id " + task.getId() + " due to no 'current status' matchines";
+            systemEventListener.debug("Task error: " + errorMessage);
+
+            return new TaskError(errorMessage);
         }
 
         return null;
@@ -402,7 +410,11 @@ public class TaskServiceSession {
             task.getTaskData().setStatus(Status.Error);
             em.getTransaction().commit();
 
-            error = new TaskError("User '" + user + "' was unable to execution operation '" + operation + "' on task id " + task.getId() + " due to exception:\n" + e.getMessage());
+            String errorMessage = "User '" + user + "' was unable to execution operation '" + operation + "' on task id " + task.getId() + " due to exception:\n" + e.getMessage();
+            systemEventListener.debug("Task error: " + errorMessage);
+            systemEventListener.exception(e);
+
+            error = new TaskError(errorMessage);
         } finally {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().commit();

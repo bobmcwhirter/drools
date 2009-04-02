@@ -42,6 +42,7 @@ import org.drools.task.service.TaskClientHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
+import org.drools.SystemEventListenerFactory;
 
 public class WSHumanTaskHandler implements WorkItemHandler {
 
@@ -59,7 +60,8 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	public void connect() {
 		if (client == null) {
 			client = new MinaTaskClient(
-				"org.drools.process.workitem.wsht.WSHumanTaskHandler", new TaskClientHandler());
+				"org.drools.process.workitem.wsht.WSHumanTaskHandler",
+                    new TaskClientHandler(SystemEventListenerFactory.getSystemEventListener()));
 			NioSocketConnector connector = new NioSocketConnector();
 			SocketAddress address = new InetSocketAddress(ipAddress, port);
 			boolean connected = client.connect(connector, address);

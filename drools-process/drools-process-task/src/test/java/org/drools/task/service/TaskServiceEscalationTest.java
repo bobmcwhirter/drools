@@ -18,6 +18,7 @@ import org.drools.task.BaseTest;
 import org.drools.task.Deadline;
 import org.drools.task.Task;
 import org.drools.task.service.TaskServiceEscalationTest.MockEscalatedDeadlineHandler.Item;
+import org.drools.SystemEventListenerFactory;
 
 public class TaskServiceEscalationTest extends BaseTest {
     MinaTaskServer server;
@@ -32,7 +33,7 @@ public class TaskServiceEscalationTest extends BaseTest {
         Thread.sleep( 500 );
 
         client = new MinaTaskClient( "client 1",
-                                     new TaskClientHandler() );
+                                     new TaskClientHandler(SystemEventListenerFactory.getSystemEventListener()) );
         NioSocketConnector connector = new NioSocketConnector();
         SocketAddress address = new InetSocketAddress( "127.0.0.1",
                                                        9123 );
@@ -112,7 +113,7 @@ public class TaskServiceEscalationTest extends BaseTest {
 
         // now create a new service, to see if it initiates from the DB correctly
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
-        TaskService local = new TaskService(emf, handler);      
+        TaskService local = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);      
                 
         handler.wait( 3, 30000 );
         

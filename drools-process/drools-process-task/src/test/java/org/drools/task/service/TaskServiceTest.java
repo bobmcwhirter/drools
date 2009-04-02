@@ -15,6 +15,7 @@ import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.drools.task.utils.CollectionUtils;
+import org.drools.SystemEventListenerFactory;
 
 public class TaskServiceTest extends BaseTest {
     MinaTaskServer server;
@@ -29,7 +30,7 @@ public class TaskServiceTest extends BaseTest {
         Thread.sleep( 500 );
 
         client = new MinaTaskClient( "client 1",
-                                     new TaskClientHandler() );
+                                     new TaskClientHandler(SystemEventListenerFactory.getSystemEventListener()) );
         NioSocketConnector connector = new NioSocketConnector();
         SocketAddress address = new InetSocketAddress( "127.0.0.1",
                                                        9123 );

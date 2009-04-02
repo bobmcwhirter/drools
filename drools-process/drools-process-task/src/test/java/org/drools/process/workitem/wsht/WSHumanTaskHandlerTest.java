@@ -18,6 +18,7 @@ import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandle
 import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.drools.SystemEventListenerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,7 +45,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         Thread thread = new Thread(server);
         thread.start();
         Thread.sleep(500);
-        client = new MinaTaskClient("client 1", new TaskClientHandler());
+        client = new MinaTaskClient("client 1", new TaskClientHandler(SystemEventListenerFactory.getSystemEventListener()));
         NioSocketConnector connector = new NioSocketConnector();
         SocketAddress address = new InetSocketAddress("127.0.0.1", 9123);
         client.connect(connector, address);

@@ -16,6 +16,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.drools.task.service.SendIcal;
 import org.drools.task.service.TaskService;
 import org.drools.task.service.TaskServiceSession;
+import org.drools.SystemEventListenerFactory;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -41,7 +42,7 @@ public abstract class BaseTest extends TestCase {
         // Use persistence.xml configuration
         emf = Persistence.createEntityManagerFactory( "org.drools.task" );
 
-        taskService = new TaskService( emf );
+        taskService = new TaskService( emf, SystemEventListenerFactory.getSystemEventListener() );
         taskSession = taskService.createSession();
         MockUserInfo userInfo = new MockUserInfo();
         taskService.setUserinfo( userInfo );

@@ -30,6 +30,7 @@ import org.drools.task.Task;
 import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.query.TaskSummary;
+import org.drools.SystemEventListenerFactory;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -39,7 +40,7 @@ public class DemoTaskService {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.drools.task");
-        TaskService taskService = new TaskService(emf);
+        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
         TaskServiceSession taskSession = taskService.createSession();
         // Add users
         Map vars = new HashedMap();
