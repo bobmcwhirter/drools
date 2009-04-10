@@ -1,28 +1,26 @@
 package org.drools.task.service;
 
-import java.util.*;
-
-import javax.persistence.EntityManager;
-
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.drools.SystemEventListener;
 import org.drools.eventmessaging.EventKey;
 import org.drools.task.Attachment;
 import org.drools.task.Comment;
 import org.drools.task.Content;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
-import org.drools.SystemEventListener;
+
+import java.util.*;
 
 public class TaskServerHandler extends IoHandlerAdapter {
-    private TaskService service;
-    private Map<String, IoSession> clients;
+    private final TaskService service;
+    private final Map<String, IoSession> clients;
 
     /**
      * Listener used for logging
      */
-    private SystemEventListener systemEventListener;
+    private final SystemEventListener systemEventListener;
 
     public TaskServerHandler(TaskService service, SystemEventListener systemEventListener) {
         this.service = service;
@@ -32,7 +30,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
 
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-        systemEventListener.exception("Uncaught exception on Server",cause);
+        systemEventListener.exception("Uncaught exception on Server", cause);
     }
 
     @Override
@@ -40,7 +38,6 @@ public class TaskServerHandler extends IoHandlerAdapter {
                                 Object message) throws Exception {
         Command cmd = (Command) message;
         TaskServiceSession taskSession = service.createSession();
-        TaskError error = null;
         CommandName response = null;
         try {
             systemEventListener.debug("Message receieved on server : " + cmd.getName());
@@ -63,15 +60,9 @@ public class TaskServerHandler extends IoHandlerAdapter {
                     if (cmd.getArguments().size() > 4) {
                         data = (ContentData) cmd.getArguments().get(4);
                     }
-                    error = taskSession.taskOperation(operation, taskId, userId, targetEntityId, data);
+                    taskSession.taskOperation(operation, taskId, userId, targetEntityId, data);
 
-                    List args;
-                    if (error != null) {
-                        args = new ArrayList(1);
-                        args.add(error);
-                    } else {
-                        args = Collections.emptyList();
-                    }
+                    List args = Collections.emptyList();
 
                     Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                     session.write(resultsCmnd);
@@ -80,17 +71,14 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 case GetTaskRequest: {
                     response = CommandName.GetTaskResponse;
                     long taskId = (Long) cmd.getArguments().get(0);
-                    EntityManager em = service.getEntityManagerFactory().createEntityManager();
-                    try {
-                        Task task = taskSession.getTask(taskId);
 
-                        List args = new ArrayList(1);
-                        args.add(task);
-                        Command resultsCmnd = new Command(cmd.getId(), CommandName.GetTaskResponse, args);
-                        session.write(resultsCmnd);
-                    } finally {
-                        em.close();
-                    }
+                    Task task = taskSession.getTask(taskId);
+
+                    List args = new ArrayList(1);
+                    args.add(task);
+                    Command resultsCmnd = new Command(cmd.getId(), CommandName.GetTaskResponse, args);
+                    session.write(resultsCmnd);
+
                     break;
                 }
                 case AddTaskRequest: {
@@ -345,18 +333,18 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 }
                 case RegisterClient: {
                     String uuid = (String) cmd.getArguments().get(0);
-                    clients.put(uuid,
-                            session);
+                    clients.put(uuid, session);
                     break;
                 }
                 default: {
                     systemEventListener.debug("Unknown command recieved on server");
                 }
             }
-        } catch (Exception e) {
-            systemEventListener.exception(e);
+        } catch (Throwable e) {
+            systemEventListener.exception(e.getMessage(),e);
 
-            List list = new ArrayList(1);
+            TaskError error = new TaskError(e.getMessage());
+            List<Object> list = new ArrayList<Object>(1);
             list.add(error);
             Command resultsCmnd = new Command(cmd.getId(), response, list);
             session.write(resultsCmnd);

@@ -118,6 +118,15 @@ public class Attachment implements Externalizable {
         return size;
     }
 
+    /**
+     * Sets the content for this attachment, i.e. the <field>size</field> and the <field>attachmentContentId</field>.
+     * @param content attachment content
+     */
+    public void setContent(Content content) {
+        setSize(content.getContent().length);
+        setAttachmentContentId(content.getId());
+    }
+
     public void setSize(int size) {
         this.size = size;
     }

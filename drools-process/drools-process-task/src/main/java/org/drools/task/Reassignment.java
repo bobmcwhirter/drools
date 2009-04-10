@@ -27,11 +27,11 @@ public class Reassignment implements Externalizable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Reassignment_Documentation_Id", nullable = true)     
-    private List<I18NText>             documentation = Collections.emptyList();; 
+    private List<I18NText>             documentation = Collections.emptyList();
     
     @ManyToMany
     @JoinTable(name = "Reassignment_potentialOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
-    private List<OrganizationalEntity> potentialOwners = Collections.emptyList();;
+    private List<OrganizationalEntity> potentialOwners = Collections.emptyList();
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );

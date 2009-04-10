@@ -23,7 +23,11 @@ public class Content implements Externalizable {
     
     public Content() {
         
-    }    
+    }
+
+    public Content(byte[] content) {
+        this.content = content;
+    }
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );

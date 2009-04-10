@@ -34,7 +34,7 @@ public class Notification implements Externalizable  {
     
     @ManyToMany
     @JoinTable(name = "Notification_Recipients", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
-    private List<OrganizationalEntity>       recipients = Collections.emptyList();;
+    private List<OrganizationalEntity>       recipients = Collections.emptyList();
 
     @ManyToMany
     @JoinTable(name = "Notification_BusinessAdministrators", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))

@@ -75,5 +75,5 @@ public enum CommandName {
     RegisterForEventRequest,
     EventTriggerResponse,
     
-    RegisterClient;
+    RegisterClient
 }

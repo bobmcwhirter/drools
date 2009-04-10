@@ -11,5 +11,5 @@ public enum Operation {
     Delegate,
     Forward,
     Complete,
-    Fail;
+    Fail
 }

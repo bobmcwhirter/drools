@@ -17,7 +17,7 @@ public abstract class TaskEvent extends EventObject implements Externalizable {
     
     public TaskEvent(long taskId) {
         super( taskId );
-        this.taskId = (Long) taskId;
+        this.taskId = taskId;
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {

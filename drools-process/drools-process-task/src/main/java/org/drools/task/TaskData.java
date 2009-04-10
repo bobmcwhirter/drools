@@ -1,304 +1,375 @@
 package org.drools.task;
 
+import org.drools.task.service.FaultData;
+import org.drools.task.service.ContentData;
+import org.drools.task.utils.CollectionUtils;
+
+import javax.persistence.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import org.drools.task.utils.CollectionUtils;
-
 @Embeddable
 public class TaskData
-    implements
-    Externalizable {
+        implements
+        Externalizable {
     @Enumerated(EnumType.STRING)
-    private Status           status      = Status.Created;         // initial default state
+    private Status status = Status.Created;         // initial default state
 
-    private Status           previousStatus = null;
-
-    @ManyToOne()
-    private User             actualOwner;
+    private Status previousStatus = null;
 
     @ManyToOne()
-    private User             createdBy;
+    private User actualOwner;
 
-    private Date             createdOn;
+    @ManyToOne()
+    private User createdBy;
 
-    private Date             activationTime;
+    private Date createdOn;
 
-    private Date             expirationTime;
+    private Date activationTime;
 
-    private boolean          skipable;
+    private Date expirationTime;
 
-    private long             workItemId = -1;
+    private boolean skipable;
 
-    private AccessType       documentAccessType;
+    private long workItemId = -1;
 
-    private String           documentType;
+    private AccessType documentAccessType;
 
-    private long             documentContentId = -1;
+    private String documentType;
 
-    private AccessType       outputAccessType;
+    private long documentContentId = -1;
 
-    private String           outputType;
+    private AccessType outputAccessType;
 
-    private long             outputContentId = -1;
+    private String outputType;
 
-    private String 	         faultName;
+    private long outputContentId = -1;
 
-    private AccessType       faultAccessType;
+    private String faultName;
 
-    private String           faultType;
+    private AccessType faultAccessType;
 
-    private long             faultContentId = -1;
+    private String faultType;
 
-    private long             parentId = -1;
+    private long faultContentId = -1;
+
+    private long parentId = -1;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
-    private List<Comment>    comments    = Collections.emptyList();
+    private List<Comment> comments = Collections.emptyList();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Attachments_Id", nullable = true)
     private List<Attachment> attachments = Collections.emptyList();
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        if ( status != null ) {
-            out.writeBoolean( true );
-            out.writeUTF( status.toString() );
+        if (status != null) {
+            out.writeBoolean(true);
+            out.writeUTF(status.toString());
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( previousStatus != null ) {
-            out.writeBoolean( true );
-            out.writeUTF( previousStatus.toString() );
+        if (previousStatus != null) {
+            out.writeBoolean(true);
+            out.writeUTF(previousStatus.toString());
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( actualOwner != null ) {
-            out.writeBoolean( true );
-            actualOwner.writeExternal( out );
+        if (actualOwner != null) {
+            out.writeBoolean(true);
+            actualOwner.writeExternal(out);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( createdBy != null ) {
-            out.writeBoolean( true );
-            createdBy.writeExternal( out );
+        if (createdBy != null) {
+            out.writeBoolean(true);
+            createdBy.writeExternal(out);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( createdOn != null ) {
-            out.writeBoolean( true );
-            out.writeLong( createdOn.getTime() );
+        if (createdOn != null) {
+            out.writeBoolean(true);
+            out.writeLong(createdOn.getTime());
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( activationTime != null ) {
-            out.writeBoolean( true );
-            out.writeLong( activationTime.getTime() );
+        if (activationTime != null) {
+            out.writeBoolean(true);
+            out.writeLong(activationTime.getTime());
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( expirationTime != null ) {
-            out.writeBoolean( true );
-            out.writeLong( expirationTime.getTime() );
+        if (expirationTime != null) {
+            out.writeBoolean(true);
+            out.writeLong(expirationTime.getTime());
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        out.writeBoolean( skipable );
+        out.writeBoolean(skipable);
 
-        if ( workItemId != -1 ) {
-            out.writeBoolean( true );
-            out.writeLong( workItemId );
+        if (workItemId != -1) {
+            out.writeBoolean(true);
+            out.writeLong(workItemId);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( documentAccessType != null ) {
-            out.writeBoolean( true );
-            out.writeObject( documentAccessType );
+        if (documentAccessType != null) {
+            out.writeBoolean(true);
+            out.writeObject(documentAccessType);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( documentType != null ) {
-            out.writeBoolean( true );
-            out.writeUTF( documentType );
+        if (documentType != null) {
+            out.writeBoolean(true);
+            out.writeUTF(documentType);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( documentContentId != -1 ) {
-            out.writeBoolean( true );
-            out.writeLong( documentContentId );
+        if (documentContentId != -1) {
+            out.writeBoolean(true);
+            out.writeLong(documentContentId);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( outputAccessType != null ) {
-            out.writeBoolean( true );
-            out.writeObject( outputAccessType );
+        if (outputAccessType != null) {
+            out.writeBoolean(true);
+            out.writeObject(outputAccessType);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( outputType != null ) {
-            out.writeBoolean( true );
-            out.writeUTF( outputType );
+        if (outputType != null) {
+            out.writeBoolean(true);
+            out.writeUTF(outputType);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( outputContentId != -1 ) {
-            out.writeBoolean( true );
-            out.writeLong( outputContentId );
+        if (outputContentId != -1) {
+            out.writeBoolean(true);
+            out.writeLong(outputContentId);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( faultName != null ) {
-            out.writeBoolean( true );
-            out.writeUTF( faultName );
+        if (faultName != null) {
+            out.writeBoolean(true);
+            out.writeUTF(faultName);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( faultAccessType != null ) {
-            out.writeBoolean( true );
-            out.writeObject( faultAccessType );
+        if (faultAccessType != null) {
+            out.writeBoolean(true);
+            out.writeObject(faultAccessType);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( faultType != null ) {
-            out.writeBoolean( true );
-            out.writeUTF( faultType );
+        if (faultType != null) {
+            out.writeBoolean(true);
+            out.writeUTF(faultType);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( faultContentId != -1 ) {
-            out.writeBoolean( true );
-            out.writeLong( faultContentId );
+        if (faultContentId != -1) {
+            out.writeBoolean(true);
+            out.writeLong(faultContentId);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        if ( parentId != -1 ) {
-            out.writeBoolean( true );
-            out.writeLong( parentId );
+        if (parentId != -1) {
+            out.writeBoolean(true);
+            out.writeLong(parentId);
         } else {
-            out.writeBoolean( false );
+            out.writeBoolean(false);
         }
 
-        CollectionUtils.writeCommentList( comments,
-                                          out );
-        CollectionUtils.writeAttachmentList( attachments,
-                                             out );
+        CollectionUtils.writeCommentList(comments,
+                out);
+        CollectionUtils.writeAttachmentList(attachments,
+                out);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        if ( in.readBoolean() ) {
-            status = Status.valueOf( in.readUTF() );
+            ClassNotFoundException {
+        if (in.readBoolean()) {
+            status = Status.valueOf(in.readUTF());
         }
 
-        if ( in.readBoolean() ) {
-            previousStatus = Status.valueOf( in.readUTF() );
+        if (in.readBoolean()) {
+            previousStatus = Status.valueOf(in.readUTF());
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             actualOwner = new User();
-            actualOwner.readExternal( in );
+            actualOwner.readExternal(in);
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             createdBy = new User();
-            createdBy.readExternal( in );
+            createdBy.readExternal(in);
         }
 
-        if ( in.readBoolean() ) {
-            createdOn = new Date( in.readLong() );
+        if (in.readBoolean()) {
+            createdOn = new Date(in.readLong());
         }
 
-        if ( in.readBoolean() ) {
-            activationTime = new Date( in.readLong() );
+        if (in.readBoolean()) {
+            activationTime = new Date(in.readLong());
         }
 
-        if ( in.readBoolean() ) {
-            expirationTime = new Date( in.readLong() );
+        if (in.readBoolean()) {
+            expirationTime = new Date(in.readLong());
         }
 
         skipable = in.readBoolean();
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             workItemId = in.readLong();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             documentAccessType = (AccessType) in.readObject();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             documentType = in.readUTF();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             documentContentId = in.readLong();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             outputAccessType = (AccessType) in.readObject();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             outputType = in.readUTF();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             outputContentId = in.readLong();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             faultName = in.readUTF();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             faultAccessType = (AccessType) in.readObject();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             faultType = in.readUTF();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             faultContentId = in.readLong();
         }
 
-        if ( in.readBoolean() ) {
+        if (in.readBoolean()) {
             parentId = in.readLong();
         }
-        comments = CollectionUtils.readCommentList( in );
-        attachments = CollectionUtils.readAttachmentList( in );
+        comments = CollectionUtils.readCommentList(in);
+        attachments = CollectionUtils.readAttachmentList(in);
 
+    }
+
+    /**
+     * Initializes the state of the TaskData, i.e. sets the <field>createdOn</field>, <field>activationTime</field>
+     * and sets the state to <code>Status.Created</code>.
+     *
+     * @return returns the current state of the TaskData
+     */
+    public Status initialize() {
+        Date createdOn = getCreatedOn();
+        // set the CreatedOn date if it's not already set
+        if (createdOn == null) {
+            createdOn = new Date();
+            setCreatedOn(createdOn);
+        }
+
+        //@FIXME for now we activate on creation, unless date is supplied
+        if (getActivationTime() == null) {
+            setActivationTime(createdOn);
+        }
+
+        setStatus(Status.Created);
+
+        return Status.Created;
+    }
+
+    /**
+     * This method will potentially assign the actual owner of this TaskData and set the status
+     * of the data.
+     * <li>If there is only 1 potential owner, and it is a <code>User</code>, that will become the actual
+     * owner of the TaskData and the status will be set to <code>Status.Reserved</code>.</li>
+     * <li>f there is only 1 potential owner, and it is a <code>Group</code>,  no owner will be assigned
+     * and the status will be set to <code>Status.Ready</code>.</li>
+     * <li>If there are more than 1 potential owners, the status will be set to <code>Status.Ready</code>.</li>
+     * <li>otherwise, the task data will be unchanged</li>
+     *
+     * @param potentialOwners - list of potential owners
+     * @return current status of task data
+     */
+    public Status assignOwnerAndStatus(List<OrganizationalEntity> potentialOwners) {
+        if (getStatus() != Status.Created) {
+            throw new IllegalStateException("Can only assign task owner if status is Created!");
+        }
+
+        Status assignedStatus = null;
+
+        if (potentialOwners.size() == 1) {
+            // if there is a single potential owner, assign and set status to Reserved
+            OrganizationalEntity potentialOwner = potentialOwners.get(0);
+            // if there is a single potential user owner, assign and set status to Reserved
+            if (potentialOwner instanceof User) {
+                setActualOwner((User) potentialOwner);
+
+                assignedStatus = Status.Reserved;
+            }
+            //If there is a group set as potentialOwners, set the status to Ready ??
+            if (potentialOwner instanceof Group) {
+
+                assignedStatus = Status.Ready;
+            }
+        } else if (potentialOwners.size() > 1) {
+            // multiple potential owners, so set to Ready so one can claim.
+            assignedStatus = Status.Ready;
+        } else {
+            //@TODO we have no potential owners
+        }
+
+        if (assignedStatus != null) {
+            setStatus(assignedStatus);
+        } else {
+            // status wasn't assigned, so just return the currrent status
+            assignedStatus = getStatus();
+        }
+
+        return assignedStatus;
     }
 
     public Status getStatus() {
@@ -342,7 +413,7 @@ public class TaskData
         this.createdOn = createdOn;
     }
 
-    public Date getActivationTime() {
+    Date getActivationTime() {
         return activationTime;
     }
 
@@ -367,11 +438,24 @@ public class TaskData
     }
 
     public void setWorkItemId(long workItemId) {
-    	this.workItemId = workItemId;
+        this.workItemId = workItemId;
     }
 
     public long getWorkItemId() {
-    	return workItemId;
+        return workItemId;
+    }
+
+    /**
+     * Sets the document content data for this task data. It will set the <field>documentContentId</field> from the specified
+     * documentID, <field>documentAccessType</field>, <field>documentType</field> from the specified
+     * documentConentData.
+     * @param documentID id of document content
+     * @param documentConentData ContentData
+     */
+    public void setDocument(long documentID, ContentData documentConentData) {
+        setDocumentContentId(documentID);
+        setDocumentAccessType(documentConentData.getAccessType());
+        setDocumentType(documentConentData.getType());
     }
 
     public AccessType getDocumentAccessType() {
@@ -398,64 +482,127 @@ public class TaskData
         this.documentType = documentType;
     }
 
+    /**
+     * Sets the content data for this task data. It will set the <field>outputContentId</field> from the specified
+     * outputContentId, <field>outputAccessType</field>, <field>outputType</field> from the specified
+     * outputContentData.
+     * @param outputContentId id of output content
+     * @param outputContentData contentData
+     */
+    public void setOutput(long outputContentId, ContentData outputContentData) {
+        setOutputContentId(outputContentId);
+        setOutputAccessType(outputContentData.getAccessType());
+        setOutputType(outputContentData.getType());
+    }
+
     public AccessType getOutputAccessType() {
-		return outputAccessType;
-	}
+        return outputAccessType;
+    }
 
-	public void setOutputAccessType(AccessType outputAccessType) {
-		this.outputAccessType = outputAccessType;
-	}
+    void setOutputAccessType(AccessType outputAccessType) {
+        this.outputAccessType = outputAccessType;
+    }
 
-	public String getOutputType() {
-		return outputType;
-	}
+    public String getOutputType() {
+        return outputType;
+    }
 
-	public void setOutputType(String outputType) {
-		this.outputType = outputType;
-	}
+    void setOutputType(String outputType) {
+        this.outputType = outputType;
+    }
 
-	public long getOutputContentId() {
-		return outputContentId;
-	}
+    public long getOutputContentId() {
+        return outputContentId;
+    }
 
-	public void setOutputContentId(long outputContentId) {
-		this.outputContentId = outputContentId;
-	}
+    void setOutputContentId(long outputContentId) {
+        this.outputContentId = outputContentId;
+    }
 
-	public String getFaultName() {
-		return faultName;
-	}
+    /**
+     * Sets the fault data for this task data. It will set the <field>faultContentId</field> from the specified
+     * faultContentId, <field>faultAccessType</field>, <field>faultType</field>, <field>faultName</field> from the
+     * specified faultData.
+     * @param faultContentId id of fault content
+     * @param faultData FaultData
+     */
+    public void setFault(long faultContentId, FaultData faultData) {
+        setFaultContentId(faultContentId);
+        setFaultAccessType(faultData.getAccessType());
+        setFaultType(faultData.getType());
+        setFaultName(faultData.getFaultName());
+    }
 
-	public void setFaultName(String faultName) {
-		this.faultName = faultName;
-	}
+    public String getFaultName() {
+        return faultName;
+    }
 
-	public AccessType getFaultAccessType() {
-		return faultAccessType;
-	}
+    void setFaultName(String faultName) {
+        this.faultName = faultName;
+    }
 
-	public void setFaultAccessType(AccessType faultAccessType) {
-		this.faultAccessType = faultAccessType;
-	}
+    public AccessType getFaultAccessType() {
+        return faultAccessType;
+    }
 
-	public String getFaultType() {
-		return faultType;
-	}
+    void setFaultAccessType(AccessType faultAccessType) {
+        this.faultAccessType = faultAccessType;
+    }
 
-	public void setFaultType(String faultType) {
-		this.faultType = faultType;
-	}
+    public String getFaultType() {
+        return faultType;
+    }
 
-	public long getFaultContentId() {
-		return faultContentId;
-	}
+    void setFaultType(String faultType) {
+        this.faultType = faultType;
+    }
 
-	public void setFaultContentId(long faultContentId) {
-		this.faultContentId = faultContentId;
-	}
+    public long getFaultContentId() {
+        return faultContentId;
+    }
 
-	public List<Comment> getComments() {
+    void setFaultContentId(long faultContentId) {
+        this.faultContentId = faultContentId;
+    }
+
+    public List<Comment> getComments() {
         return comments;
+    }
+
+    /**
+     * Adds the specified comment to our list of comments.
+     *
+     * @param comment comment to add
+     */
+    public void addComment(Comment comment) {
+        if (comments == null || comments == Collections.<Comment>emptyList()) {
+            comments = new ArrayList<Comment>();
+        }
+
+        comments.add(comment);
+    }
+
+    /**
+     * Removes the Comment specified by the commentId.
+     *
+     * @param commentId id of Comment to remove
+     * @return removed Comment or null if one was not found with the id
+     */
+    public Comment removeComment(final long commentId) {
+        Comment removedComment = null;
+
+        if (comments != null) {
+            for (int index = comments.size() - 1; index >= 0; --index) {
+                Comment currentComment = comments.get(index);
+
+                if (currentComment.getId() == commentId) {
+                    removedComment = comments.remove(index);
+                    break;
+                }
+            }
+        }
+
+        return removedComment;
     }
 
     public void setComments(List<Comment> comments) {
@@ -464,6 +611,42 @@ public class TaskData
 
     public List<Attachment> getAttachments() {
         return attachments;
+    }
+
+    /**
+     * Adds the specified attachment to our list of Attachments.
+     *
+     * @param attachment attachment to add
+     */
+    public void addAttachment(Attachment attachment) {
+        if (attachments == null || attachments == Collections.<Attachment>emptyList()) {
+            attachments = new ArrayList<Attachment>();
+        }
+
+        attachments.add(attachment);
+    }
+
+    /**
+     * Removes the Attachment specified by the attachmentId.
+     *
+     * @param attachmentId id of attachment to remove
+     * @return removed Attachment or null if one was not found with the id
+     */
+    public Attachment removeAttachment(final long attachmentId) {
+        Attachment removedAttachment = null;
+
+        if (attachments != null) {
+            for (int index = attachments.size() - 1; index >= 0; --index) {
+                Attachment currentAttachment = attachments.get(index);
+
+                if (currentAttachment.getId() == attachmentId) {
+                    removedAttachment = attachments.remove(index);
+                    break;
+                }
+            }
+        }
+
+        return removedAttachment;
     }
 
     public void setAttachments(List<Attachment> attachments) {
@@ -483,8 +666,8 @@ public class TaskData
         final int prime = 31;
         int result = 1;
         result = prime * result + ((activationTime == null) ? 0 : activationTime.hashCode());
-        result = prime * result + CollectionUtils.hashCode( attachments );
-        result = prime * result + CollectionUtils.hashCode( comments );
+        result = prime * result + CollectionUtils.hashCode(attachments);
+        result = prime * result + CollectionUtils.hashCode(comments);
         result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
         result = prime * result + ((expirationTime == null) ? 0 : expirationTime.hashCode());
         result = prime * result + (skipable ? 1231 : 1237);
@@ -497,57 +680,57 @@ public class TaskData
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( !(obj instanceof TaskData) ) return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (!(obj instanceof TaskData)) return false;
         TaskData other = (TaskData) obj;
 
-        if ( actualOwner == null ) {
-            if ( other.actualOwner != null ) return false;
-        } else if ( !actualOwner.equals( other.actualOwner ) ) {
+        if (actualOwner == null) {
+            if (other.actualOwner != null) return false;
+        } else if (!actualOwner.equals(other.actualOwner)) {
             return false;
         }
 
-        if ( createdBy == null ) {
-            if ( other.createdBy != null ) return false;
-        } else if ( !createdBy.equals( other.createdBy ) ) {
+        if (createdBy == null) {
+            if (other.createdBy != null) return false;
+        } else if (!createdBy.equals(other.createdBy)) {
             return false;
         }
 
-        if ( createdOn == null ) {
-            if ( other.createdOn != null ) return false;
-        } else if ( createdOn.getTime() != other.createdOn.getTime() ) return false;
-        if ( expirationTime == null ) {
-            if ( other.expirationTime != null ) return false;
-        } else if ( expirationTime.getTime() != other.expirationTime.getTime() ) return false;
-        if ( skipable != other.skipable ) return false;
-        if ( workItemId != other.workItemId) return false;
-        if ( status == null ) {
-            if ( other.status != null ) return false;
-        } else if ( !status.equals( other.status ) ) return false;
-        if ( previousStatus == null ) {
-            if ( other.previousStatus != null ) return false;
-        } else if ( !previousStatus.equals( other.previousStatus ) ) return false;
-        if ( activationTime == null ) {
-            if ( other.activationTime != null ) return false;
-        } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;
+        if (createdOn == null) {
+            if (other.createdOn != null) return false;
+        } else if (createdOn.getTime() != other.createdOn.getTime()) return false;
+        if (expirationTime == null) {
+            if (other.expirationTime != null) return false;
+        } else if (expirationTime.getTime() != other.expirationTime.getTime()) return false;
+        if (skipable != other.skipable) return false;
+        if (workItemId != other.workItemId) return false;
+        if (status == null) {
+            if (other.status != null) return false;
+        } else if (!status.equals(other.status)) return false;
+        if (previousStatus == null) {
+            if (other.previousStatus != null) return false;
+        } else if (!previousStatus.equals(other.previousStatus)) return false;
+        if (activationTime == null) {
+            if (other.activationTime != null) return false;
+        } else if (activationTime.getTime() != other.activationTime.getTime()) return false;
 
-        if ( workItemId != other.workItemId ) return false;
+        if (workItemId != other.workItemId) return false;
 
-        if ( documentAccessType == null ) {
-            if ( other.documentAccessType != null ) return false;
-        } else if ( !documentAccessType.equals( other.documentAccessType ) ) return false;
+        if (documentAccessType == null) {
+            if (other.documentAccessType != null) return false;
+        } else if (!documentAccessType.equals(other.documentAccessType)) return false;
 
-        if ( documentContentId != other.documentContentId ) return false;
-        if ( documentType == null ) {
-            if ( other.documentType != null ) return false;
-        } else if ( !documentType.equals( other.documentType ) ) return false;
+        if (documentContentId != other.documentContentId) return false;
+        if (documentType == null) {
+            if (other.documentType != null) return false;
+        } else if (!documentType.equals(other.documentType)) return false;
         // I think this is OK!
-        if ( parentId != other.parentId ) return false;
+        if (parentId != other.parentId) return false;
 
-        return CollectionUtils.equals( attachments,
-                                       other.attachments ) && CollectionUtils.equals( comments,
-                                                                                      other.comments );
+        return CollectionUtils.equals(attachments,
+                other.attachments) && CollectionUtils.equals(comments,
+                other.comments);
     }
 
 }

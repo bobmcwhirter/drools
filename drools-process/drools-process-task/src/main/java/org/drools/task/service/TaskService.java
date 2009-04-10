@@ -82,7 +82,7 @@ public class TaskService {
     }
 
     public TaskServiceSession createSession() {
-        return new TaskServiceSession(this, emf.createEntityManager(), systemEventListener);
+        return new TaskServiceSession(this, emf.createEntityManager());
     }
 
     public void schedule(ScheduledTaskDeadline deadline,
@@ -94,6 +94,10 @@ public class TaskService {
 
     public Map<Operation, List<OperationCommand>> getOperations() {
         return operations;
+    }
+
+    public List<OperationCommand> getCommandsForOperation(Operation operation) {
+        return operations.get(operation);
     }
 
     public EventKeys getEventKeys() {
@@ -124,10 +128,6 @@ public class TaskService {
         this.userInfo = userInfo;
     }
 
-    public EntityManagerFactory getEntityManagerFactory() {
-        return emf;
-    }
-
     public EntityManager getEntityManager() {
         return em;
     }
@@ -156,7 +156,7 @@ public class TaskService {
     }
 
     public static String toString(Reader reader) throws IOException {
-        int charValue = 0;
+        int charValue  ;
         StringBuffer sb = new StringBuffer(1024);
         while ((charValue = reader.read()) != -1) {
             sb.append((char) charValue);
