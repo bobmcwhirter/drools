@@ -22,6 +22,7 @@ import org.drools.SystemEventListenerFactory;
 public class TaskServiceLifeCycleTest extends BaseTest {
     MinaTaskServer server;
     MinaTaskClient client;
+    private static final int DEFAULT_WAIT_TIME = 5000;
 
     @Override
     protected void setUp() throws Exception {
@@ -156,7 +157,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );        
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
@@ -191,7 +192,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
@@ -226,7 +227,15 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // State should not change as user isn't potential owner
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "tony" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+
+        PermissionDeniedException denied = null;
+        try {
+            responseHandler.waitTillDone( DEFAULT_WAIT_TIME );
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
@@ -262,7 +271,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Should change to InProgress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "bobba" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
@@ -298,7 +307,15 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Should change not change
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "tony" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch (PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
+
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
         client.getTask( taskId, getTaskResponseHandler );
@@ -336,7 +353,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Now Stop
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.stop( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -365,7 +382,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -376,7 +393,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Should not stop
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.stop( taskId, users.get( "bobba" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -405,7 +428,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -416,7 +439,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Released
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.release( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -445,7 +468,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -456,7 +479,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Released
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.release( taskId, users.get( "darth" ).getId(), responseHandler );  
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -485,7 +508,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -496,7 +519,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is not changed
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.release( taskId, users.get( "bobba" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -532,7 +561,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Suspended
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.suspend( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -562,7 +591,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );   
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -573,7 +602,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Suspended
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.suspend( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -603,7 +632,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -614,7 +643,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is not changed
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.suspend( taskId, users.get( "bobba" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -650,7 +685,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Suspended
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.suspend( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -662,7 +697,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Resumed
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.resume( taskId, users.get( "darth" ).getId(), responseHandler );   
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -692,7 +727,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -703,7 +738,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is suspended
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.suspend( taskId, users.get( "darth" ).getId(), responseHandler );        
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -715,7 +750,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Resumed
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.resume( taskId, users.get( "darth" ).getId(), responseHandler ); 
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -745,7 +780,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -756,7 +791,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check not changed
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.suspend( taskId, users.get( "bobba" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -784,7 +825,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Complete
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.skip( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -812,12 +853,12 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         // Check is Complete
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.skip( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -845,7 +886,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Delegated
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.delegate( taskId, users.get( "darth" ).getId(), users.get( "tony" ).getId(), responseHandler );    
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );        
@@ -876,7 +917,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Claim and Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -887,7 +928,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Delegated
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.delegate( taskId, users.get( "darth" ).getId(), users.get( "tony" ).getId(), responseHandler );    
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );        
@@ -917,7 +958,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Claim and Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -928,7 +969,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check was not delegated
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.delegate( taskId, users.get( "bobba" ).getId(), users.get( "tony" ).getId(), responseHandler );    
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );        
@@ -959,7 +1006,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Forwarded
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.forward( taskId, users.get( "darth" ).getId(), users.get( "tony" ).getId(), responseHandler );    
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );        
@@ -990,7 +1037,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Claim and Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1001,7 +1048,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Delegated
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.forward( taskId, users.get( "darth" ).getId(), users.get( "tony" ).getId(), responseHandler );    
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );        
@@ -1032,7 +1079,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Claim and Reserved
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1043,7 +1090,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check was not delegated
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.forward( taskId, users.get( "bobba" ).getId(), users.get( "tony" ).getId(), responseHandler );    
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );        
@@ -1074,7 +1127,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1085,7 +1138,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Complete
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete( taskId, users.get( "darth" ).getId(), null, responseHandler ); 
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1114,7 +1167,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );        
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1125,7 +1178,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Should not complete as wrong user
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );  
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1154,7 +1213,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1168,7 +1227,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         data.setContent("content".getBytes());
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete( taskId, users.get( "darth" ).getId(), data, responseHandler ); 
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1204,7 +1263,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1215,7 +1274,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Check is Failed
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.fail( taskId, users.get( "darth" ).getId(), null, responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1244,7 +1303,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );      
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1255,7 +1314,13 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Should not fail as wrong user
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.fail( taskId, users.get( "bobba" ).getId(), null, responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        PermissionDeniedException denied = null;
+        try{
+            responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch(PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1284,7 +1349,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         // Go straight from Ready to Inprogress
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1299,7 +1364,7 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         data.setContent("content".getBytes());
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.fail( taskId, users.get( "darth" ).getId(), data, responseHandler );
-        responseHandler.waitTillDone( 3000 );
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );

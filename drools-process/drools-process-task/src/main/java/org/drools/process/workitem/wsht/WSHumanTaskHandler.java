@@ -1,48 +1,30 @@
 package org.drools.process.workitem.wsht;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.drools.SystemEventListenerFactory;
 import org.drools.eventmessaging.EventKey;
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
-import org.drools.task.AccessType;
-import org.drools.task.Content;
-import org.drools.task.Group;
-import org.drools.task.I18NText;
-import org.drools.task.OnParentAbortAllSubTasksEndStrategy;
-import org.drools.task.OrganizationalEntity;
-import org.drools.task.PeopleAssignments;
-import org.drools.task.SubTasksStrategy;
-import org.drools.task.SubTasksStrategyFactory;
-import org.drools.task.Task;
-import org.drools.task.TaskData;
-import org.drools.task.User;
-import org.drools.task.event.TaskCompletedEvent;
-import org.drools.task.event.TaskEvent;
-import org.drools.task.event.TaskEventKey;
-import org.drools.task.event.TaskFailedEvent;
-import org.drools.task.event.TaskSkippedEvent;
+import org.drools.task.*;
+import org.drools.task.event.*;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.TaskClientHandler;
+import org.drools.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
-import org.drools.SystemEventListenerFactory;
+
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class WSHumanTaskHandler implements WorkItemHandler {
 
@@ -198,8 +180,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		}
 	}
 	
-    public static class TaskWorkItemAddTaskResponseHandler implements AddTaskResponseHandler {
-        private volatile String error;
+    public static class TaskWorkItemAddTaskResponseHandler extends AbstractBaseResponseHandler implements AddTaskResponseHandler {
         private Map<Long, WorkItemManager> managers;
         private Map<Long, Long> idMapping;
         private WorkItemManager manager;
@@ -234,19 +215,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
             key = new TaskEventKey(TaskSkippedEvent.class, taskId );           
             client.registerForEvent( key, true, eventResponseHandler );
         }
-
-        public void setError(String error) {
-            this.error = error;
-        }
-        
-        public String getError() {
-            return this.error;
-        }       
     }
     
-    private static class TaskCompletedHandler implements EventResponseHandler {
-        private volatile String error;
-        
+    private static class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
         private long workItemId;
         private long taskId;
         private Map<Long, WorkItemManager> managers;
@@ -264,7 +235,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
             TaskEvent event = ( TaskEvent ) payload.get();
         	if ( event.getTaskId() != taskId ) {
                 // defensive check that should never happen, just here for testing                
-                this.error = "Expected task id and arrived task id do not march";
+                setError(new IllegalStateException("Expected task id and arrived task id do not march"));
                 return;
             }
         	if (event instanceof TaskCompletedEvent) {
@@ -285,20 +256,11 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		        }
         	}
         }
-
-        public void setError(String error) {
-            this.error = error;
-        }
-        
-        public String getError() {
-            return this.error;
-        }
     }
     
-    private static class GetCompletedTaskResponseHandler implements GetTaskResponseHandler {
+    private static class GetCompletedTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
 
     	private WorkItemManager manager;
-    	private String error;
     	private MinaTaskClient client;
     	
     	public GetCompletedTaskResponseHandler(WorkItemManager manager, MinaTaskClient client) {
@@ -320,23 +282,14 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				manager.completeWorkItem(workItemId, results);
 			}
 		}
-
-		public void setError(String error) {
-            this.error = error;
-        }
-        
-        public String getError() {
-            return this.error;
-        }
     }
     
-    private static class GetResultContentResponseHandler implements GetContentResponseHandler {
+    private static class GetResultContentResponseHandler extends AbstractBaseResponseHandler implements GetContentResponseHandler {
 
     	private WorkItemManager manager;
     	private Task task;
     	private Map<String, Object> results;
-    	private String error;
-    	
+
     	public GetResultContentResponseHandler(WorkItemManager manager, Task task, Map<String, Object> results) {
     		this.manager = manager;
     		this.task = task;
@@ -358,14 +311,5 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				e.printStackTrace();
 			}
 		}
-
-		public void setError(String error) {
-            this.error = error;
-        }
-        
-        public String getError() {
-            return this.error;
-        }
     }
-
 }

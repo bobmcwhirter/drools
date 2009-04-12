@@ -5,6 +5,7 @@ package org.drools.process.workitem.wsht;
 
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
+import org.drools.task.service.responsehandlers.AbstractBlockingResponseHandler;
 
 public class BlockingEventResponseHandler extends AbstractBlockingResponseHandler implements EventResponseHandler {
     // todo why is this timeout different from the others?? - also, if this should be the same

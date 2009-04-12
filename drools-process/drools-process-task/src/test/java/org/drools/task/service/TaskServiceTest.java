@@ -201,7 +201,7 @@ public class TaskServiceTest extends BaseTest {
         implements
         TaskSummaryResponseHandler {
         private volatile List<TaskSummary> results;
-        private volatile String error;
+        private volatile RuntimeException error;
 
         public synchronized void execute(List<TaskSummary> results) {
             this.results = results;
@@ -231,14 +231,14 @@ public class TaskServiceTest extends BaseTest {
             }
         }
 
-        public void setError(String error) {
+        public void setError(RuntimeException error) {
             this.error = error;            
         }
         
-        public String getError() {
+        public RuntimeException getError() {
             return error;
         }
 
-    };
+    }
 
 }

@@ -340,12 +340,11 @@ public class TaskServerHandler extends IoHandlerAdapter {
                     systemEventListener.debug("Unknown command recieved on server");
                 }
             }
-        } catch (Throwable e) {
+        } catch (RuntimeException e) {
             systemEventListener.exception(e.getMessage(),e);
 
-            TaskError error = new TaskError(e.getMessage());
             List<Object> list = new ArrayList<Object>(1);
-            list.add(error);
+            list.add(e);
             Command resultsCmnd = new Command(cmd.getId(), response, list);
             session.write(resultsCmnd);
         } finally {

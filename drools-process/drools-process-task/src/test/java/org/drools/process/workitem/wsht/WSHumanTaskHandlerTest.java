@@ -1,6 +1,7 @@
 package org.drools.process.workitem.wsht;
 
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.drools.SystemEventListenerFactory;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
@@ -10,15 +11,11 @@ import org.drools.task.BaseTest;
 import org.drools.task.Status;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
-import org.drools.task.service.ContentData;
-import org.drools.task.service.MinaTaskClient;
-import org.drools.task.service.MinaTaskServer;
-import org.drools.task.service.TaskClientHandler;
+import org.drools.task.service.*;
 import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.drools.SystemEventListenerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,8 +28,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class WSHumanTaskHandlerTest extends BaseTest {
-    private static final int MANAGER_COMPLETION_WAIT_TIME = 5000;
-    private static final int MANAGER_ABORT_WAIT_TIME = 5000;
+    private static final int DEFAULT_WAIT_TIME = 5000;
+    private static final int MANAGER_COMPLETION_WAIT_TIME = DEFAULT_WAIT_TIME;
+    private static final int MANAGER_ABORT_WAIT_TIME = DEFAULT_WAIT_TIME;
 
     MinaTaskServer server;
     MinaTaskClient client;
@@ -85,7 +83,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Starting task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started task " + task.getId());
 
         System.out.println("Completing task " + task.getId());
@@ -122,19 +120,19 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Claiming task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.claim(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Claimed task " + task.getId());
 
         System.out.println("Starting task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started task " + task.getId());
 
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.complete(task.getId(), "Darth Vader", null, operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
@@ -165,7 +163,14 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Claiming task " + taskSummary.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.claim(taskSummary.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        PermissionDeniedException denied = null;
+        try {
+            operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        } catch (PermissionDeniedException e) {
+            denied = e;
+        }
+
+        assertNotNull("Should get permissed denied exception", denied);
         System.out.println("Claimed task " + taskSummary.getId());
 
         //Check if the parent task is InProgress
@@ -229,13 +234,13 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Starting task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started task " + task.getId());
 
         System.out.println("Failing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.fail(task.getId(), "Darth Vader", null, operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Failed task " + task.getId());
 
         assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
@@ -267,7 +272,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Skipping task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.skip(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Skipped task " + task.getId());
 
         assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
@@ -364,7 +369,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Starting task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started task " + task.getId());
 
         System.out.println("Completing task " + task.getId());
@@ -378,7 +383,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         out.close();
         result.setContent(bos.toByteArray());
         client.complete(task.getId(), "Darth Vader", result, operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
@@ -445,7 +450,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Starting task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started task " + task.getId());
 
         //Check if the parent task is InProgress
@@ -469,14 +474,14 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Starting sub task " + subTaskSummary1.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(subTaskSummary1.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started sub task " + subTaskSummary1.getId());
 
         //Starting the sub task 2
         System.out.println("Starting sub task " + subTaskSummary2.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(subTaskSummary2.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started sub task " + subTaskSummary2.getId());
 
         //Check if the child task 1 is InProgress
@@ -497,14 +502,14 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Completing sub task " + subTask1.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.complete(subTask1.getId(), "Darth Vader", null, operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed sub task " + subTask1.getId());
 
         // Complete the child task 2
         System.out.println("Completing sub task " + subTask2.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.complete(subTask2.getId(), "Darth Vader", null, operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed sub task " + subTask2.getId());
 
         //Check if the child task 1 is Completed
@@ -590,7 +595,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Starting task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(task.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started task " + task.getId());
 
         //Check if the parent task is InProgress
@@ -614,14 +619,14 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Starting sub task " + subTaskSummary1.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(subTaskSummary1.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started sub task " + subTaskSummary1.getId());
 
         //Starting the sub task 2
         System.out.println("Starting sub task " + subTaskSummary2.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.start(subTaskSummary2.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Started sub task " + subTaskSummary2.getId());
 
         //Check if the child task 1 is InProgress
@@ -642,7 +647,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         System.out.println("Completing parent task " + parentTask.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
         client.skip(parentTask.getId(), "Darth Vader", operationResponseHandler);
-        operationResponseHandler.waitTillDone(5000);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed parent task " + parentTask.getId());
 
         //Check if the child task 1 is Completed
@@ -668,7 +673,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         private volatile boolean aborted;
         private volatile Map<String, Object> results;
 
-        public synchronized boolean waitTillCompleted(long time) {            
+        public synchronized boolean waitTillCompleted(long time) {
             if (!isCompleted()) {
                 try {
                     wait(time);
@@ -678,7 +683,7 @@ public class WSHumanTaskHandlerTest extends BaseTest {
             }
 
             return isCompleted();
-        }       
+        }
 
         public synchronized boolean waitTillAborted(long time) {
             if (!isAborted()) {

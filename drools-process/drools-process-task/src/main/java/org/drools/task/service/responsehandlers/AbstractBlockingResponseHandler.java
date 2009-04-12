@@ -3,43 +3,20 @@
  */
 package org.drools.task.service.responsehandlers;
 
-import org.drools.task.service.BaseMinaHandler.ResponseHandler;
-
-// todo: this class is the same as org.drools.process.workitem.wsht.AbstractBlockingResponseHandler - need to
-// consolodate them
-public abstract class AbstractBlockingResponseHandler implements ResponseHandler {
-
-    private volatile boolean done;
-    private String error;
-
-    public boolean hasError() {
-        return error != null;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public synchronized boolean isDone() {
-        return done;
-    }
-
-    protected synchronized void setDone(boolean done) {
-        this.done = done;
-        notifyAll();
-    }
+public abstract class AbstractBlockingResponseHandler extends AbstractBaseResponseHandler {
 
     /**
      * This method will wait the specified amount of time in milliseconds for the response to
      * be completed. Completed is determined via the <field>done</field>. Returns true if the
-     * reponse was completed in time, false otherwise
+     * reponse was completed in time, false otherwise. If an error occurs, this method will throw
+     * a subclass of <code>RuntimeException</code> specific to the error.
      *
      * @param time max time to wait
      * @return true if response is available, false otherwise
+     *
+     * @see org.drools.task.service.PermissionDeniedException
+     * @see org.drools.task.service.CannotAddTaskException
+     * @see javax.persistence.PersistenceException
      */
     public synchronized boolean waitTillDone(long time) {
 
@@ -49,6 +26,10 @@ public abstract class AbstractBlockingResponseHandler implements ResponseHandler
             } catch (InterruptedException e) {
                 // swallow and return state of done
             }
+        }
+
+        if(hasError()) {            
+            throw createSideException(getError());
         }
 
         return isDone();

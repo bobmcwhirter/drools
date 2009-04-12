@@ -4,6 +4,7 @@
 package org.drools.process.workitem.wsht;
 
 import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
+import org.drools.task.service.responsehandlers.AbstractBlockingResponseHandler;
 
 public class BlockingAddTaskResponseHandler extends AbstractBlockingResponseHandler implements AddTaskResponseHandler {
     private static final int DEFAULT_WAIT_TIME = 10000;
