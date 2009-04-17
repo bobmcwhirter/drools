@@ -13,25 +13,6 @@ import org.drools.runtime.process.WorkItemManager;
 
 public class ParseSimpleProcessTest extends TestCase {
 
-	public void testSimpleProcess() throws Exception {
-	    JpdlParser parser = new JpdlParser();
-	    JpdlProcess process = parser.loadJpdlProcess("simple/processdefinition.xml");
-	    ProcessValidationError[] errors = parser.getErrors();
-	    for (ProcessValidationError error: errors) {
-            System.err.println(error);
-        }
-        assertEquals(0, errors.length);
-        
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        Package p = new Package("com.sample");
-        p.addProcess(process);
-        ruleBase.addPackage( p );
-        
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = workingMemory.startProcess("simple");
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-    }
-
     public void testSimpleProcess2() throws Exception {
         JpdlParser parser = new JpdlParser();
         JpdlProcess process = parser.loadJpdlProcess("simple2/processdefinition.xml");
@@ -52,6 +33,29 @@ public class ParseSimpleProcessTest extends TestCase {
             "Email", handler);
         assertTrue(handler.getWorkItemId() == -1);
         ProcessInstance processInstance = workingMemory.startProcess("simple");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        processInstance.signalEvent("signal", null);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+
+	public void testSimpleProcess3() throws Exception {
+	    JpdlParser parser = new JpdlParser();
+	    JpdlProcess process = parser.loadJpdlProcess("simple3/processdefinition.xml");
+	    ProcessValidationError[] errors = parser.getErrors();
+	    for (ProcessValidationError error: errors) {
+            System.err.println(error);
+        }
+        assertEquals(0, errors.length);
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        Package p = new Package("com.sample");
+        p.addProcess(process);
+        ruleBase.addPackage( p );
+        
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ProcessInstance processInstance = workingMemory.startProcess("simple");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        processInstance.signalEvent("signal", null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
