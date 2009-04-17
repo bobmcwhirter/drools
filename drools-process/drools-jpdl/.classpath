@@ -19,9 +19,9 @@
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.4.2.v_883_R34x/core-3.4.2.v_883_R34x.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/derby/derby/10.2.1.6/derby-10.2.1.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-api/5.0.0.SNAPSHOT/drools-api-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-api/5.0.0.SNAPSHOT/drools-api-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.0.0.SNAPSHOT/drools-compiler-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-compiler/5.0.0.SNAPSHOT/drools-compiler-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.0.0.SNAPSHOT/drools-core-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-core/5.0.0.SNAPSHOT/drools-core-5.0.0.SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/drools/drools-api/5.0.0/drools-api-5.0.0.jar" sourcepath="M2_REPO/org/drools/drools-api/5.0.0/drools-api-5.0.0-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.0.0/drools-compiler-5.0.0.jar" sourcepath="M2_REPO/org/drools/drools-compiler/5.0.0/drools-compiler-5.0.0-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.0.0/drools-core-5.0.0.jar" sourcepath="M2_REPO/org/drools/drools-core/5.0.0/drools-core-5.0.0-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
