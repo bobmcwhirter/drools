@@ -118,6 +118,10 @@ public class SendIcal {
 
     public void sendIcalForTask(Task task,
                                 UserInfo userInfo) {
+    	if (userInfo == null) {
+    		return;
+    	}
+    	
         TaskData data = task.getTaskData();
         User owner = data.getActualOwner();
         User creator = data.getCreatedBy();
