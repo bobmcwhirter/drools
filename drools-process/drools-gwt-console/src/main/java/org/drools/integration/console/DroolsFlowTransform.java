@@ -8,7 +8,7 @@ import org.drools.task.query.TaskSummary;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.TaskRef;
-import org.jboss.bpm.console.client.model.jbpm3.TokenReference;
+import org.jboss.bpm.console.client.model.TokenReference;
 
 public class DroolsFlowTransform {
 	
