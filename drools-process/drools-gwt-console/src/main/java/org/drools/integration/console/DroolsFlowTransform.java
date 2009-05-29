@@ -13,8 +13,16 @@ import org.jboss.bpm.console.client.model.TokenReference;
 public class DroolsFlowTransform {
 	
 	public static ProcessDefinitionRef processDefinition(Process process) {
-		return new ProcessDefinitionRef(
-			process.getId(), process.getName(), new Long(process.getVersion()));
+		long version = 0;
+		try {
+			version = new Long(process.getVersion());
+		} catch (NumberFormatException e) {
+			// Do nothing, keep version 0
+		}
+		ProcessDefinitionRef result = new ProcessDefinitionRef(
+			process.getId(), process.getName(), version );
+		result.setPackageName(process.getPackageName());
+		return result;
 	}
 	
 	public static ProcessInstanceRef processInstance(ProcessInstanceLog processInstance) {

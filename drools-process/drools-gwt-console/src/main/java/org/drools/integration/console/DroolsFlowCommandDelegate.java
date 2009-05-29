@@ -27,6 +27,10 @@ public class DroolsFlowCommandDelegate {
 	
 	private static StatefulKnowledgeSession ksession;
 	
+	public DroolsFlowCommandDelegate() {
+		getSession();
+	}
+	
 	private StatefulKnowledgeSession newStatefulKnowledgeSession() {
 		try {
 			KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
