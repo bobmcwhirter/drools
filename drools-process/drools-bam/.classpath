@@ -33,5 +33,4 @@
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.2/slf4j-api-1.5.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.2/slf4j-jdk14-1.5.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/2.0.2/xml-apis-2.0.2.jar"/>
 </classpath>
