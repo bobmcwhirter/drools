@@ -42,11 +42,11 @@ public class BPELWaitInstance extends TimerNodeInstance {
         } else if (wait.getUntilExpression() != null) {
             timer.setDelay(getTimerDelayUntil(wait.getUntilExpression()));
         }
-    	timer.setPeriod(0);
+    	timer.setPeriod("0");
     	return timer;
     }
 
-    private long getTimerDelayFor(String forExpression) {
+    private String getTimerDelayFor(String forExpression) {
     	try {
 	    	XPathReturnValueEvaluator evaluator = new XPathReturnValueEvaluator();
 	        evaluator.setExpression(forExpression);
@@ -62,20 +62,20 @@ public class BPELWaitInstance extends TimerNodeInstance {
 	        if (delay < 0) {
 	        	delay = 0;
 	        }
-	        return delay;
+	        return delay + "";
     	} catch (Throwable t) {
     		throw new IllegalArgumentException(
 				"Could not get timer delay for", t);
     	}
     }
     
-    private long getTimerDelayUntil(String untilExpression) {
+    private String getTimerDelayUntil(String untilExpression) {
     	try {
 			XPathReturnValueEvaluator evaluator = new XPathReturnValueEvaluator();
 		    evaluator.setExpression(untilExpression);
 		    ProcessContext processContext = new ProcessContext();
 		    processContext.setNodeInstance(this);
-		    List literal = (List) evaluator.evaluate(
+		    List<?> literal = (List<?>) evaluator.evaluate(
 	    		((ProcessInstance) getProcessInstance()).getWorkingMemory(), processContext, XPathConstants.NODESET);
 			Calendar calendar = null;
 		    if (literal.size() == 0) {
@@ -98,7 +98,7 @@ public class BPELWaitInstance extends TimerNodeInstance {
 		    if (delay < 0) {
 		    	delay = 0;
 		    }
-		    return delay;
+		    return delay + "";
     	} catch (Throwable t) {
     		throw new IllegalArgumentException(
 				"Could not get timer delay until", t);

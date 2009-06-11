@@ -14,7 +14,7 @@ public class StartStateHandler extends AbstractNodeHandler {
         return StartState.class;
     }
 
-	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		StartState startNode = (StartState) node;
 		writeNode("start", startNode, xmlDump, includeMeta);
         endNode(xmlDump);

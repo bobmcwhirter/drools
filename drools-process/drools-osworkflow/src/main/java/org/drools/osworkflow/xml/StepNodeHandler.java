@@ -36,7 +36,7 @@ public class StepNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
         StepNode stepNode = (StepNode) node;
         writeNode("step", stepNode, xmlDump, includeMeta);
         xmlDump.append(">" + EOL);
@@ -51,7 +51,7 @@ public class StepNodeHandler extends AbstractNodeHandler {
         endNode("step", xmlDump);
     }
 
-    public Class generateNodeFor() {
+    public Class<?> generateNodeFor() {
         return StepNode.class;
     }
 
