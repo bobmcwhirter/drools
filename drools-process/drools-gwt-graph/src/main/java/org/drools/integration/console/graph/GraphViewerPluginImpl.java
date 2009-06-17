@@ -69,6 +69,7 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 		}
 
 		DiagramInfo result = new DiagramInfo();
+		// TODO: diagram width and height?
 		result.setWidth(932);
 		result.setHeight(541);
 		List<DiagramNodeInfo> nodeList = new ArrayList<DiagramNodeInfo>();

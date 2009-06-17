@@ -26,6 +26,7 @@ import org.jboss.bpm.console.server.integration.TaskManagement;
 
 public class DroolsFlowTaskManagement implements TaskManagement {
 	
+	// TODO: make this configurable
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
 	private MinaTaskClient client;

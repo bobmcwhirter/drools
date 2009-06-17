@@ -28,8 +28,8 @@
   <classpathentry kind="var" path="M2_REPO/com/google/gdata/gdata-client/1.0/gdata-client-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/gdata/gdata-core/1.0/gdata-core-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/code/gson/gson/1.2.2/gson-1.2.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-rpc/1.0.0-SNAPSHOT/gwt-console-rpc-1.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/bpm/gwt-console-rpc/1.0.0-SNAPSHOT/gwt-console-rpc-1.0.0-SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-server-integration/1.0.0-SNAPSHOT/gwt-console-server-integration-1.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/bpm/gwt-console-server-integration/1.0.0-SNAPSHOT/gwt-console-server-integration-1.0.0-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-rpc/1.0.0.CR1/gwt-console-rpc-1.0.0.CR1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-server-integration/1.0.0.CR1/gwt-console-server-integration-1.0.0.CR1.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/h2database/h2/1.0.77/h2-1.0.77.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
