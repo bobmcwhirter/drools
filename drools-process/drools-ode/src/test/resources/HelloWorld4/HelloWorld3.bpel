@@ -1,0 +1,93 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<process name="HelloWorld3"
+    targetNamespace="http://ode/bpel/unit-test" 
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:tns="http://ode/bpel/unit-test"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:test="http://ode/bpel/unit-test.wsdl"
+    queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
+    expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
+    xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ns1="http://ode/bpel/unit-testArtifacts" xmlns:ns="http://www.openuri.org/2004/04/HelloWorld">
+
+    
+    <bpel:import namespace="http://ode/bpel/unit-testArtifacts" location="HelloWorld3Artifacts.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
+    <bpel:import namespace="http://ode/bpel/unit-test.wsdl" location="HelloWorld3.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
+    <bpel:import namespace="http://www.openuri.org/2004/04/HelloWorld" location="HelloWorldService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
+    
+
+   <partnerLinks>
+      <partnerLink
+         name="helloPartnerLink" 
+         partnerLinkType="test:HelloPartnerLinkType" 
+         myRole="me" />
+      
+      <partnerLink
+         name="helloServiceLink" 
+         partnerLinkType="ns1:HelloServiceLinkType" 
+         partnerRole="service" />
+    </partnerLinks>
+    
+   <variables>
+     <variable name="myVar" messageType="test:HelloMessage"/>
+     
+     <variable name="tmpVar" type="xsd:string"/>
+        <bpel:variable name="helloServiceLinkResponse" messageType="ns:EndpointInterface_echoResponse"></bpel:variable>
+        <bpel:variable name="helloServiceLinkRequest" messageType="ns:EndpointInterface_echo"></bpel:variable>
+    </variables>
+
+   <sequence name="sequence">
+      <receive
+          name="start"
+          partnerLink="helloPartnerLink"
+          portType="test:HelloPortType"
+          operation="hello"
+          variable="myVar"
+          createInstance="yes"/>
+
+      <assign name="assign" validate="yes">
+          <copy>
+              <from part="TestPart" variable="myVar"/>
+              <to variable="tmpVar"/>
+          </copy>
+          <copy>
+              <from>concat($tmpVar,' World')</from>
+              <to part="arg0" variable="helloServiceLinkRequest"/>
+          </copy>
+          
+            
+            
+        </assign>
+      <invoke
+          name="echo"
+          partnerLink="helloServiceLink" operation="echo" portType="ns:EndpointInterface" inputVariable="helloServiceLinkRequest" outputVariable="helloServiceLinkResponse"/>
+        <bpel:assign validate="yes" name="assign">
+            <bpel:copy>
+                <bpel:from part="return" variable="helloServiceLinkResponse"></bpel:from>
+                <bpel:to part="TestPart" variable="myVar"></bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <reply 
+          name="end"
+          partnerLink="helloPartnerLink"
+          portType="test:HelloPortType"
+          operation="hello"
+          variable="myVar"/>
+   </sequence>
+</process>

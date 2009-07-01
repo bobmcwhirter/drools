@@ -1,0 +1,41 @@
+Features for integration of ODE in Drools Flow
+
+ - BPEL processes + other required files (WSDLs, config files, etc.) can be added to the knowledge base
+   * Loose or tight integration?
+   * Including changeset.xml
+ 
+ - validation of BPEL processes on addition to the knowledge base
+ 
+ - BPEL processes can be started using the Knowledge API
+   * Loose or tight integration? 
+ 
+ - BPEL process instances can be monitored using the Knowledge API
+   * Loose or tight integration?
+ 
+ - Events emitted by the BPEL engine are integrated with the Drools eventing system
+   * Loose or tight integration?
+ 
+ - BPEL Eclipse editor integrated with Drools Eclipse IDE
+ 
+ - BPEL engine integrated into JBoss ESB
+ 
+ - BPEL processes are integrated with the console / BAM
+ 
+ - BPEL processes + other required files (WSDLs, config files, etc.) can be stored on Guvnor
+ 
+ - Integration of persistence / transaction mechanisms
+ 
+ - Extend ODE with rule integration features
+ 
+ - WS-HumanTask + BPEL4People implementation
+ 
+ - BPEL visualizer in Guvnor (GWT)
+ 
+ - BPEL editor in Guvnor (GWT)
+ 
+ - Example that shows the integration of BPEL and Flow processes:
+   - RuleFlow process invokes BPEL process
+   - Event log shows integrated event log of both BPEL and RuleFlow
+   - BPEL and RuleFlow processes on Guvnor
+   - BPEL and RuleFlow processes on console / BAM
+   - Integration with ESB

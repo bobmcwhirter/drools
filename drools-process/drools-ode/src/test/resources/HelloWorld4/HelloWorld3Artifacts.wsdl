@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<definitions
+    xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" 
+    xmlns:tns="http://ode/bpel/unit-testArtifacts" 
+    xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" 
+    xmlns:wsdl="http://www.openuri.org/2004/04/HelloWorld" 
+    name="HelloWorld3Artifacts" 
+    targetNamespace="http://ode/bpel/unit-testArtifacts" 
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+    
+  <import
+    location="HelloWorldService.wsdl"
+    namespace="http://www.openuri.org/2004/04/HelloWorld"/>
+    
+  <plnk:partnerLinkType name="HelloServiceLinkType">
+    <plnk:role name="service" portType="wsdl:EndpointInterface"/>
+  </plnk:partnerLinkType>
+  
+</definitions>
