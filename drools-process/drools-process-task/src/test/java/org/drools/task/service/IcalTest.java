@@ -91,7 +91,7 @@ public class IcalTest extends BaseTest {
         str += "       } ) ],";
         str += "    endDeadlines = [";
         str += "        (with (new Deadline()) {";
-        str += "             date = new Date( now.time + ( 1000 * 60 * * 60 * 24 ) )"; // set to tomorrow
+        str += "             date = new Date( now.time + ( 1000 * 60 * 60 * 24 ) )"; // set to tomorrow
         str += "        } ) ]";
         str += "} ) })";
 
@@ -286,7 +286,7 @@ public class IcalTest extends BaseTest {
         str += "deadlines = (with (new Deadlines() ) {";
         str += "    endDeadlines = [";
         str += "        (with (new Deadline()) {";
-        str += "             date = new Date( now.time + ( 1000 * 60 * * 60 * 24 ) )"; // set to tomorrow
+        str += "             date = new Date( now.time + ( 1000 * 60 * 60 * 24 ) )"; // set to tomorrow
         str += "        } ) ]";
         str += "} ) })";
 
