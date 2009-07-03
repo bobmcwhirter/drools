@@ -50,22 +50,26 @@ public class BPELEventListener implements BpelEventListener {
 				processInstance.setState(ProcessInstance.STATE_COMPLETED);
 			} else if (event instanceof ActivityExecStartEvent) {
 				ActivityExecStartEvent execEvent = (ActivityExecStartEvent) event;
-				BPELProcessInstance processInstance = findProcessInstance(execEvent.getProcessInstanceId());
-				BPELNodeInstance nodeInstance = createNodeInstance(
-					processInstance, execEvent.getActivityId(),
-					execEvent.getActivityDeclarationId(),
-					execEvent.getActivityName());
-				((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(nodeInstance, null);
-				((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(nodeInstance, null);
+				if (execEvent.getActivityName() != null) {
+    				BPELProcessInstance processInstance = findProcessInstance(execEvent.getProcessInstanceId());
+    				BPELNodeInstance nodeInstance = createNodeInstance(
+    					processInstance, execEvent.getActivityId(),
+    					execEvent.getActivityDeclarationId(),
+    					execEvent.getActivityName());
+    				((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(nodeInstance, null);
+    				((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(nodeInstance, null);
+				}
 			} else if (event instanceof ActivityExecEndEvent) {
 				ActivityExecEndEvent execEvent = (ActivityExecEndEvent) event;
-				BPELProcessInstance processInstance = findProcessInstance(execEvent.getProcessInstanceId());
-				BPELNodeInstance nodeInstance = createNodeInstance(
-					processInstance, execEvent.getActivityId(),
-					execEvent.getActivityDeclarationId(),
-					execEvent.getActivityName());
-				((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(nodeInstance, null);
-				((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(nodeInstance, null);
+                if (execEvent.getActivityName() != null) {
+    				BPELProcessInstance processInstance = findProcessInstance(execEvent.getProcessInstanceId());
+    				BPELNodeInstance nodeInstance = createNodeInstance(
+    					processInstance, execEvent.getActivityId(),
+    					execEvent.getActivityDeclarationId(),
+    					execEvent.getActivityName());
+    				((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(nodeInstance, null);
+    				((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(nodeInstance, null);
+                }
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();

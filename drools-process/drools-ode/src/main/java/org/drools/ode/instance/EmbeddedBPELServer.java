@@ -19,6 +19,8 @@ import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.axis2.context.ConfigurationContextFactory;
+import org.apache.axis2.description.TransportOutDescription;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.ode.axis2.ExternalService;
 import org.apache.ode.axis2.SoapExternalService;
@@ -292,8 +294,10 @@ public class EmbeddedBPELServer {
                 extService = new HttpExternalService(
             		pconf, serviceName, portName, _executorService, _scheduler, _server);
             } else if (WsdlUtils.useSOAPBinding(def, serviceName, portName)) {
+                AxisConfiguration config = ConfigurationContextFactory.
+                    createDefaultConfigurationContext().getAxisConfiguration();
                 extService = new SoapExternalService(
-            		pconf, serviceName, portName, _executorService, new AxisConfiguration(), _scheduler, _server);
+            		pconf, serviceName, portName, _executorService, config, _scheduler, _server);
             }
         } catch (Exception ex) {
             throw new ContextException("Error creating external service! name:"+serviceName+", port:"+portName, ex);
