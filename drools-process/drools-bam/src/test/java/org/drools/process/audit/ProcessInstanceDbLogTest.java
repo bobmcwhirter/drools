@@ -1,6 +1,9 @@
 package org.drools.process.audit;
 
+import org.junit.Ignore;
 
+
+@Ignore
 public class ProcessInstanceDbLogTest {
     
     public static final void main(String[] args) {
