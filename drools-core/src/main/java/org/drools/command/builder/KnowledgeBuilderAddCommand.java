@@ -1,4 +1,4 @@
-package org.drools.simulation;
+package org.drools.command.builder;
 
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.ResourceConfiguration;
