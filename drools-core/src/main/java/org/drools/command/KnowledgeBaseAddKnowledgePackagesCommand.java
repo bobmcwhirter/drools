@@ -1,4 +1,4 @@
-package org.drools.simulation;
+package org.drools.command;
 
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
