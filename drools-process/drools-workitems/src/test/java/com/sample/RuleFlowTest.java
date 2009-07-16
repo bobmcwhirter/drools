@@ -18,10 +18,12 @@ import org.drools.process.workitem.transform.TransformWorkItemHandler;
 import org.drools.rule.Package;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemManager;
+import org.junit.Ignore;
 
 /**
  * This is a sample file to launch a ruleflow.
  */
+@Ignore
 public class RuleFlowTest {
 
 	public static final void main(String[] args) {
