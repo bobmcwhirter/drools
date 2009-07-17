@@ -242,9 +242,20 @@ public class JpdlNodeInstance extends NodeInstanceImpl implements EventBasedNode
             }
     	}
     }
-    
+        public class JpdlToken extends Token{
+
+            public JpdlToken(NodeInstance node) {
+                org.jbpm.graph.def.Node jBPMNode = new org.jbpm.graph.def.Node();
+                jBPMNode.setName(node.getNodeName());
+                this.setNode(jBPMNode);
+            }
+
+        }
 	public class JpdlExecutionContext extends ExecutionContext {
-	    public JpdlExecutionContext() {
+	    public JpdlExecutionContext(NodeInstance node) {
+	        super((Token) new JpdlToken(node));
+	    }
+             public JpdlExecutionContext() {
 	        super((Token) null);
 	    }
 	    public void leaveNode() {

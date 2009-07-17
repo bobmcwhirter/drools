@@ -2,6 +2,7 @@ package org.drools;
 
 import junit.framework.TestCase;
 
+import org.drools.jpdl.EpdlWriter;
 import org.drools.jpdl.JpdlParser;
 import org.drools.jpdl.core.JpdlProcess;
 import org.drools.process.core.validation.ProcessValidationError;
@@ -70,5 +71,14 @@ public class ParseSimpleProcessTest extends TestCase {
             return workItemId;
         }
     }
-    
+
+      public void testWriteEPDL() throws Exception {
+        JpdlParser parser = new JpdlParser();
+        JpdlProcess process = parser.loadJpdlProcess("simple2states/processdefinition.xml");
+        ProcessValidationError[] errors = parser.getErrors();
+        
+        EpdlWriter.write(process);
+        
+      }
+
 }

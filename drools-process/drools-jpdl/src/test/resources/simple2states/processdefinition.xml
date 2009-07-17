@@ -6,24 +6,30 @@
    <start-state name="start">
 		<transition to="fork1"></transition>
 	</start-state>
-        <node name="node1">
-		<action name="Sysout" class="org.drools.SysoutHandler"></action>
-		<transition to="join1"></transition>
-	</node>
+        <state name="first state">
+            <transition to="fork1"></transition>
+        </state>
 
 	<fork name="fork1">
 		<transition to="node1"></transition>
 		<transition to="node2" name="to node2"></transition>
 	</fork>
-
-	<join name="join1">
-		<transition to="end"></transition>
-	</join>
-
-	<node name="node2">
+        <node name="node1">
 		<action name="Sysout" class="org.drools.SysoutHandler"></action>
 		<transition to="join1"></transition>
 	</node>
+        <node name="node2">
+		<action name="Sysout" class="org.drools.SysoutHandler"></action>
+		<transition to="join1"></transition>
+	</node>
+
+	<join name="join1">
+		<transition to="last state"></transition>
+	</join>
+
+	<state name="last state">
+            <transition to="end"></transition>
+        </state>
 
 
 	<end-state name="end">

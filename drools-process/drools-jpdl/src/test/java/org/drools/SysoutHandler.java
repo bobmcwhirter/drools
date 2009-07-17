@@ -8,7 +8,8 @@ public class SysoutHandler implements ActionHandler {
 	private static final long serialVersionUID = 1L;
 
 	public void execute(ExecutionContext executionContext) throws Exception {
-		System.out.println("Executing");
+		//System.out.println("Executing"+executionContext.getNode().getName());
+             System.out.println("EXECUTING");
 		executionContext.leaveNode();
 	}
 
