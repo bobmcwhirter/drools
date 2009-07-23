@@ -72,13 +72,37 @@ public class ParseSimpleProcessTest extends TestCase {
         }
     }
 
-      public void testWriteEPDL() throws Exception {
+      public void testWriteEPDLStateNodes() throws Exception {
         JpdlParser parser = new JpdlParser();
         JpdlProcess process = parser.loadJpdlProcess("simple2states/processdefinition.xml");
         ProcessValidationError[] errors = parser.getErrors();
         
         EpdlWriter.write(process);
         
+      }
+       public void testWriteEPDLDecisionNodes() throws Exception {
+        JpdlParser parser = new JpdlParser();
+        JpdlProcess process = parser.loadJpdlProcess("simple2decision/processdefinition.xml");
+        ProcessValidationError[] errors = parser.getErrors();
+
+        EpdlWriter.write(process);
+
+      }
+       public void testWriteEPDLSuggestJoinNode() throws Exception {
+        JpdlParser parser = new JpdlParser();
+        JpdlProcess process = parser.loadJpdlProcess("simple2suggestJoinComplex/processdefinition.xml");
+        ProcessValidationError[] errors = parser.getErrors();
+
+        EpdlWriter.write(process);
+
+      }
+       public void testWriteEPDLSuggestSplitNode() throws Exception {
+        JpdlParser parser = new JpdlParser();
+        JpdlProcess process = parser.loadJpdlProcess("simple2suggestSplitInActionNode/processdefinition.xml");
+        ProcessValidationError[] errors = parser.getErrors();
+
+        EpdlWriter.write(process);
+
       }
 
 }

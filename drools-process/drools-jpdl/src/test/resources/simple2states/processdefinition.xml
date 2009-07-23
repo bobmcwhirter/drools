@@ -4,7 +4,7 @@
   xmlns="urn:jbpm.org:jpdl-3.2"
   name="simple">
    <start-state name="start">
-		<transition to="fork1"></transition>
+		<transition to="first state"></transition>
 	</start-state>
         <state name="first state">
             <transition to="fork1"></transition>

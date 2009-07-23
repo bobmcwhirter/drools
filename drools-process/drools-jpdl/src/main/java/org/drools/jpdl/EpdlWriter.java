@@ -17,6 +17,8 @@
 
 package org.drools.jpdl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +26,11 @@ import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.jpdl.core.JpdlProcess;
 
+import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConnectionImpl;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.node.StateNode;
 import org.jbpm.graph.def.Action;
 import org.jbpm.instantiation.Delegation;
 
@@ -33,11 +39,12 @@ import org.jbpm.instantiation.Delegation;
  * @author salaboy
  */
 public class EpdlWriter {
-
+    private static int suggestedNodeId = 99;
     public static void write(JpdlProcess process) {
         Node[] nodes = process.getNodes();
         int id = 0;
-
+        
+        String generatedConnections = "";
         System.out.println("<process xmlns=\"http://drools.org/drools-5.0/process\""+
                 " xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" "+
                 "xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\" " +
@@ -57,19 +64,51 @@ public class EpdlWriter {
                 System.out.println("<join id=\""+node.getId()+"\" name=\""+node.getName()+"\" type=\"1\" />");
             }
             else if(node instanceof org.drools.jpdl.core.node.State){
+                generatedConnections= suggestJoinNode(node);
+                
+                    
+                
                 System.out.println("<state id=\""+node.getId()+"\" name=\""+node.getName()+"\" >");
                 System.out.println("    <constraints>");
-                for (Connection connection: node.getOutgoingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE)) {
-                    System.out.println("        <constraint toNodeId=\""+connection.getTo().getId()+"\" name=\"signalTo"+connection.getTo().getName()+"\" />");
+                Set<String> keys = node.getOutgoingConnections().keySet();
+                for(String key: keys){
+                    for (Connection connection: node.getOutgoingConnections(key)) {
+                        System.out.println("        <constraint toNodeId=\""+connection.getTo().getId()+"\" name=\"signalTo"+connection.getTo().getName()+"\" />");
+                    }
                 }
                 System.out.println("    </constraints>");
                 System.out.println("</state>");
 
             }
+            else if(node instanceof org.drools.jpdl.core.node.Decision){
+                System.out.println("<split id=\""+node.getId()+"\" name=\""+node.getName()+"\" type=\"2\" >");
+                 System.out.println("    <constraints>");
+                Set<String> keys = node.getOutgoingConnections().keySet();
+                for(String key: keys){
+
+                    for (Connection connection: node.getOutgoingConnections(key)) {
+                        System.out.println("        <constraint toNodeId=\""+connection.getTo().getId()+"\" name=\"signalTo"+connection.getTo().getName()+
+                                            "\" toType=\"DROOLS_DEFAULT\" type=\"rule\" dialect=\"java\" >");
+                        //System.out.println("            "+"There is no way to get the conditions in each leavingTransition (depracated since 3.2 - http://docs.jboss.com/jbpm/v3.2/userguide/html_single/#condition.element)");
+                        //System.out.println("            "+"There is no way to access the decision expresion or the decision delegation class through the APIs");
+                        System.out.println("        </constraint>");
+
+                    }
+                }
+                System.out.println("    </constraints>");
+                System.out.println("</split>");
+            }
             else if(node instanceof org.drools.jpdl.core.node.EndState){
+                generatedConnections += suggestJoinNode(node);
+                
+
                 System.out.println("<end id=\""+node.getId()+"\" name=\""+node.getName()+"\" />");
+
             }
             else if(node instanceof org.drools.jpdl.core.node.JpdlNode){
+                generatedConnections += suggestSplitNode(node);
+                generatedConnections += suggestJoinNode(node);
+
                 System.out.println("<actionNode id=\""+node.getId()+"\" name=\""+node.getName()+"\">");
                 System.out.println("    <action type=\"expression\" dialect=\"java\" >");
                 Action action = ((org.drools.jpdl.core.node.JpdlNode)node).getAction();
@@ -103,9 +142,104 @@ public class EpdlWriter {
             }
 
         }
-         System.out.println("</connections>");
+        System.out.println("<!-- Generated Connection for suggested nodes -->");
+        System.out.println(generatedConnections);
+        System.out.println("<!-- END - Generated Connection for suggested nodes -->");
+        System.out.println("</connections>");
+        System.out.println("</process>");
+    }
 
-         System.out.println("</process>");
+    private static String suggestJoinNode(Node node) {
+        String resultGeneratedConnection = "";
+        Set<String> incomingConnectionsTypes = node.getIncomingConnections().keySet();
+        String firstKey = incomingConnectionsTypes.iterator().next();
+        boolean suggestJoinNode = false;
+        if (incomingConnectionsTypes.size() > 1) {
+            suggestJoinNode = true;
+        } else if (incomingConnectionsTypes.size() == 1 && node.getIncomingConnections().get(firstKey).size() > 1) {
+            suggestJoinNode = true;
+        }
+        if (suggestJoinNode) {
+            System.out.println("<!-- This is a suggested Join Node -->");
+            System.out.println("<join id=\"" + (suggestedNodeId) + "\" name=\"Join XOR - "+suggestedNodeId+"\" type=\"2\" />");
+            
+            for (String key : incomingConnectionsTypes) {
+                Iterator<Connection> itConnections = node.getIncomingConnections(key).iterator();
+                long fromNodeId = 0;
+                while (itConnections.hasNext()) {
+                    Connection connection = itConnections.next();
+                    Node fromNode = connection.getFrom();
+
+                    fromNodeId = connection.getTo().getId();
+                    if(fromNode instanceof org.drools.jpdl.core.node.State){
+                        System.out.println("<!-- Take a look at the State Node that is pointing here, " +
+                                "you will need to change the constraint for signal it to the new JoinNode id -->");
+                        System.out.println("<!-- in node id: "+fromNode.getId()+ "-- name: "+fromNode.getName()+" -->");
+                        System.out.println("<!-- you should change the fromId ("+fromNodeId+") attribute to: "+suggestedNodeId+"-->");
+                        System.out.println("<!-- you can also change the name for something that reference the JoinNode -->");
+                    }
+                    fromNode.getOutgoingConnections(key).remove(connection);
+                    resultGeneratedConnection += "  <connection from=\"" + fromNode.getId() + "\" to=\"" + suggestedNodeId + "\" />\n";
+                }
+                resultGeneratedConnection += "  <connection from=\"" + suggestedNodeId + "\" to=\"" + fromNodeId + "\" />\n";
+            }
+            System.out.println("<!-- END - This is a suggested Join Node -->");
+            suggestedNodeId++;
+        }
+        return resultGeneratedConnection;
+    }
+    private static String suggestSplitNode(Node node) {
+        String resultGeneratedConnection = "";
+        Set<String> outgoingConnectionsTypes = node.getOutgoingConnections().keySet();
+         String firstKey = outgoingConnectionsTypes.iterator().next();
+        boolean suggestSplitNode = false;
+        if (outgoingConnectionsTypes.size() > 1) {
+            suggestSplitNode = true;
+        } else if (outgoingConnectionsTypes.size() == 1 && node.getOutgoingConnections().get(firstKey).size() > 1) {
+            suggestSplitNode = true;
+        }
+        if(suggestSplitNode){
+            System.out.println("<!-- This is a suggested Split Node -->");
+            System.out.println("<split id=\"" + (suggestedNodeId) + "\" name=\"Split XOR\" type=\"2\" >");
+              System.out.println("    <constraints>");
+                Set<String> keys = node.getOutgoingConnections().keySet();
+                for(String key: keys){
+
+                    for (Connection connection: node.getOutgoingConnections(key)) {
+                        System.out.println("        <constraint toNodeId=\""+connection.getTo().getId()+"\" name=\"signalTo"+connection.getTo().getName()+
+                                            "\" toType=\"DROOLS_DEFAULT\" type=\"rule\" dialect=\"java\" >");
+                        //System.out.println("            "+"There is no way to get the conditions in each leavingTransition (depracated since 3.2 - http://docs.jboss.com/jbpm/v3.2/userguide/html_single/#condition.element)");
+                        //System.out.println("            "+"There is no way to access the decision expresion or the decision delegation class through the APIs");
+                        System.out.println("        </constraint>");
+
+                    }
+                }
+                System.out.println("    </constraints>");
+                System.out.println("</split>");
+            System.out.println("<!-- END - This is a suggested Split Node -->");
+            List<Connection> removeConnections = new ArrayList<Connection>();
+            for (String key : outgoingConnectionsTypes) {
+                Iterator<Connection> itConnections = node.getOutgoingConnections(key).iterator();
+                while (itConnections.hasNext()) {
+                    Connection connection = itConnections.next();
+                    Node toNode = connection.getTo();
+                    removeConnections.add(connection);
+                    resultGeneratedConnection += "  <connection from=\"" + suggestedNodeId + "\" to=\"" + toNode.getId() + "\" />\n";
+                }
+                
+
+            }
+            resultGeneratedConnection += "  <connection from=\"" + node.getId() + "\" to=\"" + suggestedNodeId + "\" />\n";
+            suggestedNodeId++;
+            for(Connection conn : removeConnections){
+                
+                    node.getOutgoingConnections(conn.getFromType()).remove(conn);
+               
+            }
+
+        }
+
+        return resultGeneratedConnection;
     }
 
 

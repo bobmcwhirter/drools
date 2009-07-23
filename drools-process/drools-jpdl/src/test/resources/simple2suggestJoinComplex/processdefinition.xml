@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns="urn:jbpm.org:jpdl-3.2"  name="DecisionTest">
+
+
+	<start-state name="start-state1">
+		<transition to="decision1"></transition>
+	</start-state>
+
+
+	<decision name="decision1" expression="$var">
+		<transition to="node1"></transition>
+		<transition to="decision2" name="to decision2"></transition>
+	</decision>
+
+	<node name="node1">
+		<transition to="end-state1"></transition>
+	</node>
+
+	<node name="node3">
+		<transition to="node4"></transition>
+	</node>
+
+	<decision name="decision2">
+		<transition to="node3"></transition>
+		<transition to="node2" name="to node2"></transition>
+	</decision>
+
+	<node name="node2">
+		<transition to="node4"></transition>
+	</node>
+
+	<node name="node4">
+		<transition to="end-state1"></transition>
+	</node>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>

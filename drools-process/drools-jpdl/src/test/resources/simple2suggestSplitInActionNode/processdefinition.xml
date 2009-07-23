@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns="urn:jbpm.org:jpdl-3.2"  name="TwoLeavingTransitionOnActionNodes">
+
+
+	<start-state name="start-state1">
+		<transition to="node1"></transition>
+	</start-state>
+
+
+	<node name="node1">
+		<transition to="state1"></transition>
+		<transition to="state2" name="to state2"></transition>
+	</node>
+
+	<state name="state1">
+		<transition to="node2"></transition>
+		<transition to="node3" name="to node3"></transition>
+	</state>
+
+	<state name="state2">
+		<transition to="end-state1"></transition>
+	</state>
+
+	<node name="node2">
+		<transition to="end-state1"></transition>
+	</node>
+
+	<node name="node3">
+		<transition to="end-state1"></transition>
+	</node>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>
