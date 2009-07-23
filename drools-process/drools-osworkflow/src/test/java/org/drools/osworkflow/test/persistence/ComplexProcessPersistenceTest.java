@@ -2,20 +2,19 @@ package org.drools.osworkflow.test.persistence;
 
 import java.util.Properties;
 
+import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
+import org.drools.command.runtime.process.GetProcessInstanceCommand;
+import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.osworkflow.core.command.DoActionCommand;
 import org.drools.persistence.session.SingleSessionCommandService;
-import org.drools.process.command.GetProcessInstanceCommand;
-import org.drools.process.command.StartProcessCommand;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.ProcessInstance;
 
 import bitronix.tm.TransactionManagerServices;
-import org.drools.KnowledgeBase;
 
 public class ComplexProcessPersistenceTest extends AbstractJPAPersistenceTest {
 	

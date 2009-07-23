@@ -4,15 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
+import org.drools.command.Context;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.osworkflow.instance.OSWorkflowProcessInstance;
-import org.drools.process.command.Command;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 
 /*Author: salaboy, mfossati */
 
-public class DoActionCommand implements Command {
+public class DoActionCommand implements GenericCommand {
 	
 	private int actionId;
 	private long processInstanceId;
@@ -42,21 +44,14 @@ public class DoActionCommand implements Command {
 		return processInstanceId;
 	}
 	
-	public Object execute(ReteooWorkingMemory workingMemory) {
-		ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance(getProcessInstanceId());
+	public Object execute(Context context) {
+		StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        ProcessInstance processInstance = ksession.getProcessInstance(getProcessInstanceId());
 		if (processInstance != null) {
-			((OSWorkflowProcessInstance)processInstance).doAction(actionId, new HashMap());
+			((OSWorkflowProcessInstance) processInstance).doAction(actionId, new HashMap());
 			
 		}
 		return null;
 	}
-
-	public Object execute(StatefulSession session) {
-		return this.execute((ReteooWorkingMemory)session);
-	}
-
-	
-
-	
 
 }
