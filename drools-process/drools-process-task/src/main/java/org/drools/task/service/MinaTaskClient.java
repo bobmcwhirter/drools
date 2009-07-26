@@ -408,12 +408,12 @@ public class MinaTaskClient extends BaseMinaClient {
                                     responseHandler );
         session.write( cmd );
     }
-     public void getTasksAssignedAsPotentialOwner(String userId, String groupId,
+     public void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,
                                                  String language,
                                                  TaskSummaryResponseHandler responseHandler) {
         List<Object> args = new ArrayList<Object>( 2 );
         args.add( userId );
-        args.add( groupId );
+        args.add( groupIds );
         args.add( language );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.QueryTasksAssignedAsPotentialOwnerWithGroup,

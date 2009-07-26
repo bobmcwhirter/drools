@@ -218,8 +218,9 @@ public class TaskServerHandler extends IoHandlerAdapter {
                 }
                 case QueryTasksAssignedAsPotentialOwnerWithGroup: {
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwner((String) cmd.getArguments().get(0),
-                            (String) cmd.getArguments().get(1),
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwner(
+                    		(String) cmd.getArguments().get(0),
+                            (List<String>) cmd.getArguments().get(1),
                             (String) cmd.getArguments().get(2));
                     List args = new ArrayList(1);
                     args.add(results);
@@ -342,7 +343,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
             }
         } catch (RuntimeException e) {
             systemEventListener.exception(e.getMessage(),e);
-
+            e.printStackTrace(System.err);
             List<Object> list = new ArrayList<Object>(1);
             list.add(e);
             Command resultsCmnd = new Command(cmd.getId(), response, list);

@@ -525,11 +525,11 @@ public class TaskServiceSession {
         return (List<TaskSummary>) tasksAssignedAsPotentialOwner.getResultList();
     }
 
-    public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final String groupId,
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
                                                               final String language) {
-        final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("TasksAssignedAsPotentialOwnerWithGroup");
+        final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("TasksAssignedAsPotentialOwnerWithGroups");
         tasksAssignedAsPotentialOwner.setParameter("userId", userId);
-        tasksAssignedAsPotentialOwner.setParameter("groupId", groupId);
+        tasksAssignedAsPotentialOwner.setParameter("groupIds", groupIds);
         tasksAssignedAsPotentialOwner.setParameter("language", language);
 
         return (List<TaskSummary>) tasksAssignedAsPotentialOwner.getResultList();

@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -151,7 +152,9 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         Thread.sleep(500);
 
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner(null, "Crusaders", "en-UK", responseHandler);
+        List<String> groupIds = new ArrayList<String>();
+        groupIds.add("Crusaders");
+        client.getTasksAssignedAsPotentialOwner(null, groupIds, "en-UK", responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
@@ -203,7 +206,9 @@ public class WSHumanTaskHandlerTest extends BaseTest {
         Thread.sleep(500);
 
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("Darth Vader", "Crusaders", "en-UK", responseHandler);
+        List<String> groupIds = new ArrayList<String>();
+        groupIds.add("Crusaders");
+        client.getTasksAssignedAsPotentialOwner("Darth Vader", groupIds, "en-UK", responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(2, tasks.size());
     }

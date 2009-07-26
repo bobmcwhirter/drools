@@ -123,7 +123,7 @@ where
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
-            <named-query name="TasksAssignedAsPotentialOwnerWithGroup">
+            <named-query name="TasksAssignedAsPotentialOwnerWithGroups">
           <query>
 select
      new org.drools.task.query.TaskSummary(
@@ -146,8 +146,8 @@ from
     I18NText descriptions,
     OrganizationalEntity potentialOwners
 where
-    (potentialOwners.id = :userId or potentialOwners.id = :groupId) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+    ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+    potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
 
     names.language = :language and
     names in elements( t.names) and

@@ -58,36 +58,36 @@ public class TaskClientHandler extends BaseMinaHandler {
                 break;
             }
             case GetTaskResponse: {
-                Task task = (Task) cmd.getArguments().get(0);
                 GetTaskResponseHandler responseHandler = (GetTaskResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {                    
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        Task task = (Task) cmd.getArguments().get(0);
                         responseHandler.execute(task);
                     }
                 }
                 break;
             }
             case AddTaskResponse: {
-                long taskId = (Long) cmd.getArguments().get(0);
                 AddTaskResponseHandler responseHandler = (AddTaskResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        long taskId = (Long) cmd.getArguments().get(0);
                         responseHandler.execute(taskId);
                     }
                 }
                 break;
             }
             case AddCommentResponse: {
-                long commentId = (Long) cmd.getArguments().get(0);
                 AddCommentResponseHandler responseHandler = (AddCommentResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        long commentId = (Long) cmd.getArguments().get(0);
                         responseHandler.execute(commentId);
                     }
                 }
@@ -105,13 +105,13 @@ public class TaskClientHandler extends BaseMinaHandler {
                 break;
             }
             case AddAttachmentResponse: {
-                long attachmentId = (Long) cmd.getArguments().get(0);
-                long contentId = (Long) cmd.getArguments().get(1);
                 AddAttachmentResponseHandler responseHandler = (AddAttachmentResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        long attachmentId = (Long) cmd.getArguments().get(0);
+                        long contentId = (Long) cmd.getArguments().get(1);
                         responseHandler.execute(attachmentId,
                                 contentId);
                     }
@@ -130,48 +130,48 @@ public class TaskClientHandler extends BaseMinaHandler {
                 break;
             }
             case GetContentResponse: {
-                Content content = (Content) cmd.getArguments().get(0);
                 GetContentResponseHandler responseHandler = (GetContentResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        Content content = (Content) cmd.getArguments().get(0);
                         responseHandler.execute(content);
                     }
                 }
                 break;
             }
             case SetDocumentContentResponse: {
-                long contentId = (Long) cmd.getArguments().get(0);
                 SetDocumentResponseHandler responseHandler = (SetDocumentResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        long contentId = (Long) cmd.getArguments().get(0);
                         responseHandler.execute(contentId);
                     }
                 }
                 break;
             }
             case QueryTaskSummaryResponse: {
-                List<TaskSummary> results = (List<TaskSummary>) cmd.getArguments().get(0);
                 TaskSummaryResponseHandler responseHandler = (TaskSummaryResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        List<TaskSummary> results = (List<TaskSummary>) cmd.getArguments().get(0);
                         responseHandler.execute(results);
                     }
                 }
                 break;
             }
             case EventTriggerResponse: {
-                Payload payload = (Payload) cmd.getArguments().get(0);
                 EventResponseHandler responseHandler = (EventResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {
+                        Payload payload = (Payload) cmd.getArguments().get(0);
                         responseHandler.execute(payload);
                     }
                 }
