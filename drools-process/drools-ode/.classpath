@@ -5,7 +5,6 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**/*.java" including="**" kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/bpel-runtime"/>
 	<classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/annogen/annogen/0.1.0/annogen-0.1.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.1.1/antlr-runtime-3.1.1.jar"/>
