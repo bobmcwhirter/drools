@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,7 @@ import org.jboss.bpm.console.server.plugin.GraphViewerPlugin;
  */
 public class GraphViewerPluginImpl implements GraphViewerPlugin {
 
-	public ActiveNodeInfo getActiveNodeInfo(String instanceId) {
-		// TODO: there can be more than one active node !
+	public List<ActiveNodeInfo> getActiveNodeInfo(String instanceId) {
 		ProcessInstanceLog processInstance = ProcessInstanceDbLog.findProcessInstance(new Long(instanceId));
 		if (processInstance == null) {
 			throw new IllegalArgumentException("Could not find process instance " + instanceId);
@@ -45,15 +45,23 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			}
 		}
 		if (!nodeInstances.isEmpty()) {
-			NodeInstanceLog nodeInstance = nodeInstances.values().iterator().next();
-			DiagramInfo diagramInfo = getDiagramInfo(processInstance.getProcessId());
-			for (DiagramNodeInfo nodeInfo: diagramInfo.getNodeList()) {
-				if (nodeInfo.getName().equals("id=" + nodeInstance.getNodeId())) {
-					return new ActiveNodeInfo(diagramInfo.getWidth(), diagramInfo.getHeight(), nodeInfo);
+			List<ActiveNodeInfo> result = new ArrayList<ActiveNodeInfo>();
+			for (NodeInstanceLog nodeInstance: nodeInstances.values()) {
+				boolean found = false;
+				DiagramInfo diagramInfo = getDiagramInfo(processInstance.getProcessId());
+				for (DiagramNodeInfo nodeInfo: diagramInfo.getNodeList()) {
+					if (nodeInfo.getName().equals("id=" + nodeInstance.getNodeId())) {
+						result.add(new ActiveNodeInfo(diagramInfo.getWidth(), diagramInfo.getHeight(), nodeInfo));
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					throw new IllegalArgumentException("Could not find info for node "
+						+ nodeInstance.getNodeId() + " of process " + processInstance.getProcessId());
 				}
 			}
-			throw new IllegalArgumentException("Could not find info for node "
-				+ nodeInstance.getNodeId() + " of process " + processInstance.getProcessId());
+			return result;
 		}
 		return null;
 	}
@@ -120,6 +128,10 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			bytesRead = in.read(buffer);
 		}
 		return total;
+	}
+
+	public URL getDiagramURL(String id) {
+		return GraphViewerPluginImpl.class.getResource("/" + id + ".png");
 	}
 
 }

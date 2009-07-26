@@ -20,8 +20,9 @@ public class DroolsFlowTransform {
 			// Do nothing, keep version 0
 		}
 		ProcessDefinitionRef result = new ProcessDefinitionRef(
-			process.getId(), process.getName(), version );
+			process.getId(), process.getName(), version);
 		result.setPackageName(process.getPackageName());
+		result.setDeploymentId("N/A");
 		return result;
 	}
 	
@@ -42,8 +43,8 @@ public class DroolsFlowTransform {
 		return new TaskRef(
 			task.getId(),
 			// TODO: fixme
-			"-1",
-			"-1",
+			"",
+			"",
 			task.getName(),
 			task.getActualOwner() == null ? null : task.getActualOwner().getId(),
 			false,
@@ -60,8 +61,8 @@ public class DroolsFlowTransform {
 		return new TaskRef(
 			task.getId(),
 			// TODO: fixme
-			"-1",
-			"-1",
+			"",
+			"",
 			name,
 			task.getTaskData().getActualOwner() == null ? null : task.getTaskData().getActualOwner().getId(),
 			false,

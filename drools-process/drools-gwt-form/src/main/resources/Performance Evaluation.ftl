@@ -5,7 +5,7 @@
 ${task.descriptions[0].text}<br/>
 <br/>
 Please fill in the following evaluation form: 
-<form action="process" method="POST" enctype="multipart/form-data">
+<form action="complete" method="POST" enctype="multipart/form-data">
 Rate the overall performance: <select name="performance">
 <option value="outstanding">Outstanding</option>
 <option value="exceeding">Exceeding expectations</option>
@@ -18,7 +18,7 @@ Check any that apply:<br/>
 <input type="checkbox" name="change" value="change">Thriving on change<br/>
 <input type="checkbox" name="communication" value="communication">Good communication skills<br/>
 <br/>
-<input type="submit" name="outcome" value="Complete">
+<input type="submit" value="Complete">
 </form>
 </body>
 </html>

@@ -1,10 +1,10 @@
 <html>
 <body>
 
-<h2>${task.names[0].text}</h2>
+<h2>Start Performance Evaluation</h2>
 <hr>
-Description: ${task.descriptions[0].text}
 <form action="complete" method="POST" enctype="multipart/form-data">
+Please fill in your username: <input type="text" name="employee" /></BR>
 <input type="submit" value="Complete">
 </form>
 </body>

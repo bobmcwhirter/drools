@@ -1,11 +1,11 @@
 package org.drools.integration.console;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.drools.process.audit.ProcessInstanceLog;
 import org.drools.definition.process.Process;
+import org.drools.process.audit.ProcessInstanceLog;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
@@ -45,16 +45,23 @@ public class DroolsFlowProcessManagement implements ProcessManagement {
 	}
 
 	public List<ProcessInstanceRef> getProcessInstances(String definitionId) {
+		// TODO: query for active process instances only
 		List<ProcessInstanceLog> processInstances = delegate.getProcessInstanceLogsByProcessId(definitionId);
 		List<ProcessInstanceRef> result = new ArrayList<ProcessInstanceRef>();
 		for (ProcessInstanceLog processInstance: processInstances) {
-			result.add(DroolsFlowTransform.processInstance(processInstance));
+			if (processInstance.getEnd() == null) {
+				result.add(DroolsFlowTransform.processInstance(processInstance));
+			}
 		}
 		return result;
 	}
 
-	public ProcessInstanceRef newInstance(String instanceId) {
-		ProcessInstanceLog processInstance = delegate.startProcess(instanceId);
+	public ProcessInstanceRef newInstance(String definitionId) {
+		return newInstance(definitionId, null);
+	}
+	
+	public ProcessInstanceRef newInstance(String definitionId, Map<String, Object> processVars) {
+		ProcessInstanceLog processInstance = delegate.startProcess(definitionId, processVars);
 		return DroolsFlowTransform.processInstance(processInstance);
 	}
 
@@ -66,12 +73,16 @@ public class DroolsFlowProcessManagement implements ProcessManagement {
 		}
 	}
 	
-	public void signalExecution(String executionId, String signal) {
-		delegate.signalExecution(executionId, signal);
+	public Map<String, Object> getInstanceData(String instanceId) {
+		return delegate.getProcessInstanceVariables(instanceId);
 	}
 
-	public void deploy(String fileName, String contentType, InputStream deployment) {
-		// Do nothing
+	public void setInstanceData(String instanceId, Map<String, Object> data) {
+		delegate.setProcessInstanceVariables(instanceId, data);
+	}
+
+	public void signalExecution(String executionId, String signal) {
+		delegate.signalExecution(executionId, signal);
 	}
 
 	public void deleteInstance(String instanceId) {

@@ -1,7 +1,9 @@
 package org.drools.integration.console;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -17,6 +19,8 @@ import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.process.audit.ProcessInstanceDbLog;
 import org.drools.process.audit.ProcessInstanceLog;
 import org.drools.process.audit.WorkingMemoryDbLogger;
+import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -117,8 +121,8 @@ public class DroolsFlowCommandDelegate {
 		return ProcessInstanceDbLog.findProcessInstances(processId);
 	}
 	
-	public ProcessInstanceLog startProcess(String processId) {
-		long processInstanceId = ksession.startProcess(processId).getId();
+	public ProcessInstanceLog startProcess(String processId, Map<String, Object> parameters) {
+		long processInstanceId = ksession.startProcess(processId, parameters).getId();
 		return ProcessInstanceDbLog.findProcessInstance(processInstanceId);
 	}
 	
@@ -126,6 +130,47 @@ public class DroolsFlowCommandDelegate {
 		ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
 		if (processInstance != null) {
 			ksession.abortProcessInstance(new Long(processInstanceId));
+		} else {
+			throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
+		}
+	}
+	
+	public Map<String, Object> getProcessInstanceVariables(String processInstanceId) {
+		ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
+		if (processInstance != null) {
+			VariableScopeInstance variableScope = (VariableScopeInstance) 
+				((org.drools.process.instance.ProcessInstance) processInstance)
+					.getContextInstance(VariableScope.VARIABLE_SCOPE);
+			if (variableScope == null) {
+				return new HashMap<String, Object>();
+			}
+			// filter out null values
+			Map<String, Object> variables = variableScope.getVariables();
+			Map<String, Object> result = new HashMap<String, Object>();
+			for (Map.Entry<String, Object> entry: variables.entrySet()) {
+				if (entry.getValue() != null) {
+					result.put(entry.getKey(), entry.getValue());
+				}
+			}
+			return result;
+		} else {
+			throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
+		}
+	}
+	
+	public void setProcessInstanceVariables(String processInstanceId, Map<String, Object> variables) {
+		ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
+		if (processInstance != null) {
+			VariableScopeInstance variableScope = (VariableScopeInstance) 
+				((org.drools.process.instance.ProcessInstance) processInstance)
+					.getContextInstance(VariableScope.VARIABLE_SCOPE);
+			if (variableScope == null) {
+				throw new IllegalArgumentException(
+					"Could not find variable scope for process instance " + processInstanceId);
+			}
+			for (Map.Entry<String, Object> entry: variables.entrySet()) {
+				variableScope.setVariable(entry.getKey(), entry.getValue());
+			}
 		} else {
 			throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
 		}

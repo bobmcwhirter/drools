@@ -59,19 +59,32 @@ public class DroolsFlowTaskManagement implements TaskManagement {
         return DroolsFlowTransform.task(task);
 	}
 
-	public void assignTask(long taskId, String idRef) {
+	public void assignTask(long taskId, String idRef, String userId) {
+		// TODO
+		if (userId == null) {
+			System.err.println("assignTask: userId == null, using 'admin'");
+			userId = "admin";
+		}
 		connect();
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		client.claim(taskId, idRef, responseHandler);
+		if (idRef != null && idRef.equals(userId)) {
+			client.claim(taskId, idRef, responseHandler);
+		} else {
+			client.delegate(taskId, userId, idRef, responseHandler);
+		}
 		responseHandler.waitTillDone(5000);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void completeTask(long taskId, Map data) {
+	public void completeTask(long taskId, Map data, String userId) {
+		// TODO
+		if (userId == null) {
+			System.err.println("assignTask: userId == null, using 'admin'");
+			userId = "admin";
+		}
 		connect();
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		// TODO: fixme
-		client.start(taskId, "admin", responseHandler);
+		client.start(taskId, userId, responseHandler);
 		responseHandler.waitTillDone(5000);
 		responseHandler = new BlockingTaskOperationResponseHandler();
 		ContentData contentData = null;
@@ -89,22 +102,25 @@ public class DroolsFlowTaskManagement implements TaskManagement {
 				e.printStackTrace();
 			}
 		}
-		// TODO: fixme
-		client.complete(taskId, "admin", contentData, responseHandler);
+		client.complete(taskId, userId, contentData, responseHandler);
 		responseHandler.waitTillDone(5000);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void completeTask(long taskId, String outcome, Map data) {
+	public void completeTask(long taskId, String outcome, Map data, String userId) {
 		data.put("outcome", outcome);
-		completeTask(taskId, data);
+		completeTask(taskId, data, userId);
 	}
 
-	public void releaseTask(long taskId) {
+	public void releaseTask(long taskId, String userId) {
+		// TODO
+		if (userId == null) {
+			System.err.println("assignTask: userId == null, using 'admin'");
+			userId = "admin";
+		}
 		connect();
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		// TODO: fixme
-		client.release(taskId, "Administrator", responseHandler);
+		client.release(taskId, userId, responseHandler);
 		responseHandler.waitTillDone(5000);
 	}
 
