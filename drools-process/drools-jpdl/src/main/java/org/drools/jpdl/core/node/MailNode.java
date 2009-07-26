@@ -26,12 +26,11 @@ public class MailNode extends JpdlNode {
         this.actors = actors;
     }
     
-
-//    public String getTo() {
-//        return to;
-//    }
+    public String getToEmail() {
+        return to;
+    }
     
-    public void setTo(String to) {
+    public void setToEmail(String to) {
         this.to = to;
     }
     

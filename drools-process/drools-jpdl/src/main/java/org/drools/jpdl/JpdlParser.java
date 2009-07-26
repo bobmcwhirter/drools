@@ -26,7 +26,6 @@ import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.validation.ProcessValidationError;
-import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.workflow.core.Node;
 import org.jbpm.graph.def.Event;
 import org.jbpm.graph.def.ExceptionHandler;
@@ -126,7 +125,7 @@ public class JpdlParser {
                 }
                 matcher = MAIL_TO_PATTERN.matcher(config);
                 if (matcher.find()) {
-                    newNode.setTo(matcher.group(1));
+                    newNode.setToEmail(matcher.group(1));
                 }
                 matcher = MAIL_SUBJECT_PATTERN.matcher(config);
                 if (matcher.find()) {
