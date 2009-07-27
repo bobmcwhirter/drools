@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/EvaluationExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xmlns:tns="http://www.example.org/EvaluationExample">
+
+  <!-- resources -->
+  <resource id="projectManager" name="Project Manager"/>
+  <resource id="humanResourceManager" name="HR Manager"/>
+  
+  <!-- item definitions -->
+  <itemDefinition id="employeeId" structureRef="java.lang.String" />
+  
+  <process id="Evaluation" name="Evaluation Process">
+    
+    <!-- process variables -->
+    <property id="employee" itemSubjectRef="tns:employeeId" />
+  
+    <!-- nodes -->  
+    <startEvent id="StartProcess"/>
+    <scriptTask id="Log" scriptLanguage="java">
+      <script>System.out.println("Processing evaluation for employee " + employee);</script>
+    </scriptTask>
+    <parallelGateway id="Diverge" gatewayDirection="diverging"/>
+    <task id="RegisterRequest" name="RegisterRequest">
+      <ioSpecification>
+        <dataInput id="employeeInputSet" name="employeeId" itemSubjectRef="tns:employeeId" />
+        <inputSet>
+          <dataInputRefs>employeeInputSet</dataInputRefs>
+        </inputSet>
+        <outputSet/>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>employee</sourceRef>
+        <targetRef>employeeInputSet</targetRef>
+      </dataInputAssociation>
+    </task>
+    <userTask id="Two">
+    </userTask>
+    <parallelGateway id="Converge" gatewayDirection="converging"/>
+    <endEvent id="EndProcess"/>
+    
+    <!-- connections -->
+    <sequenceFlow sourceRef="StartProcess" targetRef="Log"/>
+    <sequenceFlow sourceRef="Log" targetRef="Diverge"/>
+    <sequenceFlow sourceRef="Diverge" targetRef="RegisterRequest"/>
+    <sequenceFlow sourceRef="Diverge" targetRef="Two"/>
+    <sequenceFlow sourceRef="RegisterRequest" targetRef="Converge"/>
+    <sequenceFlow sourceRef="Two" targetRef="Converge"/>
+    <sequenceFlow sourceRef="Converge" targetRef="EndProcess"/>
+    
+  </process>
+</definitions>
