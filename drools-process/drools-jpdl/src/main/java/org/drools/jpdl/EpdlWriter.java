@@ -44,114 +44,118 @@ public class EpdlWriter {
         Node[] nodes = process.getNodes();
         int id = 0;
         
-        String generatedConnections = "";
+        
         System.out.println("<process xmlns=\"http://drools.org/drools-5.0/process\""+
                 " xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" "+
                 "xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\" " +
                 "type=\"RuleFlow\" name=\"flow\" id=\""+process.getName()+"\" package-name=\"org.drools.examples\" >");
         System.out.println("<header>");
         System.out.println("</header>");
+        //Print nodes and Connections
+        printNodesAndConnections(nodes);
+        
+
+        System.out.println("</process>");
+    }
+
+    private static void printNodesAndConnections(Node[] nodes) {
+        String generatedConnections = "";
         System.out.println("<nodes>");
-        for(Node node : nodes){
+        for (Node node : nodes) {
             //System.out.println("Node Type: "+node.getClass()+" - Name"+node.getName());
-            if(node instanceof org.drools.jpdl.core.node.StartState){
-                System.out.println("<start id=\""+node.getId()+"\" name=\""+node.getName()+"\" />");
-            }
-            else if(node instanceof org.drools.jpdl.core.node.Fork){
-                System.out.println("<split id=\""+node.getId()+"\" name=\""+node.getName()+"\" type=\"1\" />");
-            }
-            else if(node instanceof org.drools.jpdl.core.node.Join){
-                System.out.println("<join id=\""+node.getId()+"\" name=\""+node.getName()+"\" type=\"1\" />");
-            }
-            else if(node instanceof org.drools.jpdl.core.node.State){
-                generatedConnections= suggestJoinNode(node);
-                
-                    
-                
-                System.out.println("<state id=\""+node.getId()+"\" name=\""+node.getName()+"\" >");
+            if (node instanceof org.drools.jpdl.core.node.StartState) {
+                System.out.println("<start id=\"" + node.getId() + "\" name=\"" + node.getName() + "\" />");
+            } else if (node instanceof org.drools.jpdl.core.node.Fork) {
+                System.out.println("<split id=\"" + node.getId() + "\" name=\"" + node.getName() + "\" type=\"1\" />");
+            } else if (node instanceof org.drools.jpdl.core.node.Join) {
+                System.out.println("<join id=\"" + node.getId() + "\" name=\"" + node.getName() + "\" type=\"1\" />");
+            } else if (node instanceof org.drools.jpdl.core.node.SuperState) {
+                generatedConnections += suggestSplitNode(node);
+                generatedConnections += suggestJoinNode(node);
+                System.out.println("<composite id=\""+ node.getId() +"\" name=\""+ node.getName() +"\">");
+                    List<org.drools.jpdl.core.node.JpdlNode> nodesList = ((org.drools.jpdl.core.node.SuperState)node).getNodes();
+                    printNodesAndConnections(nodesList.toArray(new Node[nodes.length]));
+                System.out.println("</composite>");
+
+            } else if (node instanceof org.drools.jpdl.core.node.State) {
+                generatedConnections += suggestJoinNode(node);
+                System.out.println("<state id=\"" + node.getId() + "\" name=\"" + node.getName() + "\" >");
                 System.out.println("    <constraints>");
                 Set<String> keys = node.getOutgoingConnections().keySet();
-                for(String key: keys){
-                    for (Connection connection: node.getOutgoingConnections(key)) {
-                        System.out.println("        <constraint toNodeId=\""+connection.getTo().getId()+"\" name=\"signalTo"+connection.getTo().getName()+"\" />");
+                for (String key : keys) {
+                    for (Connection connection : node.getOutgoingConnections(key)) {
+                        System.out.println("        <constraint toNodeId=\"" + connection.getTo().getId() + "\" name=\"signalTo" + connection.getTo().getName() + "\" />");
                     }
                 }
                 System.out.println("    </constraints>");
                 System.out.println("</state>");
-
-            }
-            else if(node instanceof org.drools.jpdl.core.node.Decision){
-                System.out.println("<split id=\""+node.getId()+"\" name=\""+node.getName()+"\" type=\"2\" >");
-                 System.out.println("    <constraints>");
+            } else if (node instanceof org.drools.jpdl.core.node.Decision) {
+                System.out.println("<split id=\"" + node.getId() + "\" name=\"" + node.getName() + "\" type=\"2\" >");
+                System.out.println("    <constraints>");
                 Set<String> keys = node.getOutgoingConnections().keySet();
-                for(String key: keys){
-
-                    for (Connection connection: node.getOutgoingConnections(key)) {
-                        System.out.println("        <constraint toNodeId=\""+connection.getTo().getId()+"\" name=\"signalTo"+connection.getTo().getName()+
-                                            "\" toType=\"DROOLS_DEFAULT\" type=\"rule\" dialect=\"java\" >");
+                for (String key : keys) {
+                    for (Connection connection : node.getOutgoingConnections(key)) {
+                        System.out.println("        <constraint toNodeId=\"" + connection.getTo().getId() + "\" name=\"signalTo" + connection.getTo().getName() + "\" toType=\"DROOLS_DEFAULT\" type=\"rule\" dialect=\"java\" >");
                         //System.out.println("            "+"There is no way to get the conditions in each leavingTransition (depracated since 3.2 - http://docs.jboss.com/jbpm/v3.2/userguide/html_single/#condition.element)");
                         //System.out.println("            "+"There is no way to access the decision expresion or the decision delegation class through the APIs");
                         System.out.println("        </constraint>");
-
                     }
                 }
                 System.out.println("    </constraints>");
                 System.out.println("</split>");
-            }
-            else if(node instanceof org.drools.jpdl.core.node.EndState){
+            } else if (node instanceof org.drools.jpdl.core.node.EndState) {
                 generatedConnections += suggestJoinNode(node);
-                
-
-                System.out.println("<end id=\""+node.getId()+"\" name=\""+node.getName()+"\" />");
-
-            }
-            else if(node instanceof org.drools.jpdl.core.node.JpdlNode){
+                System.out.println("<end id=\"" + node.getId() + "\" name=\"" + node.getName() + "\" />");
+            } else if (node instanceof org.drools.jpdl.core.node.JpdlNode) {
                 generatedConnections += suggestSplitNode(node);
                 generatedConnections += suggestJoinNode(node);
-
-                System.out.println("<actionNode id=\""+node.getId()+"\" name=\""+node.getName()+"\">");
+                System.out.println("<actionNode id=\"" + node.getId() + "\" name=\"" + node.getName() + "\">");
                 System.out.println("    <action type=\"expression\" dialect=\"java\" >");
-                Action action = ((org.drools.jpdl.core.node.JpdlNode)node).getAction();
-                if(action != null){
+                Action action = ((org.drools.jpdl.core.node.JpdlNode) node).getAction();
+                if (action != null) {
                     Delegation delegation = action.getActionDelegation();
-                    if(delegation != null){
-                       // System.out.println("Introspect = "+delegation.getClassName());
-                       // System.out.println("replaced"+delegation.getClassName().replace(".","/"));
-                       // Resource resource = ResourceFactory.newInputStreamResource(EpdlWriter.class.getResourceAsStream(delegation.getClassName().replace(".","/")));
-                       // System.out.println(""+resource);
-                       //  System.out.println("Paste the content of the execute() method of the class"+delegation.getClassName());
+                    if (delegation != null) {
+                        // System.out.println("Introspect = "+delegation.getClassName());
+                        // System.out.println("replaced"+delegation.getClassName().replace(".","/"));
+                        // Resource resource = ResourceFactory.newInputStreamResource(EpdlWriter.class.getResourceAsStream(delegation.getClassName().replace(".","/")));
+                        // System.out.println(""+resource);
+                        //  System.out.println("Paste the content of the execute() method of the class"+delegation.getClassName());
                     }
                 }
                 System.out.println("    </action>");
                 System.out.println("</actionNode>");
             }
-            
         }
         System.out.println("</nodes>");
-
         System.out.println("<connections>");
-        for(Node node : nodes){
-
+        for (Node node : nodes) {
             Map<String, List<Connection>> outConnections = node.getOutgoingConnections();
             Set<String> keys = outConnections.keySet();
-            for(String key : keys){
+            if(keys.size() == 0){
+                break;
+            }
+            for (String key : keys) {
                 List<Connection> connections = outConnections.get(key);
-                for(Connection connection : connections){
-                    System.out.println("    <connection from=\""+node.getId()+"\" to=\""+connection.getTo().getId()+"\" />");
+                for (Connection connection : connections) {
+                    System.out.println("    <connection from=\"" + node.getId() + "\" to=\"" + connection.getTo().getId() + "\" />");
                 }
             }
-
         }
-        System.out.println("<!-- Generated Connection for suggested nodes -->");
-        System.out.println(generatedConnections);
-        System.out.println("<!-- END - Generated Connection for suggested nodes -->");
+        if(!generatedConnections.equals("")){
+            System.out.println("<!-- Generated Connection for suggested nodes -->");
+            System.out.println(generatedConnections);
+            System.out.println("<!-- END - Generated Connection for suggested nodes -->");
+        }
         System.out.println("</connections>");
-        System.out.println("</process>");
     }
 
     private static String suggestJoinNode(Node node) {
         String resultGeneratedConnection = "";
         Set<String> incomingConnectionsTypes = node.getIncomingConnections().keySet();
+        //Probably we are inside a composite node or in a disconected node (??)
+        if(incomingConnectionsTypes.size()== 0){
+            return "";
+        }
         String firstKey = incomingConnectionsTypes.iterator().next();
         boolean suggestJoinNode = false;
         if (incomingConnectionsTypes.size() > 1) {
@@ -160,6 +164,7 @@ public class EpdlWriter {
             suggestJoinNode = true;
         }
         if (suggestJoinNode) {
+
             System.out.println("<!-- This is a suggested Join Node -->");
             System.out.println("<join id=\"" + (suggestedNodeId) + "\" name=\"Join XOR - "+suggestedNodeId+"\" type=\"2\" />");
             
@@ -191,7 +196,11 @@ public class EpdlWriter {
     private static String suggestSplitNode(Node node) {
         String resultGeneratedConnection = "";
         Set<String> outgoingConnectionsTypes = node.getOutgoingConnections().keySet();
-         String firstKey = outgoingConnectionsTypes.iterator().next();
+         //Probably we are inside a composite node or in a disconected node (??)
+        if(outgoingConnectionsTypes.size()== 0){
+            return "";
+        }
+        String firstKey = outgoingConnectionsTypes.iterator().next();
         boolean suggestSplitNode = false;
         if (outgoingConnectionsTypes.size() > 1) {
             suggestSplitNode = true;

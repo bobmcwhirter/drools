@@ -104,5 +104,13 @@ public class ParseSimpleProcessTest extends TestCase {
         EpdlWriter.write(process);
 
       }
+      public void testWriteEPDLSuperState() throws Exception {
+        JpdlParser parser = new JpdlParser();
+        JpdlProcess process = parser.loadJpdlProcess("simple2superState/processdefinition.xml");
+        ProcessValidationError[] errors = parser.getErrors();
+
+        EpdlWriter.write(process);
+
+      }
 
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns="urn:jbpm.org:jpdl-3.2"  name="SimpleSuperStateNode">
+
+
+	<start-state name="start-state1">
+		<transition to="super-state1"></transition>
+	</start-state>
+
+
+	<super-state name="super-state1">
+		<state name="state1">
+			<transition to="node1"></transition>
+		</state>
+		<node name="node1"></node>
+		<transition to="end-state1"></transition>
+	</super-state>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>
