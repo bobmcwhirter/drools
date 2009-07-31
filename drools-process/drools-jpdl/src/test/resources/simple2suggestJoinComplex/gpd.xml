@@ -11,10 +11,23 @@
       <label x="5" y="-10"/>
     </edge>
     <edge>
-      <label x="5" y="-10"/>
+      <label x="-10" y="-30"/>
     </edge>
   </node>
   <node name="node1" x="108" y="218" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="node3" x="465" y="320" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="decision2" x="406" y="146" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -23,14 +36,11 @@
     <edge>
       <label x="5" y="-10"/>
     </edge>
+  </node>
+  <node name="node4" x="275" y="330" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
   <node name="end-state1" x="155" y="406" width="132" height="36"/>
-  <node name="node3" x="356" y="316" width="132" height="36">
-    <edge>
-      <label x="5" y="-10"/>
-    </edge>
-  </node>
 </root-container>

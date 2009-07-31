@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root-container height="662" name="simple" width="694">
-  <node height="40" name="start" width="140" x="150" y="25">
+<root-container name="simple" width="846" height="499">
+  <node name="start" x="150" y="12" width="140" height="40">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node height="36" name="node1" width="132" x="42" y="154">
+  <node name="first state" x="152" y="72" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node height="40" name="end" width="140" x="154" y="290"/>
-  <node height="24" name="fork1" width="252" x="95" y="100">
+  <node name="fork1" x="96" y="123" width="252" height="24">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -19,14 +18,25 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node height="24" name="join1" width="252" x="99" y="223">
+  <node name="node1" x="59" y="185" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node height="36" name="mail-node1" width="132" x="263" y="155">
+  <node name="node2" x="242" y="185" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
+  <node name="join1" x="102" y="256" width="252" height="24">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="last state" x="163" y="313" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="end" x="160" y="376" width="140" height="40"/>
 </root-container>
