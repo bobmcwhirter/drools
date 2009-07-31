@@ -74,7 +74,8 @@ public class EpdlWriter {
                 generatedConnections += suggestJoinNode(node);
                 System.out.println("<composite id=\""+ node.getId() +"\" name=\""+ node.getName() +"\">");
                     List<org.drools.jpdl.core.node.JpdlNode> nodesList = ((org.drools.jpdl.core.node.SuperState)node).getNodes();
-                    printNodesAndConnections(nodesList.toArray(new Node[nodes.length]));
+                    printNodesAndConnections(nodesList.toArray(new Node[nodesList.size()]));
+                    printInPortsAndOutPorts(nodesList.toArray(new Node[nodesList.size()]));
                 System.out.println("</composite>");
 
             } else if (node instanceof org.drools.jpdl.core.node.State) {
@@ -179,7 +180,7 @@ public class EpdlWriter {
                     if(fromNode instanceof org.drools.jpdl.core.node.State){
                         System.out.println("<!-- Take a look at the State Node that is pointing here, " +
                                 "you will need to change the constraint for signal it to the new JoinNode id -->");
-                        System.out.println("<!-- in node id: "+fromNode.getId()+ "-- name: "+fromNode.getName()+" -->");
+                        System.out.println("<!-- in node id: "+fromNode.getId()+ " / name: "+fromNode.getName()+" -->");
                         System.out.println("<!-- you should change the fromId ("+fromNodeId+") attribute to: "+suggestedNodeId+"-->");
                         System.out.println("<!-- you can also change the name for something that reference the JoinNode -->");
                     }
@@ -209,7 +210,7 @@ public class EpdlWriter {
         }
         if(suggestSplitNode){
             System.out.println("<!-- This is a suggested Split Node -->");
-            System.out.println("<split id=\"" + (suggestedNodeId) + "\" name=\"Split XOR\" type=\"2\" >");
+            System.out.println("<split id=\"" + (suggestedNodeId) + "\" name=\"Split XOR - "+suggestedNodeId+"\" type=\"2\" >");
               System.out.println("    <constraints>");
                 Set<String> keys = node.getOutgoingConnections().keySet();
                 for(String key: keys){
@@ -249,6 +250,20 @@ public class EpdlWriter {
         }
 
         return resultGeneratedConnection;
+    }
+
+    private static void printInPortsAndOutPorts(Node[] toArray) {
+        int lastNode = 0;
+        if(toArray.length > 1){
+            lastNode = toArray.length -1;
+        }
+        
+        System.out.println("<in-ports>");
+        System.out.println("    <in-port type=\"DROOLS_DEFAULT\" nodeId=\""+toArray[0].getId()+"\" nodeInType=\"DROOLS_DEFAULT\" />");
+        System.out.println("</in-ports>");
+        System.out.println("<out-ports>");
+        System.out.println("    <out-port type=\"DROOLS_DEFAULT\" nodeId=\""+toArray[lastNode].getId()+"\" nodeOutType=\"DROOLS_DEFAULT\" />");
+        System.out.println("</out-ports>");
     }
 
 

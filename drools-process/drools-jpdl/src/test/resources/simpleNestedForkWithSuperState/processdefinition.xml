@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns="urn:jbpm.org:jpdl-3.2"  name="simple">
+
+
+	<start-state name="start-state1">
+		<transition to="state1"></transition>
+	</start-state>
+
+
+	<state name="state1">
+		<transition to="super-state1"></transition>
+	</state>
+
+	<super-state name="super-state1">
+		<fork name="fork1">
+			<transition to="node1"></transition>
+			<transition to="fork2" name="to fork2"></transition>
+		</fork>
+		<fork name="fork2">
+			<transition to="node2"></transition>
+			<transition to="node3" name="to node3"></transition>
+		</fork>
+		<node name="node1">
+			<transition to="join2"></transition>
+		</node>
+		<node name="node2">
+			<transition to="join1"></transition>
+		</node>
+		<node name="node3">
+			<transition to="join1"></transition>
+		</node>
+		<join name="join1">
+			<transition to="join2"></transition>
+		</join>
+		<join name="join2"></join>
+		<transition to="state2"></transition>
+	</super-state>
+
+	<state name="state2">
+		<transition to="end-state1"></transition>
+	</state>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>

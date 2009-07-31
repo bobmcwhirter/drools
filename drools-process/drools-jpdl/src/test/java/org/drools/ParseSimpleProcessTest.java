@@ -112,5 +112,27 @@ public class ParseSimpleProcessTest extends TestCase {
         EpdlWriter.write(process);
 
       }
+       public void testWriteEPDLNestedForksWithSuperState() throws Exception {
+        JpdlParser parser = new JpdlParser();
+        JpdlProcess process = parser.loadJpdlProcess("simpleNestedForkWithSuperState/processdefinition.xml");
+        ProcessValidationError[] errors = parser.getErrors();
+
+        EpdlWriter.write(process);
+        
+        for (ProcessValidationError error: errors) {
+            System.err.println(error);
+        }
+        assertEquals(0, errors.length);
+
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        Package p = new Package("com.sample");
+        p.addProcess(process);
+        ruleBase.addPackage( p );
+
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ProcessInstance processInstance = workingMemory.startProcess("simple");
+
+      }
+
 
 }
