@@ -127,6 +127,8 @@ org.drools.guvnor.client.rpc.BuilderResult, true
 [Lorg.drools.guvnor.client.rpc.BuilderResult;, true
 org.drools.guvnor.client.rpc.BulkTestRunResult, true
 org.drools.guvnor.client.rpc.DetailedSerializableException, true
+org.drools.guvnor.client.rpc.DiscussionRecord, true
+[Lorg.drools.guvnor.client.rpc.DiscussionRecord;, true
 org.drools.guvnor.client.rpc.LogEntry, true
 [Lorg.drools.guvnor.client.rpc.LogEntry;, true
 org.drools.guvnor.client.rpc.MetaData, true
