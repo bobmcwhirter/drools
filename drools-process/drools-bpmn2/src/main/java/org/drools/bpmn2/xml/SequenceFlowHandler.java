@@ -12,6 +12,7 @@ import org.drools.workflow.core.NodeContainer;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -44,6 +45,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 
 		final String sourceRef = attrs.getValue("sourceRef");
 		final String targetRef = attrs.getValue("targetRef");
+		final String bendpoints = attrs.getValue("g:bendpoints");
 
 		RuleFlowProcess process = (RuleFlowProcess) parser.getParent();
 		
@@ -54,6 +56,8 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 			process.setMetaData(ProcessHandler.CONNECTIONS, connections);
 		}
 		SequenceFlow connection = new SequenceFlow(sourceRef, targetRef);
+		connection.setBendpoints(bendpoints);
+		
 		connections.add(connection);
 
 		return connection;
@@ -61,8 +65,19 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 
 	public Object end(final String uri, final String localName,
 			          final ExtensibleXmlParser parser) throws SAXException {
-		parser.endElementBuilder();
-		return parser.getCurrent();
+		final Element element = parser.endElementBuilder();
+		SequenceFlow sequenceFlow = (SequenceFlow) parser.getCurrent();
+        
+		org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+        	String nodeName = xmlNode.getNodeName();
+        	if ("conditionExpression".equals(nodeName)) {
+        		String expression = xmlNode.getTextContent();
+        		sequenceFlow.setExpression(expression);
+        	}
+        	xmlNode = xmlNode.getNextSibling();
+        }
+        return parser.getCurrent();
 	}
 
 	public Class<?> generateNodeFor() {

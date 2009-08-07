@@ -29,7 +29,7 @@ public class ParallelGatewayHandler extends AbstractNodeHandler {
     }
 
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
-		writeNode("exclusiveGateway", node, xmlDump);
+		writeNode("exclusiveGateway", node, xmlDump, includeMeta);
 		if (node instanceof Split) {
 			xmlDump.append("gatewayDirection=\"diverging\" ");
 		} else if (node instanceof Join) {

@@ -29,13 +29,7 @@ public class ExclusiveGatewayHandler extends AbstractNodeHandler {
     }
 
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
-		writeNode("exclusiveGateway", node, xmlDump);
-		if (node instanceof Split) {
-			xmlDump.append("gatewayDirection=\"diverging\" ");
-		} else if (node instanceof Join) {
-			xmlDump.append("gatewayDirection=\"converging\" ");
-		}
-		endNode(xmlDump);
+		throw new IllegalArgumentException("Writing out should be handled by split / join handler");
 	}
 
 }

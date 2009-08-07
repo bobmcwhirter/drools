@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="xItem" structureRef="java.lang.Object" />
+  <itemDefinition id="yItem" structureRef="java.lang.Object" />
+
+  <process id="com.sample.test" name="Test" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="tns:xItem"/>
+    <property id="y" itemSubjectRef="tns:yItem"/>
+
+    <!-- nodes -->
+    <scriptTask id="Script2" g:x="177" g:y="96" g:width="80" g:height="48" scriptLanguage="mvel" >
+      <script>System.out.println("y=" + y);</script>
+    </scriptTask>
+    <endEvent id="End" g:x="370" g:y="56" g:width="48" g:height="48" />
+    <task id="Email" g:x="163" g:y="180" g:width="100" g:height="48" tns:taskName="Email">
+      <ioSpecification>
+        <dataInput id="FromInput" name="From" />
+        <dataInput id="ToInput" name="To" />
+        <dataInput id="SubjectInput" name="Subject" />
+        <dataInput id="BodyInput" name="Body" />
+        <inputSet>
+          <dataInputRefs>FromInput</dataInputRefs>
+          <dataInputRefs>ToInput</dataInputRefs>
+          <dataInputRefs>SubjectInput</dataInputRefs>
+          <dataInputRefs>BodyInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <property id="From" />
+      <property id="Subject" />
+      <property id="To" />
+      <property id="Body" />
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">me@mail.com</from>
+          <to xs:type="tFormalExpression">From</to>
+        </assignment>
+        <sourceRef>From</sourceRef>
+        <targetRef>FromInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">Urgent email !</from>
+          <to xs:type="tFormalExpression">Subject</to>
+        </assignment>
+        <sourceRef>Subject</sourceRef>
+        <targetRef>SubjectInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">you@mail.com</from>
+          <to xs:type="tFormalExpression">To</to>
+        </assignment>
+        <sourceRef>To</sourceRef>
+        <targetRef>ToInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">This is an urgent email #{x}</from>
+          <to xs:type="tFormalExpression">Body</to>
+        </assignment>
+        <sourceRef>Body</sourceRef>
+        <targetRef>BodyInput</targetRef>
+      </dataInputAssociation>
+    </task>
+    <exclusiveGateway id="Split" g:x="96" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" />
+    <startEvent id="Start" g:x="16" g:y="56" g:width="48" g:height="48" />
+    <scriptTask id="Script1" g:x="177" g:y="16" g:width="80" g:height="48" scriptLanguage="mvel" >
+      <script>System.out.println("x=" + x);</script>
+    </scriptTask>
+    <exclusiveGateway id="Join" g:x="289" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
+
+    <!-- connections -->
+    <sequenceFlow sourceRef="Split" targetRef="Script2" g:bendpoints="[120,120]" >
+      <conditionExpression>return x == "Second";</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow sourceRef="Start" targetRef="Split" />
+    <sequenceFlow sourceRef="Split" targetRef="Script1" g:bendpoints="[120,40]" >
+      <conditionExpression>return x == "First";</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow sourceRef="Script2" targetRef="Join" g:bendpoints="[314,119]" />
+    <sequenceFlow sourceRef="Script1" targetRef="Join" g:bendpoints="[313,40]" />
+    <sequenceFlow sourceRef="Join" targetRef="Email" />
+    <sequenceFlow sourceRef="Email" targetRef="End" />
+
+  </process>
+
+</definitions>

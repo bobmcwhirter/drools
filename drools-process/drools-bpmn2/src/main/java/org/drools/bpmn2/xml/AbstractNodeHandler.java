@@ -12,6 +12,7 @@ import org.drools.xml.Handler;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
@@ -61,16 +62,66 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void handleNode(final Node node, final Element element, final String uri, 
                               final String localName, final ExtensibleXmlParser parser)
     	throws SAXException {
+        final String x = element.getAttribute("x");
+        if (x != null && x.length() != 0) {
+            try {
+                node.setMetaData("x", new Integer(x));
+            } catch (NumberFormatException exc) {
+                throw new SAXParseException("<" + localName + "> requires an Integer 'x' attribute", parser.getLocator());
+            }
+        }
+        final String y = element.getAttribute("y");
+        if (y != null && y.length() != 0) {
+            try {
+                node.setMetaData("y", new Integer(y));
+            } catch (NumberFormatException exc) {
+                throw new SAXParseException("<" + localName + "> requires an Integer 'y' attribute", parser.getLocator());
+            }
+        }
+        final String width = element.getAttribute("width");
+        if (width != null && width.length() != 0) {
+            try {
+                node.setMetaData("width", new Integer(width));
+            } catch (NumberFormatException exc) {
+                throw new SAXParseException("<" + localName + "> requires an Integer 'width' attribute", parser.getLocator());
+            }
+        }
+        final String height = element.getAttribute("height");
+        if (height != null && height.length() != 0) {
+            try {
+                node.setMetaData("height", new Integer(height));
+            } catch (NumberFormatException exc) {
+                throw new SAXParseException("<" + localName + "> requires an Integer 'height' attribute", parser.getLocator());
+            }
+        }
     }
     
     public abstract void writeNode(final Node node, final StringBuilder xmlDump,
     		                       final boolean includeMeta);
     
     protected void writeNode(final String name, final Node node, 
-    		                 final StringBuilder xmlDump) {
+    		                 final StringBuilder xmlDump, boolean includeMeta) {
     	xmlDump.append("    <" + name + " "); 
         if (node.getName() != null) {
-            xmlDump.append("name=\"" + node.getName() + "\" ");
+            xmlDump.append("id=\"" + node.getName() + "\" ");
+        }
+        if (includeMeta) {
+            Integer x = (Integer) node.getMetaData("x");
+            Integer y = (Integer) node.getMetaData("y");
+            Integer width = (Integer) node.getMetaData("width");
+            Integer height = (Integer) node.getMetaData("height");
+            if (x != null && x != 0) {
+                xmlDump.append("g:x=\"" + x + "\" ");
+            }
+            if (y != null && y != 0) {
+                xmlDump.append("g:y=\"" + y + "\" ");
+            }
+            if (width != null && width != -1) {
+                xmlDump.append("g:width=\"" + width + "\" ");
+            }
+            if (height != null && height != -1) {
+                xmlDump.append("g:height=\"" + height + "\" ");
+            }
         }
     }
     

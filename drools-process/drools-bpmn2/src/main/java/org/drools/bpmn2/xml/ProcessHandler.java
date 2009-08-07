@@ -6,8 +6,13 @@ import java.util.List;
 import org.drools.bpmn2.core.SequenceFlow;
 import org.drools.definition.process.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.ConnectionImpl;
+import org.drools.workflow.core.impl.ConnectionRef;
+import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.node.Split;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -91,9 +96,20 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					throw new IllegalArgumentException(
 						"Could not find target " + targetRef);
 				}
-				new ConnectionImpl(
+				Connection result = new ConnectionImpl(
 					source, NodeImpl.CONNECTION_DEFAULT_TYPE, 
 					target, NodeImpl.CONNECTION_DEFAULT_TYPE);
+				result.setMetaData("bendpoints", connection.getBendpoints());
+				if (connection.getExpression() != null) {
+					Split split = (Split) source;
+					Constraint constraint = new ConstraintImpl();
+					constraint.setType("code");
+					constraint.setName("");
+					constraint.setConstraint(connection.getExpression());
+					split.addConstraint(
+						new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
+						constraint);
+				}
 			}
 		}
 	}

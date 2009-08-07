@@ -27,43 +27,149 @@ public class TaskHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	WorkItemNode workItemNode = (WorkItemNode) node;
-        String name = element.getAttribute("name");
+        String name = element.getAttribute("taskName");
         Work work = new WorkImpl();
         work.setName(name);
     	workItemNode.setWork(work);
-    	
     	Map<String, String> dataInputs = new HashMap<String, String>();
+    	Map<String, String> dataOutputs = new HashMap<String, String>();
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();
         	if ("ioSpecification".equals(nodeName)) {
-        		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        		while (subNode instanceof Element) {
-        			String subNodeName = subNode.getNodeName();
-                	if ("dataInput".equals(subNodeName)) {
-                		String id = ((Element) subNode).getAttribute("id");
-                		String inputName = ((Element) subNode).getAttribute("name");
-                		dataInputs.put(id, inputName);
-                	}
-                	subNode = subNode.getNextSibling();
-        		}
+        		readIoSpecification(xmlNode, dataInputs, dataOutputs);
         	} else if ("dataInputAssociation".equals(nodeName)) {
-        		// sourceRef
-        		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        		String from = subNode.getTextContent();
-        		// targetRef
-        		subNode = subNode.getNextSibling();
-        		String to = subNode.getTextContent();
-        		workItemNode.addInMapping(dataInputs.get(to), from);
+        		readDataInputAssociation(xmlNode, workItemNode, dataInputs);
+        	} else if ("dataOutputAssociation".equals(nodeName)) {
+        		readDataOutputAssociation(xmlNode, workItemNode, dataOutputs);
         	}
     		xmlNode = xmlNode.getNextSibling();
         }
 	}
+    
+    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
+    	org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+		while (subNode instanceof Element) {
+			String subNodeName = subNode.getNodeName();
+        	if ("dataInput".equals(subNodeName)) {
+        		String id = ((Element) subNode).getAttribute("id");
+        		String inputName = ((Element) subNode).getAttribute("name");
+        		dataInputs.put(id, inputName);
+        	}
+        	if ("dataOutput".equals(subNodeName)) {
+        		String id = ((Element) subNode).getAttribute("id");
+        		String outputName = ((Element) subNode).getAttribute("name");
+        		dataOutputs.put(id, outputName);
+        	}
+        	subNode = subNode.getNextSibling();
+		}
+    }
+    
+    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataInputs) {
+		// sourceRef
+		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+		if ("assignment".equals(subNode.getNodeName())) {
+			org.w3c.dom.Node subSubNode = subNode.getFirstChild();
+			String from = subSubNode.getTextContent();
+			subNode = subNode.getNextSibling();
+    		String to = subNode.getTextContent();
+    		workItemNode.getWork().setParameter(to.substring(workItemNode.getName().length() + 1), from);
+		} else {
+    		String from = subNode.getTextContent();
+    		// targetRef
+    		subNode = subNode.getNextSibling();
+    		String to = subNode.getTextContent();
+    		workItemNode.addInMapping(
+				dataInputs.get(to).substring(workItemNode.getName().length() + 1),
+				from.substring(workItemNode.getName().length() + 1));
+		}
+    }
+    
+    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataOutputs) {
+		// sourceRef
+		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+		String from = subNode.getTextContent();
+		// targetRef
+		subNode = subNode.getNextSibling();
+		String to = subNode.getTextContent();
+		workItemNode.addOutMapping(
+			from.substring(workItemNode.getName().length() + 1),
+			dataOutputs.get(to).substring(workItemNode.getName().length() + 1));
+    }
 
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		WorkItemNode workItemNode = (WorkItemNode) node;
-		writeNode("task", workItemNode, xmlDump);
-		endNode(xmlDump);
+		writeNode("task", workItemNode, xmlDump, includeMeta);
+		xmlDump.append("tns:taskName=\"" + workItemNode.getWork().getName() + "\" >" + EOL);
+		writeIO(workItemNode, xmlDump);
+		endNode("task", xmlDump);
+	}
+	
+	protected void writeIO(WorkItemNode workItemNode, StringBuilder xmlDump) {
+		xmlDump.append("      <ioSpecification>" + EOL);
+		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
+			xmlDump.append("        <dataInput id=\"" + workItemNode.getName() + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
+		}
+		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
+			if (entry.getValue() != null) {
+				xmlDump.append("        <dataInput id=\"" + workItemNode.getName() + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
+			}
+		}
+		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
+			xmlDump.append("        <dataOutput id=\"" + workItemNode.getName() + "_" + entry.getKey() + "Output\" name=\"" + entry.getKey() + "\" />" + EOL);
+		}
+		xmlDump.append("        <inputSet>" + EOL);
+		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
+			xmlDump.append("          <dataInputRefs>" + workItemNode.getName() + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
+		}
+		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
+			if (entry.getValue() != null) {
+				xmlDump.append("          <dataInputRefs>" + workItemNode.getName() + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
+			}
+		}
+		xmlDump.append(
+			"        </inputSet>" + EOL);
+		xmlDump.append("        <outputSet>" + EOL);
+		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
+			xmlDump.append("          <dataOutputRefs>" + workItemNode.getName() + "_" + entry.getKey() + "Output</dataOutputRefs>" + EOL);
+		}
+		xmlDump.append(
+			"        </outputSet>" + EOL);
+		xmlDump.append(
+			"      </ioSpecification>" + EOL);
+		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
+			if (entry.getValue() != null) {
+				xmlDump.append(
+					"      <property id=\"" + workItemNode.getName() + "_" + entry.getKey() + "\" />" + EOL);
+			}
+		}
+		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
+			xmlDump.append("      <dataInputAssociation>" + EOL);
+			xmlDump.append(
+				"        <sourceRef>" + workItemNode.getName() + "_" + entry.getValue() + "</sourceRef>" + EOL +
+				"        <targetRef>" + workItemNode.getName() + "_" + entry.getKey() + "</targetRef>" + EOL);
+			xmlDump.append("      </dataInputAssociation>" + EOL);
+		}
+		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
+			if (entry.getValue() != null) {
+				xmlDump.append("      <dataInputAssociation>" + EOL);
+				xmlDump.append(
+					"        <assignment>" + EOL +
+					"          <from xs:type=\"tFormalExpression\">" + entry.getValue().toString() + "</from>" + EOL +
+					"          <to xs:type=\"tFormalExpression\">" + workItemNode.getName() + "_" + entry.getKey() + "Input</to>" + EOL +
+					"        </assignment>" + EOL +
+					"        <sourceRef>" + workItemNode.getName() + "_" + entry.getKey() + "</sourceRef>" + EOL +
+					"        <targetRef>" + workItemNode.getName() + "_" + entry.getKey() + "Input</targetRef>" + EOL);
+				xmlDump.append("      </dataInputAssociation>" + EOL);
+			}
+		}
+		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
+			xmlDump.append("      <dataOutputAssociation>" + EOL);
+			xmlDump.append(
+				"        <sourceRef>" + workItemNode.getName() + "_" + entry.getKey() + "</sourceRef>" + EOL +
+				"        <targetRef>" + workItemNode.getName() + "_" + entry.getValue() + "</targetRef>" + EOL);
+			xmlDump.append("      </dataOutputAssociation>" + EOL);
+		}
 	}
 
 }

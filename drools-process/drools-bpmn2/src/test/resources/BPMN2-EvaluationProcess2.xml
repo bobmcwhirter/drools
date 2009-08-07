@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="employeeItem" structureRef="java.lang.Object" />
+
+  <resource id="Actor" name="Human Actor" />
+
+  <process id="com.sample.evaluation" name="Evaluation Process" >
+
+    <!-- process variables -->
+    <property id="employee" itemSubjectRef="tns:employeeItem"/>
+
+    <!-- nodes -->
+    <endEvent id="EndProcess" g:x="683" g:y="56" g:width="48" g:height="48" />
+    <userTask id="Project_Manager_Evaluation" g:x="352" g:y="16" g:width="225" g:height="48" >
+      <ioSpecification>
+        <dataInput id="Project_Manager_Evaluation_CommentInput" name="Comment" />
+        <dataInput id="Project_Manager_Evaluation_TaskNameInput" name="TaskName" />
+        <dataInput id="Project_Manager_Evaluation_PriorityInput" name="Priority" />
+        <dataInput id="Project_Manager_Evaluation_ContentInput" name="Content" />
+        <dataInput id="Project_Manager_Evaluation_SkippableInput" name="Skippable" />
+        <inputSet>
+          <dataInputRefs>Project_Manager_Evaluation_CommentInput</dataInputRefs>
+          <dataInputRefs>Project_Manager_Evaluation_TaskNameInput</dataInputRefs>
+          <dataInputRefs>Project_Manager_Evaluation_PriorityInput</dataInputRefs>
+          <dataInputRefs>Project_Manager_Evaluation_ContentInput</dataInputRefs>
+          <dataInputRefs>Project_Manager_Evaluation_SkippableInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <property id="Project_Manager_Evaluation_Comment" />
+      <property id="Project_Manager_Evaluation_TaskName" />
+      <property id="Project_Manager_Evaluation_Priority" />
+      <property id="Project_Manager_Evaluation_Content" />
+      <property id="Project_Manager_Evaluation_Skippable" />
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">You need to perform an evaluation for #{employee}</from>
+          <to xs:type="tFormalExpression">Project_Manager_Evaluation_CommentInput</to>
+        </assignment>
+        <sourceRef>Project_Manager_Evaluation_Comment</sourceRef>
+        <targetRef>Project_Manager_Evaluation_CommentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">Performance Evaluation</from>
+          <to xs:type="tFormalExpression">Project_Manager_Evaluation_TaskNameInput</to>
+        </assignment>
+        <sourceRef>Project_Manager_Evaluation_TaskName</sourceRef>
+        <targetRef>Project_Manager_Evaluation_TaskNameInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">1</from>
+          <to xs:type="tFormalExpression">Project_Manager_Evaluation_PriorityInput</to>
+        </assignment>
+        <sourceRef>Project_Manager_Evaluation_Priority</sourceRef>
+        <targetRef>Project_Manager_Evaluation_PriorityInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">Project_Manager_Evaluation_ContentInput</to>
+        </assignment>
+        <sourceRef>Project_Manager_Evaluation_Content</sourceRef>
+        <targetRef>Project_Manager_Evaluation_ContentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">Project_Manager_Evaluation_SkippableInput</to>
+        </assignment>
+        <sourceRef>Project_Manager_Evaluation_Skippable</sourceRef>
+        <targetRef>Project_Manager_Evaluation_SkippableInput</targetRef>
+      </dataInputAssociation>
+      <potentialOwner resourceRef="tns:Actor" >
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <startEvent id="StartProcess" g:x="16" g:y="56" g:width="48" g:height="48" />
+    <userTask id="HR_Manager_Evaluation" g:x="352" g:y="96" g:width="225" g:height="48" >
+      <ioSpecification>
+        <dataInput id="HR_Manager_Evaluation_CommentInput" name="Comment" />
+        <dataInput id="HR_Manager_Evaluation_TaskNameInput" name="TaskName" />
+        <dataInput id="HR_Manager_Evaluation_PriorityInput" name="Priority" />
+        <dataInput id="HR_Manager_Evaluation_ContentInput" name="Content" />
+        <dataInput id="HR_Manager_Evaluation_SkippableInput" name="Skippable" />
+        <inputSet>
+          <dataInputRefs>HR_Manager_Evaluation_CommentInput</dataInputRefs>
+          <dataInputRefs>HR_Manager_Evaluation_TaskNameInput</dataInputRefs>
+          <dataInputRefs>HR_Manager_Evaluation_PriorityInput</dataInputRefs>
+          <dataInputRefs>HR_Manager_Evaluation_ContentInput</dataInputRefs>
+          <dataInputRefs>HR_Manager_Evaluation_SkippableInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <property id="HR_Manager_Evaluation_Comment" />
+      <property id="HR_Manager_Evaluation_TaskName" />
+      <property id="HR_Manager_Evaluation_Priority" />
+      <property id="HR_Manager_Evaluation_Content" />
+      <property id="HR_Manager_Evaluation_Skippable" />
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">You need to perform an evaluation for #{employee}</from>
+          <to xs:type="tFormalExpression">HR_Manager_Evaluation_CommentInput</to>
+        </assignment>
+        <sourceRef>HR_Manager_Evaluation_Comment</sourceRef>
+        <targetRef>HR_Manager_Evaluation_CommentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">Performance Evaluation</from>
+          <to xs:type="tFormalExpression">HR_Manager_Evaluation_TaskNameInput</to>
+        </assignment>
+        <sourceRef>HR_Manager_Evaluation_TaskName</sourceRef>
+        <targetRef>HR_Manager_Evaluation_TaskNameInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">1</from>
+          <to xs:type="tFormalExpression">HR_Manager_Evaluation_PriorityInput</to>
+        </assignment>
+        <sourceRef>HR_Manager_Evaluation_Priority</sourceRef>
+        <targetRef>HR_Manager_Evaluation_PriorityInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">HR_Manager_Evaluation_ContentInput</to>
+        </assignment>
+        <sourceRef>HR_Manager_Evaluation_Content</sourceRef>
+        <targetRef>HR_Manager_Evaluation_ContentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">HR_Manager_Evaluation_SkippableInput</to>
+        </assignment>
+        <sourceRef>HR_Manager_Evaluation_Skippable</sourceRef>
+        <targetRef>HR_Manager_Evaluation_SkippableInput</targetRef>
+      </dataInputAssociation>
+      <potentialOwner resourceRef="tns:Actor" >
+        <resourceAssignmentExpression>
+          <formalExpression>mary</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <userTask id="Self_Evaluation" g:x="96" g:y="56" g:width="143" g:height="48" >
+      <ioSpecification>
+        <dataInput id="Self_Evaluation_SkippableInput" name="Skippable" />
+        <dataInput id="Self_Evaluation_PriorityInput" name="Priority" />
+        <dataInput id="Self_Evaluation_TaskNameInput" name="TaskName" />
+        <dataInput id="Self_Evaluation_CommentInput" name="Comment" />
+        <inputSet>
+          <dataInputRefs>Self_Evaluation_SkippableInput</dataInputRefs>
+          <dataInputRefs>Self_Evaluation_PriorityInput</dataInputRefs>
+          <dataInputRefs>Self_Evaluation_TaskNameInput</dataInputRefs>
+          <dataInputRefs>Self_Evaluation_CommentInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <property id="Self_Evaluation_Skippable" />
+      <property id="Self_Evaluation_Priority" />
+      <property id="Self_Evaluation_TaskName" />
+      <property id="Self_Evaluation_Comment" />
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">Self_Evaluation_SkippableInput</to>
+        </assignment>
+        <sourceRef>Self_Evaluation_Skippable</sourceRef>
+        <targetRef>Self_Evaluation_SkippableInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">1</from>
+          <to xs:type="tFormalExpression">Self_Evaluation_PriorityInput</to>
+        </assignment>
+        <sourceRef>Self_Evaluation_Priority</sourceRef>
+        <targetRef>Self_Evaluation_PriorityInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">Performance Evaluation</from>
+          <to xs:type="tFormalExpression">Self_Evaluation_TaskNameInput</to>
+        </assignment>
+        <sourceRef>Self_Evaluation_TaskName</sourceRef>
+        <targetRef>Self_Evaluation_TaskNameInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">Self_Evaluation_CommentInput</to>
+        </assignment>
+        <sourceRef>Self_Evaluation_Comment</sourceRef>
+        <targetRef>Self_Evaluation_CommentInput</targetRef>
+      </dataInputAssociation>
+      <potentialOwner resourceRef="tns:Actor" >
+        <resourceAssignmentExpression>
+          <formalExpression>#{employee}</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <parallelGateway id="Converge" g:x="603" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
+    <parallelGateway id="Diverge" g:x="271" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" />
+
+    <!-- connections -->
+    <sequenceFlow sourceRef="Converge" targetRef="EndProcess" />
+    <sequenceFlow sourceRef="Diverge" targetRef="Project_Manager_Evaluation" g:bendpoints="[295,39]" />
+    <sequenceFlow sourceRef="Diverge" targetRef="HR_Manager_Evaluation" g:bendpoints="[295,120]" />
+    <sequenceFlow sourceRef="StartProcess" targetRef="Self_Evaluation" />
+    <sequenceFlow sourceRef="Project_Manager_Evaluation" targetRef="Converge" g:bendpoints="[627,40]" />
+    <sequenceFlow sourceRef="HR_Manager_Evaluation" targetRef="Converge" g:bendpoints="[627,121]" />
+    <sequenceFlow sourceRef="Self_Evaluation" targetRef="Diverge" />
+
+  </process>
+
+</definitions>

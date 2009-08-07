@@ -17,7 +17,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		StartNode startNode = (StartNode) node;
-		writeNode("startEvent", startNode, xmlDump);
+		writeNode("startEvent", startNode, xmlDump, includeMeta);
 		endNode(xmlDump);
 	}
 

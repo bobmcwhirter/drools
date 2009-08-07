@@ -17,7 +17,7 @@ public class EndEventHandler extends AbstractNodeHandler {
 
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		EndNode endNode = (EndNode) node;
-		writeNode("endEvent", endNode, xmlDump);
+		writeNode("endEvent", endNode, xmlDump, includeMeta);
 		endNode(xmlDump);
 	}
 
