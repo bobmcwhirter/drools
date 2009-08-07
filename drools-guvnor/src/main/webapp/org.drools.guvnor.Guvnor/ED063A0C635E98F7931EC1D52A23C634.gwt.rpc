@@ -136,6 +136,8 @@ org.drools.guvnor.client.rpc.MetaDataQuery, true
 [Lorg.drools.guvnor.client.rpc.MetaDataQuery;, true
 org.drools.guvnor.client.rpc.PackageConfigData, true
 [Lorg.drools.guvnor.client.rpc.PackageConfigData;, true
+org.drools.guvnor.client.rpc.PushResponse, true
+[Lorg.drools.guvnor.client.rpc.PushResponse;, true
 org.drools.guvnor.client.rpc.RuleAsset, true
 org.drools.guvnor.client.rpc.RuleContentText, true
 org.drools.guvnor.client.rpc.RuleFlowContentModel, true
