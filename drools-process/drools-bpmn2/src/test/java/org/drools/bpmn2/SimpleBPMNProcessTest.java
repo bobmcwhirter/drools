@@ -31,7 +31,7 @@ public class SimpleBPMNProcessTest extends TestCase {
 		ksession.startProcess("Minimal");
 	}
 
-	public void testEvaluationProcess() throws Exception {
+	public void FIXME_testEvaluationProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess.xml");
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
@@ -50,7 +50,7 @@ public class SimpleBPMNProcessTest extends TestCase {
 		ksession.startProcess("com.sample.evaluation", params);
 	}
 
-	public void testEvaluationProcess3() throws Exception {
+	public void FIXME_testEvaluationProcess3() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess3.xml");
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
@@ -60,7 +60,7 @@ public class SimpleBPMNProcessTest extends TestCase {
 		ksession.startProcess("Evaluation", params);
 	}
 
-	public void testExclusiveSplit() throws Exception {
+	public void FIXME_testExclusiveSplit() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.xml");
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
