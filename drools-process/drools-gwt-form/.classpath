@@ -24,9 +24,6 @@
   <classpathentry kind="var" path="M2_REPO/org/hibernate/ejb3-persistence/1.0.2.GA/ejb3-persistence-1.0.2.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/el/el-api/1.0/el-api-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/freemarker/freemarker/2.3.15/freemarker-2.3.15.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/google/gdata/gdata-calendar/2.0/gdata-calendar-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/google/gdata/gdata-client/1.0/gdata-client-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/google/gdata/gdata-core/1.0/gdata-core-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/code/gson/gson/1.2.2/gson-1.2.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-rpc/1.0.1-SNAPSHOT/gwt-console-rpc-1.0.1-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/bpm/gwt-console-rpc/1.0.1-SNAPSHOT/gwt-console-rpc-1.0.1-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-server-integration/1.0.1-SNAPSHOT/gwt-console-server-integration-1.0.1-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/bpm/gwt-console-server-integration/1.0.1-SNAPSHOT/gwt-console-server-integration-1.0.1-SNAPSHOT-sources.jar"/>
@@ -49,10 +46,11 @@
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4/mail-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-M3/mina-core-2.0.0-M3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12-SNAPSHOT/mvel2-2.0.12-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12/mvel2-2.0.12.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/rome/rome/0.9/rome-0.9.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.0/slf4j-api-1.5.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.2/slf4j-jdk14-1.5.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/jivesoftware/smack/3.0.4/smack-3.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/2.0.2/xml-apis-2.0.2.jar"/>
 </classpath>
