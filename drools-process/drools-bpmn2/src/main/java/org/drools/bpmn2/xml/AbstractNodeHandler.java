@@ -9,6 +9,7 @@ import org.drools.workflow.core.NodeContainer;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.drools.xml.XmlDumper;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -42,9 +43,14 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         parser.startElementBuilder( localName, attrs );
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         final Node node = createNode(attrs);
-        final String id = attrs.getValue("id");
-        node.setName(id);
-        node.setId(nodeContainer.getNodes().length);
+        String id = attrs.getValue("id");
+        // remove starting _
+        id = id.substring(1);
+        // remove ids of parent nodes
+        id = id.substring(id.lastIndexOf(":") + 1);
+        final String name = attrs.getValue("name");
+        node.setName(name);
+        node.setId(new Integer(id));
         nodeContainer.addNode(node);
         return node;
     }
@@ -102,8 +108,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void writeNode(final String name, final Node node, 
     		                 final StringBuilder xmlDump, boolean includeMeta) {
     	xmlDump.append("    <" + name + " "); 
+        xmlDump.append("id=\"_" + node.getUniqueId() + "\" ");
         if (node.getName() != null) {
-            xmlDump.append("id=\"" + node.getName() + "\" ");
+            xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
         }
         if (includeMeta) {
             Integer x = (Integer) node.getMetaData("x");

@@ -9,12 +9,12 @@
              xmlns:tns="http://www.example.org/MinimalExample">
 
   <process id="Minimal" name="Minimal Process">
-    <startEvent id="StartProcess"/>
-    <sequenceFlow sourceRef="StartProcess" targetRef="Hello"/>
-    <scriptTask id="Hello" scriptLanguage="java">
+    <startEvent id="_1" name="StartProcess"/>
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <scriptTask id="_2" name="Hello" scriptLanguage="java">
       <script>System.out.println("Hello World");</script>
     </scriptTask>
-    <sequenceFlow sourceRef="Hello" targetRef="EndProcess"/>
-    <endEvent id="EndProcess"/>
+    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    <endEvent id="_3" name="EndProcess"/>
   </process>
 </definitions>

@@ -141,9 +141,9 @@ public class XmlBPMNProcessDumper {
     }
     
     public void visitConnection(Connection connection, StringBuilder xmlDump, boolean includeMeta) {
-        xmlDump.append("    <sequenceFlow sourceRef=\"" + connection.getFrom().getName() + "\" ");
+        xmlDump.append("    <sequenceFlow sourceRef=\"_" + connection.getFrom().getId() + "\" ");
         // TODO fromType, toType
-        xmlDump.append("targetRef=\"" + connection.getTo().getName() + "\" ");
+        xmlDump.append("targetRef=\"_" + connection.getTo().getId() + "\" ");
         if (includeMeta) {
             String bendpoints = (String) connection.getMetaData("bendpoints");
             if (bendpoints != null) {

@@ -74,28 +74,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 			for (SequenceFlow connection: connections) {
 				String sourceRef = connection.getSourceRef();
 				String targetRef = connection.getTargetRef();
-				Node source = null;
-				for (Node node: process.getNodes()) {
-					if (sourceRef.equals(node.getName())) {
-						source = node;
-						break;
-					}
-				}
-				Node target = null;
-				for (Node node: process.getNodes()) {
-					if (targetRef.equals(node.getName())) {
-						target = node;
-						break;
-					}
-				}
-				if (source == null) {
-					throw new IllegalArgumentException(
-						"Could not find source " + sourceRef);
-				}
-				if (target == null) {
-					throw new IllegalArgumentException(
-						"Could not find target " + targetRef);
-				}
+				// remove starting _
+				sourceRef = sourceRef.substring(1);
+				targetRef = targetRef.substring(1);
+		        // remove ids of parent nodes
+				sourceRef = sourceRef.substring(sourceRef.lastIndexOf(":") + 1);
+				targetRef = targetRef.substring(targetRef.lastIndexOf(":") + 1);
+				Node source = process.getNode(new Integer(sourceRef));
+				Node target = process.getNode(new Integer(targetRef));
 				Connection result = new ConnectionImpl(
 					source, NodeImpl.CONNECTION_DEFAULT_TYPE, 
 					target, NodeImpl.CONNECTION_DEFAULT_TYPE);

@@ -11,13 +11,13 @@
              xmlns:tns="http://www.example.org/MinimalExample">
 
   <process id="Minimal" name="Minimal Process">
-    <startEvent id="StartProcess" g:x="1" g:y="1" />
-    <sequenceFlow sourceRef="StartProcess" targetRef="Hello"/>
-    <scriptTask id="Hello" scriptLanguage="java">
+    <startEvent id="_1" name="StartProcess" g:x="1" g:y="1" />
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <scriptTask id="_2" name="Hello" scriptLanguage="java">
       <script>System.out.println("Hello World");</script>
     </scriptTask>
-    <sequenceFlow sourceRef="Hello" targetRef="EndProcess" g:bendpoints="[10,10]" />
-    <endEvent id="EndProcess"/>
+    <sequenceFlow sourceRef="_2" targetRef="_3" g:bendpoints="[10,10]" />
+    <endEvent id="_3" name="EndProcess"/>
   </process>
 
 </definitions>

@@ -73,15 +73,15 @@ public class TaskHandler extends AbstractNodeHandler {
 			String from = subSubNode.getTextContent();
 			subNode = subNode.getNextSibling();
     		String to = subNode.getTextContent();
-    		workItemNode.getWork().setParameter(to.substring(workItemNode.getName().length() + 1), from);
+    		workItemNode.getWork().setParameter(to.substring(workItemNode.getUniqueId().length() + 2), from);
 		} else {
     		String from = subNode.getTextContent();
     		// targetRef
     		subNode = subNode.getNextSibling();
     		String to = subNode.getTextContent();
     		workItemNode.addInMapping(
-				dataInputs.get(to).substring(workItemNode.getName().length() + 1),
-				from.substring(workItemNode.getName().length() + 1));
+				dataInputs.get(to).substring(workItemNode.getUniqueId().length() + 2),
+				from.substring(workItemNode.getUniqueId().length() + 2));
 		}
     }
     
@@ -93,8 +93,8 @@ public class TaskHandler extends AbstractNodeHandler {
 		subNode = subNode.getNextSibling();
 		String to = subNode.getTextContent();
 		workItemNode.addOutMapping(
-			from.substring(workItemNode.getName().length() + 1),
-			dataOutputs.get(to).substring(workItemNode.getName().length() + 1));
+			from.substring(workItemNode.getUniqueId().length() + 2),
+			dataOutputs.get(to).substring(workItemNode.getUniqueId().length() + 2));
     }
 
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
@@ -108,30 +108,30 @@ public class TaskHandler extends AbstractNodeHandler {
 	protected void writeIO(WorkItemNode workItemNode, StringBuilder xmlDump) {
 		xmlDump.append("      <ioSpecification>" + EOL);
 		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
-			xmlDump.append("        <dataInput id=\"" + workItemNode.getName() + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
+			xmlDump.append("        <dataInput id=\"_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
 		}
 		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
 			if (entry.getValue() != null) {
-				xmlDump.append("        <dataInput id=\"" + workItemNode.getName() + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
+				xmlDump.append("        <dataInput id=\"_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
 			}
 		}
 		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
-			xmlDump.append("        <dataOutput id=\"" + workItemNode.getName() + "_" + entry.getKey() + "Output\" name=\"" + entry.getKey() + "\" />" + EOL);
+			xmlDump.append("        <dataOutput id=\"_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Output\" name=\"" + entry.getKey() + "\" />" + EOL);
 		}
 		xmlDump.append("        <inputSet>" + EOL);
 		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
-			xmlDump.append("          <dataInputRefs>" + workItemNode.getName() + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
+			xmlDump.append("          <dataInputRefs>_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
 		}
 		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
 			if (entry.getValue() != null) {
-				xmlDump.append("          <dataInputRefs>" + workItemNode.getName() + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
+				xmlDump.append("          <dataInputRefs>_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
 			}
 		}
 		xmlDump.append(
 			"        </inputSet>" + EOL);
 		xmlDump.append("        <outputSet>" + EOL);
 		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
-			xmlDump.append("          <dataOutputRefs>" + workItemNode.getName() + "_" + entry.getKey() + "Output</dataOutputRefs>" + EOL);
+			xmlDump.append("          <dataOutputRefs>_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Output</dataOutputRefs>" + EOL);
 		}
 		xmlDump.append(
 			"        </outputSet>" + EOL);
@@ -140,14 +140,14 @@ public class TaskHandler extends AbstractNodeHandler {
 		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
 			if (entry.getValue() != null) {
 				xmlDump.append(
-					"      <property id=\"" + workItemNode.getName() + "_" + entry.getKey() + "\" />" + EOL);
+					"      <property id=\"_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "\" />" + EOL);
 			}
 		}
 		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
 			xmlDump.append("      <dataInputAssociation>" + EOL);
 			xmlDump.append(
-				"        <sourceRef>" + workItemNode.getName() + "_" + entry.getValue() + "</sourceRef>" + EOL +
-				"        <targetRef>" + workItemNode.getName() + "_" + entry.getKey() + "</targetRef>" + EOL);
+				"        <sourceRef>_" + workItemNode.getUniqueId() + "_" + entry.getValue() + "</sourceRef>" + EOL +
+				"        <targetRef>_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "</targetRef>" + EOL);
 			xmlDump.append("      </dataInputAssociation>" + EOL);
 		}
 		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
@@ -156,18 +156,18 @@ public class TaskHandler extends AbstractNodeHandler {
 				xmlDump.append(
 					"        <assignment>" + EOL +
 					"          <from xs:type=\"tFormalExpression\">" + entry.getValue().toString() + "</from>" + EOL +
-					"          <to xs:type=\"tFormalExpression\">" + workItemNode.getName() + "_" + entry.getKey() + "Input</to>" + EOL +
+					"          <to xs:type=\"tFormalExpression\">_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Input</to>" + EOL +
 					"        </assignment>" + EOL +
-					"        <sourceRef>" + workItemNode.getName() + "_" + entry.getKey() + "</sourceRef>" + EOL +
-					"        <targetRef>" + workItemNode.getName() + "_" + entry.getKey() + "Input</targetRef>" + EOL);
+					"        <sourceRef>_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "</sourceRef>" + EOL +
+					"        <targetRef>_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "Input</targetRef>" + EOL);
 				xmlDump.append("      </dataInputAssociation>" + EOL);
 			}
 		}
 		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
 			xmlDump.append("      <dataOutputAssociation>" + EOL);
 			xmlDump.append(
-				"        <sourceRef>" + workItemNode.getName() + "_" + entry.getKey() + "</sourceRef>" + EOL +
-				"        <targetRef>" + workItemNode.getName() + "_" + entry.getValue() + "</targetRef>" + EOL);
+				"        <sourceRef>_" + workItemNode.getUniqueId() + "_" + entry.getKey() + "</sourceRef>" + EOL +
+				"        <targetRef>_" + workItemNode.getUniqueId() + "_" + entry.getValue() + "</targetRef>" + EOL);
 			xmlDump.append("      </dataOutputAssociation>" + EOL);
 		}
 	}

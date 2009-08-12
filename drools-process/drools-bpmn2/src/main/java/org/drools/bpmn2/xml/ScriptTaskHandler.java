@@ -45,9 +45,18 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
 		ActionNode actionNode = (ActionNode) node;
 		writeNode("scriptTask", actionNode, xmlDump, includeMeta);
 		DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
-		xmlDump.append("scriptLanguage=\"" + action.getDialect() + "\" >\n");
-		xmlDump.append("      <script>" + XmlDumper.replaceIllegalChars(action.getConsequence()) + "</script>\n");
-		endNode("scriptTask", xmlDump);
+		if (action != null) {
+            xmlDump.append("scriptLanguage=\"" + action.getDialect() + "\" ");
+            if (action.getConsequence() != null) {
+                xmlDump.append(">" + EOL + 
+                    "      <script>" + XmlDumper.replaceIllegalChars(action.getConsequence()) + "</script>" + EOL);
+                endNode("scriptTask", xmlDump);
+            } else {
+                endNode(xmlDump);
+            }
+		} else {
+            endNode(xmlDump);
+		}
 	}
 
 }
