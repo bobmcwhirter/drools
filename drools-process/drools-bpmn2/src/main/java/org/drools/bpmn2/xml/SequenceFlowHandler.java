@@ -9,6 +9,7 @@ import org.drools.process.core.context.variable.Variable;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
+import org.drools.workflow.core.node.CompositeNode;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -47,13 +48,23 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 		final String targetRef = attrs.getValue("targetRef");
 		final String bendpoints = attrs.getValue("g:bendpoints");
 
-		RuleFlowProcess process = (RuleFlowProcess) parser.getParent();
+		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 		
-		List<SequenceFlow> connections = (List<SequenceFlow>)
-			process.getMetaData(ProcessHandler.CONNECTIONS);
-		if (connections == null) {
-			connections = new ArrayList<SequenceFlow>();
-			process.setMetaData(ProcessHandler.CONNECTIONS, connections);
+		List<SequenceFlow> connections = null;
+		if (nodeContainer instanceof RuleFlowProcess) {
+			connections = (List<SequenceFlow>)
+				((RuleFlowProcess) nodeContainer).getMetaData(ProcessHandler.CONNECTIONS);			
+			if (connections == null) {
+				connections = new ArrayList<SequenceFlow>();
+				((RuleFlowProcess) nodeContainer).setMetaData(ProcessHandler.CONNECTIONS, connections);
+			}
+		} else if (nodeContainer instanceof CompositeNode) {
+			connections = (List<SequenceFlow>)
+				((CompositeNode) nodeContainer).getMetaData(ProcessHandler.CONNECTIONS);			
+			if (connections == null) {
+				connections = new ArrayList<SequenceFlow>();
+				((CompositeNode) nodeContainer).setMetaData(ProcessHandler.CONNECTIONS, connections);
+			}
 		}
 		SequenceFlow connection = new SequenceFlow(sourceRef, targetRef);
 		connection.setBendpoints(bendpoints);

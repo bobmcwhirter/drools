@@ -25,7 +25,7 @@ public class SplitHandler extends AbstractNodeHandler {
 				writeNode("exclusiveGateway", node, xmlDump, includeMeta);
 				break;
 			default:
-				throw new IllegalArgumentException("Unsupported split type: " + split.getType());
+				writeNode("complexGateway", node, xmlDump, includeMeta);
 		}
 		xmlDump.append("gatewayDirection=\"diverging\" ");
 		endNode(xmlDump);

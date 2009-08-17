@@ -19,81 +19,81 @@
     <property id="y" itemSubjectRef="tns:yItem"/>
 
     <!-- nodes -->
-    <scriptTask id="Script2" g:x="177" g:y="96" g:width="80" g:height="48" scriptLanguage="mvel" >
+    <startEvent id="_1" name="Start" g:x="16" g:y="56" g:width="48" g:height="48" />
+    <exclusiveGateway id="_2" name="Split" g:x="96" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" />
+    <scriptTask id="_3" name="Script1" g:x="177" g:y="16" g:width="80" g:height="48" scriptLanguage="mvel" >
+      <script>System.out.println("x=" + x);</script>
+    </scriptTask>
+    <scriptTask id="_4" name="Script2" g:x="177" g:y="96" g:width="80" g:height="48" scriptLanguage="mvel" >
       <script>System.out.println("y=" + y);</script>
     </scriptTask>
-    <endEvent id="End" g:x="370" g:y="56" g:width="48" g:height="48" />
-    <task id="Email" g:x="163" g:y="180" g:width="100" g:height="48" tns:taskName="Email">
+    <exclusiveGateway id="_5" name="Join" g:x="289" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
+    <task id="_6" name="Email" g:x="163" g:y="180" g:width="100" g:height="48" tns:taskName="Email">
       <ioSpecification>
-        <dataInput id="FromInput" name="From" />
-        <dataInput id="ToInput" name="To" />
-        <dataInput id="SubjectInput" name="Subject" />
-        <dataInput id="BodyInput" name="Body" />
+        <dataInput id="_6_FromInput" name="From" />
+        <dataInput id="_6_ToInput" name="To" />
+        <dataInput id="_6_SubjectInput" name="Subject" />
+        <dataInput id="_6_BodyInput" name="Body" />
         <inputSet>
-          <dataInputRefs>FromInput</dataInputRefs>
-          <dataInputRefs>ToInput</dataInputRefs>
-          <dataInputRefs>SubjectInput</dataInputRefs>
-          <dataInputRefs>BodyInput</dataInputRefs>
+          <dataInputRefs>_6_FromInput</dataInputRefs>
+          <dataInputRefs>_6_ToInput</dataInputRefs>
+          <dataInputRefs>_6_SubjectInput</dataInputRefs>
+          <dataInputRefs>_6_BodyInput</dataInputRefs>
         </inputSet>
         <outputSet>
         </outputSet>
       </ioSpecification>
-      <property id="From" />
-      <property id="Subject" />
-      <property id="To" />
-      <property id="Body" />
+      <property id="_6_From" />
+      <property id="_6_Subject" />
+      <property id="_6_To" />
+      <property id="_6_Body" />
       <dataInputAssociation>
         <assignment>
           <from xs:type="tFormalExpression">me@mail.com</from>
-          <to xs:type="tFormalExpression">From</to>
+          <to xs:type="tFormalExpression">_6_From</to>
         </assignment>
-        <sourceRef>From</sourceRef>
-        <targetRef>FromInput</targetRef>
+        <sourceRef>_6_From</sourceRef>
+        <targetRef>_6_FromInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <assignment>
           <from xs:type="tFormalExpression">Urgent email !</from>
-          <to xs:type="tFormalExpression">Subject</to>
+          <to xs:type="tFormalExpression">_6_Subject</to>
         </assignment>
-        <sourceRef>Subject</sourceRef>
-        <targetRef>SubjectInput</targetRef>
+        <sourceRef>_6_Subject</sourceRef>
+        <targetRef>_6_SubjectInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <assignment>
           <from xs:type="tFormalExpression">you@mail.com</from>
-          <to xs:type="tFormalExpression">To</to>
+          <to xs:type="tFormalExpression">_6_To</to>
         </assignment>
-        <sourceRef>To</sourceRef>
-        <targetRef>ToInput</targetRef>
+        <sourceRef>_6_To</sourceRef>
+        <targetRef>_6_ToInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <assignment>
           <from xs:type="tFormalExpression">This is an urgent email #{x}</from>
-          <to xs:type="tFormalExpression">Body</to>
+          <to xs:type="tFormalExpression">_6_Body</to>
         </assignment>
-        <sourceRef>Body</sourceRef>
-        <targetRef>BodyInput</targetRef>
+        <sourceRef>_6_Body</sourceRef>
+        <targetRef>_6_BodyInput</targetRef>
       </dataInputAssociation>
     </task>
-    <exclusiveGateway id="Split" g:x="96" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" />
-    <startEvent id="Start" g:x="16" g:y="56" g:width="48" g:height="48" />
-    <scriptTask id="Script1" g:x="177" g:y="16" g:width="80" g:height="48" scriptLanguage="mvel" >
-      <script>System.out.println("x=" + x);</script>
-    </scriptTask>
-    <exclusiveGateway id="Join" g:x="289" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
+    <endEvent id="_7" name="End" g:x="370" g:y="56" g:width="48" g:height="48" />
 
     <!-- connections -->
-    <sequenceFlow sourceRef="Split" targetRef="Script2" g:bendpoints="[120,120]" >
-      <conditionExpression>return x == "Second";</conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow sourceRef="Start" targetRef="Split" />
-    <sequenceFlow sourceRef="Split" targetRef="Script1" g:bendpoints="[120,40]" >
+    <sequenceFlow sourceRef="_1" targetRef="_2" />
+    <sequenceFlow sourceRef="_2" targetRef="_3" g:bendpoints="[120,40]" >
       <conditionExpression>return x == "First";</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow sourceRef="Script2" targetRef="Join" g:bendpoints="[314,119]" />
-    <sequenceFlow sourceRef="Script1" targetRef="Join" g:bendpoints="[313,40]" />
-    <sequenceFlow sourceRef="Join" targetRef="Email" />
-    <sequenceFlow sourceRef="Email" targetRef="End" />
+    <sequenceFlow sourceRef="_2" targetRef="_4" g:bendpoints="[120,120]" >
+      <conditionExpression>return x == "Second";</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow sourceRef="_3" targetRef="_5" g:bendpoints="[313,40]" />
+    <sequenceFlow sourceRef="_4" targetRef="_5" g:bendpoints="[314,119]" />
+    <sequenceFlow sourceRef="_5" targetRef="_6" />
+    <sequenceFlow sourceRef="_6" targetRef="_7" />
 
   </process>
 

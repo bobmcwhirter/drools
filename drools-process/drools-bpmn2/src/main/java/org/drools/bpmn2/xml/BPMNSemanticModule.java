@@ -17,9 +17,13 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
 		addHandler("endEvent", new EndEventHandler());
 		addHandler("exclusiveGateway", new ExclusiveGatewayHandler());
 		addHandler("parallelGateway", new ParallelGatewayHandler());
+		addHandler("complexGateway", new ComplexGatewayHandler());
 		addHandler("scriptTask", new ScriptTaskHandler());
 		addHandler("task", new TaskHandler());
 		addHandler("userTask", new UserTaskHandler());
+		addHandler("businessRuleTask", new BusinessRuleTaskHandler());
+		addHandler("callActivity", new CallActivityHandler());
+		addHandler("subProcess", new SubProcessHandler());
 
 		addHandler("sequenceFlow", new SequenceFlowHandler());
 		

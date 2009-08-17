@@ -47,7 +47,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         // remove starting _
         id = id.substring(1);
         // remove ids of parent nodes
-        id = id.substring(id.lastIndexOf(":") + 1);
+        id = id.substring(id.lastIndexOf("-") + 1);
         final String name = attrs.getValue("name");
         node.setName(name);
         node.setId(new Integer(id));
@@ -108,7 +108,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void writeNode(final String name, final Node node, 
     		                 final StringBuilder xmlDump, boolean includeMeta) {
     	xmlDump.append("    <" + name + " "); 
-        xmlDump.append("id=\"_" + node.getUniqueId() + "\" ");
+        xmlDump.append("id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "\" ");
         if (node.getName() != null) {
             xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
         }

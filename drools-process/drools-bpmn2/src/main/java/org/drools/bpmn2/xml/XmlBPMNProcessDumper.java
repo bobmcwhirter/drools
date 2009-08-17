@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
+import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
@@ -141,9 +143,9 @@ public class XmlBPMNProcessDumper {
     }
     
     public void visitConnection(Connection connection, StringBuilder xmlDump, boolean includeMeta) {
-        xmlDump.append("    <sequenceFlow sourceRef=\"_" + connection.getFrom().getId() + "\" ");
+        xmlDump.append("    <sequenceFlow sourceRef=\"_" + getUniqueNodeId(connection.getFrom()) + "\" ");
         // TODO fromType, toType
-        xmlDump.append("targetRef=\"_" + connection.getTo().getId() + "\" ");
+        xmlDump.append("targetRef=\"_" + getUniqueNodeId(connection.getTo()) + "\" ");
         if (includeMeta) {
             String bendpoints = (String) connection.getMetaData("bendpoints");
             if (bendpoints != null) {
@@ -163,6 +165,17 @@ public class XmlBPMNProcessDumper {
         } else {
         	xmlDump.append("/>" + EOL);
         }
+    }
+    
+    public static String getUniqueNodeId(Node node) {
+    	String result = node.getId() + "";
+    	NodeContainer nodeContainer = node.getNodeContainer();
+    	while (nodeContainer instanceof CompositeNode) {
+    		CompositeNode composite = (CompositeNode) nodeContainer;
+    		result = composite.getId() + "-" + result;
+    		nodeContainer = composite.getNodeContainer();
+    	}
+    	return result;
     }
     
 }

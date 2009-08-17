@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.bpmn2.core.SequenceFlow;
 import org.drools.definition.process.Node;
+import org.drools.definition.process.NodeContainer;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
@@ -55,11 +56,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		return process;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object end(final String uri, final String localName,
 			          final ExtensibleXmlParser parser) throws SAXException {
 		parser.endElementBuilder();
 		RuleFlowProcess process = (RuleFlowProcess) parser.getCurrent();
-		linkConnections(process);
+		List<SequenceFlow> connections = (List<SequenceFlow>)
+			process.getMetaData(CONNECTIONS);
+		linkConnections(process, connections);
 		return process;
 	}
 
@@ -67,9 +71,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		return org.drools.definition.process.Process.class;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void linkConnections(RuleFlowProcess process) {
-		List<SequenceFlow> connections = (List<SequenceFlow>) process.getMetaData(CONNECTIONS);
+	public static void linkConnections(NodeContainer nodeContainer, List<SequenceFlow> connections) {
 		if (connections != null) {
 			for (SequenceFlow connection: connections) {
 				String sourceRef = connection.getSourceRef();
@@ -78,10 +80,10 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 				sourceRef = sourceRef.substring(1);
 				targetRef = targetRef.substring(1);
 		        // remove ids of parent nodes
-				sourceRef = sourceRef.substring(sourceRef.lastIndexOf(":") + 1);
-				targetRef = targetRef.substring(targetRef.lastIndexOf(":") + 1);
-				Node source = process.getNode(new Integer(sourceRef));
-				Node target = process.getNode(new Integer(targetRef));
+				sourceRef = sourceRef.substring(sourceRef.lastIndexOf("-") + 1);
+				targetRef = targetRef.substring(targetRef.lastIndexOf("-") + 1);
+				Node source = nodeContainer.getNode(new Integer(sourceRef));
+				Node target = nodeContainer.getNode(new Integer(targetRef));
 				Connection result = new ConnectionImpl(
 					source, NodeImpl.CONNECTION_DEFAULT_TYPE, 
 					target, NodeImpl.CONNECTION_DEFAULT_TYPE);

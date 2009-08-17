@@ -25,7 +25,7 @@ public class JoinHandler extends AbstractNodeHandler {
 				writeNode("exclusiveGateway", node, xmlDump, includeMeta);
 				break;
 			default:
-				throw new IllegalArgumentException("Unsupported join type: " + join.getType());
+				writeNode("complexGateway", node, xmlDump, includeMeta);
 		}
 		xmlDump.append("gatewayDirection=\"converging\" ");
 		endNode(xmlDump);
