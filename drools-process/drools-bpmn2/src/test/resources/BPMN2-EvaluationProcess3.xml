@@ -22,7 +22,7 @@
   
     <!-- nodes -->  
     <startEvent id="_1" name="StartProcess"/>
-    <scriptTask id="_2" name="Log" scriptLanguage="java">
+    <scriptTask id="_2" name="Log">
       <script>System.out.println("Processing evaluation for employee " + employee);</script>
     </scriptTask>
     <exclusiveGateway id="_3" name="Diverge" gatewayDirection="diverging"/>
@@ -30,7 +30,7 @@
       <conditionExpression>return employee == "john";</conditionExpression>
     </sequenceFlow>
     <sequenceFlow sourceRef="_3" targetRef="_5">
-      <conditionExpression>return true;</conditionExpression>
+      <conditionExpression xs:type="tFormalExpression" language="http://www.jboss.org/drools/rule">eval(true);</conditionExpression>
     </sequenceFlow>
     <task id="_4" name="RegisterRequest" tns:taskName="RegisterRequest" >
       <ioSpecification>

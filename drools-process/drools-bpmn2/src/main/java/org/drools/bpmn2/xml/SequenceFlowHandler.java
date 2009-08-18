@@ -84,6 +84,20 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
         	String nodeName = xmlNode.getNodeName();
         	if ("conditionExpression".equals(nodeName)) {
         		String expression = xmlNode.getTextContent();
+        		org.w3c.dom.Node languageNode = xmlNode.getAttributes().getNamedItem("language");
+        		if (languageNode != null) {
+        			String language = languageNode.getNodeValue();
+        			if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
+        				sequenceFlow.setLanguage("java");
+        			} else if (XmlBPMNProcessDumper.RULE_LANGUAGE.equals(language)) {
+        				sequenceFlow.setType("rule");
+        			}
+        		}
+        		org.w3c.dom.Node nameNode = xmlNode.getAttributes().getNamedItem("name");
+        		if (nameNode != null) {
+        			String name = nameNode.getNodeValue();
+        			sequenceFlow.setName(name);
+        		}
         		sequenceFlow.setExpression(expression);
         	}
         	xmlNode = xmlNode.getNextSibling();

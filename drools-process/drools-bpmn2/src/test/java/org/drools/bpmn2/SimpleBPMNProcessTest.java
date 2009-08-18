@@ -56,7 +56,7 @@ public class SimpleBPMNProcessTest extends TestCase {
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("RegisterRequest", new SystemOutWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("employee", "john");
+		params.put("employee", "john2");
 		ksession.startProcess("Evaluation", params);
 	}
 

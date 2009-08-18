@@ -91,8 +91,19 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 				if (connection.getExpression() != null) {
 					Split split = (Split) source;
 					Constraint constraint = new ConstraintImpl();
-					constraint.setType("code");
-					constraint.setName("");
+					if (connection.getName() != null) {
+						constraint.setName(connection.getName());
+					} else {
+						constraint.setName("");
+					}
+					if (connection.getType() != null) {
+						constraint.setType(connection.getType());
+					} else {
+						constraint.setType("code");
+					}
+					if (connection.getLanguage() != null) {
+						constraint.setDialect(connection.getLanguage());
+					}
 					constraint.setConstraint(connection.getExpression());
 					split.addConstraint(
 						new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),

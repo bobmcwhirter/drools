@@ -9,6 +9,8 @@ import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.xml.Handler;
@@ -16,6 +18,9 @@ import org.drools.xml.SemanticModule;
 import org.drools.xml.XmlDumper;
 
 public class XmlBPMNProcessDumper {
+	
+	public static final String JAVA_LANGUAGE = "http://www.java.com/java";
+	public static final String RULE_LANGUAGE = "http://www.jboss.org/drools/rule";
     
 	public static XmlBPMNProcessDumper INSTANCE = new XmlBPMNProcessDumper();
 	
@@ -155,10 +160,22 @@ public class XmlBPMNProcessDumper {
         if (connection.getFrom() instanceof Split) {
         	Split split = (Split) connection.getFrom();
         	if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
-        		String constraint = split.getConstraint(connection).getConstraint();
+        		Constraint constraint = split.getConstraint(connection);
+        		String constraintString = constraint.getConstraint();
         		xmlDump.append(">" + EOL +
-    				"      <conditionExpression>" + XmlDumper.replaceIllegalChars(constraint) + "</conditionExpression>" + EOL +
-    				"    </sequenceFlow>" + EOL);
+    				"      <conditionExpression xs:type=\"tFormalExpression\" ");
+        		if ("code".equals(constraint.getType())) {
+	        		if (JavaDialect.ID.equals(constraint.getDialect())) {
+	        			xmlDump.append(" language=\"" + JAVA_LANGUAGE + "\" ");
+	        		}
+        		} else {
+        			xmlDump.append(" language=\"" + RULE_LANGUAGE + "\" ");
+        		}
+        		if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
+        			xmlDump.append("tns:name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
+        		}
+        		xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraintString) + "</conditionExpression>" + EOL +
+	    				"    </sequenceFlow>" + EOL);
         	} else {
             	xmlDump.append("/>" + EOL);
             }

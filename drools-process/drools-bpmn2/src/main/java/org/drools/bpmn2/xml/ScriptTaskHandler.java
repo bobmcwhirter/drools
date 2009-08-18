@@ -1,5 +1,6 @@
 package org.drools.bpmn2.xml;
 
+import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
@@ -32,8 +33,8 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         	actionNode.setAction(action);
         }
 		String language = element.getAttribute("scriptLanguage");
-		if (language != null) {
-			action.setDialect(language);
+		if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
+			action.setDialect(JavaDialect.ID);
 		}
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         if (xmlNode instanceof Element) {
@@ -46,7 +47,9 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
 		writeNode("scriptTask", actionNode, xmlDump, includeMeta);
 		DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
 		if (action != null) {
-            xmlDump.append("scriptLanguage=\"" + action.getDialect() + "\" ");
+			if (JavaDialect.ID.equals(action.getDialect())) {
+				xmlDump.append("scriptLanguage=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\" ");
+			}
             if (action.getConsequence() != null) {
                 xmlDump.append(">" + EOL + 
                     "      <script>" + XmlDumper.replaceIllegalChars(action.getConsequence()) + "</script>" + EOL);

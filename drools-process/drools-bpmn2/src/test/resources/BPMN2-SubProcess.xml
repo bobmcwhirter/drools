@@ -14,7 +14,7 @@
     <subProcess id="_2" name="Hello" >
       <startEvent id="_2-1" name="StartSubProcess"/>
       <sequenceFlow sourceRef="_2-1" targetRef="_2-2"/>
-      <scriptTask id="_2-2" name="Hello" scriptLanguage="java">
+      <scriptTask id="_2-2" name="Hello">
         <script>System.out.println("Hello World");</script>
       </scriptTask>
       <sequenceFlow sourceRef="_2-2" targetRef="_2-3"/>

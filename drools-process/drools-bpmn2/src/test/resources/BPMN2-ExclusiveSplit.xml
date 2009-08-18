@@ -21,10 +21,10 @@
     <!-- nodes -->
     <startEvent id="_1" name="Start" g:x="16" g:y="56" g:width="48" g:height="48" />
     <exclusiveGateway id="_2" name="Split" g:x="96" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" />
-    <scriptTask id="_3" name="Script1" g:x="177" g:y="16" g:width="80" g:height="48" scriptLanguage="mvel" >
+    <scriptTask id="_3" name="Script1" g:x="177" g:y="16" g:width="80" g:height="48">
       <script>System.out.println("x=" + x);</script>
     </scriptTask>
-    <scriptTask id="_4" name="Script2" g:x="177" g:y="96" g:width="80" g:height="48" scriptLanguage="mvel" >
+    <scriptTask id="_4" name="Script2" g:x="177" g:y="96" g:width="80" g:height="48">
       <script>System.out.println("y=" + y);</script>
     </scriptTask>
     <exclusiveGateway id="_5" name="Join" g:x="289" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />

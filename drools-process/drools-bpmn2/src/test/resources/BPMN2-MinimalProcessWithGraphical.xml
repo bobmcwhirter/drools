@@ -13,7 +13,7 @@
   <process id="Minimal" name="Minimal Process">
     <startEvent id="_1" name="StartProcess" g:x="1" g:y="1" />
     <sequenceFlow sourceRef="_1" targetRef="_2"/>
-    <scriptTask id="_2" name="Hello" scriptLanguage="java">
+    <scriptTask id="_2" name="Hello">
       <script>System.out.println("Hello World");</script>
     </scriptTask>
     <sequenceFlow sourceRef="_2" targetRef="_3" g:bendpoints="[10,10]" />
