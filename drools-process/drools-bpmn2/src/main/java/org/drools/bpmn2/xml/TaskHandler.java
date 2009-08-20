@@ -92,9 +92,7 @@ public class TaskHandler extends AbstractNodeHandler {
 		// targetRef
 		subNode = subNode.getNextSibling();
 		String to = subNode.getTextContent();
-		workItemNode.addOutMapping(
-			from.substring(XmlBPMNProcessDumper.getUniqueNodeId(workItemNode).length() + 2),
-			dataOutputs.get(to).substring(XmlBPMNProcessDumper.getUniqueNodeId(workItemNode).length() + 2));
+		workItemNode.addOutMapping(dataOutputs.get(from), to);
     }
 
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
@@ -146,8 +144,8 @@ public class TaskHandler extends AbstractNodeHandler {
 		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
 			xmlDump.append("      <dataInputAssociation>" + EOL);
 			xmlDump.append(
-				"        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getValue() + "</sourceRef>" + EOL +
-				"        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "</targetRef>" + EOL);
+				"        <sourceRef>" + entry.getValue() + "</sourceRef>" + EOL +
+				"        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</targetRef>" + EOL);
 			xmlDump.append("      </dataInputAssociation>" + EOL);
 		}
 		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
@@ -166,8 +164,8 @@ public class TaskHandler extends AbstractNodeHandler {
 		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
 			xmlDump.append("      <dataOutputAssociation>" + EOL);
 			xmlDump.append(
-				"        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "</sourceRef>" + EOL +
-				"        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getValue() + "</targetRef>" + EOL);
+				"        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Output</sourceRef>" + EOL +
+				"        <targetRef>" + entry.getValue() + "</targetRef>" + EOL);
 			xmlDump.append("      </dataOutputAssociation>" + EOL);
 		}
 	}

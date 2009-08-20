@@ -24,6 +24,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
 		addHandler("businessRuleTask", new BusinessRuleTaskHandler());
 		addHandler("callActivity", new CallActivityHandler());
 		addHandler("subProcess", new SubProcessHandler());
+		addHandler("intermediateCatchEvent", new IntermediateCatchEventHandler());
 
 		addHandler("sequenceFlow", new SequenceFlowHandler());
 		
