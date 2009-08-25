@@ -40,7 +40,7 @@ public class DroolsBPELGuvnorTest extends TestCase {
 	}
 
 	private static KnowledgeBase readKnowledgeBase() throws Exception {
-		ResourceType bpelType = new ResourceType(BPELProcess.ODE_TYPE, "ODE BPEL Process");
+		ResourceType bpelType = new ResourceType(BPELProcess.ODE_TYPE, "ODE BPEL Process", "bpel.jar");
 		ResourceTypeBuilderRegistry.getInstance().register(
 			bpelType, new BPELResourceTypeBuilder());
 		KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor");
