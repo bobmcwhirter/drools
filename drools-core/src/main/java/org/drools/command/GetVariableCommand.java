@@ -1,4 +1,4 @@
-package org.drools.simulation;
+package org.drools.command;
 
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
@@ -9,7 +9,6 @@ import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.io.Resource;
-import org.drools.simulation.impl.Simulator;
 
 public class GetVariableCommand
     implements
