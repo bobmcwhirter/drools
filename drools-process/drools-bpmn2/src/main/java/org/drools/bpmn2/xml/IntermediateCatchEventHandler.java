@@ -1,15 +1,12 @@
 package org.drools.bpmn2.xml;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EventNode;
-import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.xml.ExtensibleXmlParser;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
