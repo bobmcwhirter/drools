@@ -22,18 +22,6 @@
       <version>1.1.2</version>
       <type>war</type>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-gwt-console</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-gwt-graph</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-gwt-form</artifactId>
-    </dependency>
 
   </dependencies>
 
