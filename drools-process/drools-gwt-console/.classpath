@@ -8,7 +8,7 @@
   <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.1.1/antlr-runtime-3.1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-cli/2.0-SNAPSHOT/commons-cli-2.0-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-compress/1.0-SNAPSHOT/commons-compress-1.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-exec/1.0.0-SNAPSHOT/commons-exec-1.0.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-finder/1.0-SNAPSHOT/commons-finder-1.0-SNAPSHOT.jar"/>
@@ -16,18 +16,17 @@
   <classpathentry kind="var" path="M2_REPO/commons-net/commons-net/2.0/commons-net-2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.4.2.v_883_R34x/core-3.4.2.v_883_R34x.jar"/>
   <classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-api/5.1.0.SNAPSHOT/drools-api-5.1.0.SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-bam/5.1.0.SNAPSHOT/drools-bam-5.1.0.SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.1.0.SNAPSHOT/drools-compiler-5.1.0.SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.1.0.SNAPSHOT/drools-core-5.1.0.SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-process-task/5.1.0.SNAPSHOT/drools-process-task-5.1.0.SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-workitems/5.1.0.SNAPSHOT/drools-workitems-5.1.0.SNAPSHOT.jar"/>
+  <classpathentry kind="src" path="/drools-api"/>
+  <classpathentry kind="src" path="/drools-bam"/>
+  <classpathentry kind="src" path="/drools-compiler"/>
+  <classpathentry kind="src" path="/drools-core"/>
+  <classpathentry kind="src" path="/drools-process-task"/>
+  <classpathentry kind="src" path="/drools-workitems"/>
   <classpathentry kind="var" path="M2_REPO/org/hibernate/ejb3-persistence/1.0.2.GA/ejb3-persistence-1.0.2.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/el/el-api/1.0/el-api-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/code/gson/gson/1.2.2/gson-1.2.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-rpc/1.1.2/gwt-console-rpc-1.1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/bpm/gwt-console-server-integration/1.1.2/gwt-console-server-integration-1.1.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/h2database/h2/1.0.77/h2-1.0.77.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-annotations/3.4.0.GA/hibernate-annotations-3.4.0.GA.jar"/>
@@ -36,6 +35,7 @@
   <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-entitymanager/3.4.0.GA/hibernate-entitymanager-3.4.0.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
   <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.4.GA/javassist-3.4.GA.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/el/jboss-el/1.0_02.CR2/jboss-el-1.0_02.CR2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/seam/jboss-seam/2.1.1.GA/jboss-seam-2.1.1.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
@@ -45,11 +45,13 @@
   <classpathentry kind="var" path="M2_REPO/javax/transaction/jta/1.1/jta-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4/mail-1.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-M3/mina-core-2.0.0-M3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12-SNAPSHOT/mvel2-2.0.12-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-M3/mina-core-2.0.0-M3.jar" sourcepath="M2_REPO/org/apache/mina/mina-core/2.0.0-M3/mina-core-2.0.0-M3-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.12/mvel2-2.0.12.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/rome/rome/0.9/rome-0.9.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.0/slf4j-api-1.5.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.2/slf4j-jdk14-1.5.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/jivesoftware/smack/3.0.4/smack-3.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/2.0.2/xml-apis-2.0.2.jar"/>
 </classpath>
