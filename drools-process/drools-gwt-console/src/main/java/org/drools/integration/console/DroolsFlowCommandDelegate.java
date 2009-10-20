@@ -65,10 +65,9 @@ public class DroolsFlowCommandDelegate {
 			System.out.println("Successfully loaded default package from Guvnor");
 			return ksession;
 		} catch (Throwable t) {
-			t.printStackTrace();
 			throw new RuntimeException(
 				"Could not initialize stateful knowledge session: "
-					+ t.getMessage());
+					+ t.getMessage(), t);
 		}
 	}
 	
