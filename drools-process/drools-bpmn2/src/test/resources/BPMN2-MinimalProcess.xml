@@ -8,13 +8,15 @@
              xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
              xmlns:tns="http://www.example.org/MinimalExample">
 
-  <process id="Minimal" name="Minimal Process">
+  <process id="Minimal" name="Minimal Process" processType="executable">
     <startEvent id="_1" name="StartProcess"/>
     <sequenceFlow sourceRef="_1" targetRef="_2"/>
     <scriptTask id="_2" name="Hello">
       <script>System.out.println("Hello World");</script>
     </scriptTask>
     <sequenceFlow sourceRef="_2" targetRef="_3"/>
-    <endEvent id="_3" name="EndProcess"/>
+    <endEvent id="_3" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
   </process>
 </definitions>

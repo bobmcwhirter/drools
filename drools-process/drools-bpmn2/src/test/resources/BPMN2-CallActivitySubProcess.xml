@@ -21,6 +21,8 @@
 kcontext.setVariable("subY", "new value");</script>
     </scriptTask>
     <sequenceFlow sourceRef="_2" targetRef="_3"/>
-    <endEvent id="_3" name="EndProcess"/>
+    <endEvent id="_3" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
   </process>
 </definitions>

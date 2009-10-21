@@ -91,6 +91,10 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
         				sequenceFlow.setLanguage("java");
         			} else if (XmlBPMNProcessDumper.RULE_LANGUAGE.equals(language)) {
         				sequenceFlow.setType("rule");
+        			} else if (XmlBPMNProcessDumper.XPATH_LANGUAGE.equals(language)) {
+                        sequenceFlow.setLanguage("XPath");
+                    } else {
+        			    throw new IllegalArgumentException("Unknown language " + language);
         			}
         		}
         		org.w3c.dom.Node nameNode = xmlNode.getAttributes().getNamedItem("name");
@@ -102,7 +106,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
         	}
         	xmlNode = xmlNode.getNextSibling();
         }
-        return parser.getCurrent();
+        return sequenceFlow;
 	}
 
 	public Class<?> generateNodeFor() {

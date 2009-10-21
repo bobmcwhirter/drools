@@ -42,7 +42,9 @@
     <userTask id="_5" name="Two">
     </userTask>
     <parallelGateway id="_6" name="Converge" gatewayDirection="converging"/>
-    <endEvent id="_7" name="EndProcess"/>
+    <endEvent id="_7" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
     
     <!-- connections -->
     <sequenceFlow sourceRef="_1" targetRef="_2"/>

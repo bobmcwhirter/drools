@@ -80,7 +80,9 @@
         <targetRef>_6_BodyInput</targetRef>
       </dataInputAssociation>
     </task>
-    <endEvent id="_7" name="End" g:x="370" g:y="56" g:width="48" g:height="48" />
+    <endEvent id="_7" name="End" g:x="370" g:y="56" g:width="48" g:height="48" >
+      <terminateEventDefinition/>
+    </endEvent>
 
     <!-- connections -->
     <sequenceFlow sourceRef="_1" targetRef="_2" />

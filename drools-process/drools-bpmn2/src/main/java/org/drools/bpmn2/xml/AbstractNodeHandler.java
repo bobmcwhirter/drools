@@ -2,6 +2,7 @@ package org.drools.bpmn2.xml;
 
 import java.util.HashSet;
 
+import org.drools.bpmn2.core.Lane;
 import org.drools.bpmn2.core.SequenceFlow;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.workflow.core.Node;
@@ -33,6 +34,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
+        this.validPeers.add(Lane.class);
         this.validPeers.add(Variable.class);
         this.validPeers.add(Node.class);
         this.validPeers.add(SequenceFlow.class);
@@ -41,17 +43,28 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     public Object start(final String uri, final String localName, final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName, attrs );
-        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         final Node node = createNode(attrs);
         String id = attrs.getValue("id");
-        // remove starting _
-        id = id.substring(1);
-        // remove ids of parent nodes
-        id = id.substring(id.lastIndexOf("-") + 1);
-        final String name = attrs.getValue("name");
-        node.setName(name);
-        node.setId(new Integer(id));
-        nodeContainer.addNode(node);
+        try {
+            // remove starting _
+            id = id.substring(1);
+            // remove ids of parent nodes
+            id = id.substring(id.lastIndexOf("-") + 1);
+            final String name = attrs.getValue("name");
+            node.setName(name);
+            node.setId(new Integer(id));
+        } catch (NumberFormatException e) {
+            // id is not in the expected format, generating a new one
+            long newId = 0;
+            NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+            for (org.drools.definition.process.Node n: nodeContainer.getNodes()) {
+                if (n.getId() > newId) {
+                    newId = n.getId();
+                }
+            }
+            ((org.drools.workflow.core.Node) node).setId(++newId);
+            node.setMetaData("UniqueId", attrs.getValue("id"));
+        }
         return node;
     }
 
@@ -62,6 +75,8 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final Element element = parser.endElementBuilder();
         Node node = (Node) parser.getCurrent();
         handleNode(node, element, uri, localName, parser);
+        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+        nodeContainer.addNode(node);
         return node;
     }
     

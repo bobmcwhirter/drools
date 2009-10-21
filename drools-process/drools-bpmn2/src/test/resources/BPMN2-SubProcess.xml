@@ -21,6 +21,12 @@
       <endEvent id="_2-3" name="EndSubProcess"/>
     </subProcess>
     <sequenceFlow sourceRef="_2" targetRef="_3"/>
-    <endEvent id="_3" name="EndProcess"/>
+    <scriptTask id="_3" name="Goodbye">
+      <script>System.out.println("Goodbye World");</script>
+    </scriptTask>
+    <sequenceFlow sourceRef="_3" targetRef="_4"/>
+    <endEvent id="_4" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
   </process>
 </definitions>

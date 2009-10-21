@@ -20,14 +20,14 @@ public class TaskHandler extends AbstractNodeHandler {
     
     @SuppressWarnings("unchecked")
 	public Class generateNodeFor() {
-        return WorkItemNode.class;
+        return Node.class;
     }
 
     protected void handleNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	WorkItemNode workItemNode = (WorkItemNode) node;
-        String name = element.getAttribute("taskName");
+        String name = getTaskName(element);
         Work work = new WorkImpl();
         work.setName(name);
     	workItemNode.setWork(work);
@@ -46,6 +46,10 @@ public class TaskHandler extends AbstractNodeHandler {
     		xmlNode = xmlNode.getNextSibling();
         }
 	}
+    
+    protected String getTaskName(final Element element) {
+        return element.getAttribute("taskName");
+    }
     
     protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
     	org.w3c.dom.Node subNode = xmlNode.getFirstChild();
@@ -95,79 +99,10 @@ public class TaskHandler extends AbstractNodeHandler {
 		workItemNode.addOutMapping(dataOutputs.get(from), to);
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
-		WorkItemNode workItemNode = (WorkItemNode) node;
-		writeNode("task", workItemNode, xmlDump, includeMeta);
-		xmlDump.append("tns:taskName=\"" + workItemNode.getWork().getName() + "\" >" + EOL);
-		writeIO(workItemNode, xmlDump);
-		endNode("task", xmlDump);
-	}
-	
-	protected void writeIO(WorkItemNode workItemNode, StringBuilder xmlDump) {
-		xmlDump.append("      <ioSpecification>" + EOL);
-		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
-			xmlDump.append("        <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
-		}
-		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
-			if (entry.getValue() != null) {
-				xmlDump.append("        <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
-			}
-		}
-		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
-			xmlDump.append("        <dataOutput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Output\" name=\"" + entry.getKey() + "\" />" + EOL);
-		}
-		xmlDump.append("        <inputSet>" + EOL);
-		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
-			xmlDump.append("          <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
-		}
-		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
-			if (entry.getValue() != null) {
-				xmlDump.append("          <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
-			}
-		}
-		xmlDump.append(
-			"        </inputSet>" + EOL);
-		xmlDump.append("        <outputSet>" + EOL);
-		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
-			xmlDump.append("          <dataOutputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Output</dataOutputRefs>" + EOL);
-		}
-		xmlDump.append(
-			"        </outputSet>" + EOL);
-		xmlDump.append(
-			"      </ioSpecification>" + EOL);
-		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
-			if (entry.getValue() != null) {
-				xmlDump.append(
-					"      <property id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "\" />" + EOL);
-			}
-		}
-		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
-			xmlDump.append("      <dataInputAssociation>" + EOL);
-			xmlDump.append(
-				"        <sourceRef>" + entry.getValue() + "</sourceRef>" + EOL +
-				"        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</targetRef>" + EOL);
-			xmlDump.append("      </dataInputAssociation>" + EOL);
-		}
-		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
-			if (entry.getValue() != null) {
-				xmlDump.append("      <dataInputAssociation>" + EOL);
-				xmlDump.append(
-					"        <assignment>" + EOL +
-					"          <from xs:type=\"tFormalExpression\">" + entry.getValue().toString() + "</from>" + EOL +
-					"          <to xs:type=\"tFormalExpression\">_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</to>" + EOL +
-					"        </assignment>" + EOL +
-					"        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "</sourceRef>" + EOL +
-					"        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</targetRef>" + EOL);
-				xmlDump.append("      </dataInputAssociation>" + EOL);
-			}
-		}
-		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
-			xmlDump.append("      <dataOutputAssociation>" + EOL);
-			xmlDump.append(
-				"        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Output</sourceRef>" + EOL +
-				"        <targetRef>" + entry.getValue() + "</targetRef>" + EOL);
-			xmlDump.append("      </dataOutputAssociation>" + EOL);
-		}
-	}
+    @Override
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+        throw new IllegalArgumentException(
+            "Writing out should be handled by the WorkItemNodeHandler");
+    }
 
 }

@@ -226,7 +226,9 @@
       </potentialOwner>
     </userTask>
     <parallelGateway id="_6" name="Converge" g:x="463" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
-    <endEvent id="_7" name="EndProcess" g:x="547" g:y="56" g:width="48" g:height="48" />
+    <endEvent id="_7" name="EndProcess" g:x="547" g:y="56" g:width="48" g:height="48" >
+      <terminateEventDefinition/>
+    </endEvent>
 
     <!-- connections -->
     <sequenceFlow sourceRef="_6" targetRef="_7" />

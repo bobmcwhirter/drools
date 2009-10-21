@@ -17,7 +17,9 @@
       <script>System.out.println("Hello World");</script>
     </scriptTask>
     <sequenceFlow sourceRef="_2" targetRef="_3" g:bendpoints="[10,10]" />
-    <endEvent id="_3" name="EndProcess"/>
+    <endEvent id="_3" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
   </process>
 
 </definitions>

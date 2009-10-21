@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drools.bpmn2.core.SequenceFlow;
-import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -45,7 +44,7 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
 		parser.startElementBuilder(localName, attrs);
 
 		final String id = attrs.getValue("id");
-		final String itemSubjectRef = attrs.getValue("itemSubjectRef");
+//		final String itemSubjectRef = attrs.getValue("itemSubjectRef");
 
 		Object parent = parser.getParent();
 		if (parent instanceof RuleFlowProcess) {

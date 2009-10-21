@@ -66,7 +66,7 @@ public class UserTaskHandler extends TaskHandler {
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		HumanTaskNode humanTaskNode = (HumanTaskNode) node;
 		writeNode("userTask", humanTaskNode, xmlDump, includeMeta);
-		xmlDump.append(">" + EOL);
+		xmlDump.append("implementation=\"humanTaskWebService\" >" + EOL);
 		writeIO(humanTaskNode, xmlDump);
 		String ownerString = (String) humanTaskNode.getWork().getParameter("ActorId");
 		if (ownerString != null) {

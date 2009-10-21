@@ -1,18 +1,26 @@
 package org.drools.bpmn2.xml;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.bpmn2.xpath.XPathDialect;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
+import org.drools.process.core.Work;
+import org.drools.process.core.context.swimlane.Swimlane;
+import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.CompositeNode;
+import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.XmlDumper;
@@ -21,6 +29,7 @@ public class XmlBPMNProcessDumper {
 	
 	public static final String JAVA_LANGUAGE = "http://www.java.com/java";
 	public static final String RULE_LANGUAGE = "http://www.jboss.org/drools/rule";
+    public static final String XPATH_LANGUAGE = "http://www.w3.org/1999/XPath";
     
 	public static XmlBPMNProcessDumper INSTANCE = new XmlBPMNProcessDumper();
 	
@@ -73,8 +82,10 @@ public class XmlBPMNProcessDumper {
 	    xmlDump.append(
     		"  <resource id=\"Actor\" name=\"Human Actor\" />" + EOL + EOL);
 
+	    visitInterfaces(process, xmlDump);
+	       
 	    // the process itself
-		xmlDump.append("  <process ");
+		xmlDump.append("  <process processType=\"executable\" ");
         if (process.getId() != null) {
             xmlDump.append("id=\"" + process.getId() + "\" ");
         }
@@ -83,11 +94,47 @@ public class XmlBPMNProcessDumper {
         }
         // TODO: package, version
         xmlDump.append(">" + EOL + EOL);
+        visitLanes(process, xmlDump);
         visitHeader(process, xmlDump, includeMeta);
         visitNodes(process, xmlDump, includeMeta);
         visitConnections(process.getNodes(), xmlDump, includeMeta);
         xmlDump.append("  </process>" + EOL + EOL);
         xmlDump.append("</definitions>");
+    }
+    
+    private void visitLanes(WorkflowProcess process, StringBuilder xmlDump) {
+        // lanes
+        Collection<Swimlane> swimlanes = ((SwimlaneContext)
+            ((org.drools.workflow.core.WorkflowProcess) process)
+                .getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE)).getSwimlanes();
+        if (!swimlanes.isEmpty()) {
+            xmlDump.append("    <laneSet>" + EOL);
+            for (Swimlane swimlane: swimlanes) {
+                xmlDump.append("      <lane name=\"" + swimlane.getName() + "\" >" + EOL);
+                visitLane(process, swimlane.getName(), xmlDump);
+                xmlDump.append("      </lane>" + EOL);
+            }
+            xmlDump.append("    </laneSet>" + EOL);
+        }
+    }
+    
+    private void visitLane(NodeContainer container, String lane, StringBuilder xmlDump) {
+        for (Node node: container.getNodes()) {
+            if (node instanceof HumanTaskNode) {
+                String swimlane = ((HumanTaskNode) node).getSwimlane();
+                if (lane.equals(swimlane)) {
+                    xmlDump.append("        <flowElementRef>_" + ((NodeImpl) node).getUniqueId() + "</flowElementRef>" + EOL);
+                }
+            } else {
+                String swimlane = (String) node.getMetaData("Lane");
+                if (lane.equals(swimlane)) {
+                    xmlDump.append("        <flowElementRef>_" + ((NodeImpl) node).getUniqueId() + "</flowElementRef>" + EOL);
+                }
+            }
+            if (node instanceof NodeContainer) {
+                visitLane((NodeContainer) node, lane, xmlDump);
+            }
+        }
     }
     
     protected void visitHeader(WorkflowProcess process, StringBuilder xmlDump, boolean includeMeta) {
@@ -113,6 +160,54 @@ public class XmlBPMNProcessDumper {
             xmlDump.append("/>" + EOL);
         }
         xmlDump.append(EOL);
+    }
+    
+    protected void visitInterfaces(WorkflowProcess process, StringBuilder xmlDump) {
+        for (Node node: process.getNodes()) {
+            if (node instanceof WorkItemNode) {
+                Work work = ((WorkItemNode) node).getWork();
+                if (work != null) {
+                    if ("Service Task".equals(work.getName())) {
+                        String interfaceName = (String) work.getParameter("Interface");
+                        if (interfaceName == null) {
+                            interfaceName = "";
+                        }
+                        String operationName = (String) work.getParameter("Operation");
+                        if (operationName == null) {
+                            operationName = "";
+                        }
+                        String parameterType = (String) work.getParameter("ParameterType");
+                        if (parameterType == null) {
+                            parameterType = "";
+                        }
+                        xmlDump.append(
+                            "  <itemDefinition id=\"_" + getUniqueNodeId(node) + "_InMessageType\" structureRef=\"" + parameterType + "\"/>" + EOL +
+                            "  <message id=\"_" + getUniqueNodeId(node) + "_InMessage\" structureRef=\"_" + getUniqueNodeId(node) + "_InMessageType\" />" + EOL +
+                            "  <interface id=\"_" + getUniqueNodeId(node) + "_ServiceInterface\" name=\"" + interfaceName + "\">" + EOL +
+                            "    <operation id=\"_" + getUniqueNodeId(node) + "_ServiceOperation\" name=\"" + operationName + "\">" + EOL + 
+                            "      <inMessageRef>_" + getUniqueNodeId(node) + "_InMessage</inMessageRef>" + EOL +
+                            "    </operation>" + EOL +
+                            "  </interface>" + EOL + EOL);
+                    } else if ("Send Task".equals(work.getName())) {
+                        String messageType = (String) work.getParameter("MessageType");
+                        if (messageType == null) {
+                            messageType = "";
+                        }
+                        xmlDump.append(
+                            "  <itemDefinition id=\"_" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + messageType + "\"/>" + EOL +
+                            "  <message id=\"_" + getUniqueNodeId(node) + "_Message\" structureRef=\"_" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                    } else if ("Receive Task".equals(work.getName())) {
+                        String messageType = (String) work.getParameter("MessageType");
+                        if (messageType == null) {
+                            messageType = "";
+                        }
+                        xmlDump.append(
+                            "  <itemDefinition id=\"_" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + messageType + "\"/>" + EOL +
+                            "  <message id=\"_" + getUniqueNodeId(node) + "_Message\" structureRef=\"_" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                    }
+                }
+            }
+        }
     }
     
     private void visitNodes(WorkflowProcess process, StringBuilder xmlDump, boolean includeMeta) {
@@ -161,21 +256,31 @@ public class XmlBPMNProcessDumper {
         	Split split = (Split) connection.getFrom();
         	if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
         		Constraint constraint = split.getConstraint(connection);
-        		String constraintString = constraint.getConstraint();
         		xmlDump.append(">" + EOL +
     				"      <conditionExpression xs:type=\"tFormalExpression\" ");
-        		if ("code".equals(constraint.getType())) {
-	        		if (JavaDialect.ID.equals(constraint.getDialect())) {
-	        			xmlDump.append(" language=\"" + JAVA_LANGUAGE + "\" ");
-	        		}
+        		if (constraint == null) {
+        		    xmlDump.append("/>");
         		} else {
-        			xmlDump.append(" language=\"" + RULE_LANGUAGE + "\" ");
+                    if ("code".equals(constraint.getType())) {
+                        if (JavaDialect.ID.equals(constraint.getDialect())) {
+                            xmlDump.append("language=\"" + JAVA_LANGUAGE + "\" ");
+                        } else if (XPathDialect.ID.equals(constraint.getDialect())) {
+                            xmlDump.append("language=\"" + XPATH_LANGUAGE + "\" ");
+                        }
+                    } else {
+                        xmlDump.append("language=\"" + RULE_LANGUAGE + "\" ");
+                    }
+                    if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
+            			xmlDump.append("tns:name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
+            		}
+                    String constraintString = constraint.getConstraint();
+                    if (constraintString == null) {
+                        constraintString = "";
+                    }
+                    xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraintString) + "</conditionExpression>");
         		}
-        		if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
-        			xmlDump.append("tns:name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
-        		}
-        		xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraintString) + "</conditionExpression>" + EOL +
-	    				"    </sequenceFlow>" + EOL);
+        		xmlDump.append(EOL
+    		        + "   </sequenceFlow>" + EOL);
         	} else {
             	xmlDump.append("/>" + EOL);
             }
