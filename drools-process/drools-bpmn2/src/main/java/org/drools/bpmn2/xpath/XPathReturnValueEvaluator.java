@@ -1,8 +1,8 @@
 package org.drools.bpmn2.xpath;
 
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.SimpleBindings;
+//import javax.script.Bindings;
+//import javax.script.ScriptEngine;
+//import javax.script.SimpleBindings;
 
 import org.drools.WorkingMemory;
 import org.drools.process.core.context.variable.VariableScope;
@@ -13,7 +13,7 @@ import org.drools.spi.ReturnValueEvaluator;
 
 public class XPathReturnValueEvaluator implements ReturnValueEvaluator {
     
-    private static XPathScriptEngineFactory FACTORY = new XPathScriptEngineFactory();
+//    private static XPathScriptEngineFactory FACTORY = new XPathScriptEngineFactory();
 
     private String expression;
     
@@ -22,17 +22,18 @@ public class XPathReturnValueEvaluator implements ReturnValueEvaluator {
     }
 
     public Object evaluate(WorkingMemory workingMemory, ProcessContext processContext) throws Exception {
-        ScriptEngine engine = FACTORY.getScriptEngine();
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-            ((ProcessInstance) processContext.getProcessInstance())
-                .getContextInstance(VariableScope.VARIABLE_SCOPE);
-        if (variableScopeInstance != null) {
-            // TODO include other scopes that process-level scope as well
-            Bindings bindings = new SimpleBindings(variableScopeInstance.getVariables());
-            return engine.eval(expression, bindings);
-        } else {
-            return engine.eval(expression);
-        }
+//        ScriptEngine engine = FACTORY.getScriptEngine();
+//        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+//            ((ProcessInstance) processContext.getProcessInstance())
+//                .getContextInstance(VariableScope.VARIABLE_SCOPE);
+//        if (variableScopeInstance != null) {
+//            // TODO include other scopes that process-level scope as well
+//            Bindings bindings = new SimpleBindings(variableScopeInstance.getVariables());
+//            return engine.eval(expression, bindings);
+//        } else {
+//            return engine.eval(expression);
+//        }
+    	throw new UnsupportedOperationException("XPath expressions not supported");
     }
 
 }
