@@ -119,19 +119,19 @@ public class SimpleBPMNProcessTest extends TestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 	
-	public void testExclusiveSplitXPath() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath.xml");
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-            .parse(new ByteArrayInputStream(
-                "<myDocument><chapter1>BlaBla</chapter1><chapter2>MoreBlaBla</chapter2></myDocument>".getBytes()));
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", document);
-        params.put("y", "SomeString");
-        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-    }
+//	public void testExclusiveSplitXPath() throws Exception {
+//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath.xml");
+//        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+//        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+//        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+//            .parse(new ByteArrayInputStream(
+//                "<myDocument><chapter1>BlaBla</chapter1><chapter2>MoreBlaBla</chapter2></myDocument>".getBytes()));
+//        Map<String, Object> params = new HashMap<String, Object>();
+//        params.put("x", document);
+//        params.put("y", "SomeString");
+//        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+//        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+//    }
 
 	public void testCallActivity() throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
@@ -256,32 +256,32 @@ public class SimpleBPMNProcessTest extends TestCase {
         assertEquals("Hello john!", processInstance.getVariable("s"));
     }
 
-    public void testPersistence() throws Exception {
-        setupDataSource();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(
-            "org.drools.persistence.jpa");
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        env.set(EnvironmentName.TRANSACTION_MANAGER,
-             TransactionManagerServices.getTransactionManager());
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-UserTask.xml");
-        StatefulKnowledgeSession ksession =
-            JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-        int sessionId = ksession.getId();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("john", workItem.getParameter("ActorId"));
-        ksession.dispose();
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
-            sessionId, kbase, null, env);
-        assertNotNull(ksession.getProcessInstance(processInstance.getId()));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertNull(ksession.getProcessInstance(processInstance.getId()));
-    }
+//    public void testPersistence() throws Exception {
+//        setupDataSource();
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory(
+//            "org.drools.persistence.jpa");
+//        Environment env = KnowledgeBaseFactory.newEnvironment();
+//        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+//        env.set(EnvironmentName.TRANSACTION_MANAGER,
+//             TransactionManagerServices.getTransactionManager());
+//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-UserTask.xml");
+//        StatefulKnowledgeSession ksession =
+//            JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+//        int sessionId = ksession.getId();
+//        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+//        ProcessInstance processInstance = ksession.startProcess("UserTask");
+//        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+//        WorkItem workItem = workItemHandler.getWorkItem();
+//        assertNotNull(workItem);
+//        assertEquals("john", workItem.getParameter("ActorId"));
+//        ksession.dispose();
+//        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
+//            sessionId, kbase, null, env);
+//        assertNotNull(ksession.getProcessInstance(processInstance.getId()));
+//        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+//        assertNull(ksession.getProcessInstance(processInstance.getId()));
+//    }
 
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();

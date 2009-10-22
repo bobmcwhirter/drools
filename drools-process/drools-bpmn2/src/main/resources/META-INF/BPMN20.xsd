@@ -5,7 +5,7 @@
 	xmlns:di="http://bpmndi.org"
 	targetNamespace="http://schema.omg.org/spec/BPMN/2.0">
 
-	<xsd:import namespace="http://bpmndi.org" schemaLocation="BPMNDI.xsd"/>
+	<xsd:import namespace="http://bpmndi.org" schemaLocation="BpmnDi.xsd"/>
 	<xsd:include schemaLocation="Semantic.xsd"/>
 
 	<xsd:element name="definitions" type="tDefinitions"/>
