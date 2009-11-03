@@ -62,8 +62,8 @@ public class TaskLifeCycleTest extends BaseTest {
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba']], }),";                        
-        str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
-        str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
+//        str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
+//        str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
