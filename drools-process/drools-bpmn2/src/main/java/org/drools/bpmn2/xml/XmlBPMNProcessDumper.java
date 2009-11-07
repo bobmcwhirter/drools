@@ -154,7 +154,7 @@ public class XmlBPMNProcessDumper {
         for (Variable variable: variables) {
             xmlDump.append("    <property id=\"" + variable.getName() + "\" ");
             if (variable.getType() != null) {
-            	xmlDump.append("itemSubjectRef=\"tns:" + variable.getName() + "Item\"" );
+            	xmlDump.append("itemSubjectRef=\"" + variable.getName() + "Item\"" );
             }
             // TODO: value
             xmlDump.append("/>" + EOL);
@@ -280,7 +280,7 @@ public class XmlBPMNProcessDumper {
                     xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraintString) + "</conditionExpression>");
         		}
         		xmlDump.append(EOL
-    		        + "   </sequenceFlow>" + EOL);
+    		        + "    </sequenceFlow>" + EOL);
         	} else {
             	xmlDump.append("/>" + EOL);
             }

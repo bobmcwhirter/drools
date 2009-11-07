@@ -1,10 +1,14 @@
 package org.drools.bpmn2.xml;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.SequenceFlow;
 import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Node;
@@ -12,6 +16,7 @@ import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -44,7 +49,7 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
 		parser.startElementBuilder(localName, attrs);
 
 		final String id = attrs.getValue("id");
-//		final String itemSubjectRef = attrs.getValue("itemSubjectRef");
+		final String itemSubjectRef = attrs.getValue("itemSubjectRef");
 
 		Object parent = parser.getParent();
 		if (parent instanceof RuleFlowProcess) {
@@ -52,8 +57,17 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
 			List variables = process.getVariableScope().getVariables();
 			Variable variable = new Variable();
 			variable.setName(id);
-			// TODO add object type
-			variable.setType(new ObjectDataType());
+			// retrieve type from item definition
+			DataType dataType = new ObjectDataType();
+			Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+	            ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+	        if (itemDefinitions != null) {
+	        	ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
+	        	if (itemDefinition != null) {
+	        		dataType = new ObjectDataType(itemDefinition.getStructureRef());
+	        	}
+	        }
+			variable.setType(dataType);
 			variables.add(variable);
 			return variable;
 		}

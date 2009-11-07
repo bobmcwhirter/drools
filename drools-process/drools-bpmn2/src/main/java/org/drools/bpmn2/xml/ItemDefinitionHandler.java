@@ -38,15 +38,15 @@ public class ItemDefinitionHandler extends BaseAbstractHandler implements Handle
 		String type = attrs.getValue("structureRef");
 
 		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
-		Map<String, ItemDefinition> itemDefintions = (Map<String, ItemDefinition>)
-            ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-        if (itemDefintions == null) {
-            itemDefintions = new HashMap<String, ItemDefinition>();
-            buildData.setMetaData("ItemDefinitions", itemDefintions);
+		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+            buildData.getMetaData("ItemDefinitions");
+        if (itemDefinitions == null) {
+            itemDefinitions = new HashMap<String, ItemDefinition>();
+            buildData.setMetaData("ItemDefinitions", itemDefinitions);
         }
         ItemDefinition itemDefinition = new ItemDefinition(id); 
         itemDefinition.setStructureRef(type);
-        itemDefintions.put(id, itemDefinition);
+        itemDefinitions.put(id, itemDefinition);
 		return itemDefinition;
 	}
 
