@@ -7,7 +7,7 @@ public class NodeInstanceLog {
 	public static final int TYPE_ENTER = 0;
 	public static final int TYPE_EXIT = 1;
 	
-	private String id;
+	private long id;
     private int type;
     private long processInstanceId;
     private String processId;
@@ -36,11 +36,11 @@ public class NodeInstanceLog {
 		this.type = type;
 	}
     
-    public String getId() {
+    public long getId() {
     	return id;
     }
     
-    void setId(String id) {
+    void setId(long id) {
 		this.id = id;
 	}
 
