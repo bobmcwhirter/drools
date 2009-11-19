@@ -146,6 +146,9 @@ org.drools.guvnor.client.rpc.ScenarioResultSummary, true
 org.drools.guvnor.client.rpc.ScenarioRunResult, true
 org.drools.guvnor.client.rpc.SessionExpiredException, true
 org.drools.guvnor.client.rpc.SingleScenarioResult, true
+org.drools.guvnor.client.rpc.SnapshotDiff, true
+[Lorg.drools.guvnor.client.rpc.SnapshotDiff;, true
+org.drools.guvnor.client.rpc.SnapshotDiffs, true
 org.drools.guvnor.client.rpc.SnapshotInfo, true
 [Lorg.drools.guvnor.client.rpc.SnapshotInfo;, true
 org.drools.guvnor.client.rpc.TableConfig, true
