@@ -1,10 +1,13 @@
 package org.drools.bpmn2.core;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Interface {
+public class Interface implements Serializable {
     
+	private static final long serialVersionUID = 4L;
+	
     private String id;
     private String name;
     private Map<String, Operation> operations = new HashMap<String, Operation>();

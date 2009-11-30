@@ -92,6 +92,10 @@ public class XmlBPMNProcessDumper {
         if (process.getName() != null) {
             xmlDump.append("name=\"" + process.getName() + "\" ");
         }
+        String packageName = process.getPackageName();
+        if (packageName != null && !"org.drools.bpmn2".equals(packageName)) {
+            xmlDump.append("tns:packageName=\"" + packageName + "\" ");
+        }
         // TODO: package, version
         xmlDump.append(">" + EOL + EOL);
         visitLanes(process, xmlDump);

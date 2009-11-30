@@ -1,7 +1,11 @@
 package org.drools.bpmn2.core;
 
-public class SequenceFlow {
+import java.io.Serializable;
 
+public class SequenceFlow implements Serializable {
+
+	private static final long serialVersionUID = 4L;
+	
 	private String sourceRef;
 	private String targetRef;
 	private String bendpoints;

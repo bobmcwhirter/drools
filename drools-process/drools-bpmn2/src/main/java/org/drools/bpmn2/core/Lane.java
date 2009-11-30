@@ -1,10 +1,13 @@
 package org.drools.bpmn2.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Lane {
+public class Lane implements Serializable {
     
+	private static final long serialVersionUID = 4L;
+	
     private String id;
     private String name;
     private List<String> flowElementIds = new ArrayList<String>();

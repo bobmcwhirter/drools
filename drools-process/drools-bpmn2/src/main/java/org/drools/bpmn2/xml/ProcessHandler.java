@@ -57,6 +57,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
 		String id = attrs.getValue("id");
 		String name = attrs.getValue("name");
+		String packageName = attrs.getValue("http://www.jboss.org/drools", "packageName");
 
 		RuleFlowProcess process = new RuleFlowProcess();
 		process.setAutoComplete(true);
@@ -66,7 +67,10 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		}
 		process.setName(name);
 		process.setType("RuleFlow");
-		process.setPackageName("org.drools.bpmn2");
+		if (packageName == null) {
+			packageName = "org.drools.bpmn2";
+		}
+		process.setPackageName(packageName);
 
 		((ProcessBuildData) parser.getData()).setProcess(process);
 		return process;
