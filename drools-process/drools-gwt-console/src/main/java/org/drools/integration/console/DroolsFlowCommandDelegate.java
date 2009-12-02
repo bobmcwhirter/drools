@@ -26,6 +26,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 public class DroolsFlowCommandDelegate {
 	
@@ -137,14 +138,12 @@ public class DroolsFlowCommandDelegate {
 	public Map<String, Object> getProcessInstanceVariables(String processInstanceId) {
 		ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
 		if (processInstance != null) {
-			VariableScopeInstance variableScope = (VariableScopeInstance) 
-				((org.drools.process.instance.ProcessInstance) processInstance)
-					.getContextInstance(VariableScope.VARIABLE_SCOPE);
-			if (variableScope == null) {
+		    Map<String, Object> variables = 
+		        ((WorkflowProcessInstanceImpl) processInstance).getVariables();
+            if (variables == null) {
 				return new HashMap<String, Object>();
 			}
 			// filter out null values
-			Map<String, Object> variables = variableScope.getVariables();
 			Map<String, Object> result = new HashMap<String, Object>();
 			for (Map.Entry<String, Object> entry: variables.entrySet()) {
 				if (entry.getValue() != null) {
