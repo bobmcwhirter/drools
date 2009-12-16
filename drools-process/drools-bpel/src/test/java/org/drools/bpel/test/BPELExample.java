@@ -8,7 +8,7 @@ import org.drools.bpel.compiler.BPELCompiler;
 import org.drools.bpel.instance.BPELProcessInstance;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 
-public class BPELTest {
+public class BPELExample {
 
     public static final void main(String[] args) {
         try {
