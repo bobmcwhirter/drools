@@ -100,7 +100,8 @@ public class XPathReturnValueEvaluator implements ReturnValueEvaluator {
 			this.processContext = processContext;
 		}
 		
-		public Object evaluate(List params) throws XPathFunctionException {
+		@SuppressWarnings("unchecked")
+        public Object evaluate(List params) throws XPathFunctionException {
 			if (params.size() != 2) {
 				throw new IllegalArgumentException(
 					"Invalid number of arguments for the getVariable function");

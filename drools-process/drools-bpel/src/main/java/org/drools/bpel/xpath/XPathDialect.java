@@ -2,9 +2,7 @@ package org.drools.bpel.xpath;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.Dialect;
 import org.drools.io.Resource;
@@ -71,11 +69,7 @@ public class XPathDialect implements Dialect {
 		return null;
 	}
 
-	public RuleConditionBuilder getBuilder(Class clazz) {
-		return null;
-	}
-
-	public Map getBuilders() {
+	public Map<Class<?>, EngineElementBuilder> getBuilders() {
 		return null;
 	}
 
@@ -111,7 +105,7 @@ public class XPathDialect implements Dialect {
 		return null;
 	}
 
-	public List getResults() {
+	public List<?> getResults() {
 		return null;
 	}
 
@@ -155,19 +149,17 @@ public class XPathDialect implements Dialect {
 	public AnalysisResult analyzeBlock(PackageBuildContext context,
 			BaseDescr descr, String text,
 			Map<String, Class<?>>[] availableIdentifiers) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public AnalysisResult analyzeExpression(PackageBuildContext context,
 			BaseDescr descr, Object content,
 			Map<String, Class<?>>[] availableIdentifiers) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public EngineElementBuilder getBuilder(Class<?> clazz) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 

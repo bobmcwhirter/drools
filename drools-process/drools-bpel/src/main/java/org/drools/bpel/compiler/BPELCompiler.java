@@ -215,7 +215,6 @@ public class BPELCompiler {
 				} else if (from.isLiteralVal()) {
 					Element literal = from.getAsLiteralVal().getLiteral();
 					org.w3c.dom.Node child = literal.getFirstChild();
-					short type;
 					if (child.getNodeType() == org.w3c.dom.Node.TEXT_NODE && "".equals(child.getTextContent().trim())) {
 						child = child.getNextSibling();
 					}
