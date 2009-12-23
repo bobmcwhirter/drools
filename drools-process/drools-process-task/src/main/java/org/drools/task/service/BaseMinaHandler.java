@@ -17,7 +17,4 @@ public class BaseMinaHandler extends IoHandlerAdapter
         responseHandlers.put( id, responseHandler );
     }
     
-    public static interface ResponseHandler {
-        public void setError(RuntimeException error);
-    }
 }

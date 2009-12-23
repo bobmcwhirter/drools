@@ -1,8 +1,8 @@
 package org.drools.task.service.responsehandlers;
 
-import org.drools.task.service.BaseMinaHandler;
-
 import java.lang.reflect.Constructor;
+
+import org.drools.task.service.ResponseHandler;
 
 /**
  * Abstract base class for client ResponseHandlers. Provides synchonized access to <field>done</field> which represents
@@ -15,7 +15,7 @@ import java.lang.reflect.Constructor;
  *
  * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
-public abstract class AbstractBaseResponseHandler implements BaseMinaHandler.ResponseHandler {
+public abstract class AbstractBaseResponseHandler implements ResponseHandler {
     private volatile boolean done;
     private RuntimeException error;
 
