@@ -1,5 +1,6 @@
 package org.drools.integration.console;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,16 +49,30 @@ public class DroolsFlowCommandDelegate {
 	        Environment env = KnowledgeBaseFactory.newEnvironment();
 	        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 			try {
-				ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
-					1, kbase, null, env);
 				System.out.println("Loading session data ...");
+                ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
+					1, kbase, null, env);
 			} catch (RuntimeException e) {
-				if ("Could not find session data for id 1".equals(e.getMessage())) {
-					ksession = JPAKnowledgeService.newStatefulKnowledgeSession(
-						kbase, null, env);
-					System.out.println("Creating new session data ...");
+				System.out.println("Error loading session data: " + e.getMessage());
+				if (e instanceof IllegalStateException) {
+				    Throwable cause = ((IllegalStateException) e).getCause();
+				    if (cause instanceof InvocationTargetException) {
+				        cause = cause.getCause();
+	                    if (cause != null && "Could not find session data for id 1".equals(cause.getMessage())) {
+	                        System.out.println("Creating new session data ...");
+	                        ksession = JPAKnowledgeService.newStatefulKnowledgeSession(
+	                            kbase, null, env);
+	                    } else {
+	                        System.err.println("Error loading session data: " + cause);
+	                        throw e;
+	                    }
+				    } else {
+                        System.err.println("Error loading session data: " + cause);
+    					throw e;
+    				}
 				} else {
-					throw e;
+                    System.err.println("Error loading session data: " + e.getMessage());
+                    throw e;
 				}
 			}
 			new WorkingMemoryDbLogger(ksession);
