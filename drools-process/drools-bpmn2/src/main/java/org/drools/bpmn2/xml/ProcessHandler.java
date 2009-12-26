@@ -13,14 +13,21 @@ import org.drools.bpmn2.core.Message;
 import org.drools.bpmn2.core.SequenceFlow;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
+import org.drools.process.core.context.exception.ActionExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.Swimlane;
+import org.drools.process.core.event.EventTypeFilter;
+import org.drools.process.core.timer.Timer;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.impl.ConstraintImpl;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.node.CompositeContextNode;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.xml.BaseAbstractHandler;
@@ -84,6 +91,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		List<SequenceFlow> connections = (List<SequenceFlow>)
 			process.getMetaData(CONNECTIONS);
 		linkConnections(process, connections);
+		linkBoundaryEvents(process);
         List<Lane> lanes = (List<Lane>)
             process.getMetaData(LaneHandler.LANES);
         assignLanes(process, lanes);
@@ -160,6 +168,63 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		}
 	}
 	
+    public static void linkBoundaryEvents(NodeContainer nodeContainer) {
+        for (Node node: nodeContainer.getNodes()) {
+            if (node instanceof EventNode) {
+                String type = ((EventTypeFilter)
+                    ((EventNode) node).getEventFilters().get(0)).getType();
+                String attachedTo = (String) node.getMetaData("AttachedTo");
+                if (attachedTo != null) {
+                    Node attachedNode = null;
+                    try {
+                        // remove starting _
+                        String attachedToString = attachedTo.substring(1);
+                        // remove ids of parent nodes
+                        attachedToString = attachedToString.substring(attachedToString.lastIndexOf("-") + 1);
+                        attachedNode = nodeContainer.getNode(new Integer(attachedToString));
+                    } catch (NumberFormatException e) {
+                        // try looking for a node with same "UniqueId" (in metadata)
+                        for (Node subnode: nodeContainer.getNodes()) {
+                            if (attachedTo.equals(subnode.getMetaData("UniqueId"))) {
+                                attachedNode = subnode;
+                                break;
+                            }
+                        }
+                        if (attachedNode == null) {
+                            throw new IllegalArgumentException("Could not find node to attach to: " + attachedTo);
+                        }
+                    }
+                    if (type.startsWith("Escalation-")) {
+                        boolean cancelActivity = (Boolean) node.getMetaData("CancelActivity");
+                        CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
+                        ExceptionScope exceptionScope = (ExceptionScope) 
+                            compositeNode.getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+                        if (exceptionScope == null) {
+                            exceptionScope = new ExceptionScope();
+                            compositeNode.addContext(exceptionScope);
+                            compositeNode.setDefaultContext(exceptionScope);
+                        }
+                        String escalationCode = (String) node.getMetaData("EscalationEvent");
+                        ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+                        exceptionHandler.setAction(new DroolsConsequenceAction("java",
+                            (cancelActivity ? "((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
+                            "kcontext.getProcessInstance().signalEvent(\"Escalation-" + attachedTo + "-" + escalationCode + "\", null);"));
+                        exceptionScope.setExceptionHandler(escalationCode, exceptionHandler);
+                    } else if (type.startsWith("Timer-")) {
+                        boolean cancelActivity = (Boolean) node.getMetaData("CancelActivity");
+                        CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
+                        String timeCycle = (String) node.getMetaData("TimeCycle");
+                        Timer timer = new Timer();
+                        timer.setDelay(timeCycle);
+                        compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
+                            (cancelActivity ? "((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
+                            "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeCycle + "\", null);"));
+                    }
+                }
+            }
+        }
+    }
+    
 	private void assignLanes(RuleFlowProcess process, List<Lane> lanes) {
 	    List<String> laneNames = new ArrayList<String>();
 	    Map<String, String> laneMapping = new HashMap<String, String>();

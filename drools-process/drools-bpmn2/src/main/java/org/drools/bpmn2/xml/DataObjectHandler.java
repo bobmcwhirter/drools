@@ -12,7 +12,6 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -20,9 +19,9 @@ import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class PropertyHandler extends BaseAbstractHandler implements Handler {
+public class DataObjectHandler extends BaseAbstractHandler implements Handler {
 
-	public PropertyHandler() {
+	public DataObjectHandler() {
         initValidParents();
         initValidPeers();
         this.allowNesting = false;
@@ -31,7 +30,6 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
     protected void initValidParents() {
         this.validParents = new HashSet<Class<?>>();
         this.validParents.add(ContextContainer.class);
-        this.validParents.add(WorkItemNode.class);
     }
     
     protected void initValidPeers() {
@@ -58,6 +56,7 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
                 contextContainer.getDefaultContext(VariableScope.VARIABLE_SCOPE);
 			List variables = variableScope.getVariables();
 			Variable variable = new Variable();
+			variable.setMetaData("DataObject", "true");
 			variable.setName(id);
 			// retrieve type from item definition
 			DataType dataType = new ObjectDataType();

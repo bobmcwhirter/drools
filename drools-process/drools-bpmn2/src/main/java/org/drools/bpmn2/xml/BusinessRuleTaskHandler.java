@@ -32,7 +32,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		RuleSetNode ruleSetNode = (RuleSetNode) node;
 		writeNode("businessRuleTask", ruleSetNode, xmlDump, includeMeta);
 		if (ruleSetNode.getRuleFlowGroup() != null) {
-			xmlDump.append("g:ruleFlowGroup=\"" + ruleSetNode.getRuleFlowGroup() + "\" ");
+			xmlDump.append("g:ruleFlowGroup=\"" + ruleSetNode.getRuleFlowGroup() + "\" implementation=\"Other\" ");
 		}
 		endNode(xmlDump);
 	}

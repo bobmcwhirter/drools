@@ -24,7 +24,10 @@ public class SplitHandler extends AbstractNodeHandler {
 			case Split.TYPE_XOR:
 				writeNode("exclusiveGateway", node, xmlDump, includeMeta);
 				break;
-			default:
+			case Split.TYPE_OR:
+                writeNode("inclusiveGateway", node, xmlDump, includeMeta);
+                break;
+            default:
 				writeNode("complexGateway", node, xmlDump, includeMeta);
 		}
 		xmlDump.append("gatewayDirection=\"diverging\" ");

@@ -1,5 +1,6 @@
 package org.drools.bpmn2.xml;
 
+import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.FaultNode;
@@ -22,6 +23,7 @@ public class BPMN2SemanticModule extends DefaultSemanticModule {
 		addHandler("startEvent", new StartEventHandler());
 		addHandler("endEvent", new EndEventHandler());
 		addHandler("exclusiveGateway", new ExclusiveGatewayHandler());
+        addHandler("inclusiveGateway", new InclusiveGatewayHandler());
 		addHandler("parallelGateway", new ParallelGatewayHandler());
 		addHandler("complexGateway", new ComplexGatewayHandler());
 		addHandler("scriptTask", new ScriptTaskHandler());
@@ -36,7 +38,10 @@ public class BPMN2SemanticModule extends DefaultSemanticModule {
 		addHandler("subProcess", new SubProcessHandler());
         addHandler("adHocSubProcess", new AdHocSubProcessHandler());
 		addHandler("intermediateCatchEvent", new IntermediateCatchEventHandler());
-
+        addHandler("intermediateThrowEvent", new IntermediateThrowEventHandler());
+        addHandler("boundaryEvent", new BoundaryEventHandler());
+        addHandler("dataObject", new DataObjectHandler());
+        
 		addHandler("sequenceFlow", new SequenceFlowHandler());
 		
         addHandler("itemDefinition", new ItemDefinitionHandler());
@@ -52,6 +57,7 @@ public class BPMN2SemanticModule extends DefaultSemanticModule {
         handlersByClass.put(EndNode.class, new EndNodeHandler());
         handlersByClass.put(FaultNode.class, new FaultNodeHandler());
         handlersByClass.put(WorkItemNode.class, new WorkItemNodeHandler());
+        handlersByClass.put(ActionNode.class, new ActionNodeHandler());
 	}
 
 }

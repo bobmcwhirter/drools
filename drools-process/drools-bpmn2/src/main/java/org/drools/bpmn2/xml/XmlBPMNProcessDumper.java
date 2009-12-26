@@ -9,6 +9,7 @@ import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
+import org.drools.process.core.ContextContainer;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
@@ -67,17 +68,8 @@ public class XmlBPMNProcessDumper {
     	// item definitions
     	VariableScope variableScope = (VariableScope)
     		((org.drools.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
-	    if (variableScope != null && !variableScope.getVariables().isEmpty()) {
-	    	for (Variable variable: variableScope.getVariables()) {
-	            xmlDump.append(
-            		"  <itemDefinition id=\"" + variable.getName() + "Item\" ");
-	            if (variable.getType() != null) {
-	            	xmlDump.append("structureRef=\"" + variable.getType().getStringType() + "\" ");
-	            }
-	            xmlDump.append("/>" + EOL);
-	        }
-	    	xmlDump.append(EOL);
-	    }
+    	visitVariableScope(variableScope, "_", xmlDump);
+    	visitSubVariableScopes(process.getNodes(), xmlDump);
         
 	    xmlDump.append(
     		"  <resource id=\"Actor\" name=\"Human Actor\" />" + EOL + EOL);
@@ -104,6 +96,35 @@ public class XmlBPMNProcessDumper {
         visitConnections(process.getNodes(), xmlDump, includeMeta);
         xmlDump.append("  </process>" + EOL + EOL);
         xmlDump.append("</definitions>");
+    }
+    
+    private void visitVariableScope(VariableScope variableScope, String prefix, StringBuilder xmlDump) {
+        if (variableScope != null && !variableScope.getVariables().isEmpty()) {
+            for (Variable variable: variableScope.getVariables()) {
+                xmlDump.append(
+                    "  <itemDefinition id=\"" + prefix + variable.getName() + "Item\" ");
+                if (variable.getType() != null) {
+                    xmlDump.append("structureRef=\"" + variable.getType().getStringType() + "\" ");
+                }
+                xmlDump.append("/>" + EOL);
+            }
+            xmlDump.append(EOL);
+        }
+    }
+    
+    private void visitSubVariableScopes(Node[] nodes, StringBuilder xmlDump) {
+        for (Node node: nodes) {
+            if (node instanceof ContextContainer) {
+                VariableScope variableScope = (VariableScope) 
+                    ((ContextContainer) node).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+                if (variableScope != null) {
+                    visitVariableScope(variableScope, "_" + ((NodeImpl) node).getUniqueId() + "-", xmlDump);
+                }
+            }
+            if (node instanceof NodeContainer) {
+                visitSubVariableScopes(((NodeContainer) node).getNodes(), xmlDump);
+            }
+        }
     }
     
     private void visitLanes(WorkflowProcess process, StringBuilder xmlDump) {
@@ -154,16 +175,30 @@ public class XmlBPMNProcessDumper {
     }
     
     public static void visitVariables(List<Variable> variables, StringBuilder xmlDump) {
-    	xmlDump.append("    <!-- process variables -->" + EOL);
-        for (Variable variable: variables) {
-            xmlDump.append("    <property id=\"" + variable.getName() + "\" ");
-            if (variable.getType() != null) {
-            	xmlDump.append("itemSubjectRef=\"" + variable.getName() + "Item\"" );
+    	if (!variables.isEmpty()) {
+            xmlDump.append("    <!-- process variables -->" + EOL);
+            for (Variable variable: variables) {
+                if (variable.getMetaData("DataObject") == null) {
+                    xmlDump.append("    <property id=\"" + variable.getName() + "\" ");
+                    if (variable.getType() != null) {
+                    	xmlDump.append("itemSubjectRef=\"_" + variable.getName() + "Item\"" );
+                    }
+                    // TODO: value?
+                    xmlDump.append("/>" + EOL);
+                }
             }
-            // TODO: value
-            xmlDump.append("/>" + EOL);
-        }
-        xmlDump.append(EOL);
+            for (Variable variable: variables) {
+                if (variable.getMetaData("DataObject") != null) {
+                    xmlDump.append("    <dataObject id=\"" + variable.getName() + "\" ");
+                    if (variable.getType() != null) {
+                        xmlDump.append("itemSubjectRef=\"_" + variable.getName() + "Item\"" );
+                    }
+                    // TODO: value?
+                    xmlDump.append("/>" + EOL);
+                }
+            }
+            xmlDump.append(EOL);
+    	}
     }
     
     protected void visitInterfaces(WorkflowProcess process, StringBuilder xmlDump) {

@@ -1,7 +1,12 @@
 package org.drools.bpmn2.xml;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.xml.ExtensibleXmlParser;
@@ -33,17 +38,31 @@ public class EndEventHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("terminateEventDefinition".equals(nodeName)) {
-                // reuse already create EventNode
+                // reuse already created EndNode
                 handleTerminateNode(node, element, uri, localName, parser);
                 break;
+            } else if ("signalEventDefinition".equals(nodeName)) {
+                handleSignalNode(node, element, uri, localName, parser);
+            } else if ("messageEventDefinition".equals(nodeName)) {
+                handleMessageNode(node, element, uri, localName, parser);
             } else if ("errorEventDefinition".equals(nodeName)) {
-                // create new timerNode
+                // create new faultNode
+                FaultNode faultNode = new FaultNode();
+                faultNode.setId(node.getId());
+                faultNode.setName(node.getName());
+                faultNode.setTerminateParent(true);
+                node = faultNode;
+                super.handleNode(node, element, uri, localName, parser);
+                handleErrorNode(node, element, uri, localName, parser);
+                break;
+            } else if ("escalationEventDefinition".equals(nodeName)) {
+                // create new faultNode
                 FaultNode faultNode = new FaultNode();
                 faultNode.setId(node.getId());
                 faultNode.setName(node.getName());
                 node = faultNode;
                 super.handleNode(node, element, uri, localName, parser);
-                handleErrorNode(node, element, uri, localName, parser);
+                handleEscalationNode(node, element, uri, localName, parser);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -58,6 +77,57 @@ public class EndEventHandler extends AbstractNodeHandler {
         ((EndNode) node).setTerminate(true);
     }
     
+    public void handleSignalNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+        EndNode endNode = (EndNode) node;
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("dataInputAssociation".equals(nodeName)) {
+                readEndDataInputAssociation(xmlNode, endNode);
+            } else if ("signalEventDefinition".equals(nodeName)) {
+                String signalName = ((Element) xmlNode).getAttribute("signalRef");
+                String variable = (String) endNode.getMetaData("MappingVariable");
+                List<DroolsAction> actions = new ArrayList<DroolsAction>();
+                actions.add(new DroolsConsequenceAction("mvel",
+                    "kcontext.getKnowledgeRuntime().signalEvent(\""
+                        + signalName + "\", " + (variable == null ? "null" : variable) + ")"));
+                endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+    public void handleMessageNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+        EndNode endNode = (EndNode) node;
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("dataInputAssociation".equals(nodeName)) {
+                readEndDataInputAssociation(xmlNode, endNode);
+            } else if ("messageEventDefinition".equals(nodeName)) {
+                String signalName = ((Element) xmlNode).getAttribute("messageRef");
+                String variable = (String) endNode.getMetaData("MappingVariable");
+                List<DroolsAction> actions = new ArrayList<DroolsAction>();
+                actions.add(new DroolsConsequenceAction("mvel",
+                    "kcontext.getKnowledgeRuntime().signalEvent(\""
+                        + signalName + "\", " + (variable == null ? "null" : variable) + ")"));
+                endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+    protected void readEndDataInputAssociation(org.w3c.dom.Node xmlNode, EndNode endNode) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        String eventVariable = subNode.getTextContent();
+        if (eventVariable != null && eventVariable.trim().length() > 0) {
+            endNode.setMetaData("MappingVariable", eventVariable);
+        }
+    }
+
     public void handleErrorNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         FaultNode faultNode = (FaultNode) node;
@@ -65,18 +135,42 @@ public class EndEventHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("dataInputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, faultNode);
+                readFaultDataInputAssociation(xmlNode, faultNode);
             } else if ("errorEventDefinition".equals(nodeName)) {
                 String faultName = ((Element) xmlNode).getAttribute("errorCode");
                 if (faultName != null && faultName.trim().length() > 0) {
                     faultNode.setFaultName(faultName);
                 }
-            }
+                faultNode.setTerminateParent(true);
+            } else if ("escalationEventDefinition".equals(nodeName)) {
+                String faultName = ((Element) xmlNode).getAttribute("escalationCode");
+                if (faultName != null && faultName.trim().length() > 0) {
+                    faultNode.setFaultName(faultName);
+                }
+            } 
             xmlNode = xmlNode.getNextSibling();
         }
     }
     
-    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, FaultNode faultNode) {
+    public void handleEscalationNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+        FaultNode faultNode = (FaultNode) node;
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("dataInputAssociation".equals(nodeName)) {
+                readFaultDataInputAssociation(xmlNode, faultNode);
+            } else if ("escalationEventDefinition".equals(nodeName)) {
+                String faultName = ((Element) xmlNode).getAttribute("escalationCode");
+                if (faultName != null && faultName.trim().length() > 0) {
+                    faultNode.setFaultName(faultName);
+                }
+            } 
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+    protected void readFaultDataInputAssociation(org.w3c.dom.Node xmlNode, FaultNode faultNode) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         String faultVariable = subNode.getTextContent();

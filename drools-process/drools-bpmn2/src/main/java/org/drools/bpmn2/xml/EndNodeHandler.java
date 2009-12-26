@@ -1,6 +1,10 @@
 package org.drools.bpmn2.xml;
 
+import java.util.List;
+
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.EndNode;
 import org.xml.sax.Attributes;
 
@@ -23,7 +27,38 @@ public class EndNodeHandler extends AbstractNodeHandler {
             xmlDump.append("        <terminateEventDefinition/>" + EOL);
     		endNode("endEvent", xmlDump);
 		} else {
-		    endNode(xmlDump);
+		    List<DroolsAction> actions = endNode.getActions(EndNode.EVENT_NODE_ENTER);
+		    if (actions != null && !actions.isEmpty()) {
+		        if (actions.size() == 1) {
+		            DroolsConsequenceAction action = (DroolsConsequenceAction) actions.get(0);
+		            String s = action.getConsequence();
+		            if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
+                        xmlDump.append(">" + EOL);
+		                s = s.substring(44);
+		                String type = s.substring(0, s.indexOf("\""));
+		                s = s.substring(s.indexOf(",") + 2);
+		                String variable = null;
+		                if (!s.startsWith("null")) {
+		                    variable = s.substring(0, s.indexOf(")"));
+	                        xmlDump.append(
+                                "      <dataInput id=\"_" + endNode.getUniqueId() + "_Input\" />" + EOL + 
+                                "      <dataInputAssociation>" + EOL + 
+                                "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
+                                "        <targetRef>_" + endNode.getUniqueId() + "_Input</targetRef>" + EOL + 
+                                "      </dataInputAssociation>" + EOL + 
+                                "      <inputSet>" + EOL + 
+                                "        <dataInputRefs>_" + endNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
+                                "      </inputSet>" + EOL);
+	                    }
+		                xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>" + EOL);
+		                endNode("endEvent", xmlDump);
+		            } else {
+		                throw new IllegalArgumentException("Unknown action " + s);
+		            }
+		        }
+		    } else {
+		        endNode(xmlDump);
+		    }
 		}
 	}
 

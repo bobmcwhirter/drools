@@ -30,7 +30,11 @@ public class FaultNodeHandler extends AbstractNodeHandler {
             xmlDump.append("        <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(faultNode) + "_Input</dataInputRefs>" + EOL);
             xmlDump.append("      </inputSet>" + EOL);
         }
-        xmlDump.append("      <errorEventDefinition errorCode=\"" + faultNode.getFaultName() + "\" />" + EOL);
+        if (faultNode.isTerminateParent()) {
+            xmlDump.append("      <errorEventDefinition errorCode=\"" + faultNode.getFaultName() + "\" />" + EOL);
+        } else {
+            xmlDump.append("      <escalationEventDefinition escalationCode=\"" + faultNode.getFaultName() + "\" />" + EOL);
+        }
 		endNode("endEvent", xmlDump);
 	}
 

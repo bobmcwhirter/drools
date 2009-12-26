@@ -23,7 +23,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     public AbstractNodeHandler() {
         initValidParents();
         initValidPeers();
-        this.allowNesting = false;
+        this.allowNesting = true;
     }
     
     protected void initValidParents() {

@@ -62,7 +62,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         if ("Send Task".equals(type)) {
             writeNode("sendTask", workItemNode, xmlDump, includeMeta);
             xmlDump.append("messageRef=\"_" + 
-                    XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" >" + EOL);
+                    XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
                 xmlDump.append(
                     "      <ioSpecification>" + EOL +
                     "        <dataInput id=\"_2_param\" name=\"Message\" />" + EOL +
@@ -85,7 +85,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         if ("Receive Task".equals(type)) {
             writeNode("receiveTask", workItemNode, xmlDump, includeMeta);
             xmlDump.append("messageRef=\"_" + 
-                    XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" >" + EOL);
+                    XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
                 xmlDump.append(
                     "      <ioSpecification>" + EOL +
                     "        <dataOutput id=\"_2_result\" name=\"Message\" />" + EOL +

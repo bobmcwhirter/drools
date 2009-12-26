@@ -45,6 +45,6 @@ public class ReceiveTaskHandler extends TaskHandler {
     }
     
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
-        throw new IllegalArgumentException("Writing out should be handled by TaskHandler");
+        throw new IllegalArgumentException("Writing out should be handled by WorkItemNodeHandler");
     }
 }

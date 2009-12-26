@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.bpmn2.core.SequenceFlow;
 import org.drools.definition.process.Connection;
+import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeContextNode;
@@ -37,12 +38,27 @@ public class SubProcessHandler extends AbstractNodeHandler {
     	List<SequenceFlow> connections = (List<SequenceFlow>)
 			compositeNode.getMetaData(ProcessHandler.CONNECTIONS);
     	ProcessHandler.linkConnections(compositeNode, connections);
+    	ProcessHandler.linkBoundaryEvents(compositeNode);
     }
     
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
     	CompositeContextNode compositeNode = (CompositeContextNode) node;
 		writeNode("subProcess", compositeNode, xmlDump, includeMeta);
 		xmlDump.append(" >" + EOL);
+        // variables
+		VariableScope variableScope = (VariableScope) 
+            compositeNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+		if (variableScope != null && !variableScope.getVariables().isEmpty()) {
+            xmlDump.append("    <!-- variables -->" + EOL);
+            for (Variable variable: variableScope.getVariables()) {
+                xmlDump.append("    <property id=\"" + variable.getName() + "\" ");
+                if (variable.getType() != null) {
+                    xmlDump.append("itemSubjectRef=\"_" + compositeNode.getUniqueId() + "-" + variable.getName() + "Item\"" );
+                }
+                // TODO: value
+                xmlDump.append("/>" + EOL);
+            }
+		}
 		// nodes
 		List<Node> subNodes = getSubNodes(compositeNode);
     	xmlDump.append("    <!-- nodes -->" + EOL);
