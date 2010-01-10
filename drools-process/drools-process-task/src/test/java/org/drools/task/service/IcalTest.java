@@ -1,7 +1,5 @@
 package org.drools.task.service;
 
-import org.drools.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -18,11 +16,14 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.drools.SystemEventListenerFactory;
 import org.drools.task.BaseTest;
 import org.drools.task.MockUserInfo;
 import org.drools.task.Task;
+import org.drools.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.drools.util.ChainedProperties;
-import org.drools.SystemEventListenerFactory;
+import org.drools.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
@@ -39,7 +40,7 @@ public class IcalTest extends BaseTest {
     protected void setUp() throws Exception {
         super.setUp();
         
-        ChainedProperties props = new ChainedProperties( "process.email.conf" );
+        ChainedProperties props = new ChainedProperties( "process.email.conf", ClassLoaderUtil.getClassLoader( null, getClass() ) );
         emailHost = props.getProperty( "host", "locahost" );
         emailPort = props.getProperty( "port", "2345" );        
         

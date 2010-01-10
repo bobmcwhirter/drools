@@ -28,6 +28,7 @@ import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.UserInfo;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ClassLoaderUtil;
 
 //import net.fortuna.ical4j.model.Calendar;
 //import net.fortuna.ical4j.model.DateTime;
@@ -70,7 +71,7 @@ public class SendIcal {
     }
 
     SendIcal() {
-        ChainedProperties conf = new ChainedProperties( "drools.email.conf" );
+        ChainedProperties conf = new ChainedProperties( "drools.email.conf",ClassLoaderUtil.getClassLoader( null, getClass() ) );
         String host = conf.getProperty( "mail.smtp.host",
                                         "localhost" );
         String port = conf.getProperty( "mail.smtp.port",

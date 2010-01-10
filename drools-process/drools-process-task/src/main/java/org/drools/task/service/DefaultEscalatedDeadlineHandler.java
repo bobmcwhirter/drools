@@ -30,6 +30,7 @@ import org.drools.task.TaskData;
 import org.drools.task.User;
 import org.drools.task.UserInfo;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ClassLoaderUtil;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.templates.TemplateRuntime;
@@ -63,7 +64,7 @@ public class DefaultEscalatedDeadlineHandler
     public DefaultEscalatedDeadlineHandler() {
         handler = new EmailWorkItemHandler();
         
-        ChainedProperties conf = new ChainedProperties("drools.email.conf");
+        ChainedProperties conf = new ChainedProperties("drools.email.conf",  ClassLoaderUtil.getClassLoader( null, getClass() ) );
         String host = conf.getProperty( "host", null );
         String port = conf.getProperty( "port", "25" );
         
