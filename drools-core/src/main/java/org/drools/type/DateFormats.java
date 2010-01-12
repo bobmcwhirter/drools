@@ -1,4 +1,4 @@
-package org.drools.builder;
+package org.drools.type;
 
 import java.text.DateFormat;
 import java.util.Date;
