@@ -4,6 +4,7 @@
   <projects>
     <project>drools-api</project>
     <project>drools-bam</project>
+    <project>drools-bpmn2</project>
     <project>drools-compiler</project>
     <project>drools-core</project>
     <project>drools-process-task</project>
