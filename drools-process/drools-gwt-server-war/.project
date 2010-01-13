@@ -1,10 +1,17 @@
 <projectDescription>
-  <name>drools-bpmn2</name>
+  <name>gwt-console-server-drools</name>
   <comment>A rule production system</comment>
   <projects>
     <project>drools-api</project>
+    <project>drools-bam</project>
+    <project>drools-bpmn2</project>
     <project>drools-compiler</project>
     <project>drools-core</project>
+    <project>drools-gwt-console</project>
+    <project>drools-gwt-form</project>
+    <project>drools-gwt-graph</project>
+    <project>drools-process-task</project>
+    <project>drools-workitems</project>
   </projects>
   <buildSpec>
     <buildCommand>
