@@ -14,7 +14,6 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
-import org.drools.util.ProviderLocator;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
