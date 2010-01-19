@@ -1,11 +1,13 @@
 package org.drools.bpmn2.xml;
 
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.DefaultSemanticModule;
@@ -41,6 +43,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("intermediateThrowEvent", new IntermediateThrowEventHandler());
         addHandler("boundaryEvent", new BoundaryEventHandler());
         addHandler("dataObject", new DataObjectHandler());
+        addHandler("transaction", new TransactionHandler());
 
         addHandler("sequenceFlow", new SequenceFlowHandler());
 
@@ -58,6 +61,8 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         handlersByClass.put(FaultNode.class, new FaultNodeHandler());
         handlersByClass.put(WorkItemNode.class, new WorkItemNodeHandler());
         handlersByClass.put(ActionNode.class, new ActionNodeHandler());
+        handlersByClass.put(StateNode.class, new StateNodeHandler());
+        handlersByClass.put(CompositeContextNode.class, new CompositeContextNodeHandler());
 	}
 
 }

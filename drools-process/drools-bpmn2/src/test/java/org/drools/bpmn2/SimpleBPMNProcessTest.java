@@ -187,6 +187,14 @@ public class SimpleBPMNProcessTest extends TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
+    public void testErrorBoundaryEvent() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventInterrupting.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("ErrorBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
     public void testTimerBoundaryEvent() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEvent.xml");
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -235,6 +243,17 @@ public class SimpleBPMNProcessTest extends TestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
+    public void testIntermediateCatchEventMessage() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventMessage.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // now signal process instance
+        processInstance.signalEvent("Message-HelloMessage", "SomeValue");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
     public void testIntermediateCatchEventTimer() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimer.xml");
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -252,6 +271,18 @@ public class SimpleBPMNProcessTest extends TestCase {
         ksession.halt();
     }
 
+    public void testIntermediateCatchEventCondition() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // now activate condition
+        Person person = new Person();
+        person.setName("Jack");
+        ksession.insert(person);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
     public void testErrorEventProcess() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorEndEvent.xml");
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -259,10 +290,17 @@ public class SimpleBPMNProcessTest extends TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ABORTED);
     }
 
-    public void testEscalationEventProcess() throws Exception {
+    public void testEscalationEndEventProcess() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationEndEvent.xml");
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ProcessInstance processInstance = ksession.startProcess("EscalationEndEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ABORTED);
+    }
+
+    public void testEscalationIntermediateThrowEventProcess() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventEscalation.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ProcessInstance processInstance = ksession.startProcess("EscalationIntermediateThrowEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ABORTED);
     }
 
@@ -335,6 +373,32 @@ public class SimpleBPMNProcessTest extends TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ksession.startProcess("SignalEndEvent", params);
+    }
+    
+    public void testMessageStart() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageStart.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.signalEvent("Message-HelloMessage", "NewValue");
+    }
+    
+    public void testMessageEnd() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageEndEvent.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "MyValue");
+        ProcessInstance processInstance = ksession.startProcess("MessageEndEvent", params);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
+    public void testMessageIntermediateThrow() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventMessage.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "MyValue");
+        ProcessInstance processInstance = ksession.startProcess("MessageIntermediateEvent", params);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     public void testSignalIntermediateThrow() throws Exception {

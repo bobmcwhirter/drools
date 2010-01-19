@@ -1,7 +1,9 @@
 package org.drools.bpmn2.xml;
 
 import java.util.List;
+import java.util.Map;
 
+import org.drools.bpmn2.core.Message;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ConstraintTrigger;
@@ -9,6 +11,7 @@ import org.drools.workflow.core.node.EventTrigger;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.Trigger;
 import org.drools.xml.ExtensibleXmlParser;
+import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -24,6 +27,7 @@ public class StartEventHandler extends AbstractNodeHandler {
         return StartNode.class;
     }
 
+    @SuppressWarnings("unchecked")
     protected void handleNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
@@ -61,6 +65,27 @@ public class StartEventHandler extends AbstractNodeHandler {
                     }
                     startNode.addTrigger(trigger);
                 }
+            } else if ("messageEventDefinition".equals(nodeName)) {
+                String messageRef = ((Element) xmlNode).getAttribute("messageRef");
+                Map<String, Message> messages = (Map<String, Message>)
+                    ((ProcessBuildData) parser.getData()).getMetaData("Messages");
+                if (messages == null) {
+                    throw new IllegalArgumentException("No messages found");
+                }
+                Message message = messages.get(messageRef);
+                if (message == null) {
+                    throw new IllegalArgumentException("Could not find message " + messageRef);
+                }
+                startNode.setMetaData("MessageType", message.getType());
+                EventTrigger trigger = new EventTrigger();
+                EventTypeFilter eventFilter = new EventTypeFilter();
+                eventFilter.setType("Message-" + messageRef);
+                trigger.addEventFilter(eventFilter);
+                String mapping = (String) startNode.getMetaData("TriggerMapping");
+                if (mapping != null) {
+                    trigger.addInMapping(mapping, "event");
+                }
+                startNode.addTrigger(trigger);
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -103,8 +128,13 @@ public class StartEventHandler extends AbstractNodeHandler {
                         "        <dataOutputRefs>_" + startNode.getId() + "_Output</dataOutputRefs>" + EOL +
                         "      </outputSet>" + EOL);
 		        }
-		        EventTypeFilter filter = (EventTypeFilter) eventTrigger.getEventFilters().get(0);
-                xmlDump.append("      <signalEventDefinition signalRef=\"" + filter.getType() + "\" />" + EOL);
+		        String type = ((EventTypeFilter) eventTrigger.getEventFilters().get(0)).getType();
+		        if (type.startsWith("Message-")) {
+                    type = type.substring(8);
+                    xmlDump.append("      <messageEventDefinition messageRef=\"" + type + "\"/>" + EOL);
+                } else {
+                    xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\" />" + EOL);
+                }
             } else {
 		        throw new IllegalArgumentException("Unsupported trigger type " + trigger);
 		    }

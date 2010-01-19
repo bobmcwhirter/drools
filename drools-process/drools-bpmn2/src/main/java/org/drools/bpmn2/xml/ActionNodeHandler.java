@@ -26,7 +26,24 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 		    if ("".equals(s)) {
 		        writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
 		        endNode(xmlDump);
-		    } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
+		    } else if (s.startsWith("org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();")) {
+                writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+                xmlDump.append(">" + EOL);
+                String variable = (String) actionNode.getMetaData("MappingVariable");
+                if (variable != null) {
+                    xmlDump.append(
+                        "      <dataInput id=\"_" + actionNode.getUniqueId() + "_Input\" />" + EOL + 
+                        "      <dataInputAssociation>" + EOL + 
+                        "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
+                        "        <targetRef>_" + actionNode.getUniqueId() + "_Input</targetRef>" + EOL + 
+                        "      </dataInputAssociation>" + EOL + 
+                        "      <inputSet>" + EOL + 
+                        "        <dataInputRefs>_" + actionNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
+                        "      </inputSet>" + EOL);
+                }
+                xmlDump.append("      <messageEventDefinition messageRef=\"" + "_" + actionNode.getUniqueId() + "_Message\"/>" + EOL);
+                endNode("intermediateThrowEvent", xmlDump);
+            } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
                 xmlDump.append(">" + EOL);
                 s = s.substring(44);
@@ -45,7 +62,19 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                         "        <dataInputRefs>_" + actionNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
                         "      </inputSet>" + EOL);
                 }
-                xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>" + EOL);
+                if (type.startsWith("Compensate-")) {
+	                xmlDump.append("      <compensateEventDefinition activityRef=\"" + type.substring(11) + "\"/>" + EOL);
+                } else {
+	                xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>" + EOL);
+                }
+                endNode("intermediateThrowEvent", xmlDump);
+            } else if (s.startsWith("org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
+                writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+                xmlDump.append(">" + EOL);
+                s = s.substring(327);
+                String type = s.substring(0, s.indexOf("\""));
+                s = s.substring(s.indexOf(",") + 2);
+                xmlDump.append("      <escalationEventDefinition escalationCode=\"" + type + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else {
                 writeNode("scriptTask", actionNode, xmlDump, includeMeta);

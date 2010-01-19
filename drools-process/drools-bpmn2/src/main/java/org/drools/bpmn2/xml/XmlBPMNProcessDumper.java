@@ -15,12 +15,19 @@ import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.event.EventTypeFilter;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
+import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.EventTrigger;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.Trigger;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
@@ -243,6 +250,42 @@ public class XmlBPMNProcessDumper {
                         xmlDump.append(
                             "  <itemDefinition id=\"_" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + messageType + "\"/>" + EOL +
                             "  <message id=\"_" + getUniqueNodeId(node) + "_Message\" structureRef=\"_" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                    }
+                }
+            } else if (node instanceof EndNode) {
+                String messageType = (String) node.getMetaData("MessageType");
+                if (messageType != null) {
+                    xmlDump.append(
+                        "  <itemDefinition id=\"_" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + messageType + "\"/>" + EOL +
+                        "  <message id=\"_" + getUniqueNodeId(node) + "_Message\" structureRef=\"_" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                }
+            } else if (node instanceof ActionNode) {
+                String messageType = (String) node.getMetaData("MessageType");
+                if (messageType != null) {
+                    xmlDump.append(
+                        "  <itemDefinition id=\"_" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + messageType + "\"/>" + EOL +
+                        "  <message id=\"_" + getUniqueNodeId(node) + "_Message\" structureRef=\"_" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                }
+            } else if (node instanceof EventNode) {
+                String messageRef = ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).getType();
+                messageRef = messageRef.substring(8);
+                String messageType = (String) node.getMetaData("MessageType");
+                xmlDump.append(
+                    "  <itemDefinition id=\"" + messageRef + "Type\" structureRef=\"" + messageType + "\"/>" + EOL +
+                    "  <message id=\"" + messageRef + "\" structureRef=\"" + messageRef + "Type\" />" + EOL + EOL);
+            } else if (node instanceof StartNode) {
+                StartNode startNode = (StartNode) node;
+                if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {
+                    Trigger trigger = startNode.getTriggers().get(0);
+                    if (trigger instanceof EventTrigger) {
+                        String eventType = ((EventTypeFilter) ((EventTrigger) trigger).getEventFilters().get(0)).getType();
+                        if (eventType.startsWith("Message-")) {
+                            eventType = eventType.substring(8);
+                            String messageType = (String) node.getMetaData("MessageType");
+                            xmlDump.append(
+                                "  <itemDefinition id=\"" + eventType + "Type\" structureRef=\"" + messageType + "\"/>" + EOL +
+                                "  <message id=\"" + eventType + "\" structureRef=\"" + eventType + "Type\" />" + EOL + EOL);
+                        }
                     }
                 }
             }

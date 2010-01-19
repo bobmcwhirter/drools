@@ -30,6 +30,7 @@ import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.StateNode;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -95,6 +96,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         List<Lane> lanes = (List<Lane>)
             process.getMetaData(LaneHandler.LANES);
         assignLanes(process, lanes);
+        postProcessStateNodes(process);
 		return process;
 	}
 
@@ -210,6 +212,21 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             (cancelActivity ? "((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
                             "kcontext.getProcessInstance().signalEvent(\"Escalation-" + attachedTo + "-" + escalationCode + "\", null);"));
                         exceptionScope.setExceptionHandler(escalationCode, exceptionHandler);
+                    } else if (type.startsWith("Error-")) {
+                        CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
+                        ExceptionScope exceptionScope = (ExceptionScope) 
+                            compositeNode.getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+                        if (exceptionScope == null) {
+                            exceptionScope = new ExceptionScope();
+                            compositeNode.addContext(exceptionScope);
+                            compositeNode.setDefaultContext(exceptionScope);
+                        }
+                        String errorCode = (String) node.getMetaData("ErrorEvent");
+                        ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+                        exceptionHandler.setAction(new DroolsConsequenceAction("java",
+                            "((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" +
+                            "kcontext.getProcessInstance().signalEvent(\"Error-" + attachedTo + "-" + errorCode + "\", null);"));
+                        exceptionScope.setExceptionHandler(errorCode, exceptionHandler);
                     } else if (type.startsWith("Timer-")) {
                         boolean cancelActivity = (Boolean) node.getMetaData("CancelActivity");
                         CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
@@ -245,6 +262,23 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	    assignLanes(process, laneMapping);
 	}
 	
+    private void postProcessStateNodes(NodeContainer container) {
+        for (Node node: container.getNodes()) {
+            if (node instanceof StateNode) {
+                StateNode stateNode = (StateNode) node;
+                String condition = (String) stateNode.getMetaData("Condition");
+                Constraint constraint = new ConstraintImpl();
+                constraint.setConstraint(condition);
+                constraint.setType("rule");
+                for (org.drools.definition.process.Connection connection: stateNode.getDefaultOutgoingConnections()) {
+                    stateNode.setConstraint(connection, constraint);
+                }
+            } else if (node instanceof NodeContainer) {
+                postProcessStateNodes((NodeContainer) node);
+            }
+        }
+    }
+    
 	private void assignLanes(NodeContainer nodeContainer, Map<String, String> laneMapping) {
 	    for (Node node: nodeContainer.getNodes()) {
 	        String lane = null;

@@ -32,7 +32,23 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		        if (actions.size() == 1) {
 		            DroolsConsequenceAction action = (DroolsConsequenceAction) actions.get(0);
 		            String s = action.getConsequence();
-		            if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
+		            if (s.startsWith("org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();")) {
+		                xmlDump.append(">" + EOL);
+                        String variable = (String) endNode.getMetaData("MappingVariable");
+                        if (variable != null) {
+                            xmlDump.append(
+                                "      <dataInput id=\"_" + endNode.getUniqueId() + "_Input\" />" + EOL + 
+                                "      <dataInputAssociation>" + EOL + 
+                                "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
+                                "        <targetRef>_" + endNode.getUniqueId() + "_Input</targetRef>" + EOL + 
+                                "      </dataInputAssociation>" + EOL + 
+                                "      <inputSet>" + EOL + 
+                                "        <dataInputRefs>_" + endNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
+                                "      </inputSet>" + EOL);
+                        }
+                        xmlDump.append("      <messageEventDefinition messageRef=\"" + "_" + endNode.getUniqueId() + "_Message\"/>" + EOL);
+                        endNode("endEvent", xmlDump);
+		            } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
                         xmlDump.append(">" + EOL);
 		                s = s.substring(44);
 		                String type = s.substring(0, s.indexOf("\""));

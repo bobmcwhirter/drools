@@ -2,7 +2,9 @@ package org.drools.bpmn2.xml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.bpmn2.core.Message;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
@@ -10,6 +12,7 @@ import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.xml.ExtensibleXmlParser;
+import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -98,6 +101,7 @@ public class EndEventHandler extends AbstractNodeHandler {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public void handleMessageNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         EndNode endNode = (EndNode) node;
@@ -107,12 +111,26 @@ public class EndEventHandler extends AbstractNodeHandler {
             if ("dataInputAssociation".equals(nodeName)) {
                 readEndDataInputAssociation(xmlNode, endNode);
             } else if ("messageEventDefinition".equals(nodeName)) {
-                String signalName = ((Element) xmlNode).getAttribute("messageRef");
+                String messageRef = ((Element) xmlNode).getAttribute("messageRef");
+                Map<String, Message> messages = (Map<String, Message>)
+                    ((ProcessBuildData) parser.getData()).getMetaData("Messages");
+                if (messages == null) {
+                    throw new IllegalArgumentException("No messages found");
+                }
+                Message message = messages.get(messageRef);
+                if (message == null) {
+                    throw new IllegalArgumentException("Could not find message " + messageRef);
+                }
                 String variable = (String) endNode.getMetaData("MappingVariable");
+                endNode.setMetaData("MessageType", message.getType());
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
-                actions.add(new DroolsConsequenceAction("mvel",
-                    "kcontext.getKnowledgeRuntime().signalEvent(\""
-                        + signalName + "\", " + (variable == null ? "null" : variable) + ")"));
+                
+                actions.add(new DroolsConsequenceAction("java",
+                    "org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();" + EOL + 
+                    "workItem.setName(\"Send Task\");" + EOL + 
+                    "workItem.setParameter(\"MessageType\", \"" + message.getType() + "\");" + EOL + 
+                    (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
+                    "((org.drools.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }
             xmlNode = xmlNode.getNextSibling();

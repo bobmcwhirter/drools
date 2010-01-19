@@ -43,9 +43,17 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 // reuse already created EventNode
                 handleEscalationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
                 break;
+            } else if ("errorEventDefinition".equals(nodeName)) {
+                // reuse already created EventNode
+                handleErrorNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                break;
             } else if ("timerEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleTimerNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                break;
+            } else if ("compensateEventDefinition".equals(nodeName)) {
+                // reuse already created EventNode
+                handleCompensationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -80,6 +88,30 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         }
     }
     
+    protected void handleErrorNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser, final String attachedTo,
+            final boolean cancelActivity) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
+        EventNode eventNode = (EventNode) node;
+        eventNode.setMetaData("AttachedTo", attachedTo);
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("errorEventDefinition".equals(nodeName)) {
+                String type = ((Element) xmlNode).getAttribute("errorCode");
+                if (type != null && type.trim().length() > 0) {
+                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    EventTypeFilter eventFilter = new EventTypeFilter();
+                    eventFilter.setType("Error-" + attachedTo + "-" + type);
+                    eventFilters.add(eventFilter);
+                    eventNode.setEventFilters(eventFilters);
+                    eventNode.setMetaData("ErrorEvent", type);
+                }
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
     protected void handleTimerNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
@@ -108,6 +140,31 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeCycle", timeCycle);
+                }
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+    protected void handleCompensationNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser, final String attachedTo,
+            final boolean cancelActivity) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
+        EventNode eventNode = (EventNode) node;
+        eventNode.setMetaData("AttachedTo", attachedTo);
+        eventNode.setMetaData("CancelActivity", cancelActivity);
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("compensateEventDefinition".equals(nodeName)) {
+                String activityRef = ((Element) xmlNode).getAttribute("activityRef");
+                if (activityRef != null && activityRef.trim().length() > 0) {
+                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    EventTypeFilter eventFilter = new EventTypeFilter();
+                    eventFilter.setType("Compensate-" + eventNode.getUniqueId());
+                    eventFilters.add(eventFilter);
+                    eventNode.setEventFilters(eventFilters);
+                    eventNode.setMetaData("CompensationEvent", activityRef);
                 }
             }
             xmlNode = xmlNode.getNextSibling();

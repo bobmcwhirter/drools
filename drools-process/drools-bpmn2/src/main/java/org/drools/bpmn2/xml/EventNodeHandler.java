@@ -35,8 +35,12 @@ public class EventNodeHandler extends AbstractNodeHandler {
     		}
     		if (eventNode.getEventFilters().size() > 0) {
     			String type = ((EventTypeFilter) eventNode.getEventFilters().get(0)).getType();
-    			xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>" + EOL);
-    			
+    			if (type.startsWith("Message-")) {
+    			    type = type.substring(8);
+    			    xmlDump.append("      <messageEventDefinition messageRef=\"" + type + "\"/>" + EOL);
+                } else {
+                    xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>" + EOL);
+                }
     		}
     		endNode("intermediateCatchEvent", xmlDump);
 		} else {
@@ -52,7 +56,14 @@ public class EventNodeHandler extends AbstractNodeHandler {
     		    xmlDump.append(">" + EOL);
     		    xmlDump.append("      <escalationEventDefinition escalationCode=\"" + type + "\" />" + EOL);
     		    endNode("boundaryEvent", xmlDump);
-		    } else if (type.startsWith("Timer-")) {
+		    } else if (type.startsWith("Error-")) {
+                type = type.substring(attachedTo.length() + 7);
+                writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <errorEventDefinition errorCode=\"" + type + "\" />" + EOL);
+                endNode("boundaryEvent", xmlDump);
+            } else if (type.startsWith("Timer-")) {
                 type = type.substring(attachedTo.length() + 7);
                 boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
                 writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
