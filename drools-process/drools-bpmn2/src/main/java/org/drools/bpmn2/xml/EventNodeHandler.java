@@ -77,7 +77,14 @@ public class EventNodeHandler extends AbstractNodeHandler {
                     "        <timeCycle xs:type=\"tFormalExpression\">" + eventNode.getMetaData("TimeCycle") + "</timeCycle>" + EOL +
                     "      </timerEventDefinition>" + EOL);
                 endNode("boundaryEvent", xmlDump);
-            }
+            } else if (type.startsWith("Compensate-")) {
+                type = type.substring(attachedTo.length() + 7);
+                writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <compensateEventDefinition/>" + EOL);
+                endNode("boundaryEvent", xmlDump);
+            } 
 		}
 	}
 

@@ -152,23 +152,12 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         super.handleNode(node, element, uri, localName, parser);
         EventNode eventNode = (EventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
-        eventNode.setMetaData("CancelActivity", cancelActivity);
-        org.w3c.dom.Node xmlNode = element.getFirstChild();
-        while (xmlNode != null) {
-            String nodeName = xmlNode.getNodeName();
-            if ("compensateEventDefinition".equals(nodeName)) {
-                String activityRef = ((Element) xmlNode).getAttribute("activityRef");
-                if (activityRef != null && activityRef.trim().length() > 0) {
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
-                    EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Compensate-" + eventNode.getUniqueId());
-                    eventFilters.add(eventFilter);
-                    eventNode.setEventFilters(eventFilters);
-                    eventNode.setMetaData("CompensationEvent", activityRef);
-                }
-            }
-            xmlNode = xmlNode.getNextSibling();
-        }
+        List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+        EventTypeFilter eventFilter = new EventTypeFilter();
+        String eventType = "Compensate-";
+        eventFilter.setType(eventType);
+        eventFilters.add(eventFilter);
+        ((EventNode) node).setEventFilters(eventFilters);
     }
     
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {

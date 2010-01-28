@@ -318,6 +318,13 @@ public class SimpleBPMNProcessTest extends TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ABORTED);
     }
 
+    public void testCompensateIntermediateThrowEventProcess() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventCompensate.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ProcessInstance processInstance = ksession.startProcess("CompensateIntermediateThrowEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
     public void testGraphicalInformation() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-OryxExportedExample.xml");
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();

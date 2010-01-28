@@ -16,6 +16,7 @@ import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.Swimlane;
+import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.core.timer.Timer;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -96,7 +97,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         List<Lane> lanes = (List<Lane>)
             process.getMetaData(LaneHandler.LANES);
         assignLanes(process, lanes);
-        postProcessStateNodes(process);
+        postProcessNodes(process);
 		return process;
 	}
 
@@ -173,10 +174,10 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     public static void linkBoundaryEvents(NodeContainer nodeContainer) {
         for (Node node: nodeContainer.getNodes()) {
             if (node instanceof EventNode) {
-                String type = ((EventTypeFilter)
-                    ((EventNode) node).getEventFilters().get(0)).getType();
                 String attachedTo = (String) node.getMetaData("AttachedTo");
                 if (attachedTo != null) {
+                	String type = ((EventTypeFilter)
+                        ((EventNode) node).getEventFilters().get(0)).getType();
                     Node attachedNode = null;
                     try {
                         // remove starting _
@@ -236,6 +237,15 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
                             (cancelActivity ? "((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
                             "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeCycle + "\", null);"));
+                    } else if (type.startsWith("Compensate-")) {
+                        String eventType = "Compensate-";
+                        String uniqueId = (String) node.getMetaData("UniqueId");
+            	        if (uniqueId == null) {
+            	        	eventType += "_" + ((NodeImpl) attachedNode).getUniqueId();
+            	        } else {
+            	        	eventType += uniqueId;
+            	        }
+            	        ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
                     }
                 }
             }
@@ -262,7 +272,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	    assignLanes(process, laneMapping);
 	}
 	
-    private void postProcessStateNodes(NodeContainer container) {
+    private void postProcessNodes(NodeContainer container) {
         for (Node node: container.getNodes()) {
             if (node instanceof StateNode) {
                 StateNode stateNode = (StateNode) node;
@@ -274,7 +284,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     stateNode.setConstraint(connection, constraint);
                 }
             } else if (node instanceof NodeContainer) {
-                postProcessStateNodes((NodeContainer) node);
+                postProcessNodes((NodeContainer) node);
             }
         }
     }

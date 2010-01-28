@@ -1,12 +1,17 @@
 package org.drools.bpmn2.xml;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Message;
+import org.drools.process.core.event.EventFilter;
+import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
@@ -146,7 +151,9 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
             if ("compensateEventDefinition".equals(nodeName)) {
                 String activityRef = ((Element) xmlNode).getAttribute("activityRef");
                 if (activityRef != null && activityRef.trim().length() > 0) {
-                	actionNode.setMetaData("activityRef", activityRef);
+                	actionNode.setMetaData("Compensate", activityRef);
+                	actionNode.setAction(new DroolsConsequenceAction("java", 
+            			"kcontext.getProcessInstance().signalEvent(\"Compensate-" + activityRef + "\", null);"));
                 }
 //                boolean waitForCompletion = true;
 //                String waitForCompletionString = ((Element) xmlNode).getAttribute("waitForCompletion");
