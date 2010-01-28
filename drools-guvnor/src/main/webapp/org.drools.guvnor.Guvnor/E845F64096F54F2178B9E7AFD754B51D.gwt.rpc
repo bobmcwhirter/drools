@@ -141,6 +141,7 @@ org.drools.guvnor.client.rpc.PackageConfigData, true
 org.drools.guvnor.client.rpc.PushResponse, true
 [Lorg.drools.guvnor.client.rpc.PushResponse;, true
 org.drools.guvnor.client.rpc.RuleAsset, true
+[Lorg.drools.guvnor.client.rpc.RuleAsset;, true
 org.drools.guvnor.client.rpc.RuleContentText, true
 org.drools.guvnor.client.rpc.RuleFlowContentModel, true
 org.drools.guvnor.client.rpc.ScenarioResultSummary, true
