@@ -39,6 +39,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
 		Node node = (Node) parser.getCurrent();
 		// determine type of event definition, so the correct type of node
 		// can be generated
+		boolean found = false;
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();
@@ -53,9 +54,13 @@ public class SubProcessHandler extends AbstractNodeHandler {
 				forEachNode.setMetaData(ProcessHandler.CONNECTIONS, ((CompositeContextNode) node).getMetaData(ProcessHandler.CONNECTIONS));
 				node = forEachNode;
 				handleForEachNode(node, element, uri, localName, parser);
+				found = true;
 				break;
 			}
 			xmlNode = xmlNode.getNextSibling();
+		}
+		if (!found) {
+			handleCompositeContextNode(node, element, uri, localName, parser);
 		}
 		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 		nodeContainer.addNode(node);
