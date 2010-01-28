@@ -31,13 +31,13 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
                 XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_ServiceOperation\" implementation=\"Other\" >" + EOL);
             xmlDump.append(
                 "      <ioSpecification>" + EOL +
-                "        <dataInput id=\"_2_param\" name=\"Parameter\" />" + EOL +
-                "        <dataOutput id=\"_2_result\" name=\"Result\" />" + EOL +
+                "        <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param\" name=\"Parameter\" />" + EOL +
+                "        <dataOutput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result\" name=\"Result\" />" + EOL +
                 "        <inputSet>" + EOL +
-                "          <dataInputRefs>_2_param</dataInputRefs>" + EOL +
+                "          <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</dataInputRefs>" + EOL +
                 "        </inputSet>" + EOL +
                 "        <outputSet>" + EOL +
-                "          <dataOutputRefs>_2_result</dataOutputRefs>" + EOL +
+                "          <dataOutputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</dataOutputRefs>" + EOL +
                 "        </outputSet>" + EOL +
                 "      </ioSpecification>" + EOL);
             String inMapping = workItemNode.getInMapping("Parameter");
@@ -45,14 +45,14 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
                 xmlDump.append(
                     "      <dataInputAssociation>" + EOL +
                     "        <sourceRef>" + inMapping + "</sourceRef>" + EOL +
-                    "        <targetRef>_2_param</targetRef>" + EOL +
+                    "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</targetRef>" + EOL +
                     "      </dataInputAssociation>" + EOL);
             }
             String outMapping = workItemNode.getOutMapping("Result");
             if (outMapping != null) {
                 xmlDump.append(
                     "      <dataOutputAssociation>" + EOL +
-                    "        <sourceRef>_2_result</sourceRef>" + EOL +
+                    "        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</sourceRef>" + EOL +
                     "        <targetRef>" + outMapping + "</targetRef>" + EOL +
                     "      </dataOutputAssociation>" + EOL);
             }
@@ -65,9 +65,9 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
                     XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
                 xmlDump.append(
                     "      <ioSpecification>" + EOL +
-                    "        <dataInput id=\"_2_param\" name=\"Message\" />" + EOL +
+                    "        <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param\" name=\"Message\" />" + EOL +
                     "        <inputSet>" + EOL +
-                    "          <dataInputRefs>_2_param</dataInputRefs>" + EOL +
+                    "          <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</dataInputRefs>" + EOL +
                     "        </inputSet>" + EOL +
                     "        <outputSet/>" + EOL +
                     "      </ioSpecification>" + EOL);
@@ -76,7 +76,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
                     xmlDump.append(
                         "      <dataInputAssociation>" + EOL +
                         "        <sourceRef>" + inMapping + "</sourceRef>" + EOL +
-                        "        <targetRef>_2_param</targetRef>" + EOL +
+                        "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</targetRef>" + EOL +
                         "      </dataInputAssociation>" + EOL);
                 }
             endNode("sendTask", xmlDump);
@@ -88,17 +88,17 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
                     XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
                 xmlDump.append(
                     "      <ioSpecification>" + EOL +
-                    "        <dataOutput id=\"_2_result\" name=\"Message\" />" + EOL +
+                    "        <dataOutput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result\" name=\"Message\" />" + EOL +
                     "        <inputSet/>" + EOL +
                     "        <outputSet>" + EOL +
-                    "          <dataOutputRefs>_2_result</dataOutputRefs>" + EOL +
+                    "          <dataOutputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</dataOutputRefs>" + EOL +
                     "        </outputSet>" + EOL +
                     "      </ioSpecification>" + EOL);
                 String outMapping = workItemNode.getOutMapping("Message");
                 if (outMapping != null) {
                     xmlDump.append(
                         "      <dataOutputAssociation>" + EOL +
-                        "        <sourceRef>_2_result</sourceRef>" + EOL +
+                        "        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</sourceRef>" + EOL +
                         "        <targetRef>" + outMapping + "</targetRef>" + EOL +
                         "      </dataOutputAssociation>" + EOL);
                 }

@@ -1043,8 +1043,8 @@
 			<xsd:extension base="tLoopCharacteristics">
 				<xsd:sequence>
 					<xsd:element name="loopCardinality" type="tExpression" minOccurs="0" maxOccurs="1"/>
-					<xsd:element name="loopDataInput" type="tDataInput" minOccurs="0" maxOccurs="1"/>
-					<xsd:element name="loopDataOutput" type="tDataOutput" minOccurs="0" maxOccurs="1"/>
+					<xsd:element name="loopDataInputRef" type="xsd:QName" minOccurs="0" maxOccurs="1"/>
+					<xsd:element name="loopDataOutputRef" type="xsd:QName" minOccurs="0" maxOccurs="1"/>
 					<xsd:element name="inputDataItem" type="tProperty" minOccurs="0" maxOccurs="1"/>
 					<xsd:element name="outputDataItem" type="tProperty" minOccurs="0" maxOccurs="1"/>
 					<xsd:element ref="complexBehaviorDefinition" minOccurs="0" maxOccurs="unbounded"/>

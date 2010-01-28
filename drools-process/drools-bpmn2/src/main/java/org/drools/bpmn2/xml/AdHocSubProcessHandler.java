@@ -7,7 +7,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.DynamicNode;
 import org.xml.sax.Attributes;
 
-public class AdHocSubProcessHandler extends SubProcessHandler {
+public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     
     protected Node createNode(Attributes attrs) {
         return new DynamicNode();

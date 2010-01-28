@@ -5,6 +5,7 @@ import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.FaultNode;
+import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StateNode;
@@ -63,6 +64,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         handlersByClass.put(ActionNode.class, new ActionNodeHandler());
         handlersByClass.put(StateNode.class, new StateNodeHandler());
         handlersByClass.put(CompositeContextNode.class, new CompositeContextNodeHandler());
+        handlersByClass.put(ForEachNode.class, new ForEachNodeHandler());
 	}
 
 }

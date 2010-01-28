@@ -15,6 +15,7 @@ import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.workflow.core.Constraint;
@@ -24,6 +25,7 @@ import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventTrigger;
+import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
@@ -288,7 +290,11 @@ public class XmlBPMNProcessDumper {
                         }
                     }
                 }
-            }
+            } else if (node instanceof ForEachNode) {
+            	ForEachNode forEachNode = (ForEachNode) node;
+                xmlDump.append(
+                    "  <itemDefinition id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\" structureRef=\"" + ((ObjectDataType) forEachNode.getVariableType()).getClassName() + "\"/>" + EOL + EOL);
+            } 
         }
     }
     

@@ -24,7 +24,11 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
 
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
     	CompositeContextNode compositeNode = (CompositeContextNode) node;
-		writeNode("subProcess", compositeNode, xmlDump, includeMeta);
+    	String nodeType = "subProcess";
+    	if (node.getMetaData("Transaction") != null) {
+    		nodeType = "transaction";
+    	}
+		writeNode(nodeType, compositeNode, xmlDump, includeMeta);
 		xmlDump.append(" >" + EOL);
         // variables
 		VariableScope variableScope = (VariableScope) 
@@ -52,7 +56,7 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
         for (Connection connection: connections) {
         	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, includeMeta);
         }
-		endNode("subProcess", xmlDump);
+		endNode(nodeType, xmlDump);
 	}
 	
 	protected List<Node> getSubNodes(CompositeNode compositeNode) {

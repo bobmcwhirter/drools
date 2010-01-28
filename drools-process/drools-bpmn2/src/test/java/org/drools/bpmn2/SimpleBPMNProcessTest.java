@@ -1,7 +1,9 @@
 package org.drools.bpmn2;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -169,6 +171,18 @@ public class SimpleBPMNProcessTest extends TestCase {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcess.xml");
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		ProcessInstance processInstance = ksession.startProcess("SubProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+
+	public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.xml");
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<String> myList = new ArrayList<String>();
+		myList.add("First Item");
+		myList.add("Second Item");
+		params.put("list", myList);
+		ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcess", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 

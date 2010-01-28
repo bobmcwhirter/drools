@@ -8,28 +8,39 @@
              xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
              xmlns:tns="http://www.example.org/MinimalExample">
 
-  <itemDefinition id="_2-xType" structureRef="java.lang.String" />
+  <itemDefinition id="itemType" structureRef="java.lang.String" />
+  <itemDefinition id="listType" structureRef="java.util.List" />
   
-  <process id="SubProcess" name="Minimal SubProcess">
+  <process id="MultiInstanceLoopCharacteristicsProcess" name="MultiInstanceLoopCharacteristics SubProcess">
+  
+    <!-- process variables -->
+    <property id="list" itemSubjectRef="listType" />
+  
     <startEvent id="_1" name="StartProcess"/>
     <sequenceFlow sourceRef="_1" targetRef="_2"/>
     <subProcess id="_2" name="Hello" >
-      <property id="x" itemSubjectRef="tns:_2-xType" />
+      <ioSpecification>
+        <dataInput id="_2_input" name="MultiInstanceLoopDataInput" itemSubjectRef="listType" />
+        <inputSet>
+          <dataInputRefs>_2_input</dataInputRefs>
+        </inputSet>
+        <outputSet/>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>list</sourceRef>
+        <targetRef>_2_input</targetRef>
+      </dataInputAssociation>
+      <multiInstanceLoopCharacteristics>
+        <loopDataInputRef>_2_input</loopDataInputRef>
+        <inputDataItem id="item" itemSubjectRef="itemType"/>
+      </multiInstanceLoopCharacteristics>
       <startEvent id="_2-1" name="StartSubProcess"/>
       <sequenceFlow sourceRef="_2-1" targetRef="_2-2"/>
-      <scriptTask id="_2-2" name="Hello1">
-        <script>System.out.println("x = " + x);</script>
+      <scriptTask id="_2-2" name="Hello">
+        <script>System.out.println("item = " + item);</script>
       </scriptTask>
       <sequenceFlow sourceRef="_2-2" targetRef="_2-3"/>
-      <scriptTask id="_2-3" name="Hello2">
-        <script>kcontext.setVariable("x", "Hello");</script>
-      </scriptTask>
-      <sequenceFlow sourceRef="_2-3" targetRef="_2-4"/>
-      <scriptTask id="_2-4" name="Hello3">
-        <script>System.out.println("x = " + x);</script>
-      </scriptTask>
-      <sequenceFlow sourceRef="_2-4" targetRef="_2-5"/>
-      <endEvent id="_2-5" name="EndSubProcess"/>
+      <endEvent id="_2-3" name="EndSubProcess"/>
     </subProcess>
     <sequenceFlow sourceRef="_2" targetRef="_3"/>
     <scriptTask id="_3" name="Goodbye">
