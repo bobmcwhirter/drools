@@ -60,6 +60,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
         // none event definition
         if (node.getAction() == null) {
             node.setAction(new DroolsConsequenceAction("mvel", ""));
+            node.setMetaData("NodeType", "IntermediateThrowEvent-None");
         }
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         nodeContainer.addNode(node);

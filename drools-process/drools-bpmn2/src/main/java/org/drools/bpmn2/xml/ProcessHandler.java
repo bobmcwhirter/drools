@@ -241,7 +241,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         String eventType = "Compensate-";
                         String uniqueId = (String) node.getMetaData("UniqueId");
             	        if (uniqueId == null) {
-            	        	eventType += "_" + ((NodeImpl) attachedNode).getUniqueId();
+            	        	eventType += "_" + XmlBPMNProcessDumper.getUniqueNodeId(attachedNode);
             	        } else {
             	        	eventType += uniqueId;
             	        }
@@ -296,7 +296,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	        if (uniqueId != null) {
 	            lane = laneMapping.get(uniqueId);
 	        } else {
-	            lane = laneMapping.get(((NodeImpl) node).getUniqueId());
+	            lane = laneMapping.get(XmlBPMNProcessDumper.getUniqueNodeId(node));
 	        }
 	        if (lane != null) {
 	            ((NodeImpl) node).setMetaData("Lane", lane);

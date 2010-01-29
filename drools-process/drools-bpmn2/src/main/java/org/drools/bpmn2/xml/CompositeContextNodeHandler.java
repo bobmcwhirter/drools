@@ -38,7 +38,7 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
             for (Variable variable: variableScope.getVariables()) {
                 xmlDump.append("    <property id=\"" + variable.getName() + "\" ");
                 if (variable.getType() != null) {
-                    xmlDump.append("itemSubjectRef=\"_" + compositeNode.getUniqueId() + "-" + variable.getName() + "Item\"" );
+                    xmlDump.append("itemSubjectRef=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(compositeNode) + "-" + variable.getName() + "Item\"" );
                 }
                 // TODO: value
                 xmlDump.append("/>" + EOL);

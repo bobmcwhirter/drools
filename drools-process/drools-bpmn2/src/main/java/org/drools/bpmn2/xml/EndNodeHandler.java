@@ -37,16 +37,16 @@ public class EndNodeHandler extends AbstractNodeHandler {
                         String variable = (String) endNode.getMetaData("MappingVariable");
                         if (variable != null) {
                             xmlDump.append(
-                                "      <dataInput id=\"_" + endNode.getUniqueId() + "_Input\" />" + EOL + 
+                                "      <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input\" />" + EOL + 
                                 "      <dataInputAssociation>" + EOL + 
                                 "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
-                                "        <targetRef>_" + endNode.getUniqueId() + "_Input</targetRef>" + EOL + 
+                                "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</targetRef>" + EOL + 
                                 "      </dataInputAssociation>" + EOL + 
                                 "      <inputSet>" + EOL + 
-                                "        <dataInputRefs>_" + endNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
+                                "        <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</dataInputRefs>" + EOL + 
                                 "      </inputSet>" + EOL);
                         }
-                        xmlDump.append("      <messageEventDefinition messageRef=\"" + "_" + endNode.getUniqueId() + "_Message\"/>" + EOL);
+                        xmlDump.append("      <messageEventDefinition messageRef=\"" + "_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Message\"/>" + EOL);
                         endNode("endEvent", xmlDump);
 		            } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
                         xmlDump.append(">" + EOL);
@@ -57,13 +57,13 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		                if (!s.startsWith("null")) {
 		                    variable = s.substring(0, s.indexOf(")"));
 	                        xmlDump.append(
-                                "      <dataInput id=\"_" + endNode.getUniqueId() + "_Input\" />" + EOL + 
+                                "      <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input\" />" + EOL + 
                                 "      <dataInputAssociation>" + EOL + 
                                 "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
-                                "        <targetRef>_" + endNode.getUniqueId() + "_Input</targetRef>" + EOL + 
+                                "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</targetRef>" + EOL + 
                                 "      </dataInputAssociation>" + EOL + 
                                 "      <inputSet>" + EOL + 
-                                "        <dataInputRefs>_" + endNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
+                                "        <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</dataInputRefs>" + EOL + 
                                 "      </inputSet>" + EOL);
 	                    }
 		                xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>" + EOL);

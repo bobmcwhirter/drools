@@ -2,20 +2,40 @@ package org.drools.bpmn2.xml;
 
 import java.util.List;
 
+import org.drools.bpmn2.core.SequenceFlow;
 import org.drools.definition.process.Connection;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.DynamicNode;
+import org.drools.xml.ExtensibleXmlParser;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     
     protected Node createNode(Attributes attrs) {
-        return new DynamicNode();
+        DynamicNode result = new DynamicNode();
+        VariableScope variableScope = new VariableScope();
+        result.addContext(variableScope);
+        result.setDefaultContext(variableScope);
+        return result;
     }
     
     @SuppressWarnings("unchecked")
 	public Class generateNodeFor() {
         return DynamicNode.class;
+    }
+    
+    @SuppressWarnings("unchecked")
+	protected void handleNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    	super.handleNode(node, element, uri, localName, parser);
+    	DynamicNode dynamicNode = (DynamicNode) node;
+    	List<SequenceFlow> connections = (List<SequenceFlow>)
+			dynamicNode.getMetaData(ProcessHandler.CONNECTIONS);
+    	ProcessHandler.linkConnections(dynamicNode, connections);
+    	ProcessHandler.linkBoundaryEvents(dynamicNode);
     }
     
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {

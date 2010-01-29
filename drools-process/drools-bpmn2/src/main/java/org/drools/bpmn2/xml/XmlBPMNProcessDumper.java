@@ -127,7 +127,7 @@ public class XmlBPMNProcessDumper {
                 VariableScope variableScope = (VariableScope) 
                     ((ContextContainer) node).getDefaultContext(VariableScope.VARIABLE_SCOPE);
                 if (variableScope != null) {
-                    visitVariableScope(variableScope, "_" + ((NodeImpl) node).getUniqueId() + "-", xmlDump);
+                    visitVariableScope(variableScope, "_" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "-", xmlDump);
                 }
             }
             if (node instanceof NodeContainer) {
@@ -157,12 +157,12 @@ public class XmlBPMNProcessDumper {
             if (node instanceof HumanTaskNode) {
                 String swimlane = ((HumanTaskNode) node).getSwimlane();
                 if (lane.equals(swimlane)) {
-                    xmlDump.append("        <flowElementRef>_" + ((NodeImpl) node).getUniqueId() + "</flowElementRef>" + EOL);
+                    xmlDump.append("        <flowElementRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "</flowElementRef>" + EOL);
                 }
             } else {
                 String swimlane = (String) node.getMetaData("Lane");
                 if (lane.equals(swimlane)) {
-                    xmlDump.append("        <flowElementRef>_" + ((NodeImpl) node).getUniqueId() + "</flowElementRef>" + EOL);
+                    xmlDump.append("        <flowElementRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "</flowElementRef>" + EOL);
                 }
             }
             if (node instanceof NodeContainer) {

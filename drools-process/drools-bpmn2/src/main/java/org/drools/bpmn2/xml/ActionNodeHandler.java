@@ -23,25 +23,22 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 		DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
 		if (action != null) {
 		    String s = action.getConsequence();
-		    if ("".equals(s)) {
-		        writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
-		        endNode(xmlDump);
-		    } else if (s.startsWith("org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();")) {
+		    if (s.startsWith("org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
                 xmlDump.append(">" + EOL);
                 String variable = (String) actionNode.getMetaData("MappingVariable");
                 if (variable != null) {
                     xmlDump.append(
-                        "      <dataInput id=\"_" + actionNode.getUniqueId() + "_Input\" />" + EOL + 
+                        "      <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input\" />" + EOL + 
                         "      <dataInputAssociation>" + EOL + 
                         "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
-                        "        <targetRef>_" + actionNode.getUniqueId() + "_Input</targetRef>" + EOL + 
+                        "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input</targetRef>" + EOL + 
                         "      </dataInputAssociation>" + EOL + 
                         "      <inputSet>" + EOL + 
-                        "        <dataInputRefs>_" + actionNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
+                        "        <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input</dataInputRefs>" + EOL + 
                         "      </inputSet>" + EOL);
                 }
-                xmlDump.append("      <messageEventDefinition messageRef=\"" + "_" + actionNode.getUniqueId() + "_Message\"/>" + EOL);
+                xmlDump.append("      <messageEventDefinition messageRef=\"" + "_" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Message\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
@@ -53,13 +50,13 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 if (!s.startsWith("null")) {
                     variable = s.substring(0, s.indexOf(")"));
                     xmlDump.append(
-                        "      <dataInput id=\"_" + actionNode.getUniqueId() + "_Input\" />" + EOL + 
+                        "      <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input\" />" + EOL + 
                         "      <dataInputAssociation>" + EOL + 
                         "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
-                        "        <targetRef>_" + actionNode.getUniqueId() + "_Input</targetRef>" + EOL + 
+                        "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input</targetRef>" + EOL + 
                         "      </dataInputAssociation>" + EOL + 
                         "      <inputSet>" + EOL + 
-                        "        <dataInputRefs>_" + actionNode.getUniqueId() + "_Input</dataInputRefs>" + EOL + 
+                        "        <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input</dataInputRefs>" + EOL + 
                         "      </inputSet>" + EOL);
                 }
                 if (type.startsWith("Compensate-")) {
@@ -83,6 +80,9 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 s = s.substring(s.indexOf(",") + 2);
                 xmlDump.append("      <escalationEventDefinition escalationCode=\"" + type + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
+            } else if ("IntermediateThrowEvent-None".equals(actionNode.getMetaData("NodeType"))) {
+            	writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+                endNode(xmlDump);
             } else {
                 writeNode("scriptTask", actionNode, xmlDump, includeMeta);
                 if (JavaDialect.ID.equals(action.getDialect())) {
