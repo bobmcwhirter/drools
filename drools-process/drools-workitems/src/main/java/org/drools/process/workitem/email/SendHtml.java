@@ -41,7 +41,14 @@ public class SendHtml {
             if ( mailhost != null && mailhost.trim().length() > 0 ) props.setProperty( "mail.smtp.host", mailhost );
             if ( connection.getPort() != null && connection.getPort().trim().length() > 0 ) {
                 props.setProperty( "mail.smtp.port", connection.getPort() );                
-            }               
+            }
+            
+            if ( connection.getUserName() != null && connection.getUserName().trim().length() > 0 ) {
+                props.setProperty( "mail.smtp.user", connection.getUserName());                
+            }
+            if ( connection.getPassword() != null && connection.getPassword().trim().length() > 0 ) {
+                props.setProperty( "mail.smtp.password", connection.getPassword());                
+            }
                         
             // Get a Session object
             Session session = Session.getInstance( props, null );
