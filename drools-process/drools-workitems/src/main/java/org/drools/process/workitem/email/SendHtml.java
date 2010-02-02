@@ -24,6 +24,8 @@ public class SendHtml {
         String from = message.getFrom();
         String replyTo = message.getReplyTo();
         String mailhost = connection.getHost();
+        String username = connection.getUserName();
+        String password = connection.getPassword();
         String mailer = "sendhtml";
         
         if ( from == null ) {
@@ -35,24 +37,12 @@ public class SendHtml {
         }
         boolean debug = false;
         try {
-            Properties props = new Properties();
-            // XXX - could use Session.getTransport() and Transport.connect()
-            // XXX - assume we're using SMTP
-            if ( mailhost != null && mailhost.trim().length() > 0 ) props.setProperty( "mail.smtp.host", mailhost );
-            if ( connection.getPort() != null && connection.getPort().trim().length() > 0 ) {
-                props.setProperty( "mail.smtp.port", connection.getPort() );                
-            }
-            
-            if ( connection.getUserName() != null && connection.getUserName().trim().length() > 0 ) {
-                props.setProperty( "mail.smtp.user", connection.getUserName());                
-            }
-            if ( connection.getPassword() != null && connection.getPassword().trim().length() > 0 ) {
-                props.setProperty( "mail.smtp.password", connection.getPassword());                
-            }
                         
             // Get a Session object
+            Properties props = new Properties();
             Session session = Session.getInstance( props, null );
-            if ( debug ) session.setDebug( true );
+            session.setDebug( debug );
+            
             // construct the message
             Message msg = new MimeMessage( session );
             
@@ -77,8 +67,18 @@ public class SendHtml {
             collect( message.getBody(), msg );
             msg.setHeader( "X-Mailer", mailer );
             msg.setSentDate( new Date() );
+            
             // send the thing off
-            Transport.send( msg );
+    	    Transport t = (Transport)session.getTransport("smtp");
+    	    try {
+    		    t.connect(mailhost, username, password);
+    			t.sendMessage(msg, msg.getAllRecipients());
+    	    } catch (Exception e) {
+    	    	throw new RuntimeException( "Connection failure", e );
+     	    } finally {
+    	    	t.close();
+    	    }
+
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to send email", e );
         }
