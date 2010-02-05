@@ -40,6 +40,10 @@ public class SendHtml {
                         
             // Get a Session object
             Properties props = new Properties();
+            if ( mailhost != null && mailhost.trim().length() > 0 ) props.setProperty( "mail.smtp.host", mailhost );
+            if ( connection.getPort() != null && connection.getPort().trim().length() > 0 ) {
+                props.setProperty( "mail.smtp.port", connection.getPort() );                
+            }               
             Session session = Session.getInstance( props, null );
             session.setDebug( debug );
             
