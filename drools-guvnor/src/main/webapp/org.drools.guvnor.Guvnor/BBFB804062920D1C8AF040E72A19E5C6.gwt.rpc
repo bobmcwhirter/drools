@@ -37,6 +37,7 @@ org.drools.guvnor.client.factmodel.FactMetaModel, true
 org.drools.guvnor.client.factmodel.FactModels, true
 org.drools.guvnor.client.factmodel.FieldMetaModel, true
 [Lorg.drools.guvnor.client.factmodel.FieldMetaModel;, true
+org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators, true
 org.drools.guvnor.client.modeldriven.MethodInfo, true
 [Lorg.drools.guvnor.client.modeldriven.MethodInfo;, true
 org.drools.guvnor.client.modeldriven.ModelField, true
