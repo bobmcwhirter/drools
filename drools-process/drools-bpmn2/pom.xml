@@ -40,7 +40,7 @@
                <manifestLocation>META-INF</manifestLocation>
                <instructions>
                   <_removeheaders>Ignore-Package</_removeheaders> 
-                  <Require-Bundle>org.drools.core;bundle-version="${pom.version}", org.drools.compiler;bundle-version="${pom.version}", org.drools.persistence-jpa;bundle-version="${pom.version}"</Require-Bundle>
+                  <Require-Bundle>org.drools.core;bundle-version="${pom.version}", org.drools.compiler;bundle-version="${pom.version}", org.drools.persistence-jpa;optional="true";bundle-version="${pom.version}"</Require-Bundle>
                   <Import-Package>!org.drools.*, *</Import-Package>
                   <Export-Package> org.drools.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>

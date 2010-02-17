@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Export-Package: org.drools.bpmn2.xpath;version="5.1.0.SNAPSHOT",org.dr
+ ools.bpmn2.xml.di;uses:="org.xml.sax,org.w3c.dom";version="5.1.0.SNAP
+ SHOT",org.drools.bpmn2.handler;version="5.1.0.SNAPSHOT",org.drools.bp
+ mn2.xml;uses:="org.w3c.dom,org.drools.bpmn2.core,org.xml.sax,org.droo
+ ls.bpmn2.xml.di";version="5.1.0.SNAPSHOT",org.drools.bpmn2.core;versi
+ on="5.1.0.SNAPSHOT"
+Private-Package: .;version="5.1.0.SNAPSHOT"
+Tool: Bnd-0.0.357
+Bundle-Name: Drools :: Process :: BPMN2
+Created-By: 1.6.0_18 (Sun Microsystems Inc.)
+Require-Bundle: org.drools.core;bundle-version="5.1.0.SNAPSHOT", org.d
+ rools.compiler;bundle-version="5.1.0.SNAPSHOT", org.drools.persistenc
+ e-jpa;optional="true";bundle-version="5.1.0.SNAPSHOT"
+Bundle-Vendor: JBoss Inc.
+DynamicImport-Package: *
+Bundle-Version: 5.1.0.SNAPSHOT
+Bnd-LastModified: 1266400405889
+Bundle-ManifestVersion: 2
+Bundle-Description: A rule production system
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.w3c.dom,org.xml.sax
+Bundle-SymbolicName: org.drools.bpmn2
+Bundle-DocURL: http://www.jboss.org/
+Originally-Created-By: 1.6.0_18 (Sun Microsystems Inc.)
+
