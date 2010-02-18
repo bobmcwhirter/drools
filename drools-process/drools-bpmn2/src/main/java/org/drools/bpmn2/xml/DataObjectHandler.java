@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.SequenceFlow;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
@@ -15,7 +16,6 @@ import org.drools.workflow.core.Node;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

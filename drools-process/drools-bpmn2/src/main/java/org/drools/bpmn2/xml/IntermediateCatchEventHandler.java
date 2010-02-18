@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Message;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.core.timer.Timer;
@@ -14,7 +15,6 @@ import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.StateNode;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

@@ -3,10 +3,10 @@ package org.drools.bpmn2.xml;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Message;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

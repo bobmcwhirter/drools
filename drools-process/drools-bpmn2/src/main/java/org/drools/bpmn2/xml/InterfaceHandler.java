@@ -7,10 +7,10 @@ import java.util.List;
 import org.drools.bpmn2.core.Interface;
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Message;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

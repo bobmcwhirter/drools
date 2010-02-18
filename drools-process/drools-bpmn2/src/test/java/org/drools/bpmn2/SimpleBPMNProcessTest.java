@@ -24,6 +24,7 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.io.ResourceFactory;
 import org.drools.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -34,7 +35,6 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.drools.xml.XmlProcessReader;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 

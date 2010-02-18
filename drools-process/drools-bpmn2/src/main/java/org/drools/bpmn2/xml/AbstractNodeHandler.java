@@ -4,13 +4,13 @@ import java.util.HashSet;
 
 import org.drools.bpmn2.core.Lane;
 import org.drools.bpmn2.core.SequenceFlow;
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.XmlDumper;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

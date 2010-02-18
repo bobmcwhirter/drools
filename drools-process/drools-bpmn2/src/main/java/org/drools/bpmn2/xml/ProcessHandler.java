@@ -11,6 +11,7 @@ import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Lane;
 import org.drools.bpmn2.core.Message;
 import org.drools.bpmn2.core.SequenceFlow;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
@@ -35,7 +36,6 @@ import org.drools.workflow.core.node.StateNode;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

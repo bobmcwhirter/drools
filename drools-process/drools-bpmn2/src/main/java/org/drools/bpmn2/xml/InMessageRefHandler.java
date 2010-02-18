@@ -5,10 +5,10 @@ import java.util.Map;
 
 import org.drools.bpmn2.core.Message;
 import org.drools.bpmn2.core.Interface.Operation;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

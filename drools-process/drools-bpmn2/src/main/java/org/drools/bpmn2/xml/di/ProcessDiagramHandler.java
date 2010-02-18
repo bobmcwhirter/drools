@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.drools.bpmn2.xml.di.SequenceFlowConnectorHandler.ConnectionInfo;
 import org.drools.bpmn2.xml.di.ShapeHandler.NodeInfo;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -15,7 +16,6 @@ import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

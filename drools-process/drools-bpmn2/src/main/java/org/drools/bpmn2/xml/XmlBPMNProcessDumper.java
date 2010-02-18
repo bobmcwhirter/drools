@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.bpmn2.xpath.XPathDialect;
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
@@ -33,7 +34,6 @@ import org.drools.workflow.core.node.Trigger;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
-import org.drools.xml.XmlDumper;
 
 public class XmlBPMNProcessDumper {
 	

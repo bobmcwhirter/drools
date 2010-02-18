@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Message;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
@@ -12,7 +13,6 @@ import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

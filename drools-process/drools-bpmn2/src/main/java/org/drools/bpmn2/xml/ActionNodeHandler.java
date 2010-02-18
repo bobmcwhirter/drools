@@ -1,10 +1,10 @@
 package org.drools.bpmn2.xml;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
-import org.drools.xml.XmlDumper;
 import org.xml.sax.Attributes;
 
 public class ActionNodeHandler extends AbstractNodeHandler {
