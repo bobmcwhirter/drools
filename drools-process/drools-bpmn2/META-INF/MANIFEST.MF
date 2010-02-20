@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Created-By: 1.5.0_21 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: org.w3c.dom,org.xml.sax
-Bnd-LastModified: 1266544758863
+Bnd-LastModified: 1266547541398
 Export-Package: org.drools.bpmn2.core;version="5.1.0.SNAPSHOT",org.dro
  ols.bpmn2.xpath;version="5.1.0.SNAPSHOT",org.drools.bpmn2.handler;ver
  sion="5.1.0.SNAPSHOT",org.drools.bpmn2.xml;uses:="org.drools.bpmn2.co
