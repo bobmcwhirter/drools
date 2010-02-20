@@ -15,8 +15,10 @@ import org.drools.xml.DefaultSemanticModule;
 
 public class BPMNSemanticModule extends DefaultSemanticModule {
 	
+	public static final String BPMN2_URI = "http://schema.omg.org/spec/BPMN/2.0";
+	
 	public BPMNSemanticModule() {
-		super("http://schema.omg.org/spec/BPMN/2.0");
+		super(BPMN2_URI);
 		
         addHandler("process", new ProcessHandler());
         

@@ -45,7 +45,7 @@
                   <Import-Package>!org.drools.*, *</Import-Package>
                   <Export-Package> org.drools.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>
-                  <!--Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator-->
+                  <Bundle-Activator>org.drools.osgi.bpmn2.Activator</Bundle-Activator>
                </instructions>
             </configuration>
          </plugin>
@@ -71,6 +71,12 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- External dependencies -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>

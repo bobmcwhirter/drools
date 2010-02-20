@@ -126,6 +126,9 @@ public class SubProcessHandler extends AbstractNodeHandler {
 		        		dataType = new ObjectDataType(itemDefinition.getStructureRef());
 		        	}
 		        }
+		        if (dataType == null) {
+		        	dataType = new ObjectDataType("java.lang.Object");
+		        }
                 if (variableName != null && variableName.trim().length() > 0) {
                 	forEachNode.setVariable(variableName, dataType);
                 }
