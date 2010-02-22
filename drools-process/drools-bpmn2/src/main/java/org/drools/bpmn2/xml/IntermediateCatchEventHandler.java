@@ -52,6 +52,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 TimerNode timerNode = new TimerNode();
                 timerNode.setId(node.getId());
                 timerNode.setName(node.getName());
+                timerNode.setMetaData("UniqueId", node.getMetaData("UniqueId"));
                 node = timerNode;
                 handleTimerNode(node, element, uri, localName, parser);
                 break;
@@ -60,6 +61,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 StateNode stateNode = new StateNode();
                 stateNode.setId(node.getId());
                 stateNode.setName(node.getName());
+                stateNode.setMetaData("UniqueId", node.getMetaData("UniqueId"));
                 node = stateNode;
                 handleStateNode(node, element, uri, localName, parser);
                 break;

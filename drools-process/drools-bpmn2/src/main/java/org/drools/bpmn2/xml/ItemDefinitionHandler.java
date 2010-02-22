@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.bpmn2.core.ItemDefinition;
+import org.drools.bpmn2.core.Message;
 import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
@@ -23,6 +24,7 @@ public class ItemDefinitionHandler extends BaseAbstractHandler implements Handle
 			this.validPeers = new HashSet();
 			this.validPeers.add(null);
             this.validPeers.add(ItemDefinition.class);
+            this.validPeers.add(Message.class);
 
 			this.allowNesting = false;
 		}

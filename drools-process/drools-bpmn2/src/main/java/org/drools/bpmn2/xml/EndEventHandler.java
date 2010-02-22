@@ -54,6 +54,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 faultNode.setId(node.getId());
                 faultNode.setName(node.getName());
                 faultNode.setTerminateParent(true);
+                faultNode.setMetaData("UniqueId", node.getMetaData("UniqueId"));
                 node = faultNode;
                 super.handleNode(node, element, uri, localName, parser);
                 handleErrorNode(node, element, uri, localName, parser);
@@ -63,6 +64,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 FaultNode faultNode = new FaultNode();
                 faultNode.setId(node.getId());
                 faultNode.setName(node.getName());
+                faultNode.setMetaData("UniqueId", node.getMetaData("UniqueId"));
                 node = faultNode;
                 super.handleNode(node, element, uri, localName, parser);
                 handleEscalationNode(node, element, uri, localName, parser);

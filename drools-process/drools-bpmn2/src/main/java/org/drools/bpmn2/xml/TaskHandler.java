@@ -76,8 +76,9 @@ public class TaskHandler extends AbstractNodeHandler {
 			org.w3c.dom.Node subSubNode = subNode.getFirstChild();
 			String from = subSubNode.getTextContent();
 			subNode = subNode.getNextSibling();
+			subNode = subNode.getNextSibling();
     		String to = subNode.getTextContent();
-    		workItemNode.getWork().setParameter(to.substring(XmlBPMNProcessDumper.getUniqueNodeId(workItemNode).length() + 2), from);
+    		workItemNode.getWork().setParameter(dataInputs.get(to), from);
 		} else {
     		String from = subNode.getTextContent();
     		// targetRef

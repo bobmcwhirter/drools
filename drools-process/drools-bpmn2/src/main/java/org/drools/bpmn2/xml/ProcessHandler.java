@@ -136,10 +136,10 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         }
                     }
                     if (source == null) {
-                        throw new IllegalArgumentException("Could not find source node for connection:" + sourceRef);
+                        throw new IllegalArgumentException("Could not find source node for connection:" + connection.getSourceRef());
                     }
                     if (target == null) {
-                        throw new IllegalArgumentException("Could not find target node for connection:" + targetRef);
+                        throw new IllegalArgumentException("Could not find target node for connection:" + connection.getTargetRef());
                     }
 				}
 				Connection result = new ConnectionImpl(
