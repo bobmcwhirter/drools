@@ -154,7 +154,8 @@ org.drools.guvnor.client.rpc.AnalysisReport, true
 org.drools.guvnor.client.rpc.AnalysisReportLine, true
 [Lorg.drools.guvnor.client.rpc.AnalysisReportLine;, true
 org.drools.guvnor.client.rpc.BuilderResult, true
-[Lorg.drools.guvnor.client.rpc.BuilderResult;, true
+org.drools.guvnor.client.rpc.BuilderResultLine, true
+[Lorg.drools.guvnor.client.rpc.BuilderResultLine;, true
 org.drools.guvnor.client.rpc.BulkTestRunResult, true
 org.drools.guvnor.client.rpc.DetailedSerializableException, true
 org.drools.guvnor.client.rpc.DiscussionRecord, true
