@@ -1,14 +1,18 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.drools.osgi.bpmn2.Activator
 Created-By: 1.5.0_21 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: org.w3c.dom,org.xml.sax
-Bnd-LastModified: 1266547541398
-Export-Package: org.drools.bpmn2.core;version="5.1.0.SNAPSHOT",org.dro
- ols.bpmn2.xpath;version="5.1.0.SNAPSHOT",org.drools.bpmn2.handler;ver
- sion="5.1.0.SNAPSHOT",org.drools.bpmn2.xml;uses:="org.drools.bpmn2.co
- re,org.xml.sax,org.w3c.dom,org.drools.bpmn2.xml.di";version="5.1.0.SN
- APSHOT",org.drools.bpmn2.xml.di;uses:="org.xml.sax,org.w3c.dom";versi
- on="5.1.0.SNAPSHOT"
+Import-Package: org.osgi.framework;version="1.5",org.w3c.dom,org.xml.s
+ ax
+Bnd-LastModified: 1267333501253
+Export-Package: org.drools.bpmn2;uses:="org.drools.bpmn2.xml";version=
+ "5.1.0.SNAPSHOT",org.drools.bpmn2.core;version="5.1.0.SNAPSHOT",org.d
+ rools.bpmn2.xpath;version="5.1.0.SNAPSHOT",org.drools.bpmn2.handler;v
+ ersion="5.1.0.SNAPSHOT",org.drools.bpmn2.xml;uses:="org.drools.bpmn2.
+ core,org.xml.sax,org.w3c.dom,org.drools.bpmn2.xml.di";version="5.1.0.
+ SNAPSHOT",org.drools.bpmn2.xml.di;uses:="org.xml.sax,org.w3c.dom";ver
+ sion="5.1.0.SNAPSHOT",org.drools.osgi.bpmn2;uses:="org.drools.bpmn2,o
+ rg.osgi.framework";version="5.1.0.SNAPSHOT"
 Bundle-Version: 5.1.0.SNAPSHOT
 Bundle-Name: Drools :: Process :: BPMN2
 Bundle-Description: A rule production system

@@ -90,6 +90,17 @@
       <version>1.3.3</version>    	
       <scope>test</scope>
     </dependency>    	
+    
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.core</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>org.osgi.compendium</artifactId>
+         <scope>provided</scope>
+      </dependency>    
 
   </dependencies>
 
