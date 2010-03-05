@@ -86,7 +86,23 @@ public class StartEventHandler extends AbstractNodeHandler {
                     trigger.addInMapping(mapping, "event");
                 }
                 startNode.addTrigger(trigger);
-            }
+            } else if ("timerEventDefinition".equals(nodeName)) {
+            	org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+                while (subNode instanceof Element) {
+                    String subNodeName = subNode.getNodeName();
+                    if ("timeCycle".equals(subNodeName)) {
+                        String period = subNode.getTextContent();
+                        if (period != null && period.trim().length() > 0) {
+	                        ConstraintTrigger trigger = new ConstraintTrigger();
+	                        trigger.setConstraint("");
+	                        trigger.setHeader("timer (int:" + period + " " + period + ")");
+	                        startNode.addTrigger(trigger);
+	                        break;
+                        }
+                    }
+                    subNode = subNode.getNextSibling();
+               }
+            } 
             xmlNode = xmlNode.getNextSibling();
         }
     }
@@ -111,9 +127,19 @@ public class StartEventHandler extends AbstractNodeHandler {
 		    }
 		    Trigger trigger = triggers.get(0);
 		    if (trigger instanceof ConstraintTrigger) {
-		        xmlDump.append("      <conditionalEventDefinition>" + EOL);
-                xmlDump.append("        <condition xs:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + ((ConstraintTrigger) trigger).getConstraint() + "</condition>" + EOL);
-                xmlDump.append("      </conditionalEventDefinition>" + EOL);
+		    	ConstraintTrigger constraintTrigger = (ConstraintTrigger) trigger;
+		    	if (constraintTrigger.getHeader() == null) {
+			        xmlDump.append("      <conditionalEventDefinition>" + EOL);
+	                xmlDump.append("        <condition xs:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + constraintTrigger.getConstraint() + "</condition>" + EOL);
+	                xmlDump.append("      </conditionalEventDefinition>" + EOL);
+		    	} else {
+		    		String header = constraintTrigger.getHeader();
+		    		int lenght = (header.length() - 13)/2;
+		    		String period = header.substring(11, 11 + lenght);
+			        xmlDump.append("      <timerEventDefinition>" + EOL);
+	                xmlDump.append("        <timeCycle xs:type=\"tFormalExpression\">" + period + "</timeCycle>" + EOL);
+	                xmlDump.append("      </timerEventDefinition>" + EOL);
+		    	}
 		    } else if (trigger instanceof EventTrigger) {
 		        EventTrigger eventTrigger = (EventTrigger) trigger;
 		        if (!trigger.getInMappings().isEmpty()) {

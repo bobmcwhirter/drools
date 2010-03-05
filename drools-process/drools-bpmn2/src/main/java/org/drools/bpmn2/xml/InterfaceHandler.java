@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drools.bpmn2.core.Definitions;
 import org.drools.bpmn2.core.Interface;
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Message;
@@ -20,7 +21,7 @@ public class InterfaceHandler extends BaseAbstractHandler implements Handler {
 	public InterfaceHandler() {
 		if ((this.validParents == null) && (this.validPeers == null)) {
 			this.validParents = new HashSet();
-			this.validParents.add(null);
+			this.validParents.add(Definitions.class);
 
 			this.validPeers = new HashSet();
 			this.validPeers.add(null);

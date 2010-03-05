@@ -1,5 +1,6 @@
 package org.drools.bpmn2.xml;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.TimerNode;
 import org.xml.sax.Attributes;
@@ -21,7 +22,7 @@ public class TimerNodeHandler extends AbstractNodeHandler {
 		xmlDump.append(">" + EOL);
 		xmlDump.append("      <timerEventDefinition>" + EOL);
 		if (timerNode.getTimer() != null && timerNode.getTimer().getDelay() != null) {
-		    xmlDump.append("        <timeCycle>" + timerNode.getTimer().getDelay() + "</timeCycle>" + EOL);
+		    xmlDump.append("        <timeCycle>" + XmlDumper.replaceIllegalChars(timerNode.getTimer().getDelay()) + "</timeCycle>" + EOL);
 		}
 		xmlDump.append("      </timerEventDefinition>" + EOL);
 		endNode("intermediateCatchEvent", xmlDump);

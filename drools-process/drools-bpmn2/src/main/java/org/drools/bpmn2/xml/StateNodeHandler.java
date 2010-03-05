@@ -1,5 +1,6 @@
 package org.drools.bpmn2.xml;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.StateNode;
 import org.xml.sax.Attributes;
@@ -21,7 +22,7 @@ public class StateNodeHandler extends AbstractNodeHandler {
 		writeNode("intermediateCatchEvent", stateNode, xmlDump, includeMeta);
 		xmlDump.append(">" + EOL);
         xmlDump.append("      <conditionalEventDefinition>" + EOL);
-        xmlDump.append("        <condition xs:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + condition + "</condition>" + EOL);
+        xmlDump.append("        <condition xs:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + XmlDumper.replaceIllegalChars(condition) + "</condition>" + EOL);
         xmlDump.append("      </conditionalEventDefinition>" + EOL);
 		endNode("intermediateCatchEvent", xmlDump);
 	}

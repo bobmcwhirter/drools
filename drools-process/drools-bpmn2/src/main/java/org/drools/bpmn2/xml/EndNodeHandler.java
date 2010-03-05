@@ -2,6 +2,7 @@ package org.drools.bpmn2.xml;
 
 import java.util.List;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
@@ -37,16 +38,16 @@ public class EndNodeHandler extends AbstractNodeHandler {
                         String variable = (String) endNode.getMetaData("MappingVariable");
                         if (variable != null) {
                             xmlDump.append(
-                                "      <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input\" />" + EOL + 
+                                "      <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input\" />" + EOL + 
                                 "      <dataInputAssociation>" + EOL + 
-                                "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
-                                "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</targetRef>" + EOL + 
+                                "        <sourceRef>" + XmlDumper.replaceIllegalChars(variable) + "</sourceRef>" + EOL + 
+                                "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</targetRef>" + EOL + 
                                 "      </dataInputAssociation>" + EOL + 
                                 "      <inputSet>" + EOL + 
-                                "        <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</dataInputRefs>" + EOL + 
+                                "        <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</dataInputRefs>" + EOL + 
                                 "      </inputSet>" + EOL);
                         }
-                        xmlDump.append("      <messageEventDefinition messageRef=\"" + "_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Message\"/>" + EOL);
+                        xmlDump.append("      <messageEventDefinition messageRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Message\"/>" + EOL);
                         endNode("endEvent", xmlDump);
 		            } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
                         xmlDump.append(">" + EOL);
@@ -57,16 +58,26 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		                if (!s.startsWith("null")) {
 		                    variable = s.substring(0, s.indexOf(")"));
 	                        xmlDump.append(
-                                "      <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input\" />" + EOL + 
+                                "      <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input\" />" + EOL + 
                                 "      <dataInputAssociation>" + EOL + 
-                                "        <sourceRef>" + variable + "</sourceRef>" + EOL + 
-                                "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</targetRef>" + EOL + 
+                                "        <sourceRef>" + XmlDumper.replaceIllegalChars(variable) + "</sourceRef>" + EOL + 
+                                "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</targetRef>" + EOL + 
                                 "      </dataInputAssociation>" + EOL + 
                                 "      <inputSet>" + EOL + 
-                                "        <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</dataInputRefs>" + EOL + 
+                                "        <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</dataInputRefs>" + EOL + 
                                 "      </inputSet>" + EOL);
 	                    }
-		                xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>" + EOL);
+		                if (type.startsWith("Compensate-")) {
+			                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlDumper.replaceIllegalChars(type.substring(11)) + "\"/>" + EOL);
+		                } else {
+		                	xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
+		                }
+		                endNode("endEvent", xmlDump);
+		            } else if (s.startsWith("kcontext.getProcessInstance().signalEvent(\"")) {
+		            	xmlDump.append(">" + EOL);
+		            	s = s.substring(43);
+		                String type = s.substring(0, s.indexOf("\""));
+		                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlDumper.replaceIllegalChars(type.substring(11)) + "\"/>" + EOL);
 		                endNode("endEvent", xmlDump);
 		            } else {
 		                throw new IllegalArgumentException("Unknown action " + s);

@@ -3,6 +3,7 @@ package org.drools.bpmn2.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.process.Connection;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
@@ -36,9 +37,9 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
 		if (variableScope != null && !variableScope.getVariables().isEmpty()) {
             xmlDump.append("    <!-- variables -->" + EOL);
             for (Variable variable: variableScope.getVariables()) {
-                xmlDump.append("    <property id=\"" + variable.getName() + "\" ");
+                xmlDump.append("    <property id=\"" + XmlDumper.replaceIllegalChars(variable.getName()) + "\" ");
                 if (variable.getType() != null) {
-                    xmlDump.append("itemSubjectRef=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(compositeNode) + "-" + variable.getName() + "Item\"" );
+                    xmlDump.append("itemSubjectRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(compositeNode) + "-" + XmlDumper.replaceIllegalChars(variable.getName()) + "Item\"" );
                 }
                 // TODO: value
                 xmlDump.append("/>" + EOL);

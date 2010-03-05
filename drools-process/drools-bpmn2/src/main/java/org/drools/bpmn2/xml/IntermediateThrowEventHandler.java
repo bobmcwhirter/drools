@@ -1,18 +1,13 @@
 package org.drools.bpmn2.xml;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Message;
 import org.drools.compiler.xml.ProcessBuildData;
-import org.drools.process.core.event.EventFilter;
-import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
-import org.drools.workflow.core.node.EventNode;
 import org.drools.xml.ExtensibleXmlParser;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;

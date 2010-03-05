@@ -16,6 +16,8 @@ public class ExclusiveGatewayHandler extends AbstractNodeHandler {
         } else if ("diverging".equals(type)) {
         	Split split = new Split();
         	split.setType(Split.TYPE_XOR);
+        	String isDefault = attrs.getValue("default");
+        	split.setMetaData("Default", isDefault);
         	return split;
         } else {
         	throw new IllegalArgumentException(

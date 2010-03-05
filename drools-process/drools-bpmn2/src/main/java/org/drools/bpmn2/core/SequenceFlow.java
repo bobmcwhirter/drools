@@ -6,6 +6,7 @@ public class SequenceFlow implements Serializable {
 
 	private static final long serialVersionUID = 4L;
 	
+	private String id;
 	private String sourceRef;
 	private String targetRef;
 	private String bendpoints;
@@ -14,9 +15,14 @@ public class SequenceFlow implements Serializable {
 	private String language;
 	private String name;
 	
-	public SequenceFlow(String sourceRef, String targetRef) {
+	public SequenceFlow(String id, String sourceRef, String targetRef) {
+		this.id = id;
 		this.sourceRef = sourceRef;
 		this.targetRef = targetRef;
+	}
+	
+	public String getId() {
+		return id;
 	}
 	
 	public String getSourceRef() {

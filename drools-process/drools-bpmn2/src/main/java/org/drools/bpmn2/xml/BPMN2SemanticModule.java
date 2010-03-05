@@ -18,6 +18,8 @@ public class BPMN2SemanticModule extends DefaultSemanticModule {
 	public BPMN2SemanticModule() {
 		super("http://www.omg.org/bpmn20");
 		
+        addHandler("definitions", new DefinitionsHandler());
+        
 		addHandler("process", new ProcessHandler());
 		
 		addHandler("property", new PropertyHandler());

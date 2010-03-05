@@ -1,5 +1,6 @@
 package org.drools.bpmn2.xml;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.xml.ExtensibleXmlParser;
@@ -32,7 +33,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		RuleSetNode ruleSetNode = (RuleSetNode) node;
 		writeNode("businessRuleTask", ruleSetNode, xmlDump, includeMeta);
 		if (ruleSetNode.getRuleFlowGroup() != null) {
-			xmlDump.append("g:ruleFlowGroup=\"" + ruleSetNode.getRuleFlowGroup() + "\" ");
+			xmlDump.append("g:ruleFlowGroup=\"" + XmlDumper.replaceIllegalChars(ruleSetNode.getRuleFlowGroup()) + "\" ");
 		}
 		endNode(xmlDump);
 	}

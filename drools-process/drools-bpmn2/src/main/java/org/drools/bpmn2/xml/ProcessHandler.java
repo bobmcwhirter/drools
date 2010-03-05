@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.bpmn2.core.Definitions;
 import org.drools.bpmn2.core.Interface;
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Lane;
@@ -17,7 +18,6 @@ import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.Swimlane;
-import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.core.timer.Timer;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -47,7 +47,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	public ProcessHandler() {
 		if ((this.validParents == null) && (this.validPeers == null)) {
 			this.validParents = new HashSet();
-			this.validParents.add(null);
+			this.validParents.add(Definitions.class);
 
 			this.validPeers = new HashSet();
             this.validPeers.add(Interface.class);
@@ -115,12 +115,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 				try {
     				// remove starting _
     				sourceRef = sourceRef.substring(1);
-    				targetRef = targetRef.substring(1);
-    		        // remove ids of parent nodes
+    				// remove ids of parent nodes
     				sourceRef = sourceRef.substring(sourceRef.lastIndexOf("-") + 1);
-    				targetRef = targetRef.substring(targetRef.lastIndexOf("-") + 1);
     				source = nodeContainer.getNode(new Integer(sourceRef));
-    				target = nodeContainer.getNode(new Integer(targetRef));
 				} catch (NumberFormatException e) {
 				    // try looking for a node with same "UniqueId" (in metadata)
 				    for (Node node: nodeContainer.getNodes()) {
@@ -129,14 +126,23 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 				            break;
 				        }
 				    }
+                    if (source == null) {
+                        throw new IllegalArgumentException("Could not find source node for connection:" + connection.getSourceRef());
+                    }
+				}
+				try {
+    				// remove starting _
+    				targetRef = targetRef.substring(1);
+    		        // remove ids of parent nodes
+    				targetRef = targetRef.substring(targetRef.lastIndexOf("-") + 1);
+    				target = nodeContainer.getNode(new Integer(targetRef));
+				} catch (NumberFormatException e) {
+				    // try looking for a node with same "UniqueId" (in metadata)
                     for (Node node: nodeContainer.getNodes()) {
                         if (connection.getTargetRef().equals(node.getMetaData("UniqueId"))) {
                             target = node;
                             break;
                         }
-                    }
-                    if (source == null) {
-                        throw new IllegalArgumentException("Could not find source node for connection:" + connection.getSourceRef());
                     }
                     if (target == null) {
                         throw new IllegalArgumentException("Could not find target node for connection:" + connection.getTargetRef());
@@ -146,9 +152,13 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					source, NodeImpl.CONNECTION_DEFAULT_TYPE, 
 					target, NodeImpl.CONNECTION_DEFAULT_TYPE);
 				result.setMetaData("bendpoints", connection.getBendpoints());
-				if (connection.getExpression() != null) {
+				if (source instanceof Split) {
 					Split split = (Split) source;
 					Constraint constraint = new ConstraintImpl();
+					String defaultConnection = (String) split.getMetaData("Default");
+					if (defaultConnection != null && defaultConnection.equals(connection.getId())) {
+						constraint.setDefault(true);
+					}
 					if (connection.getName() != null) {
 						constraint.setName(connection.getName());
 					} else {
@@ -162,7 +172,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					if (connection.getLanguage() != null) {
 						constraint.setDialect(connection.getLanguage());
 					}
-					constraint.setConstraint(connection.getExpression());
+					if (connection.getExpression() != null) {
+						constraint.setConstraint(connection.getExpression());
+					}
 					split.addConstraint(
 						new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
 						constraint);
@@ -238,13 +250,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             (cancelActivity ? "((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
                             "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeCycle + "\", null);"));
                     } else if (type.startsWith("Compensate-")) {
-                        String eventType = "Compensate-";
-                        String uniqueId = (String) node.getMetaData("UniqueId");
-            	        if (uniqueId == null) {
-            	        	eventType += "_" + XmlBPMNProcessDumper.getUniqueNodeId(attachedNode);
-            	        } else {
-            	        	eventType += uniqueId;
-            	        }
+                    	String uniqueId = (String) node.getMetaData("UniqueId");
+            	        String eventType = "Compensate-" + uniqueId;
             	        ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
                     }
                 }

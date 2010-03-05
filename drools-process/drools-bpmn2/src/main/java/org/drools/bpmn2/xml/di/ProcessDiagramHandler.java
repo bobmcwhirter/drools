@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.bpmn2.core.Definitions;
 import org.drools.bpmn2.xml.di.SequenceFlowConnectorHandler.ConnectionInfo;
 import org.drools.bpmn2.xml.di.ShapeHandler.NodeInfo;
 import org.drools.compiler.xml.ProcessBuildData;
@@ -29,7 +30,7 @@ public class ProcessDiagramHandler extends BaseAbstractHandler implements Handle
     
     protected void initValidParents() {
         this.validParents = new HashSet<Class<?>>();
-        this.validParents.add(null);
+        this.validParents.add(Definitions.class);
     }
     
     protected void initValidPeers() {

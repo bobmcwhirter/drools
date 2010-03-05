@@ -3,6 +3,7 @@ package org.drools.bpmn2.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.process.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeNode;
@@ -27,9 +28,9 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
 		// ioSpecification and dataInputAssociation 
         xmlDump.append(
             "      <ioSpecification>" + EOL +
-            "        <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input\" name=\"MultiInstanceInput\" />" + EOL +
+            "        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input\" name=\"MultiInstanceInput\" />" + EOL +
             "        <inputSet>" + EOL +
-            "          <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</dataInputRefs>" + EOL +
+            "          <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</dataInputRefs>" + EOL +
             "        </inputSet>" + EOL +
             "        <outputSet/>" + EOL +
             "      </ioSpecification>" + EOL);
@@ -37,17 +38,17 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
         if (collectionExpression != null) {
             xmlDump.append(
                 "      <dataInputAssociation>" + EOL +
-                "        <sourceRef>" + collectionExpression + "</sourceRef>" + EOL +
-                "        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</targetRef>" + EOL +
+                "        <sourceRef>" + XmlDumper.replaceIllegalChars(collectionExpression) + "</sourceRef>" + EOL +
+                "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</targetRef>" + EOL +
                 "      </dataInputAssociation>" + EOL);
         }
         // multiInstanceLoopCharacteristics
         xmlDump.append(
     		"      <multiInstanceLoopCharacteristics>" + EOL +
-            "        <loopDataInputRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</loopDataInputRef>" + EOL);
+            "        <loopDataInputRef>" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</loopDataInputRef>" + EOL);
         String parameterName = forEachNode.getVariableName();
         if (parameterName != null) {
-        	xmlDump.append("        <inputDataItem id=\"" + parameterName + "\" itemSubjectRef=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\"/>" + EOL);
+        	xmlDump.append("        <inputDataItem id=\"" + XmlDumper.replaceIllegalChars(parameterName) + "\" itemSubjectRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\"/>" + EOL);
         }
         xmlDump.append("      </multiInstanceLoopCharacteristics>" + EOL);
 		// nodes

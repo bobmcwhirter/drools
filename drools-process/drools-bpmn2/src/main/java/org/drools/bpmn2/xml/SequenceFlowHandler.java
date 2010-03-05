@@ -44,6 +44,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 			throws SAXException {
 		parser.startElementBuilder(localName, attrs);
 
+		final String id = attrs.getValue("id");
 		final String sourceRef = attrs.getValue("sourceRef");
 		final String targetRef = attrs.getValue("targetRef");
 		final String bendpoints = attrs.getValue("g:bendpoints");
@@ -66,7 +67,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 				((CompositeNode) nodeContainer).setMetaData(ProcessHandler.CONNECTIONS, connections);
 			}
 		}
-		SequenceFlow connection = new SequenceFlow(sourceRef, targetRef);
+		SequenceFlow connection = new SequenceFlow(id, sourceRef, targetRef);
 		connection.setBendpoints(bendpoints);
 		
 		connections.add(connection);

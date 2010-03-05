@@ -20,6 +20,8 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
 	public BPMNSemanticModule() {
 		super(BPMN2_URI);
 		
+        addHandler("definitions", new DefinitionsHandler());
+        
         addHandler("process", new ProcessHandler());
         
         addHandler("property", new PropertyHandler());

@@ -3,6 +3,7 @@ package org.drools.bpmn2.xml;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.compiler.xml.XmlDumper;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.xml.ExtensibleXmlParser;
@@ -94,7 +95,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
 		SubProcessNode subProcessNode = (SubProcessNode) node;
 		writeNode("callActivity", subProcessNode, xmlDump, includeMeta);
 		if (subProcessNode.getProcessId() != null) {
-			xmlDump.append("calledElement=\"" + subProcessNode.getProcessId() + "\" ");
+			xmlDump.append("calledElement=\"" + XmlDumper.replaceIllegalChars(subProcessNode.getProcessId()) + "\" ");
 		}
 		if (!subProcessNode.isWaitForCompletion()) {
 			xmlDump.append("tns:waitForCompletion=\"false\" ");
@@ -110,33 +111,33 @@ public class CallActivityHandler extends AbstractNodeHandler {
 	protected void writeIO(SubProcessNode subProcessNode, StringBuilder xmlDump) {
 		xmlDump.append("      <ioSpecification>" + EOL);
 		for (Map.Entry<String, String> entry: subProcessNode.getInMappings().entrySet()) {
-			xmlDump.append("        <dataInput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + entry.getKey() + "Input\" name=\"" + entry.getKey() + "\" />" + EOL);
+			xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input\" name=\"" + XmlDumper.replaceIllegalChars(entry.getKey()) + "\" />" + EOL);
 		}
 		for (Map.Entry<String, String> entry: subProcessNode.getOutMappings().entrySet()) {
-			xmlDump.append("        <dataOutput id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + entry.getKey() + "Output\" name=\"" + entry.getKey() + "\" />" + EOL);
+			xmlDump.append("        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output\" name=\"" + XmlDumper.replaceIllegalChars(entry.getKey()) + "\" />" + EOL);
 		}
 		xmlDump.append("        <inputSet>" + EOL);
 		for (Map.Entry<String, String> entry: subProcessNode.getInMappings().entrySet()) {
-			xmlDump.append("          <dataInputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + entry.getKey() + "Input</dataInputRefs>" + EOL);
+			xmlDump.append("          <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</dataInputRefs>" + EOL);
 		}
 		xmlDump.append("        </inputSet>" + EOL);
 		xmlDump.append("        <outputSet>" + EOL);
 		for (Map.Entry<String, String> entry: subProcessNode.getOutMappings().entrySet()) {
-			xmlDump.append("          <dataOutputRefs>_" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + entry.getKey() + "Output</dataOutputRefs>" + EOL);
+			xmlDump.append("          <dataOutputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output</dataOutputRefs>" + EOL);
 		}
 		xmlDump.append("        </outputSet>" + EOL);
 		xmlDump.append("      </ioSpecification>" + EOL);
 		for (Map.Entry<String, String> entry: subProcessNode.getInMappings().entrySet()) {
 			xmlDump.append("      <dataInputAssociation>" + EOL);
 			xmlDump.append(
-				"        <sourceRef>" + entry.getValue() + "</sourceRef>" + EOL +
-				"        <targetRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + entry.getKey() + "Input</targetRef>" + EOL);
+				"        <sourceRef>" + XmlDumper.replaceIllegalChars(entry.getValue()) + "</sourceRef>" + EOL +
+				"        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</targetRef>" + EOL);
 			xmlDump.append("      </dataInputAssociation>" + EOL);
 		}
 		for (Map.Entry<String, String> entry: subProcessNode.getOutMappings().entrySet()) {
 			xmlDump.append("      <dataOutputAssociation>" + EOL);
 			xmlDump.append(
-				"        <sourceRef>_" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + entry.getKey() + "Output</sourceRef>" + EOL +
+				"        <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output</sourceRef>" + EOL +
 				"        <targetRef>" + entry.getValue() + "</targetRef>" + EOL);
 			xmlDump.append("      </dataOutputAssociation>" + EOL);
 		}

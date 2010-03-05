@@ -11,6 +11,8 @@ public class InclusiveGatewayHandler extends AbstractNodeHandler {
         if ("diverging".equals(type)) {
         	Split split = new Split();
         	split.setType(Split.TYPE_OR);
+        	String isDefault = attrs.getValue("default");
+        	split.setMetaData("Default", isDefault);
         	return split;
         } else {
         	throw new IllegalArgumentException(

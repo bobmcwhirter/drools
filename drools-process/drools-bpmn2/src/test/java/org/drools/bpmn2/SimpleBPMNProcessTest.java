@@ -120,11 +120,31 @@ public class SimpleBPMNProcessTest extends TestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 	
+	public void testExclusiveSplitDefault() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.xml");
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("x", "NotFirst");
+		params.put("y", "Second");
+		ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+	
     public void testInclusiveSplit() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.xml");
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+    
+    public void testInclusiveSplitDefault() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitDefault.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", -5);
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
@@ -325,6 +345,13 @@ public class SimpleBPMNProcessTest extends TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
+    public void testCompensateEndEventProcess() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ProcessInstance processInstance = ksession.startProcess("CompensateEndEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
     public void testGraphicalInformation() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-OryxExportedExample.xml");
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -380,6 +407,16 @@ public class SimpleBPMNProcessTest extends TestCase {
         person.setName("john");
         ksession.insert(person);
         ksession.fireAllRules();
+    }
+    
+    public void testTimerStart() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStart.xml");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Thread.sleep(600);
+        for (int i = 0; i < 5; i++) {
+	        ksession.fireAllRules();
+	        Thread.sleep(500);
+        }
     }
     
     public void testSignalStart() throws Exception {

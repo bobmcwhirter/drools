@@ -123,7 +123,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void writeNode(final String name, final Node node, 
     		                 final StringBuilder xmlDump, boolean includeMeta) {
     	xmlDump.append("    <" + name + " "); 
-        xmlDump.append("id=\"_" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "\" ");
+        xmlDump.append("id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "\" ");
         if (node.getName() != null) {
             xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
         }
