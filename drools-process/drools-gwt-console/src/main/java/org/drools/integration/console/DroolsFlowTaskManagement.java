@@ -60,14 +60,11 @@ public class DroolsFlowTaskManagement implements TaskManagement {
 	}
 
 	public void assignTask(long taskId, String idRef, String userId) {
-		// TODO
-		if (userId == null) {
-			System.err.println("assignTask: userId == null, using 'admin'");
-			userId = "admin";
-		}
 		connect();
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		if (idRef != null && idRef.equals(userId)) {
+		if (idRef == null) {
+			client.release(taskId, userId, responseHandler);
+		} else if (idRef.equals(userId)) {
 			client.claim(taskId, idRef, responseHandler);
 		} else {
 			client.delegate(taskId, userId, idRef, responseHandler);
@@ -77,11 +74,6 @@ public class DroolsFlowTaskManagement implements TaskManagement {
 
 	@SuppressWarnings("unchecked")
 	public void completeTask(long taskId, Map data, String userId) {
-		// TODO
-		if (userId == null) {
-			System.err.println("assignTask: userId == null, using 'admin'");
-			userId = "admin";
-		}
 		connect();
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.start(taskId, userId, responseHandler);
@@ -113,11 +105,8 @@ public class DroolsFlowTaskManagement implements TaskManagement {
 	}
 
 	public void releaseTask(long taskId, String userId) {
-		// TODO
-		if (userId == null) {
-			System.err.println("assignTask: userId == null, using 'admin'");
-			userId = "admin";
-		}
+		// TODO: this method is not being invoked, it's using
+		// assignTask with null parameter instead
 		connect();
 		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
 		client.release(taskId, userId, responseHandler);
