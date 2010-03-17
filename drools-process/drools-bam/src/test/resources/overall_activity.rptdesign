@@ -2,9 +2,10 @@
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.17" id="1">
     <property name="createdBy">Eclipse BIRT Designer Version 2.3.1.v20080911 Build &lt;2.3.1.v20080917-1340></property>
     <property name="units">in</property>
-    <property name="comments">Copyright (c) 2007 &lt;&lt;Your Company Name here>></property>
-    <html-property name="description">Creates a blank report with no predefined content.</html-property>
-    <text-property name="displayName">Blank Report</text-property>
+    <property name="comments">Copyright (c) 2010 JBoss</property>
+    <html-property name="description">Gives an overview of all process activity.</html-property>
+    <text-property name="displayName">Overall Activity Report</text-property>
+    <text-property name="title">Overall Activity Report</text-property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="ProcessInstanceLog" id="25">
