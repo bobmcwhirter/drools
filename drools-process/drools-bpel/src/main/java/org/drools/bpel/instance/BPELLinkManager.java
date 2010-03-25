@@ -4,11 +4,11 @@ import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELActivity.SourceLink;
 import org.drools.bpel.core.BPELActivity.TargetLink;
 import org.drools.bpel.xpath.XPathReturnValueEvaluator;
+import org.drools.core.util.ArrayUtils;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.spi.ProcessContext;
-import org.drools.util.ArrayUtils;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
