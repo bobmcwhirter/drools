@@ -39,7 +39,7 @@ public class Content implements Externalizable {
                                             ClassNotFoundException {
         id = in.readLong();
         content = new byte[ in.readInt() ];
-        in.read( content );
+        in.readFully( content );
     }
 
     public long getId() {

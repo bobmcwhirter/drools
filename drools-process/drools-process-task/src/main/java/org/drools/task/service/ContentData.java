@@ -69,7 +69,7 @@ public class ContentData implements Externalizable {
     	}
     	if (in.readBoolean()) {
     		content = new byte[ in.readInt() ];
-    		in.read( content );
+    		in.readFully( content );
     	}
     }
 

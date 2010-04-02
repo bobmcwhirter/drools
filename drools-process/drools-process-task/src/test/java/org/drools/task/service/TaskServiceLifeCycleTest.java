@@ -132,6 +132,46 @@ public class TaskServiceLifeCycleTest extends BaseTest {
         assertEquals("content", new String(content.getContent()));
     }
     
+    public void testNewTaskWithLargeContent() {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        ContentData data = new ContentData();
+        data.setAccessType(AccessType.Inline);
+        data.setType("type");
+        String largeContent = "";
+        for (int i = 0; i < 1000; i++) {
+        	largeContent += i + "xxxxxxxxx";
+        }
+        data.setContent(largeContent.getBytes());
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, data, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        // Task should be assigned to the single potential owner and state set to Reserved
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
+        assertEquals( "type", task1.getTaskData().getDocumentType() );
+        long contentId = task1.getTaskData().getDocumentContentId();
+        assertTrue( contentId != -1 ); 
+
+        BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent(contentId, getContentResponseHandler);
+        Content content = getContentResponseHandler.getContent();
+        System.out.println(new String(content.getContent()));
+        assertEquals(largeContent, new String(content.getContent()));
+    }
+    
     public void testClaimWithMultiplePotentialOwners() throws Exception {
         Map  vars = new HashedMap();     
         vars.put( "users", users );
