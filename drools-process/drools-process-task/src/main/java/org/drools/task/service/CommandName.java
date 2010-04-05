@@ -72,6 +72,9 @@ public enum CommandName {
     QueryTasksAssignedAsTaskStakeholder,    
     QueryTaskSummaryResponse,
     
+    QueryTaskByWorkItemId,
+    QueryTaskByWorkItemIdResponse,
+    
     RegisterForEventRequest,
     EventTriggerResponse,
     

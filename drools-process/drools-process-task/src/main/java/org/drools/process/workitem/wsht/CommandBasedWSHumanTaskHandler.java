@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.SystemEventListenerFactory;
-import org.drools.eventmessaging.EventKey;
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
 import org.drools.runtime.KnowledgeRuntime;
@@ -27,6 +26,7 @@ import org.drools.task.Group;
 import org.drools.task.I18NText;
 import org.drools.task.OrganizationalEntity;
 import org.drools.task.PeopleAssignments;
+import org.drools.task.Status;
 import org.drools.task.SubTasksStrategy;
 import org.drools.task.SubTasksStrategyFactory;
 import org.drools.task.Task;
@@ -40,7 +40,6 @@ import org.drools.task.event.TaskSkippedEvent;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.MinaTaskClient;
 import org.drools.task.service.TaskClientHandler;
-import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.drools.task.service.responsehandlers.AbstractBaseResponseHandler;
@@ -51,7 +50,6 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 	private int port = 9123;
 	private MinaTaskClient client;
 	private KnowledgeRuntime session;
-	private Map<Long, Long> idMapping = new HashMap<Long, Long>();
 	
 	public CommandBasedWSHumanTaskHandler(KnowledgeRuntime session) {
 		this.session = session;
@@ -75,6 +73,13 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 					"Could not connect task client");
 			}
 		}
+		TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
+        client.registerForEvent(key, true, eventResponseHandler);
+        key = new TaskEventKey(TaskFailedEvent.class, -1);           
+        client.registerForEvent(key, true, eventResponseHandler);
+        key = new TaskEventKey(TaskSkippedEvent.class, -1);           
+        client.registerForEvent(key, true, eventResponseHandler);
 	}
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -178,9 +183,7 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 				e.printStackTrace();
 			}
 		}
-		TaskWorkItemAddTaskResponseHandler taskResponseHandler =
-			new TaskWorkItemAddTaskResponseHandler(this.client, workItem.getId());
-		client.addTask(task, content, taskResponseHandler);
+		client.addTask(task, content, null);
 	}
 	
 	public void dispose() {
@@ -190,62 +193,18 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 	}
 
 	public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-		Long taskId = idMapping.get(workItem.getId());
-		if (taskId != null) {
-			synchronized (idMapping) {
-				idMapping.remove(taskId);
-			}
-			client.skip(taskId, "Administrator", null);
-		}
+		GetTaskResponseHandler abortTaskResponseHandler = new AbortTaskResponseHandler();
+    	client.getTaskByWorkItemId(workItem.getId(), abortTaskResponseHandler);
 	}
-	
-    public class TaskWorkItemAddTaskResponseHandler extends AbstractBaseResponseHandler implements AddTaskResponseHandler {
-
-    	private long workItemId;
-        
-        public TaskWorkItemAddTaskResponseHandler(MinaTaskClient client, long workItemId) {
-            this.workItemId = workItemId;
-        }
-        
-        public void execute(long taskId) {
-            synchronized ( idMapping ) {
-                idMapping.put(workItemId, taskId);           
-            }
-//            System.out.println("Created task " + taskId + " for work item " + workItemId);
-            
-            EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
-            TaskCompletedHandler eventResponseHandler =
-            	new TaskCompletedHandler(workItemId, taskId); 
-            client.registerForEvent( key, true, eventResponseHandler );
-            key = new TaskEventKey(TaskFailedEvent.class, taskId );           
-            client.registerForEvent( key, true, eventResponseHandler );
-            key = new TaskEventKey(TaskSkippedEvent.class, taskId );           
-            client.registerForEvent( key, true, eventResponseHandler );
-        }
-    }
     
     private class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
-        private long workItemId;
-        private long taskId;
         
-        public TaskCompletedHandler(long workItemId, long taskId) {
-            this.workItemId = workItemId;
-            this.taskId = taskId;
-        }
-
         public void execute(Payload payload) {
             TaskEvent event = ( TaskEvent ) payload.get();
-        	if ( event.getTaskId() != taskId ) {
-                // defensive check that should never happen, just here for testing                
-                setError(new IllegalStateException("Expected task id and arrived task id do not march"));
-                return;
-            }
-        	if (event instanceof TaskCompletedEvent) {
-            	GetTaskResponseHandler getTaskResponseHandler = new GetCompletedTaskResponseHandler();
-            	client.getTask(taskId, getTaskResponseHandler);   
-        	} else {
-            	session.getWorkItemManager().abortWorkItem(workItemId);
-        	}
+        	long taskId = event.getTaskId();
+        	GetTaskResponseHandler getTaskResponseHandler =
+        		new GetCompletedTaskResponseHandler();
+        	client.getTask(taskId, getTaskResponseHandler);   
         }
     }
     
@@ -253,16 +212,22 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
 		public void execute(Task task) {
 			long workItemId = task.getTaskData().getWorkItemId();
-			String userId = task.getTaskData().getActualOwner().getId();
-			Map<String, Object> results = new HashMap<String, Object>();
-			results.put("ActorId", userId);
-			long contentId = task.getTaskData().getOutputContentId();
-			if (contentId != -1) {
-				GetContentResponseHandler getContentResponseHandler =
-					new GetResultContentResponseHandler(task, results);
-				client.getContent(contentId, getContentResponseHandler);
+			if (task.getTaskData().getStatus() == Status.Completed) {
+				System.out.println("Notification of completed task " + workItemId);
+				String userId = task.getTaskData().getActualOwner().getId();
+				Map<String, Object> results = new HashMap<String, Object>();
+				results.put("ActorId", userId);
+				long contentId = task.getTaskData().getOutputContentId();
+				if (contentId != -1) {
+					GetContentResponseHandler getContentResponseHandler =
+						new GetResultContentResponseHandler(task, results);
+					client.getContent(contentId, getContentResponseHandler);
+				} else {
+					session.getWorkItemManager().completeWorkItem(workItemId, results);
+				}
 			} else {
-				session.getWorkItemManager().completeWorkItem(workItemId, results);
+				System.out.println("Notification of completed task " + workItemId);
+				session.getWorkItemManager().abortWorkItem(workItemId);
 			}
 		}
     }
@@ -302,4 +267,14 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 			}
 		}
     }
+
+    private class AbortTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
+
+		public void execute(Task task) {
+			if (task != null) {
+				client.skip(task.getId(), "Administrator", null);
+			}
+		}
+    }
+    
 }
