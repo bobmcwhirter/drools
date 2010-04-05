@@ -350,11 +350,15 @@ public class XmlBPMNProcessDumper {
         	Split split = (Split) connection.getFrom();
         	if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
         		Constraint constraint = split.getConstraint(connection);
-        		xmlDump.append(">" + EOL +
-    				"      <conditionExpression xs:type=\"tFormalExpression\" ");
         		if (constraint == null) {
-        		    xmlDump.append("/>");
+            		xmlDump.append(">" + EOL +
+    					"      <conditionExpression xs:type=\"tFormalExpression\" />");
         		} else {
+                    if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
+            			xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
+            		}
+            		xmlDump.append(">" + EOL +
+    				"      <conditionExpression xs:type=\"tFormalExpression\" ");
                     if ("code".equals(constraint.getType())) {
                         if (JavaDialect.ID.equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + JAVA_LANGUAGE + "\" ");
@@ -364,9 +368,6 @@ public class XmlBPMNProcessDumper {
                     } else {
                         xmlDump.append("language=\"" + RULE_LANGUAGE + "\" ");
                     }
-                    if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
-            			xmlDump.append("tns:name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
-            		}
                     String constraintString = constraint.getConstraint();
                     if (constraintString == null) {
                         constraintString = "";

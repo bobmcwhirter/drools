@@ -32,6 +32,21 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	DynamicNode dynamicNode = (DynamicNode) node;
+    	String cancelRemainingInstances = element.getAttribute("cancelRemainingInstances");
+    	if ("false".equals(cancelRemainingInstances)) {
+    		dynamicNode.setCancelRemainingInstances(false);
+    	}
+    	org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+        	String nodeName = xmlNode.getNodeName();
+        	if ("completionCondition".equals(nodeName)) {
+        		String expression = xmlNode.getTextContent();
+        		if ("getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0".equals(expression)) {
+        			dynamicNode.setAutoComplete(true);
+        		}
+        	}
+        	xmlNode = xmlNode.getNextSibling();
+        }
     	List<SequenceFlow> connections = (List<SequenceFlow>)
 			dynamicNode.getMetaData(ProcessHandler.CONNECTIONS);
     	ProcessHandler.linkConnections(dynamicNode, connections);
@@ -41,6 +56,9 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
         DynamicNode dynamicNode = (DynamicNode) node;
 		writeNode("adHocSubProcess", dynamicNode, xmlDump, includeMeta);
+		if (!dynamicNode.isCancelRemainingInstances()) {
+			xmlDump.append(" cancelRemainingInstances=\"false\"");
+		}
 		xmlDump.append(" ordering=\"parallel\" >" + EOL);
 		// nodes
 		List<Node> subNodes = getSubNodes(dynamicNode);
@@ -53,6 +71,9 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     	xmlDump.append("    <!-- connections -->" + EOL);
         for (Connection connection: connections) {
         	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, includeMeta);
+        }
+        if (dynamicNode.isAutoComplete()) {
+        	xmlDump.append("    <completionCondition xs:type=\"tFormalExpression\">getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0</completionCondition>" + EOL);
         }
 		endNode("adHocSubProcess", xmlDump);
 	}

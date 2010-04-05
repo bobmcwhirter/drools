@@ -1,0 +1,9 @@
+package org.drools.bpmn2
+
+import org.drools.runtime.process.ProcessContext
+
+rule "Auto-activate Hello1" ruleflow-group "Hello"
+  when
+  then
+    drools.getContext(ProcessContext.class).getProcessInstance().signalEvent("Hello1", null);
+end

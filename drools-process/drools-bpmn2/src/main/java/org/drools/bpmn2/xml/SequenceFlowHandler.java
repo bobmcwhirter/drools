@@ -48,6 +48,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 		final String sourceRef = attrs.getValue("sourceRef");
 		final String targetRef = attrs.getValue("targetRef");
 		final String bendpoints = attrs.getValue("g:bendpoints");
+		final String name = attrs.getValue("name");
 
 		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 		
@@ -69,6 +70,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 		}
 		SequenceFlow connection = new SequenceFlow(id, sourceRef, targetRef);
 		connection.setBendpoints(bendpoints);
+		connection.setName(name);
 		
 		connections.add(connection);
 
@@ -97,11 +99,6 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
                     } else {
         			    throw new IllegalArgumentException("Unknown language " + language);
         			}
-        		}
-        		org.w3c.dom.Node nameNode = xmlNode.getAttributes().getNamedItem("name");
-        		if (nameNode != null) {
-        			String name = nameNode.getNodeValue();
-        			sequenceFlow.setName(name);
         		}
         		sequenceFlow.setExpression(expression);
         	}

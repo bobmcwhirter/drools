@@ -67,7 +67,12 @@
         <targetRef>_2_PriorityInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <assignment>
+        <assignment>org.w3c.dom.Node nameNode = xmlNode.getAttributes().getNamedItem("name");
+        		if (nameNode != null) {
+        			String name = nameNode.getNodeValue();
+        			sequenceFlow.setName(name);
+        		}
+        		
           <from xs:type="tFormalExpression"></from>
           <to xs:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
@@ -126,7 +131,12 @@
         </assignment>
         <sourceRef>_4_TaskName</sourceRef>
         <targetRef>_4_TaskNameInput</targetRef>
-      </dataInputAssociation>
+      </dataInputAssociation>org.w3c.dom.Node nameNode = xmlNode.getAttributes().getNamedItem("name");
+        		if (nameNode != null) {
+        			String name = nameNode.getNodeValue();
+        			sequenceFlow.setName(name);
+        		}
+        		
       <dataInputAssociation>
         <assignment>
           <from xs:type="tFormalExpression">1</from>

@@ -15,7 +15,8 @@ import org.xml.sax.SAXException;
 public class BPMN2XMLTest extends XMLTestCase {
 	
 	private static final String[] processes = {
-		"BPMN2-SimpleXMLProcess.xml"
+		"BPMN2-SimpleXMLProcess.xml",
+//		"BPMN2-MinimalProcess.xml",
 	};
 	
 	public void setUp() throws Exception {

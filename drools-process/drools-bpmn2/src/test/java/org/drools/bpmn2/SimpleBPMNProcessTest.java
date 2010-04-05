@@ -254,19 +254,84 @@ public class SimpleBPMNProcessTest extends TestCase {
     }
 
     public void testAdHocSubProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcess.xml");
+		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+		((PackageBuilderConfiguration) conf).initSemanticModules();
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMN2SemanticModule());
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+        ((PackageBuilderConfiguration) conf).addDialect("XPath", new XPathDialectConfiguration());
+		XmlProcessReader processReader = new XmlProcessReader(
+	        ((PackageBuilderConfiguration) conf).getSemanticModules());
+		RuleFlowProcess p = (RuleFlowProcess)
+		    processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcess.xml"));
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		kbuilder.add(ResourceFactory.newReaderResource(
+            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.DRF);
+		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-AdHocSubProcess.drl"), ResourceType.DRL);
+		if (!kbuilder.getErrors().isEmpty()) {
+			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
+				System.err.println(error);
+			}
+			throw new IllegalArgumentException("Errors while parsing knowledge base");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         WorkItem workItem = workItemHandler.getWorkItem();
+        assertNull(workItem);
+        ksession.fireAllRules();
+        System.out.println("Signaling Hello2");
+        processInstance.signalEvent("Hello2", null);
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+//        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
+    public void testAdHocSubProcessAutoComplete() throws Exception {
+		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+		((PackageBuilderConfiguration) conf).initSemanticModules();
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMN2SemanticModule());
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+        ((PackageBuilderConfiguration) conf).addDialect("XPath", new XPathDialectConfiguration());
+		XmlProcessReader processReader = new XmlProcessReader(
+	        ((PackageBuilderConfiguration) conf).getSemanticModules());
+		RuleFlowProcess p = (RuleFlowProcess)
+		    processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.xml"));
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		kbuilder.add(ResourceFactory.newReaderResource(
+            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.DRF);
+		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-AdHocSubProcess.drl"), ResourceType.DRL);
+		if (!kbuilder.getErrors().isEmpty()) {
+			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
+				System.err.println(error);
+			}
+			throw new IllegalArgumentException("Errors while parsing knowledge base");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNull(workItem);
+        ksession.fireAllRules();
+        workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
-
-	public void testIntermediateCatchEventSignal() throws Exception {
+    
+    public void testIntermediateCatchEventSignal() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.xml");
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());

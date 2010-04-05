@@ -1,0 +1,8 @@
+package org.drools.bpmn2;
+
+rule "Start Hello1" ruleflow-group "Hello"
+  when
+    Person( age > 20 )
+  then
+    ksession.getKnowledgeSession().signalEvent("Hello1", null);
+end

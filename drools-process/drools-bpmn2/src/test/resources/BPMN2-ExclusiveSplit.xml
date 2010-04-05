@@ -86,10 +86,10 @@
 
     <!-- connections -->
     <sequenceFlow sourceRef="_1" targetRef="_2" />
-    <sequenceFlow sourceRef="_2" targetRef="_3" g:bendpoints="[120,40]" >
+    <sequenceFlow sourceRef="_2" targetRef="_3" name="First" g:bendpoints="[120,40]" >
       <conditionExpression>return x == "First";</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow sourceRef="_2" targetRef="_4" g:bendpoints="[120,120]" >
+    <sequenceFlow sourceRef="_2" targetRef="_4" name="Second" g:bendpoints="[120,120]" >
       <conditionExpression>return x == "Second";</conditionExpression>
     </sequenceFlow>
     <sequenceFlow sourceRef="_3" targetRef="_5" g:bendpoints="[313,40]" />
