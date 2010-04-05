@@ -76,8 +76,10 @@ public class DroolsFlowCommandDelegate {
 				}
 			}
 			new WorkingMemoryDbLogger(ksession);
+			CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
 			ksession.getWorkItemManager().registerWorkItemHandler(
-				"Human Task", new CommandBasedWSHumanTaskHandler(ksession));
+				"Human Task", handler);
+			handler.connect();
 			System.out.println("Successfully loaded default package from Guvnor");
 			return ksession;
 		} catch (Throwable t) {
