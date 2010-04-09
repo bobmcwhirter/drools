@@ -39,18 +39,8 @@ public class MessagingTaskEventListener implements TaskEventListener {
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = keys.getTargets( key );
         if ( targets == null ){
-        	key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        	targets = keys.getTargets( key );
-        	if (targets == null) {
-        		return;
-        	}
-        } else {
-        	key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        	List<EventTriggerTransport> additionalTargets = keys.getTargets( key );
-        	if (additionalTargets != null) {
-        		targets.addAll(additionalTargets);
-        	}
-        }
+            return;
+        }        
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
             EventTriggerTransport target = it.next();
@@ -68,17 +58,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         EventKey key = new TaskEventKey(TaskFailedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = keys.getTargets( key );
         if ( targets == null ){
-        	key = new TaskEventKey(TaskFailedEvent.class, -1);
-        	targets = keys.getTargets( key );
-        	if (targets == null) {
-        		return;
-        	}
-        } else {
-        	key = new TaskEventKey(TaskFailedEvent.class, -1);
-        	List<EventTriggerTransport> additionalTargets = keys.getTargets( key );
-        	if (additionalTargets != null) {
-        		targets.addAll(additionalTargets);
-        	}
+            return;
         }
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {
@@ -97,17 +77,7 @@ public class MessagingTaskEventListener implements TaskEventListener {
         EventKey key = new TaskEventKey(TaskSkippedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = keys.getTargets( key );
         if ( targets == null ){
-        	key = new TaskEventKey(TaskSkippedEvent.class, -1);
-        	targets = keys.getTargets( key );
-        	if (targets == null) {
-        		return;
-        	}
-        } else {
-        	key = new TaskEventKey(TaskSkippedEvent.class, -1);
-        	List<EventTriggerTransport> additionalTargets = keys.getTargets( key );
-        	if (additionalTargets != null) {
-        		targets.addAll(additionalTargets);
-        	}
+            return;
         }
         Payload payload = new EventPayload( event );
         for ( Iterator<EventTriggerTransport> it = targets.iterator(); it.hasNext(); ) {

@@ -165,18 +165,6 @@ public class TaskClientHandler extends BaseMinaHandler {
                 }
                 break;
             }
-            case QueryTaskByWorkItemIdResponse: {
-                GetTaskResponseHandler responseHandler = (GetTaskResponseHandler) responseHandlers.remove(cmd.getId());
-                if (responseHandler != null) {
-                    if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
-                        responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
-                    } else {
-                        Task result = (Task) cmd.getArguments().get(0);
-                        responseHandler.execute(result);
-                    }
-                }
-                break;
-            }
             case EventTriggerResponse: {
                 EventResponseHandler responseHandler = (EventResponseHandler) responseHandlers.remove(cmd.getId());
                 if (responseHandler != null) {

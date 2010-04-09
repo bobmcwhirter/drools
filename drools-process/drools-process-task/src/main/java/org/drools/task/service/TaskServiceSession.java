@@ -490,13 +490,6 @@ public class TaskServiceSession {
         return (List<DeadlineSummary>) em.createNamedQuery("UnescalatedDeadlines").getResultList();
     }
 
-    public Task getTaskByWorkItemId(final long workItemId) {
-        final Query task = em.createNamedQuery("TaskByWorkItemId");
-        task.setParameter("workItemId", workItemId);
-
-        return (Task) task.getSingleResult();
-    }
-
     public List<TaskSummary> getTasksOwned(final String userId, final String language) {
         final Query tasksOwned = em.createNamedQuery("TasksOwned");
         tasksOwned.setParameter("userId", userId);
