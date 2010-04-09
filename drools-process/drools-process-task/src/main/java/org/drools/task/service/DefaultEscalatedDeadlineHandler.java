@@ -64,7 +64,7 @@ public class DefaultEscalatedDeadlineHandler
     public DefaultEscalatedDeadlineHandler() {
         handler = new EmailWorkItemHandler();
         
-        ChainedProperties conf = new ChainedProperties("drools.email.conf",  ClassLoaderUtil.getClassLoader( null, getClass() ) );
+        ChainedProperties conf = new ChainedProperties("drools.email.conf",  ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
         String host = conf.getProperty( "host", null );
         String port = conf.getProperty( "port", "25" );
         

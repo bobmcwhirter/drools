@@ -71,7 +71,7 @@ public class SendIcal {
     }
 
     SendIcal() {
-        ChainedProperties conf = new ChainedProperties( "drools.email.conf",ClassLoaderUtil.getClassLoader( null, getClass() ) );
+        ChainedProperties conf = new ChainedProperties( "drools.email.conf",ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
         String host = conf.getProperty( "mail.smtp.host",
                                         "localhost" );
         String port = conf.getProperty( "mail.smtp.port",
