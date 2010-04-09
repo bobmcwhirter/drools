@@ -25,7 +25,7 @@ public class EmailWorkItemHandlerTest extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
-        ChainedProperties props = new ChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass()) );
+        ChainedProperties props = new ChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass(), false ));
         emailHost = props.getProperty( "host", "localhost" );
         emailPort = props.getProperty( "port", "2345" );
         
