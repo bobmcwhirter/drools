@@ -32,6 +32,9 @@ java.util.LinkedList, true
 java.util.Stack, true
 java.util.Vector, true
 org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection, true
+[Lorg.drools.factconstraints.client.ConstraintConfiguration;, true
+org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl, true
+[Lorg.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;, true
 org.drools.guvnor.client.factmodel.FactMetaModel, true
 [Lorg.drools.guvnor.client.factmodel.FactMetaModel;, true
 org.drools.guvnor.client.factmodel.FactModels, true
@@ -43,6 +46,7 @@ org.drools.guvnor.client.modeldriven.MethodInfo, true
 org.drools.guvnor.client.modeldriven.ModelField, true
 org.drools.guvnor.client.modeldriven.ModelField$FIELD_CLASS_TYPE, true
 [Lorg.drools.guvnor.client.modeldriven.ModelField;, true
+org.drools.guvnor.client.modeldriven.SetFactTypeFilter, true
 org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine, true
 org.drools.guvnor.client.modeldriven.brl.ActionCallMethod, true
 [Lorg.drools.guvnor.client.modeldriven.brl.ActionCallMethod;, true
@@ -127,6 +131,7 @@ org.drools.guvnor.client.modeldriven.dt.DTColumnConfig, true
 org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable, true
 org.drools.guvnor.client.modeldriven.dt.MetadataCol, true
 [Lorg.drools.guvnor.client.modeldriven.dt.MetadataCol;, true
+org.drools.guvnor.client.modeldriven.dt.TemplateModel, true
 org.drools.guvnor.client.modeldriven.testing.ActivateRuleFlowGroup, true
 [Lorg.drools.guvnor.client.modeldriven.testing.ActivateRuleFlowGroup;, true
 org.drools.guvnor.client.modeldriven.testing.ExecutionTrace, true
@@ -191,6 +196,8 @@ org.drools.guvnor.client.rpc.TableDataRow, true
 [Lorg.drools.guvnor.client.rpc.TableDataRow;, true
 org.drools.guvnor.client.rpc.UserSecurityContext, true
 org.drools.guvnor.client.rpc.ValidatedResponse, true
+org.drools.guvnor.client.rpc.WorkingSetConfigData, true
+[Lorg.drools.guvnor.client.rpc.WorkingSetConfigData;, true
 org.drools.guvnor.client.ruleeditor.PropertiesHolder, true
 org.drools.guvnor.client.ruleeditor.PropertyHolder, true
 [Lorg.drools.guvnor.client.ruleeditor.PropertyHolder;, true
