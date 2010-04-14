@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-integration</artifactId>
-      <version>2.0.1</version>
+      <version>2.0.2-SNAPSHOT</version>
     </dependency>
     
     <!-- Fix for JDK5 bug that needs this dependency --> 	

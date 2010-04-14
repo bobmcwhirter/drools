@@ -134,4 +134,10 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 		return GraphViewerPluginImpl.class.getResource("/" + id + ".png");
 	}
 
+	public List<ActiveNodeInfo> getNodeInfoForActivities(
+			String processDefinitionId, List<String> activities) {
+		// TODO Auto-generated method stub
+		return new ArrayList<ActiveNodeInfo>();
+	}
+
 }
