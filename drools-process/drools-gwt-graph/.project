@@ -2,9 +2,7 @@
   <name>drools-gwt-graph</name>
   <comment>A rule production system</comment>
   <projects>
-    <project>drools-api</project>
     <project>drools-bam</project>
-    <project>drools-core</project>
   </projects>
   <buildSpec>
     <buildCommand>
