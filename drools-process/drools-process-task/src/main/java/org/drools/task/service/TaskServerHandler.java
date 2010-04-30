@@ -180,6 +180,17 @@ public class TaskServerHandler extends IoHandlerAdapter {
                     session.write(resultsCmnd);
                     break;
                 }
+                case QueryTaskByWorkItemId: {
+                    response = CommandName.QueryTaskByWorkItemIdResponse;
+                    Task result = taskSession.getTaskByWorkItemId((Long) cmd.getArguments().get(0));
+                    List args = new ArrayList(1);
+                    args.add(result);
+                    Command resultsCmnd = new Command(cmd.getId(),
+                            CommandName.QueryTaskByWorkItemIdResponse,
+                            args);
+                    session.write(resultsCmnd);
+                    break;
+                }
                 case QueryTasksOwned: {
                     response = CommandName.QueryTaskSummaryResponse;
                     List<TaskSummary> results = taskSession.getTasksOwned((String) cmd.getArguments().get(0),

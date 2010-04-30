@@ -31,8 +31,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
 	private MinaTaskClient client;
-	private Map<Long, WorkItemManager> managers = new HashMap<Long, WorkItemManager>();
-	private Map<Long, Long> idMapping = new HashMap<Long, Long>();
+	private WorkItemManager manager = null;
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
@@ -51,10 +50,30 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				throw new IllegalArgumentException(
 					"Could not connect task client");
 			}
+			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+            TaskCompletedHandler eventResponseHandler =
+            	new TaskCompletedHandler(manager, client);
+            client.registerForEvent(key, true, eventResponseHandler);
+            key = new TaskEventKey(TaskFailedEvent.class, -1);           
+            client.registerForEvent(key, true, eventResponseHandler);
+            key = new TaskEventKey(TaskSkippedEvent.class, -1);           
+            client.registerForEvent(key, true, eventResponseHandler);
 		}
+	}
+	
+	public void setManager(WorkItemManager manager) {
+		this.manager = manager;
 	}
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+		if (this.manager == null) {
+			this.manager = manager;
+		} else {
+			if (this.manager != manager) {
+				throw new IllegalArgumentException(
+					"This WSHumanTaskHandler can only be used for one WorkItemManager");
+			}
+		}
 		connect();
 		Task task = new Task();
 		String taskName = (String) workItem.getParameter("TaskName");
@@ -155,10 +174,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				e.printStackTrace();
 			}
 		}
-		TaskWorkItemAddTaskResponseHandler taskResponseHandler =
-			new TaskWorkItemAddTaskResponseHandler(this.client, this.managers,
-				this.idMapping, manager, workItem.getId());
-		client.addTask(task, content, taskResponseHandler);
+		client.addTask(task, content, null);
 	}
 	
 	public void dispose() {
@@ -168,93 +184,26 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	}
 
 	public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-		Long taskId = idMapping.get(workItem.getId());
-		if (taskId != null) {
-			synchronized (idMapping) {
-				idMapping.remove(taskId);
-			}
-			synchronized (managers) {
-				managers.remove(taskId);
-			}
-			client.skip(taskId, "Administrator", null);
-		}
+		GetTaskResponseHandler abortTaskResponseHandler =
+    		new AbortTaskResponseHandler(client);
+    	client.getTaskByWorkItemId(workItem.getId(), abortTaskResponseHandler);
 	}
-	
-    public static class TaskWorkItemAddTaskResponseHandler extends AbstractBaseResponseHandler implements AddTaskResponseHandler {
-        private Map<Long, WorkItemManager> managers;
-        private Map<Long, Long> idMapping;
-        private WorkItemManager manager;
-        private long workItemId;
-        private MinaTaskClient client;
-        
-        public TaskWorkItemAddTaskResponseHandler(MinaTaskClient client,
-        		Map<Long, WorkItemManager> managers,  Map<Long, Long> idMapping,
-        		WorkItemManager manager, long workItemId) {
-            this.client = client;
-            this.managers = managers;
-            this.idMapping = idMapping;
-            this.manager = manager;
-            this.workItemId = workItemId;
-        }
-        
-        public void execute(long taskId) {
-        	synchronized ( managers ) {
-                managers.put(taskId, this.manager);           
-            }
-            synchronized ( idMapping ) {
-                idMapping.put(workItemId, taskId);           
-            }
-//            System.out.println("Created task " + taskId + " for work item " + workItemId);
-            
-            EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
-            TaskCompletedHandler eventResponseHandler =
-            	new TaskCompletedHandler(workItemId, taskId, managers, client); 
-            client.registerForEvent( key, true, eventResponseHandler );
-            key = new TaskEventKey(TaskFailedEvent.class, taskId );           
-            client.registerForEvent( key, true, eventResponseHandler );
-            key = new TaskEventKey(TaskSkippedEvent.class, taskId );           
-            client.registerForEvent( key, true, eventResponseHandler );
-        }
-    }
     
     private static class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
-        private long workItemId;
-        private long taskId;
-        private Map<Long, WorkItemManager> managers;
+        private WorkItemManager manager;
         private MinaTaskClient client;
         
-        public TaskCompletedHandler(long workItemId, long taskId, Map<Long, WorkItemManager> managers,
-        		MinaTaskClient client) {
-            this.workItemId = workItemId;
-            this.taskId = taskId;
-            this.managers = managers;
+        public TaskCompletedHandler(WorkItemManager manager, MinaTaskClient client) {
+            this.manager = manager;
             this.client = client;
         }
 
         public void execute(Payload payload) {
             TaskEvent event = ( TaskEvent ) payload.get();
-        	if ( event.getTaskId() != taskId ) {
-                // defensive check that should never happen, just here for testing                
-                setError(new IllegalStateException("Expected task id and arrived task id do not march"));
-                return;
-            }
-        	if (event instanceof TaskCompletedEvent) {
-		        synchronized ( this.managers ) {
-		            WorkItemManager manager = this.managers.get(taskId);
-		            if (manager != null) {
-		            	GetTaskResponseHandler getTaskResponseHandler =
-		            		new GetCompletedTaskResponseHandler(manager, client);
-		            	client.getTask(taskId, getTaskResponseHandler);   
-		            }
-		        }
-        	} else {
-        		synchronized ( this.managers ) {
-        			WorkItemManager manager = this.managers.get(taskId);
-		            if (manager != null) {
-		            	manager.abortWorkItem(workItemId);
-		            }
-		        }
-        	}
+        	long taskId = event.getTaskId();
+        	GetTaskResponseHandler getTaskResponseHandler =
+        		new GetCompletedTaskResponseHandler(manager, client);
+        	client.getTask(taskId, getTaskResponseHandler);   
         }
     }
     
@@ -270,16 +219,20 @@ public class WSHumanTaskHandler implements WorkItemHandler {
     	
 		public void execute(Task task) {
 			long workItemId = task.getTaskData().getWorkItemId();
-			String userId = task.getTaskData().getActualOwner().getId();
-			Map<String, Object> results = new HashMap<String, Object>();
-			results.put("ActorId", userId);
-			long contentId = task.getTaskData().getOutputContentId();
-			if (contentId != -1) {
-				GetContentResponseHandler getContentResponseHandler =
-					new GetResultContentResponseHandler(manager, task, results);
-				client.getContent(contentId, getContentResponseHandler);
+			if (task.getTaskData().getStatus() == Status.Completed) {
+				String userId = task.getTaskData().getActualOwner().getId();
+				Map<String, Object> results = new HashMap<String, Object>();
+				results.put("ActorId", userId);
+				long contentId = task.getTaskData().getOutputContentId();
+				if (contentId != -1) {
+					GetContentResponseHandler getContentResponseHandler =
+						new GetResultContentResponseHandler(manager, task, results);
+					client.getContent(contentId, getContentResponseHandler);
+				} else {
+					manager.completeWorkItem(workItemId, results);
+				}
 			} else {
-				manager.completeWorkItem(workItemId, results);
+				manager.abortWorkItem(workItemId);
 			}
 		}
     }
@@ -320,4 +273,20 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 			}
 		}
     }
+    
+    private static class AbortTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
+
+    	private MinaTaskClient client;
+    	
+    	public AbortTaskResponseHandler(MinaTaskClient client) {
+    		this.client = client;
+    	}
+    	
+		public void execute(Task task) {
+			if (task != null) {
+				client.skip(task.getId(), "Administrator", null);
+			}
+		}
+    }
+    
 }

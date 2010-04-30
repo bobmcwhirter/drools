@@ -367,6 +367,18 @@ public class MinaTaskClient extends BaseMinaClient {
         session.write( cmd );
     }
 
+    public void getTaskByWorkItemId(long workItemId,
+			                        GetTaskResponseHandler responseHandler) {
+		List<Object> args = new ArrayList<Object>(1);
+		args.add(workItemId);
+		Command cmd = new Command( counter.getAndIncrement(),
+				                   CommandName.QueryTaskByWorkItemId,
+				                   args);
+		handler.addResponseHandler( cmd.getId(),
+				                    responseHandler);
+		session.write(cmd);
+	}
+
     public void getTasksAssignedAsBusinessAdministrator(String userId,
                                                         String language,
                                                         TaskSummaryResponseHandler responseHandler) {

@@ -10,7 +10,7 @@ import org.drools.eventmessaging.EventKey;
 
 public class TaskEventKey implements EventKey, Externalizable {
     private Class<? extends TaskEvent> event;
-    private long taskId;
+    private long taskId = -1;
     
     public TaskEventKey() {
         
