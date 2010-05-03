@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.*;
 
-public class BRLPersitenceTest extends TestCase {
+public class BRLPersistenceTest extends TestCase {
 
     public void testGenerateEmptyXML() {
         final BRLPersistence p = BRXMLPersistence.getInstance();
@@ -199,7 +199,7 @@ public class BRLPersitenceTest extends TestCase {
 
     /**
      * This will verify that we can load an old BRL change. If this fails,
-     * then backwards compatability is broken.
+     * then backwards compatibility is broken.
      */
     public void testBackwardsCompat() throws Exception {
         RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
@@ -211,7 +211,7 @@ public class BRLPersitenceTest extends TestCase {
     public static String loadResource(final String name) throws Exception {
 
         //        System.err.println( getClass().getResource( name ) );
-        final InputStream in = BRLPersitenceTest.class.getResourceAsStream( name );
+        final InputStream in = BRLPersistenceTest.class.getResourceAsStream( name );
 
 
         final Reader reader = new InputStreamReader( in );

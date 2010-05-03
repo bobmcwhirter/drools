@@ -64,7 +64,7 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 	}
 
 	public void testBackwardsCompatability() throws Exception {
-		String xml = BRLPersitenceTest.loadResource("ExistingDecisionTable.xml");
+		String xml = BRLPersistenceTest.loadResource("ExistingDecisionTable.xml");
 		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
 		assertNotNull(dt_);
 		assertEquals(42, dt_.descriptionWidth);
