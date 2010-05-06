@@ -72,14 +72,14 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 				throw new IllegalArgumentException(
 					"Could not connect task client");
 			}
+			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+	        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
+	        client.registerForEvent(key, true, eventResponseHandler);
+	        key = new TaskEventKey(TaskFailedEvent.class, -1);           
+	        client.registerForEvent(key, true, eventResponseHandler);
+	        key = new TaskEventKey(TaskSkippedEvent.class, -1);           
+	        client.registerForEvent(key, true, eventResponseHandler);
 		}
-		TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
-        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
-        client.registerForEvent(key, true, eventResponseHandler);
-        key = new TaskEventKey(TaskFailedEvent.class, -1);           
-        client.registerForEvent(key, true, eventResponseHandler);
-        key = new TaskEventKey(TaskSkippedEvent.class, -1);           
-        client.registerForEvent(key, true, eventResponseHandler);
 	}
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
