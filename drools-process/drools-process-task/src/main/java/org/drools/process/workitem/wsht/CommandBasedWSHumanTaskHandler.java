@@ -74,11 +74,11 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 			}
 			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
 	        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
-	        client.registerForEvent(key, true, eventResponseHandler);
+	        client.registerForEvent(key, false, eventResponseHandler);
 	        key = new TaskEventKey(TaskFailedEvent.class, -1);           
-	        client.registerForEvent(key, true, eventResponseHandler);
+	        client.registerForEvent(key, false, eventResponseHandler);
 	        key = new TaskEventKey(TaskSkippedEvent.class, -1);           
-	        client.registerForEvent(key, true, eventResponseHandler);
+	        client.registerForEvent(key, false, eventResponseHandler);
 		}
 	}
 
@@ -205,6 +205,10 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
         	GetTaskResponseHandler getTaskResponseHandler =
         		new GetCompletedTaskResponseHandler();
         	client.getTask(taskId, getTaskResponseHandler);   
+        }
+        
+        public boolean isRemove() {
+        	return false;
         }
     }
     

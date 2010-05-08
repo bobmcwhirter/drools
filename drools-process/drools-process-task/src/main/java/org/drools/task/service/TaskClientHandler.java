@@ -178,8 +178,11 @@ public class TaskClientHandler extends BaseMinaHandler {
                 break;
             }
             case EventTriggerResponse: {
-                EventResponseHandler responseHandler = (EventResponseHandler) responseHandlers.remove(cmd.getId());
+                EventResponseHandler responseHandler = (EventResponseHandler) responseHandlers.get(cmd.getId());
                 if (responseHandler != null) {
+                	if (responseHandler.isRemove()) {
+                		responseHandlers.remove(cmd.getId());
+                	}
                     if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
                         responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
                     } else {

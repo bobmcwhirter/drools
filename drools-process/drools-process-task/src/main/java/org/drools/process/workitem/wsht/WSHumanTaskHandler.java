@@ -53,11 +53,11 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
             TaskCompletedHandler eventResponseHandler =
             	new TaskCompletedHandler(manager, client);
-            client.registerForEvent(key, true, eventResponseHandler);
+            client.registerForEvent(key, false, eventResponseHandler);
             key = new TaskEventKey(TaskFailedEvent.class, -1);           
-            client.registerForEvent(key, true, eventResponseHandler);
+            client.registerForEvent(key, false, eventResponseHandler);
             key = new TaskEventKey(TaskSkippedEvent.class, -1);           
-            client.registerForEvent(key, true, eventResponseHandler);
+            client.registerForEvent(key, false, eventResponseHandler);
             System.out.println("Registered human task listener");
 		}
 	}
@@ -206,6 +206,10 @@ public class WSHumanTaskHandler implements WorkItemHandler {
         	GetTaskResponseHandler getTaskResponseHandler =
         		new GetCompletedTaskResponseHandler(manager, client);
         	client.getTask(taskId, getTaskResponseHandler);   
+        }
+        
+        public boolean isRemove() {
+        	return false;
         }
     }
     

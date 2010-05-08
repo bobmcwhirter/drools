@@ -27,4 +27,8 @@ public class BlockingEventResponseHandler extends AbstractBlockingResponseHandle
 
         return payload;
     }
+    
+    public boolean isRemove() {
+    	return true;
+    }
 }
