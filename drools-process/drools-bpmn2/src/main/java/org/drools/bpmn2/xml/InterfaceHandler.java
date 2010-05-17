@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drools.bpmn2.core.Definitions;
+import org.drools.bpmn2.core.Escalation;
 import org.drools.bpmn2.core.Interface;
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Message;
@@ -28,7 +29,9 @@ public class InterfaceHandler extends BaseAbstractHandler implements Handler {
             this.validPeers.add(ItemDefinition.class);
             this.validPeers.add(Message.class);
             this.validPeers.add(Interface.class);
-
+            this.validPeers.add(Escalation.class);
+            this.validPeers.add(Error.class);
+            
 			this.allowNesting = false;
 		}
 	}

@@ -20,11 +20,13 @@ import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventTrigger;
+import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
@@ -71,9 +73,9 @@ public class XmlBPMNProcessDumper {
             "             targetNamespace=\"" + targetNamespace + "\"" + EOL +
             "             typeLanguage=\"http://www.java.com/javaTypes\"" + EOL +
             "             expressionLanguage=\"http://www.mvel.org/2.0\"" + EOL +
-            "             xmlns=\"http://schema.omg.org/spec/BPMN/2.0\"" + EOL +
+            "             xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"" + EOL +
             "             xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"" + EOL +
-            "             xs:schemaLocation=\"http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd\"" + EOL +
+            "             xs:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\"" + EOL +
             "             xmlns:g=\"http://www.jboss.org/drools/flow/gpd\"" + EOL +
             "             xmlns:tns=\"http://www.jboss.org/drools\">" + EOL + EOL);
 
@@ -83,13 +85,13 @@ public class XmlBPMNProcessDumper {
     	visitVariableScope(variableScope, "_", xmlDump);
     	visitSubVariableScopes(process.getNodes(), xmlDump);
         
-	    xmlDump.append(
-    		"  <resource id=\"Actor\" name=\"Human Actor\" />" + EOL + EOL);
-
-	    visitInterfaces(process, xmlDump);
+	    visitInterfaces(process.getNodes(), xmlDump);
+	    
+	    visitEscalations(process.getNodes(), xmlDump, new ArrayList<String>());
+	    visitErrors(process.getNodes(), xmlDump, new ArrayList<String>());
 	       
 	    // the process itself
-		xmlDump.append("  <process processType=\"executable\" ");
+		xmlDump.append("  <process processType=\"Private\" isExecutable=\"true\" ");
         if (process.getId() != null) {
             xmlDump.append("id=\"" + XmlDumper.replaceIllegalChars(process.getId()) + "\" ");
         }
@@ -213,8 +215,8 @@ public class XmlBPMNProcessDumper {
     	}
     }
     
-    protected void visitInterfaces(WorkflowProcess process, StringBuilder xmlDump) {
-        for (Node node: process.getNodes()) {
+    protected void visitInterfaces(Node[] nodes, StringBuilder xmlDump) {
+        for (Node node: nodes) {
             if (node instanceof WorkItemNode) {
                 Work work = ((WorkItemNode) node).getWork();
                 if (work != null) {
@@ -233,7 +235,7 @@ public class XmlBPMNProcessDumper {
                         }
                         xmlDump.append(
                             "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_InMessageType\" structureRef=\"" + parameterType + "\"/>" + EOL +
-                            "  <message id=\"" + getUniqueNodeId(node) + "_InMessage\" structureRef=\"" + getUniqueNodeId(node) + "_InMessageType\" />" + EOL +
+                            "  <message id=\"" + getUniqueNodeId(node) + "_InMessage\" itemRef=\"" + getUniqueNodeId(node) + "_InMessageType\" />" + EOL +
                             "  <interface id=\"" + getUniqueNodeId(node) + "_ServiceInterface\" name=\"" + interfaceName + "\">" + EOL +
                             "    <operation id=\"" + getUniqueNodeId(node) + "_ServiceOperation\" name=\"" + operationName + "\">" + EOL + 
                             "      <inMessageRef>" + getUniqueNodeId(node) + "_InMessage</inMessageRef>" + EOL +
@@ -246,15 +248,16 @@ public class XmlBPMNProcessDumper {
                         }
                         xmlDump.append(
                             "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                            "  <message id=\"" + getUniqueNodeId(node) + "_Message\" structureRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                            "  <message id=\"" + getUniqueNodeId(node) + "_Message\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                     } else if ("Receive Task".equals(work.getName())) {
+                    	String messageId = (String) work.getParameter("MessageId");
                         String messageType = (String) work.getParameter("MessageType");
                         if (messageType == null) {
                             messageType = "";
                         }
                         xmlDump.append(
                             "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                            "  <message id=\"" + getUniqueNodeId(node) + "_Message\" structureRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                            "  <message id=\"" + messageId + "\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                     }
                 }
             } else if (node instanceof EndNode) {
@@ -262,22 +265,26 @@ public class XmlBPMNProcessDumper {
                 if (messageType != null) {
                     xmlDump.append(
                         "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                        "  <message id=\"" + getUniqueNodeId(node) + "_Message\" structureRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                        "  <message id=\"" + getUniqueNodeId(node) + "_Message\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                 }
             } else if (node instanceof ActionNode) {
                 String messageType = (String) node.getMetaData("MessageType");
                 if (messageType != null) {
                     xmlDump.append(
                         "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                        "  <message id=\"" + getUniqueNodeId(node) + "_Message\" structureRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
+                        "  <message id=\"" + getUniqueNodeId(node) + "_Message\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                 }
             } else if (node instanceof EventNode) {
-                String messageRef = ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).getType();
-                messageRef = messageRef.substring(8);
-                String messageType = (String) node.getMetaData("MessageType");
-                xmlDump.append(
-                    "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                    "  <message id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" />" + EOL + EOL);
+            	if (node.getMetaData("AttachedTo") == null) {
+	                String messageRef = ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).getType();
+	                if (messageRef.startsWith("Message-")) {
+		                messageRef = messageRef.substring(8);
+		                String messageType = (String) node.getMetaData("MessageType");
+		                xmlDump.append(
+		                    "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
+		                    "  <message id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "\" itemRef=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" />" + EOL + EOL);
+	                }
+            	}
             } else if (node instanceof StartNode) {
                 StartNode startNode = (StartNode) node;
                 if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {
@@ -289,7 +296,7 @@ public class XmlBPMNProcessDumper {
                             String messageType = (String) node.getMetaData("MessageType");
                             xmlDump.append(
                                 "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(eventType) + "Type\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                                "  <message id=\"" + XmlDumper.replaceIllegalChars(eventType) + "\" structureRef=\"" + XmlDumper.replaceIllegalChars(eventType) + "Type\" />" + EOL + EOL);
+                                "  <message id=\"" + XmlDumper.replaceIllegalChars(eventType) + "\" itemRef=\"" + XmlDumper.replaceIllegalChars(eventType) + "Type\" />" + EOL + EOL);
                         }
                     }
                 }
@@ -297,7 +304,83 @@ public class XmlBPMNProcessDumper {
             	ForEachNode forEachNode = (ForEachNode) node;
                 xmlDump.append(
                     "  <itemDefinition id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\" structureRef=\"" + XmlDumper.replaceIllegalChars(((ObjectDataType) forEachNode.getVariableType()).getClassName()) + "\"/>" + EOL + EOL);
-            } 
+            }
+            if (node instanceof CompositeNode) {
+            	visitInterfaces(((CompositeNode) node).getNodes(), xmlDump);
+            }
+        }
+    }
+    
+    protected void visitEscalations(Node[] nodes, StringBuilder xmlDump, List<String> escalations) {
+        for (Node node: nodes) {
+            if (node instanceof FaultNode) {
+            	FaultNode faultNode = (FaultNode) node;
+            	if (!faultNode.isTerminateParent()) {
+            		String escalationCode = faultNode.getFaultName();
+            		if (!escalations.contains(escalationCode)) {
+            			escalations.add(escalationCode);
+	                    xmlDump.append(
+	                        "  <escalation id=\"" + XmlDumper.replaceIllegalChars(escalationCode) + "\" escalationCode=\"" + XmlDumper.replaceIllegalChars(escalationCode) + "\" />" + EOL);
+            		}
+                }
+            } else if (node instanceof ActionNode) {
+            	ActionNode actionNode = (ActionNode) node;
+            	DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
+        		if (action != null) {
+        		    String s = action.getConsequence();
+	            	if (s.startsWith("org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
+	            		s = s.substring(327);
+	                    String type = s.substring(0, s.indexOf("\""));
+	            		if (!escalations.contains(type)) {
+	            			escalations.add(type);
+		                    xmlDump.append(
+	                            "  <escalation id=\"" + XmlDumper.replaceIllegalChars(type) + "\" escalationCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+	            		}
+	            	}
+        		}
+            } else if (node instanceof EventNode) {
+            	EventNode eventNode = (EventNode) node;
+            	String type = (String) eventNode.getMetaData("EscalationEvent");
+            	if (type != null) {
+            		if (!escalations.contains(type)) {
+            			escalations.add(type);
+		                xmlDump.append(
+		                    "  <escalation id=\"" + XmlDumper.replaceIllegalChars(type) + "\" escalationCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+            		}
+            	}
+            }
+            if (node instanceof CompositeNode) {
+            	visitEscalations(((CompositeNode) node).getNodes(), xmlDump, escalations);
+            }
+        }
+    }
+    
+    protected void visitErrors(Node[] nodes, StringBuilder xmlDump, List<String> errors) {
+        for (Node node: nodes) {
+            if (node instanceof FaultNode) {
+            	FaultNode faultNode = (FaultNode) node;
+            	if (faultNode.isTerminateParent()) {
+            		String errorCode = faultNode.getFaultName();
+            		if (!errors.contains(errorCode)) {
+            			errors.add(errorCode);
+	                    xmlDump.append(
+	                        "  <error id=\"" + XmlDumper.replaceIllegalChars(errorCode) + "\" errorCode=\"" + XmlDumper.replaceIllegalChars(errorCode) + "\" />" + EOL);
+            		}
+                }
+            } else if (node instanceof EventNode) {
+            	EventNode eventNode = (EventNode) node;
+            	String type = (String) eventNode.getMetaData("ErrorEvent");
+            	if (type != null) {
+            		if (!errors.contains(type)) {
+            			errors.add(type);
+		                xmlDump.append(
+		                    "  <error id=\"" + XmlDumper.replaceIllegalChars(type) + "\" errorCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+            		}
+            	}
+            }
+            if (node instanceof CompositeNode) {
+            	visitErrors(((CompositeNode) node).getNodes(), xmlDump, errors);
+            }
         }
     }
     

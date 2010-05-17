@@ -32,9 +32,9 @@ public class FaultNodeHandler extends AbstractNodeHandler {
             xmlDump.append("      </inputSet>" + EOL);
         }
         if (faultNode.isTerminateParent()) {
-            xmlDump.append("      <errorEventDefinition errorCode=\"" + XmlDumper.replaceIllegalChars(faultNode.getFaultName()) + "\" />" + EOL);
+            xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlDumper.replaceIllegalChars(faultNode.getFaultName()) + "\" />" + EOL);
         } else {
-            xmlDump.append("      <escalationEventDefinition escalationCode=\"" + XmlDumper.replaceIllegalChars(faultNode.getFaultName()) + "\" />" + EOL);
+            xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlDumper.replaceIllegalChars(faultNode.getFaultName()) + "\" />" + EOL);
         }
 		endNode("endEvent", xmlDump);
 	}

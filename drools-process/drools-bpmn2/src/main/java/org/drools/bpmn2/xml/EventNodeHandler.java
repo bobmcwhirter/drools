@@ -55,14 +55,14 @@ public class EventNodeHandler extends AbstractNodeHandler {
     		        xmlDump.append("cancelActivity=\"false\" ");
     		    }
     		    xmlDump.append(">" + EOL);
-    		    xmlDump.append("      <escalationEventDefinition escalationCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+    		    xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
     		    endNode("boundaryEvent", xmlDump);
 		    } else if (type.startsWith("Error-")) {
                 type = type.substring(attachedTo.length() + 7);
                 writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 xmlDump.append(">" + EOL);
-                xmlDump.append("      <errorEventDefinition errorCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Timer-")) {
                 type = type.substring(attachedTo.length() + 7);

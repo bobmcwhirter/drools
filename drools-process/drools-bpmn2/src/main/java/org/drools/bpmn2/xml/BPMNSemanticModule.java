@@ -15,7 +15,7 @@ import org.drools.xml.DefaultSemanticModule;
 
 public class BPMNSemanticModule extends DefaultSemanticModule {
 	
-	public static final String BPMN2_URI = "http://schema.omg.org/spec/BPMN/2.0";
+	public static final String BPMN2_URI = "http://www.omg.org/spec/BPMN/20100524/MODEL";
 	
 	public BPMNSemanticModule() {
 		super(BPMN2_URI);
@@ -32,6 +32,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("exclusiveGateway", new ExclusiveGatewayHandler());
         addHandler("inclusiveGateway", new InclusiveGatewayHandler());
         addHandler("parallelGateway", new ParallelGatewayHandler());
+		addHandler("eventBasedGateway", new EventBasedGatewayHandler());
         addHandler("complexGateway", new ComplexGatewayHandler());
         addHandler("scriptTask", new ScriptTaskHandler());
         addHandler("task", new TaskHandler());
@@ -57,6 +58,8 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("interface", new InterfaceHandler());
         addHandler("operation", new OperationHandler());
         addHandler("inMessageRef", new InMessageRefHandler());
+        addHandler("escalation", new EscalationHandler());
+        addHandler("error", new ErrorHandler());
         
         handlersByClass.put(Split.class, new SplitHandler());
         handlersByClass.put(Join.class, new JoinHandler());

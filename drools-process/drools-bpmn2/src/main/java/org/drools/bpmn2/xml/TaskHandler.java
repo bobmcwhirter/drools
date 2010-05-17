@@ -72,14 +72,7 @@ public class TaskHandler extends AbstractNodeHandler {
     protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataInputs) {
 		// sourceRef
 		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-		if ("assignment".equals(subNode.getNodeName())) {
-			org.w3c.dom.Node subSubNode = subNode.getFirstChild();
-			String from = subSubNode.getTextContent();
-			subNode = subNode.getNextSibling();
-			subNode = subNode.getNextSibling();
-    		String to = subNode.getTextContent();
-    		workItemNode.getWork().setParameter(dataInputs.get(to), from);
-		} else {
+		if ("sourceRef".equals(subNode.getNodeName())) {
     		String from = subNode.getTextContent();
     		// targetRef
     		subNode = subNode.getNextSibling();
@@ -87,6 +80,14 @@ public class TaskHandler extends AbstractNodeHandler {
     		workItemNode.addInMapping(
 				dataInputs.get(to),
 				from);
+		} else {
+			// targetRef
+			String to = subNode.getTextContent();
+			// assignment
+			subNode = subNode.getNextSibling();
+    		org.w3c.dom.Node subSubNode = subNode.getFirstChild();
+			String from = subSubNode.getTextContent();
+    		workItemNode.getWork().setParameter(dataInputs.get(to), from);
 		}
     }
     

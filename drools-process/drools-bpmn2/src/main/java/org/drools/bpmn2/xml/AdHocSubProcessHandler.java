@@ -59,7 +59,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
 		if (!dynamicNode.isCancelRemainingInstances()) {
 			xmlDump.append(" cancelRemainingInstances=\"false\"");
 		}
-		xmlDump.append(" ordering=\"parallel\" >" + EOL);
+		xmlDump.append(" ordering=\"Parallel\" >" + EOL);
 		// nodes
 		List<Node> subNodes = getSubNodes(dynamicNode);
     	xmlDump.append("    <!-- nodes -->" + EOL);

@@ -3,9 +3,9 @@
              targetNamespace="http://www.example.org/MinimalExample"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
-             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:tns="http://www.example.org/MinimalExample">
 
   <itemDefinition id="itemType" structureRef="java.lang.String" />
@@ -20,7 +20,7 @@
     <sequenceFlow sourceRef="_1" targetRef="_2"/>
     <subProcess id="_2" name="Hello" >
       <ioSpecification>
-        <dataInput id="_2_input" name="MultiInstanceLoopDataInput" itemSubjectRef="listType" />
+        <dataInput id="_2_input" name="MultiInstanceLoopDataInput" />
         <inputSet>
           <dataInputRefs>_2_input</dataInputRefs>
         </inputSet>

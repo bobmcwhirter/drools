@@ -45,6 +45,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         parser.startElementBuilder( localName, attrs );
         final Node node = createNode(attrs);
         String id = attrs.getValue("id");
+        node.setMetaData("UniqueId", id);
         try {
             // remove starting _
             id = id.substring(1);
@@ -63,7 +64,6 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 }
             }
             ((org.drools.workflow.core.Node) node).setId(++newId);
-            node.setMetaData("UniqueId", attrs.getValue("id"));
         }
         return node;
     }

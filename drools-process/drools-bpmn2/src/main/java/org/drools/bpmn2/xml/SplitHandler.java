@@ -49,10 +49,13 @@ public class SplitHandler extends AbstractNodeHandler {
 					}
 				}
                 break;
+			case Split.TYPE_XAND:
+				writeNode("eventBasedGateway", node, xmlDump, includeMeta);
+				break;
             default:
 				writeNode("complexGateway", node, xmlDump, includeMeta);
 		}
-		xmlDump.append("gatewayDirection=\"diverging\" ");
+		xmlDump.append("gatewayDirection=\"Diverging\" ");
 		endNode(xmlDump);
 	}
 

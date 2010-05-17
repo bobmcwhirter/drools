@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Definitions;
+import org.drools.bpmn2.core.Error;
+import org.drools.bpmn2.core.Escalation;
 import org.drools.bpmn2.core.Interface;
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Lane;
@@ -50,10 +52,12 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 			this.validParents.add(Definitions.class);
 
 			this.validPeers = new HashSet();
-            this.validPeers.add(Interface.class);
-            this.validPeers.add(Message.class);
-            this.validPeers.add(ItemDefinition.class);
 			this.validPeers.add(null);
+            this.validPeers.add(ItemDefinition.class);
+            this.validPeers.add(Message.class);
+            this.validPeers.add(Interface.class);
+            this.validPeers.add(Escalation.class);
+            this.validPeers.add(Error.class);
 
 			this.allowNesting = false;
 		}
@@ -152,6 +156,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					source, NodeImpl.CONNECTION_DEFAULT_TYPE, 
 					target, NodeImpl.CONNECTION_DEFAULT_TYPE);
 				result.setMetaData("bendpoints", connection.getBendpoints());
+				result.setMetaData("UniqueId", connection.getId());
 				if (source instanceof Split) {
 					Split split = (Split) source;
 					Constraint constraint = new ConstraintImpl();

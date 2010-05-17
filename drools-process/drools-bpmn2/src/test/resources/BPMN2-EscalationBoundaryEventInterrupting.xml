@@ -3,10 +3,12 @@
              targetNamespace="http://www.example.org/MinimalExample"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
-             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:tns="http://www.example.org/MinimalExample">
+
+  <escalation id="MyEscalation" escalationCode="MyEscalation" />
 
   <process id="EscalationBoundaryEvent" name="Escalation Boundary Event Process">
     <startEvent id="_1" name="StartProcess"/>
@@ -14,10 +16,10 @@
     <subProcess id="_2" name="Hello" >
       <startEvent id="_2-1" name="StartSubProcess"/>
       <sequenceFlow sourceRef="_2-1" targetRef="_2-2"/>
-      <parallelGateway id="_2-2" gatewayDirection="diverging"/>
+      <parallelGateway id="_2-2" gatewayDirection="Diverging"/>
       <sequenceFlow sourceRef="_2-2" targetRef="_2-3"/>
       <endEvent id="_2-3" name="EscalationEvent">
-        <escalationEventDefinition escalationCode="MyEscalation"/>
+        <escalationEventDefinition escalationRef="MyEscalation"/>
       </endEvent>
       <sequenceFlow sourceRef="_2-2" targetRef="_2-4"/>
       <task id="_2-4" name="Task" tns:taskName="MyTask" />
@@ -29,7 +31,7 @@
       <terminateEventDefinition/>
     </endEvent>
     <boundaryEvent id="_4" name="EscalationEvent" attachedToRef="_2" >
-      <escalationEventDefinition escalationCode="MyEscalation" />
+      <escalationEventDefinition escalationRef="MyEscalation" />
     </boundaryEvent>
     <sequenceFlow sourceRef="_4" targetRef="_5"/>
     <scriptTask id="_5" name="Goodbye">

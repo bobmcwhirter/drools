@@ -5,5 +5,8 @@ import org.drools.runtime.process.ProcessContext
 rule "Auto-activate Hello1" ruleflow-group "Hello"
   when
   then
+    System.out.println(drools);
+    System.out.println(drools.getContext(ProcessContext.class));
+    System.out.println(drools.getContext(ProcessContext.class).getProcessInstance());
     drools.getContext(ProcessContext.class).getProcessInstance().signalEvent("Hello1", null);
 end

@@ -3,15 +3,13 @@
              targetNamespace="http://www.jboss.org/drools"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
-             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:tns="http://www.jboss.org/drools">
 
   <itemDefinition id="employeeItem" structureRef="java.lang.Object" />
-
-  <resource id="Actor" name="Human Actor" />
 
   <process id="com.sample.evaluation" name="Evaluation" >
 
@@ -37,63 +35,48 @@
         <outputSet>
         </outputSet>
       </ioSpecification>
-      <property id="_2_Comment" />
-      <property id="_2_TaskName" />
-      <property id="_2_Priority" />
-      <property id="_2_Content" />
-      <property id="_2_Skippable" />
       <dataInputAssociation>
+        <targetRef>_2_CommentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">You need to perform a self evaluation</from>
           <to xs:type="tFormalExpression">_2_CommentInput</to>
         </assignment>
-        <sourceRef>_2_Comment</sourceRef>
-        <targetRef>_2_CommentInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_2_TaskNameInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">Performance Evaluation</from>
           <to xs:type="tFormalExpression">_2_TaskNameInput</to>
         </assignment>
-        <sourceRef>_2_TaskName</sourceRef>
-        <targetRef>_2_TaskNameInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_2_PriorityInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">1</from>
           <to xs:type="tFormalExpression">_2_PriorityInput</to>
         </assignment>
-        <sourceRef>_2_Priority</sourceRef>
-        <targetRef>_2_PriorityInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <assignment>org.w3c.dom.Node nameNode = xmlNode.getAttributes().getNamedItem("name");
-        		if (nameNode != null) {
-        			String name = nameNode.getNodeValue();
-        			sequenceFlow.setName(name);
-        		}
-        		
+        <targetRef>_2_ContentInput</targetRef>
+        <assignment>
           <from xs:type="tFormalExpression"></from>
           <to xs:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
-        <sourceRef>_2_Content</sourceRef>
-        <targetRef>_2_ContentInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_2_SkippableInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">false</from>
           <to xs:type="tFormalExpression">_2_SkippableInput</to>
         </assignment>
-        <sourceRef>_2_Skippable</sourceRef>
-        <targetRef>_2_SkippableInput</targetRef>
       </dataInputAssociation>
-      <potentialOwner resourceRef="tns:Actor" >
+      <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>#{employee}</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
-    <parallelGateway id="_3" name="Diverge" g:x="228" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" />
+    <parallelGateway id="_3" name="Diverge" g:x="228" g:y="56" g:width="49" g:height="49" gatewayDirection="Diverging" />
     <userTask id="_4" name="Project Manager" g:x="309" g:y="16" g:width="122" g:height="48" >
       <ioSpecification>
         <dataInput id="_4_CommentInput" name="Comment" />
@@ -111,57 +94,42 @@
         <outputSet>
         </outputSet>
       </ioSpecification>
-      <property id="_4_Comment" />
-      <property id="_4_TaskName" />
-      <property id="_4_Priority" />
-      <property id="_4_Content" />
-      <property id="_4_Skippable" />
       <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">You need to perform an evaluation for employee #{employee}</from>
           <to xs:type="tFormalExpression">_4_CommentInput</to>
         </assignment>
-        <sourceRef>_4_Comment</sourceRef>
-        <targetRef>_4_CommentInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">Performance Evaluation</from>
           <to xs:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
-        <sourceRef>_4_TaskName</sourceRef>
-        <targetRef>_4_TaskNameInput</targetRef>
-      </dataInputAssociation>org.w3c.dom.Node nameNode = xmlNode.getAttributes().getNamedItem("name");
-        		if (nameNode != null) {
-        			String name = nameNode.getNodeValue();
-        			sequenceFlow.setName(name);
-        		}
-        		
+      </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_4_PriorityInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">1</from>
           <to xs:type="tFormalExpression">_4_PriorityInput</to>
         </assignment>
-        <sourceRef>_4_Priority</sourceRef>
-        <targetRef>_4_PriorityInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_4_ContentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression"></from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
-        <sourceRef>_4_Content</sourceRef>
-        <targetRef>_4_ContentInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_4_SkippableInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">false</from>
           <to xs:type="tFormalExpression">_4_SkippableInput</to>
         </assignment>
-        <sourceRef>_4_Skippable</sourceRef>
-        <targetRef>_4_SkippableInput</targetRef>
       </dataInputAssociation>
-      <potentialOwner resourceRef="tns:Actor" >
+      <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>john</formalExpression>
         </resourceAssignmentExpression>
@@ -184,58 +152,48 @@
         <outputSet>
         </outputSet>
       </ioSpecification>
-      <property id="_5_Comment" />
-      <property id="_5_TaskName" />
-      <property id="_5_Priority" />
-      <property id="_5_Content" />
-      <property id="_5_Skippable" />
       <dataInputAssociation>
+        <targetRef>_5_CommentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">You need to perform an evaluation for employee #{employee}</from>
           <to xs:type="tFormalExpression">_5_CommentInput</to>
         </assignment>
-        <sourceRef>_5_Comment</sourceRef>
-        <targetRef>_5_CommentInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_5_TaskNameInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">Performance Evaluation</from>
           <to xs:type="tFormalExpression">_5_TaskNameInput</to>
         </assignment>
-        <sourceRef>_5_TaskName</sourceRef>
-        <targetRef>_5_TaskNameInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_5_PriorityInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">1</from>
           <to xs:type="tFormalExpression">_5_PriorityInput</to>
         </assignment>
-        <sourceRef>_5_Priority</sourceRef>
-        <targetRef>_5_PriorityInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_5_ContentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression"></from>
           <to xs:type="tFormalExpression">_5_ContentInput</to>
         </assignment>
-        <sourceRef>_5_Content</sourceRef>
-        <targetRef>_5_ContentInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_5_SkippableInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">false</from>
           <to xs:type="tFormalExpression">_5_SkippableInput</to>
         </assignment>
-        <sourceRef>_5_Skippable</sourceRef>
-        <targetRef>_5_SkippableInput</targetRef>
       </dataInputAssociation>
-      <potentialOwner resourceRef="tns:Actor" >
+      <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>mary</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
-    <parallelGateway id="_6" name="Converge" g:x="463" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
+    <parallelGateway id="_6" name="Converge" g:x="463" g:y="56" g:width="49" g:height="49" gatewayDirection="Converging" />
     <endEvent id="_7" name="EndProcess" g:x="547" g:y="56" g:width="48" g:height="48" >
       <terminateEventDefinition/>
     </endEvent>

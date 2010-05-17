@@ -8,7 +8,7 @@ public class InclusiveGatewayHandler extends AbstractNodeHandler {
     
     protected Node createNode(Attributes attrs) {
         final String type = attrs.getValue("gatewayDirection");
-        if ("diverging".equals(type)) {
+        if ("Diverging".equals(type)) {
         	Split split = new Split();
         	split.setType(Split.TYPE_OR);
         	String isDefault = attrs.getValue("default");

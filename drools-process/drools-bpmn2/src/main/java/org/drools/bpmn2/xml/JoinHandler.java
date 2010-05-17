@@ -27,7 +27,7 @@ public class JoinHandler extends AbstractNodeHandler {
 			default:
 				writeNode("complexGateway", node, xmlDump, includeMeta);
 		}
-		xmlDump.append("gatewayDirection=\"converging\" ");
+		xmlDump.append("gatewayDirection=\"Converging\" ");
 		endNode(xmlDump);
 	}
 

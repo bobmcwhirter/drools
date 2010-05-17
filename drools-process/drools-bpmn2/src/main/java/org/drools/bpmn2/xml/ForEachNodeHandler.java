@@ -27,11 +27,14 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
 		xmlDump.append(" >" + EOL);
 		// ioSpecification and dataInputAssociation 
         xmlDump.append(
-            "      <ioSpecification>" + EOL +
-            "        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input\" name=\"MultiInstanceInput\" />" + EOL +
-            "        <inputSet>" + EOL +
-            "          <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</dataInputRefs>" + EOL +
-            "        </inputSet>" + EOL +
+            "      <ioSpecification>" + EOL);
+        String parameterName = forEachNode.getVariableName();
+        if (parameterName != null) {
+        	xmlDump.append(
+    			"        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input\" name=\"MultiInstanceInput\" />" + EOL);
+        }
+        xmlDump.append(
+    		"        <inputSet/>" + EOL +
             "        <outputSet/>" + EOL +
             "      </ioSpecification>" + EOL);
         String collectionExpression = forEachNode.getCollectionExpression();
@@ -46,7 +49,6 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
         xmlDump.append(
     		"      <multiInstanceLoopCharacteristics>" + EOL +
             "        <loopDataInputRef>" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</loopDataInputRef>" + EOL);
-        String parameterName = forEachNode.getVariableName();
         if (parameterName != null) {
         	xmlDump.append("        <inputDataItem id=\"" + XmlDumper.replaceIllegalChars(parameterName) + "\" itemSubjectRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\"/>" + EOL);
         }

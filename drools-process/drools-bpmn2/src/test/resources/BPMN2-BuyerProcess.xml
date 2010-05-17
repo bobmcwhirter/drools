@@ -3,7 +3,7 @@
              targetNamespace="http://www.example.org/UserTaskExample"
              typeLanguage="http://www.w3.org/2001/XMLSchema"
              expressionLanguage="http://www.w3.org/1999/XPath"
-             xmlns="http://www.omg.org/bpmn20"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:tns="http://www.example.org/UserTaskExample">
 
   <resource id="regionalManager" name="Regional Manager">
@@ -32,7 +32,7 @@
       </potentialOwner>
     </userTask>
     <sequenceFlow sourceRef="ApproveOrder" targetRef="OrderApprovedDecision"/>
-    <exclusiveGateway id="OrderApprovedDecision" gatewayDirection="diverging"/>
+    <exclusiveGateway id="OrderApprovedDecision" gatewayDirection="Diverging"/>
     <sequenceFlow sourceRef="OrderApprovedDecision" targetRef="OrderAndShipment">
       <conditionExpression>Was the Order Approved?</conditionExpression>
     </sequenceFlow>
@@ -42,14 +42,14 @@
     <endEvent id="TerminateProcess">
       <terminateEventDefinition id="TerminateEvent"/>
     </endEvent>
-    <parallelGateway id="OrderAndShipment" gatewayDirection="diverging"/>
+    <parallelGateway id="OrderAndShipment" gatewayDirection="Diverging"/>
     <sequenceFlow sourceRef="OrderAndShipment" targetRef="OrderHandling"/>
     <sequenceFlow sourceRef="OrderAndShipment" targetRef="ShipmentHandling"/>
     <task id="OrderHandling" name="Order Handling"/>
     <task id="ShipmentHandling" name="Shipment Handling"/>
     <sequenceFlow sourceRef="OrderHandling" targetRef="OrderAndShipmentMerge"/>
     <sequenceFlow sourceRef="ShipmentHandling" targetRef="OrderAndShipmentMerge"/>
-    <parallelGateway id="OrderAndShipmentMerge" gatewayDirection="converging"/>
+    <parallelGateway id="OrderAndShipmentMerge" gatewayDirection="Converging"/>
     <userTask id="ReviewOrder" name="Review Order">
       <potentialOwner resourceRef="tns:departmentalReviewer">
         <resourceParameterBinding parameterRef="tns:buyerName">

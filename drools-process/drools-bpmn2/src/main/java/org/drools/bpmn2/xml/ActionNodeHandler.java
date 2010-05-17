@@ -77,8 +77,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 xmlDump.append(">" + EOL);
                 s = s.substring(327);
                 String type = s.substring(0, s.indexOf("\""));
-                s = s.substring(s.indexOf(",") + 2);
-                xmlDump.append("      <escalationEventDefinition escalationCode=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
+                xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if ("IntermediateThrowEvent-None".equals(actionNode.getMetaData("NodeType"))) {
             	writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);

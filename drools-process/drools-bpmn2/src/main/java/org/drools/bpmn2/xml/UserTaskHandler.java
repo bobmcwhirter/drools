@@ -66,14 +66,14 @@ public class UserTaskHandler extends TaskHandler {
 	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		HumanTaskNode humanTaskNode = (HumanTaskNode) node;
 		writeNode("userTask", humanTaskNode, xmlDump, includeMeta);
-		xmlDump.append("implementation=\"humanTaskWebService\" >" + EOL);
+		xmlDump.append(">" + EOL);
 		writeIO(humanTaskNode, xmlDump);
 		String ownerString = (String) humanTaskNode.getWork().getParameter("ActorId");
 		if (ownerString != null) {
 			String[] owners = ownerString.split(",");
 			for (String owner: owners) {
 				xmlDump.append(
-					"      <potentialOwner resourceRef=\"tns:Actor\" >" + EOL +
+					"      <potentialOwner>" + EOL +
 					"        <resourceAssignmentExpression>" + EOL +
 					"          <formalExpression>" + owner + "</formalExpression>" + EOL +
 					"        </resourceAssignmentExpression>" + EOL +
@@ -115,12 +115,6 @@ public class UserTaskHandler extends TaskHandler {
 			"        </outputSet>" + EOL);
 		xmlDump.append(
 			"      </ioSpecification>" + EOL);
-		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
-			if (!"ActorId".equals(entry.getKey()) && entry.getValue() != null) {
-				xmlDump.append(
-					"      <property id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "\" />" + EOL);
-			}
-		}
 		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
 			xmlDump.append("      <dataInputAssociation>" + EOL);
 			xmlDump.append(
@@ -132,12 +126,11 @@ public class UserTaskHandler extends TaskHandler {
 			if (!"ActorId".equals(entry.getKey()) && entry.getValue() != null) {
 				xmlDump.append("      <dataInputAssociation>" + EOL);
 				xmlDump.append(
+					"        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</targetRef>" + EOL +
 					"        <assignment>" + EOL +
 					"          <from xs:type=\"tFormalExpression\">" + entry.getValue().toString() + "</from>" + EOL +
 					"          <to xs:type=\"tFormalExpression\">" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</to>" + EOL +
-					"        </assignment>" + EOL +
-					"        <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "</sourceRef>" + EOL +
-					"        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + entry.getKey() + "Input</targetRef>" + EOL);
+					"        </assignment>" + EOL);
 				xmlDump.append("      </dataInputAssociation>" + EOL);
 			}
 		}

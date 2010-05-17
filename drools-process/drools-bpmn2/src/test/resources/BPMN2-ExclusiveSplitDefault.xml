@@ -3,9 +3,9 @@
              targetNamespace="http://www.jboss.org/drools"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
-             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:tns="http://www.jboss.org/drools">
 
@@ -20,14 +20,14 @@
 
     <!-- nodes -->
     <startEvent id="_1" name="Start" g:x="16" g:y="56" g:width="48" g:height="48" />
-    <exclusiveGateway id="_2" name="Split" g:x="96" g:y="56" g:width="49" g:height="49" gatewayDirection="diverging" default="_2-4"/>
+    <exclusiveGateway id="_2" name="Split" g:x="96" g:y="56" g:width="49" g:height="49" gatewayDirection="Diverging" default="_2-4"/>
     <scriptTask id="_3" name="Script1" g:x="177" g:y="16" g:width="80" g:height="48">
       <script>System.out.println("x=" + x);</script>
     </scriptTask>
     <scriptTask id="_4" name="Script2" g:x="177" g:y="96" g:width="80" g:height="48">
       <script>System.out.println("y=" + y);</script>
     </scriptTask>
-    <exclusiveGateway id="_5" name="Join" g:x="289" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
+    <exclusiveGateway id="_5" name="Join" g:x="289" g:y="56" g:width="49" g:height="49" gatewayDirection="Converging" />
     <task id="_6" name="Email" g:x="163" g:y="180" g:width="100" g:height="48" tns:taskName="Email">
       <ioSpecification>
         <dataInput id="_6_FromInput" name="From" />
@@ -43,41 +43,33 @@
         <outputSet>
         </outputSet>
       </ioSpecification>
-      <property id="_6_From" />
-      <property id="_6_Subject" />
-      <property id="_6_To" />
-      <property id="_6_Body" />
       <dataInputAssociation>
+        <targetRef>_6_FromInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">me@mail.com</from>
           <to xs:type="tFormalExpression">_6_From</to>
         </assignment>
-        <sourceRef>_6_From</sourceRef>
-        <targetRef>_6_FromInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_6_SubjectInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">Urgent email !</from>
           <to xs:type="tFormalExpression">_6_Subject</to>
         </assignment>
-        <sourceRef>_6_Subject</sourceRef>
-        <targetRef>_6_SubjectInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_6_ToInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">you@mail.com</from>
           <to xs:type="tFormalExpression">_6_To</to>
         </assignment>
-        <sourceRef>_6_To</sourceRef>
-        <targetRef>_6_ToInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_6_BodyInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">This is an urgent email #{x}</from>
           <to xs:type="tFormalExpression">_6_Body</to>
         </assignment>
-        <sourceRef>_6_Body</sourceRef>
-        <targetRef>_6_BodyInput</targetRef>
       </dataInputAssociation>
     </task>
     <endEvent id="_7" name="End" g:x="370" g:y="56" g:width="48" g:height="48" >

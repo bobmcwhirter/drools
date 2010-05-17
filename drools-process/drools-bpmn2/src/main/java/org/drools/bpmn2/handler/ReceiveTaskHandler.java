@@ -10,21 +10,25 @@ import org.drools.runtime.process.WorkItemManager;
 
 public class ReceiveTaskHandler implements WorkItemHandler {
     
-    // TODO: use correlation instead of message type
+    // TODO: use correlation instead of message id
     private Map<String, Long> waiting = new HashMap<String, Long>();
     private KnowledgeRuntime ksession;
     
     public ReceiveTaskHandler(KnowledgeRuntime ksession) {
         this.ksession = ksession;
     }
+    
+    public void setKnowledgeRuntime(KnowledgeRuntime ksession) {
+    	this.ksession = ksession;
+    }
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        String messageType = (String) workItem.getParameter("MessageType");
-        waiting.put(messageType, workItem.getId());
+        String messageId = (String) workItem.getParameter("MessageId");
+        waiting.put(messageId, workItem.getId());
     }
     
-    public void messageReceived(String messageType, Object message) {
-        Long workItemId = waiting.get(messageType);
+    public void messageReceived(String messageId, Object message) {
+        Long workItemId = waiting.get(messageId);
         if (workItemId == null) {
             return;
         }
@@ -34,7 +38,8 @@ public class ReceiveTaskHandler implements WorkItemHandler {
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        // Do nothing, cannot be aborted
+    	String messageId = (String) workItem.getParameter("MessageId");
+        waiting.remove(messageId);
     }
 
 }

@@ -2,6 +2,7 @@ package org.drools.bpmn2.xml;
 
 import java.util.Map;
 
+import org.drools.bpmn2.core.Escalation;
 import org.drools.bpmn2.core.Message;
 import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.workflow.core.Node;
@@ -114,7 +115,8 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
         }
     }
     
-    public void handleEscalationNode(final Node node, final Element element, final String uri, 
+    @SuppressWarnings("unchecked")
+	public void handleEscalationNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         ActionNode actionNode = (ActionNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -123,8 +125,18 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
             if ("dataInputAssociation".equals(nodeName)) {
                 readDataInputAssociation(xmlNode, actionNode);
             } else if ("escalationEventDefinition".equals(nodeName)) {
-                String faultName = ((Element) xmlNode).getAttribute("escalationCode");
-                if (faultName != null && faultName.trim().length() > 0) {
+            	String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
+                if (escalationRef != null && escalationRef.trim().length() > 0) {
+                    Map<String, Escalation> escalations = (Map<String, Escalation>)
+		                ((ProcessBuildData) parser.getData()).getMetaData("Escalations");
+		            if (escalations == null) {
+		                throw new IllegalArgumentException("No escalations found");
+		            }
+		            Escalation escalation = escalations.get(escalationRef);
+		            if (escalation == null) {
+		                throw new IllegalArgumentException("Could not find escalation " + escalationRef);
+		            }
+		            String faultName = escalation.getEscalationCode();
                     actionNode.setAction(new DroolsConsequenceAction("java",
                         "org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"" + faultName + "\");" + EOL + 
                         "if (scopeInstance != null) {" + EOL + 

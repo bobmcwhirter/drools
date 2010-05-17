@@ -3,9 +3,9 @@
              targetNamespace="http://www.example.org/EvaluationExample"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
-             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:tns="http://www.example.org/EvaluationExample">
 
   <!-- resources -->
@@ -25,7 +25,7 @@
     <scriptTask id="_2" name="Log">
       <script>System.out.println("Processing evaluation for employee " + employee);</script>
     </scriptTask>
-    <exclusiveGateway id="_3" name="Diverge" gatewayDirection="diverging"/>
+    <exclusiveGateway id="_3" name="Diverge" gatewayDirection="Diverging"/>
     <sequenceFlow sourceRef="_3" targetRef="_4">
       <conditionExpression>return employee == "john";</conditionExpression>
     </sequenceFlow>
@@ -42,23 +42,21 @@
         </inputSet>
         <outputSet/>
       </ioSpecification>
-      <property id="_4_actorId" itemSubjectRef="java.lang.String" />
       <dataInputAssociation>
         <sourceRef>employee</sourceRef>
         <targetRef>_4_employeeIdInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
+        <targetRef>_4_actorIdInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">John</from>
           <to xs:type="tFormalExpression">_4_actorId</to>
         </assignment>
-        <sourceRef>_4_actorId</sourceRef>
-        <targetRef>_4_actorIdInput</targetRef>
       </dataInputAssociation>
     </task>
     <userTask id="_5" name="Two">
     </userTask>
-    <exclusiveGateway id="_6" name="Converge" gatewayDirection="converging"/>
+    <exclusiveGateway id="_6" name="Converge" gatewayDirection="Converging"/>
     <endEvent id="_7" name="EndProcess">
       <terminateEventDefinition/>
     </endEvent>

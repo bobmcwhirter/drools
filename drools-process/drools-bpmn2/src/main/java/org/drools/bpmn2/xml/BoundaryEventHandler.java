@@ -2,7 +2,11 @@ package org.drools.bpmn2.xml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.bpmn2.core.Error;
+import org.drools.bpmn2.core.Escalation;
+import org.drools.compiler.xml.ProcessBuildData;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.Node;
@@ -63,7 +67,8 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         return node;
     }
     
-    protected void handleEscalationNode(final Node node, final Element element, final String uri, 
+    @SuppressWarnings("unchecked")
+	protected void handleEscalationNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
@@ -74,10 +79,20 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("escalationEventDefinition".equals(nodeName)) {
-                String type = ((Element) xmlNode).getAttribute("escalationCode");
-                if (type != null && type.trim().length() > 0) {
+                String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
+                if (escalationRef != null && escalationRef.trim().length() > 0) {
+                    Map<String, Escalation> escalations = (Map<String, Escalation>)
+		                ((ProcessBuildData) parser.getData()).getMetaData("Escalations");
+		            if (escalations == null) {
+		                throw new IllegalArgumentException("No escalations found");
+		            }
+		            Escalation escalation = escalations.get(escalationRef);
+		            if (escalation == null) {
+		                throw new IllegalArgumentException("Could not find escalation " + escalationRef);
+		            }
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
+                    String type = escalation.getEscalationCode();
                     eventFilter.setType("Escalation-" + attachedTo + "-" + type);
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
@@ -88,7 +103,8 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         }
     }
     
-    protected void handleErrorNode(final Node node, final Element element, final String uri, 
+    @SuppressWarnings("unchecked")
+	protected void handleErrorNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
@@ -98,8 +114,18 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("errorEventDefinition".equals(nodeName)) {
-                String type = ((Element) xmlNode).getAttribute("errorCode");
-                if (type != null && type.trim().length() > 0) {
+                String errorRef = ((Element) xmlNode).getAttribute("errorRef");
+                if (errorRef != null && errorRef.trim().length() > 0) {
+                	Map<String, Error> errors = (Map<String, Error>)
+		                ((ProcessBuildData) parser.getData()).getMetaData("Errors");
+		            if (errors == null) {
+		                throw new IllegalArgumentException("No errors found");
+		            }
+		            Error error = errors.get(errorRef);
+		            if (error == null) {
+		                throw new IllegalArgumentException("Could not find error " + errorRef);
+		            }
+		            String type = error.getErrorCode();
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Error-" + attachedTo + "-" + type);

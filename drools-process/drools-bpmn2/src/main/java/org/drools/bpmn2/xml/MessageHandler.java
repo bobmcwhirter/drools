@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Definitions;
+import org.drools.bpmn2.core.Escalation;
+import org.drools.bpmn2.core.Interface;
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Message;
 import org.drools.compiler.xml.ProcessBuildData;
@@ -26,7 +28,10 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
 			this.validPeers.add(null);
             this.validPeers.add(ItemDefinition.class);
             this.validPeers.add(Message.class);
-
+            this.validPeers.add(Interface.class);
+            this.validPeers.add(Escalation.class);
+            this.validPeers.add(Error.class);
+            
 			this.allowNesting = false;
 		}
 	}
@@ -38,16 +43,16 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
 		parser.startElementBuilder(localName, attrs);
 
 		String id = attrs.getValue("id");
-		String structureRef = attrs.getValue("structureRef");
+		String itemRef = attrs.getValue("itemRef");
 		
 		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
             ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
         if (itemDefinitions == null) {
             throw new IllegalArgumentException("No item definitions found");
         }
-        ItemDefinition itemDefinition = itemDefinitions.get(structureRef);
+        ItemDefinition itemDefinition = itemDefinitions.get(itemRef);
         if (itemDefinition == null) {
-            throw new IllegalArgumentException("Could not find itemDefinition " + structureRef);
+            throw new IllegalArgumentException("Could not find itemDefinition " + itemRef);
         }
         
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
