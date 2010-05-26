@@ -1,9 +1,9 @@
 package org.drools.task.service.responsehandlers;
 
+import java.util.List;
+
 import org.drools.task.query.TaskSummary;
 import org.drools.task.service.TaskClientHandler.TaskSummaryResponseHandler;
-
-import java.util.List;
 
 public class BlockingTaskSummaryResponseHandler extends AbstractBlockingResponseHandler implements TaskSummaryResponseHandler {
 

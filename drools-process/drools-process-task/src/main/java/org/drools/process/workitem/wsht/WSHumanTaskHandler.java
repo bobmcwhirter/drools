@@ -1,8 +1,6 @@
 package org.drools.process.workitem.wsht;
 
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.SystemEventListenerFactory;
-import org.drools.eventmessaging.EventKey;
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
 import org.drools.runtime.process.WorkItem;
@@ -11,16 +9,14 @@ import org.drools.runtime.process.WorkItemManager;
 import org.drools.task.*;
 import org.drools.task.event.*;
 import org.drools.task.service.ContentData;
-import org.drools.task.service.MinaTaskClient;
-import org.drools.task.service.TaskClientHandler;
+import org.drools.task.service.TaskClient;
+import org.drools.task.service.mina.MinaTaskClientConnector;
+import org.drools.task.service.mina.MinaTaskClientHandler;
 import org.drools.task.service.responsehandlers.AbstractBaseResponseHandler;
-import org.drools.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
 
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +26,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
-	private MinaTaskClient client;
+	private TaskClient client;
 	private WorkItemManager manager = null;
 
 	public void setConnection(String ipAddress, int port) {
@@ -38,28 +34,28 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		this.port = port;
 	}
 	
+	public void setClient(TaskClient client) {
+		this.client = client;
+	}
+	
 	public void connect() {
 		if (client == null) {
-			client = new MinaTaskClient(
-				"org.drools.process.workitem.wsht.WSHumanTaskHandler",
-                    new TaskClientHandler(SystemEventListenerFactory.getSystemEventListener()));
-			NioSocketConnector connector = new NioSocketConnector();
-			SocketAddress address = new InetSocketAddress(ipAddress, port);
-			boolean connected = client.connect(connector, address);
+			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
+										new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+			
+			boolean connected = client.connect(ipAddress, port);
 			if (!connected) {
-				throw new IllegalArgumentException(
-					"Could not connect task client");
+				throw new IllegalArgumentException("Could not connect task client");
 			}
-			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
-            TaskCompletedHandler eventResponseHandler =
-            	new TaskCompletedHandler(manager, client);
-            client.registerForEvent(key, false, eventResponseHandler);
-            key = new TaskEventKey(TaskFailedEvent.class, -1);           
-            client.registerForEvent(key, false, eventResponseHandler);
-            key = new TaskEventKey(TaskSkippedEvent.class, -1);           
-            client.registerForEvent(key, false, eventResponseHandler);
-            System.out.println("Registered human task listener");
 		}
+		TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+		TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, client);
+		client.registerForEvent(key, false, eventResponseHandler);
+		key = new TaskEventKey(TaskFailedEvent.class, -1);           
+		client.registerForEvent(key, false, eventResponseHandler);
+		key = new TaskEventKey(TaskSkippedEvent.class, -1);           
+		client.registerForEvent(key, false, eventResponseHandler);
+		System.out.println("Registered human task listener");
 	}
 	
 	public void setManager(WorkItemManager manager) {
@@ -192,9 +188,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
     
     private static class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
         private WorkItemManager manager;
-        private MinaTaskClient client;
+        private TaskClient client;
         
-        public TaskCompletedHandler(WorkItemManager manager, MinaTaskClient client) {
+        public TaskCompletedHandler(WorkItemManager manager, TaskClient client) {
             this.manager = manager;
             this.client = client;
         }
@@ -216,9 +212,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
     private static class GetCompletedTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
 
     	private WorkItemManager manager;
-    	private MinaTaskClient client;
+    	private TaskClient client;
     	
-    	public GetCompletedTaskResponseHandler(WorkItemManager manager, MinaTaskClient client) {
+    	public GetCompletedTaskResponseHandler(WorkItemManager manager, TaskClient client) {
     		this.manager = manager;
     		this.client = client;
     	}
@@ -282,9 +278,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
     
     private static class AbortTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
 
-    	private MinaTaskClient client;
+    	private TaskClient client;
     	
-    	public AbortTaskResponseHandler(MinaTaskClient client) {
+    	public AbortTaskResponseHandler(TaskClient client) {
     		this.client = client;
     	}
     	

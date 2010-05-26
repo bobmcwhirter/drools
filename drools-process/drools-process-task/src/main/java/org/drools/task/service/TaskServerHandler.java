@@ -1,8 +1,12 @@
 package org.drools.task.service;
 
-import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IdleStatus;
-import org.apache.mina.core.session.IoSession;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.SystemEventListener;
 import org.drools.eventmessaging.EventKey;
 import org.drools.task.Attachment;
@@ -11,11 +15,10 @@ import org.drools.task.Content;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 
-import java.util.*;
+public class TaskServerHandler {
 
-public class TaskServerHandler extends IoHandlerAdapter {
-    private final TaskService service;
-    private final Map<String, IoSession> clients;
+	private final TaskService service;
+    private final Map<String, SessionWriter> clients;
 
     /**
      * Listener used for logging
@@ -24,18 +27,15 @@ public class TaskServerHandler extends IoHandlerAdapter {
 
     public TaskServerHandler(TaskService service, SystemEventListener systemEventListener) {
         this.service = service;
-        this.clients = new HashMap<String, IoSession>();
+        this.clients = new HashMap<String, SessionWriter>();
         this.systemEventListener = systemEventListener;
     }
 
-    @Override
-    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+    public void exceptionCaught(SessionWriter session, Throwable cause) throws Exception {
         systemEventListener.exception("Uncaught exception on Server", cause);
     }
 
-    @Override
-    public void messageReceived(IoSession session,
-                                Object message) throws Exception {
+    public void messageReceived(SessionWriter session, Object message) throws Exception {
         Command cmd = (Command) message;
         TaskServiceSession taskSession = service.createSession();
         CommandName response = null;
@@ -333,14 +333,12 @@ public class TaskServerHandler extends IoHandlerAdapter {
                     EventKey key = (EventKey) cmd.getArguments().get(0);
                     boolean remove = (Boolean) cmd.getArguments().get(1);
                     String uuid = (String) cmd.getArguments().get(2);
-                    clients.put(uuid,
-                            session);
-                    MinaEventTransport transport = new MinaEventTransport(uuid,
-                            cmd.getId(),
-                            clients,
-                            remove);
-                    service.getEventKeys().register(key,
-                            transport);
+                    clients.put(uuid, session);
+                    EventTransport transport = new EventTransport(uuid,
+									                            cmd.getId(),
+									                            clients,
+									                            remove);
+                    service.getEventKeys().register(key, transport);
                     break;
                 }
                 case RegisterClient: {
@@ -364,8 +362,7 @@ public class TaskServerHandler extends IoHandlerAdapter {
         }
     }
 
-    @Override
-    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
-        systemEventListener.debug("Server IDLE " + session.getIdleCount(status));
-    }
+//    public void sessionIdle(SessionWriter session, IdleStatus status) throws Exception {
+//        systemEventListener.debug("Server IDLE " + session.getIdleCount(status));
+//    }
 }

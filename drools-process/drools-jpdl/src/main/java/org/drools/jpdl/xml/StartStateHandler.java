@@ -1,8 +1,8 @@
 package org.drools.jpdl.xml;
 
+import org.drools.compiler.xml.processes.AbstractNodeHandler;
 import org.drools.jpdl.core.node.StartState;
 import org.drools.workflow.core.Node;
-import org.drools.xml.processes.AbstractNodeHandler;
 
 public class StartStateHandler extends AbstractNodeHandler {
     

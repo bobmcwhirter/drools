@@ -11,10 +11,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.apache.commons.collections.map.HashedMap;
-import org.drools.task.service.MinaTaskServer;
 import org.drools.task.service.SendIcal;
 import org.drools.task.service.TaskService;
 import org.drools.task.service.TaskServiceSession;
+import org.drools.task.service.mina.MinaTaskServer;
 import org.drools.SystemEventListenerFactory;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;

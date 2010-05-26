@@ -42,6 +42,21 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <version>2.0.0-M6</version>
       </dependency>
       <dependency>
+         <groupId>org.hornetq</groupId>
+         <artifactId>hornetq-core</artifactId>
+         <version>2.0.0.GA</version>
+      </dependency>
+      <dependency>
+         <groupId>org.hornetq</groupId>
+         <artifactId>hornetq-transports</artifactId>
+         <version>2.0.0.GA</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.netty</groupId>
+         <artifactId>netty</artifactId>
+         <version>3.1.5.GA</version>
+      </dependency>
+      <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-jdk14</artifactId>
          <version>1.5.2</version>

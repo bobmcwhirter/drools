@@ -1,6 +1,9 @@
 package org.drools.task.service;
 
-import org.apache.mina.core.session.IoSession;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.SystemEventListener;
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
@@ -8,37 +11,31 @@ import org.drools.task.Content;
 import org.drools.task.Task;
 import org.drools.task.query.TaskSummary;
 
-import java.util.Arrays;
-import java.util.List;
+public class TaskClientHandler {
 
-public class TaskClientHandler extends BaseMinaHandler {
-    private MinaTaskClient client;
-
-    /**
-     * Listener used for logging
-     */
+	private TaskClient client;
     private SystemEventListener systemEventListener;
+	private final Map<Integer, ResponseHandler> responseHandlers;
 
-    public TaskClientHandler(SystemEventListener systemEventListener) {
-        this.systemEventListener = systemEventListener;
+    public TaskClientHandler(Map<Integer, ResponseHandler> responseHandlers, SystemEventListener systemEventListener) {
+        this.responseHandlers = responseHandlers;
+		this.systemEventListener = systemEventListener;
     }
 
-    public MinaTaskClient getClient() {
+    public TaskClient getClient() {
         return client;
     }
 
-    public void setClient(MinaTaskClient client) {
+    public void setClient(TaskClient client) {
         this.client = client;
     }
 
-    @Override
-    public void exceptionCaught(IoSession session,
+    public void exceptionCaught(SessionWriter session,
                                 Throwable cause) throws Exception {
         systemEventListener.exception("Uncaught exception on client", cause);
     }
 
-    @Override
-    public void messageReceived(IoSession session,
+    public void messageReceived(SessionWriter session,
                                 Object message) throws Exception {
         Command cmd = (Command) message;
 
@@ -255,4 +252,6 @@ public class TaskClientHandler extends BaseMinaHandler {
             ResponseHandler {
         public void execute(List<TaskSummary> results);
     }
+    
+    
 }

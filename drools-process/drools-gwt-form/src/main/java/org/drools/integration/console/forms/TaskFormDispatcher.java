@@ -4,21 +4,19 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.activation.DataHandler;
 
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.SystemEventListenerFactory;
 import org.drools.task.Content;
 import org.drools.task.I18NText;
 import org.drools.task.Task;
-import org.drools.task.service.MinaTaskClient;
-import org.drools.task.service.TaskClientHandler;
+import org.drools.task.service.TaskClient;
+import org.drools.task.service.mina.MinaTaskClientConnector;
+import org.drools.task.service.mina.MinaTaskClientHandler;
 import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
@@ -31,16 +29,13 @@ public class TaskFormDispatcher extends AbstractFormDispatcher {
 	// TODO make this configurable
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
-	private MinaTaskClient client;
+	private TaskClient client;
 
 	public void connect() {
 		if (client == null) {
-			client = new MinaTaskClient(
-				"org.drools.process.workitem.wsht.WSHumanTaskHandler",
-                    new TaskClientHandler(SystemEventListenerFactory.getSystemEventListener()));
-			NioSocketConnector connector = new NioSocketConnector();
-			SocketAddress address = new InetSocketAddress(ipAddress, port);
-			boolean connected = client.connect(connector, address);
+			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
+									new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+			boolean connected = client.connect(ipAddress, port);
 			if (!connected) {
 				throw new IllegalArgumentException(
 					"Could not connect task client");

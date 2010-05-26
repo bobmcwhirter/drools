@@ -11,14 +11,15 @@ public class Command implements Serializable {
     
     private List<Object> arguments;
     
+    public Command() {
+	}
+    
     public Command(int id, CommandName name, List<Object> arguments) {
         super();
         this.id = id;
         this.arguments = arguments;
         this.name = name;
     }
-    
-    
     
     public int getId() {
         return id;
@@ -44,5 +45,5 @@ public class Command implements Serializable {
     public void setArguments(List<Object> arguments) {
         this.arguments = arguments;
     }
-            
+
 }

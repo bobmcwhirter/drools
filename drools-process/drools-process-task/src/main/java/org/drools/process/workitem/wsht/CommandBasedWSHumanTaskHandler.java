@@ -5,14 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.drools.SystemEventListenerFactory;
 import org.drools.eventmessaging.EventResponseHandler;
 import org.drools.eventmessaging.Payload;
@@ -38,17 +35,18 @@ import org.drools.task.event.TaskEventKey;
 import org.drools.task.event.TaskFailedEvent;
 import org.drools.task.event.TaskSkippedEvent;
 import org.drools.task.service.ContentData;
-import org.drools.task.service.MinaTaskClient;
-import org.drools.task.service.TaskClientHandler;
+import org.drools.task.service.TaskClient;
 import org.drools.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.drools.task.service.TaskClientHandler.GetTaskResponseHandler;
+import org.drools.task.service.mina.MinaTaskClientConnector;
+import org.drools.task.service.mina.MinaTaskClientHandler;
 import org.drools.task.service.responsehandlers.AbstractBaseResponseHandler;
 
 public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
-	private MinaTaskClient client;
+	private TaskClient client;
 	private KnowledgeRuntime session;
 	
 	public CommandBasedWSHumanTaskHandler(KnowledgeRuntime session) {
@@ -60,26 +58,27 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 		this.port = port;
 	}
 	
+	public void setClient(TaskClient client) {
+		this.client = client;
+	}
+	
 	public void connect() {
 		if (client == null) {
-			client = new MinaTaskClient(
-				"org.drools.process.workitem.wsht.WSHumanTaskHandler",
-                    new TaskClientHandler(SystemEventListenerFactory.getSystemEventListener()));
-			NioSocketConnector connector = new NioSocketConnector();
-			SocketAddress address = new InetSocketAddress(ipAddress, port);
-			boolean connected = client.connect(connector, address);
+			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler", 
+																new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+			boolean connected = client.connect(ipAddress, port);
+			
 			if (!connected) {
-				throw new IllegalArgumentException(
-					"Could not connect task client");
+				throw new IllegalArgumentException("Could not connect task client");
 			}
-			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
-	        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
-	        client.registerForEvent(key, false, eventResponseHandler);
-	        key = new TaskEventKey(TaskFailedEvent.class, -1);           
-	        client.registerForEvent(key, false, eventResponseHandler);
-	        key = new TaskEventKey(TaskSkippedEvent.class, -1);           
-	        client.registerForEvent(key, false, eventResponseHandler);
 		}
+		TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+		TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
+		client.registerForEvent(key, false, eventResponseHandler);
+		key = new TaskEventKey(TaskFailedEvent.class, -1);           
+		client.registerForEvent(key, false, eventResponseHandler);
+		key = new TaskEventKey(TaskSkippedEvent.class, -1);           
+		client.registerForEvent(key, false, eventResponseHandler);
 	}
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {

@@ -1,4 +1,4 @@
-package org.drools.task.service;
+package org.drools.task.service.mina;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -10,10 +10,9 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.drools.task.service.TaskServer;
 
-public class BaseMinaServer
-    implements
-    Runnable {
+public class BaseMinaTaskServer extends TaskServer {
     private final int port;
 
     IoHandlerAdapter  handler;
@@ -22,7 +21,7 @@ public class BaseMinaServer
 
     volatile boolean  running;
 
-    public BaseMinaServer(IoHandlerAdapter handler,
+    public BaseMinaTaskServer(IoHandlerAdapter handler,
                           int port) {
         this.handler = handler;
         this.port = port;
@@ -52,8 +51,7 @@ public class BaseMinaServer
 
         acceptor.setHandler( handler );
         acceptor.getSessionConfig().setReadBufferSize( 2048 );
-        acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE,
-                                                 10 );
+        acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
         acceptor.bind( new InetSocketAddress( "127.0.0.1", port ) );
     }
     

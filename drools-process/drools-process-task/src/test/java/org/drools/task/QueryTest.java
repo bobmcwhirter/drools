@@ -8,8 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.drools.task.query.DeadlineSummary;
-import org.drools.task.service.TaskServiceSession;
-import org.drools.task.service.TaskServiceEscalationTest.MockEscalatedDeadlineHandler;
+import org.drools.task.service.TaskServiceEscalationBaseTest.MockEscalatedDeadlineHandler;
 
 public class QueryTest extends BaseTest {
 
@@ -50,6 +49,5 @@ public class QueryTest extends BaseTest {
         assertEquals( now + 24000,
                       result.getDate().getTime());    
     }
-    
 
 }
