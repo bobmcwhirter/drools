@@ -37,7 +37,7 @@ public class MockEventMessagingTest extends BaseTest {
         taskService.getEventKeys().register( key, transport );      
         
         
-        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null );        
+        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );        
         
         assertEquals( 1, transport.list.size() );
         assertEquals( taskId, ((TaskClaimedEvent) ((Payload) transport.list.get(0)).get()).getTaskId() );

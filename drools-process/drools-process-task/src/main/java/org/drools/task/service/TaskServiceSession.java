@@ -170,7 +170,8 @@ public class TaskServiceSession {
     }
 
     void evalCommand(final Operation operation, final List<OperationCommand> commands, final Task task,
-                     final User user, final OrganizationalEntity targetEntity) throws PermissionDeniedException {
+                     final User user, final OrganizationalEntity targetEntity,
+                     List<String> groupIds) throws PermissionDeniedException {
 
         final TaskData taskData = task.getTaskData();
         boolean statusMatched = false;
@@ -183,7 +184,7 @@ public class TaskServiceSession {
                         statusMatched = true;
 
                         // next find out if the user can execute this doOperation
-                        if (!isAllowed(command, task, user)) {
+                        if (!isAllowed(command, task, user, groupIds)) {
                             String errorMessage = "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId();
 
                             throw new PermissionDeniedException(errorMessage);
@@ -200,7 +201,7 @@ public class TaskServiceSession {
                         statusMatched = true;
 
                         // next find out if the user can execute this doOperation
-                        if (!isAllowed(command, task, user)) {
+                        if (!isAllowed(command, task, user, groupIds)) {
                             String errorMessage = "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId();
                             throw new PermissionDeniedException(errorMessage);
                         }
@@ -216,7 +217,8 @@ public class TaskServiceSession {
         }
     }
 
-    private static boolean isAllowed(final OperationCommand command, final Task task, final User user) {
+    private static boolean isAllowed(final OperationCommand command, final Task task, final User user,
+    		                         final List<String> groupIds) {
         final PeopleAssignments people = task.getPeopleAssignments();
         final TaskData taskData = task.getTaskData();
 
@@ -231,15 +233,17 @@ public class TaskServiceSession {
                     break;
                 }
                 case Initiator: {
-                    operationAllowed = (taskData.getCreatedBy() != null && taskData.getCreatedBy().equals(user));
+                    operationAllowed = (taskData.getCreatedBy() != null && 
+                		(taskData.getCreatedBy().equals(user)) 
+                		 || (groupIds != null && groupIds.contains(taskData.getCreatedBy().getId())));
                     break;
                 }
                 case PotentialOwner: {
-                    operationAllowed = isAllowed(user, people.getPotentialOwners());
+                    operationAllowed = isAllowed(user, groupIds, people.getPotentialOwners());
                     break;
                 }
                 case BusinessAdministrator: {
-                    operationAllowed = isAllowed(user, people.getBusinessAdministrators());
+                    operationAllowed = isAllowed(user, groupIds, people.getBusinessAdministrators());
                     break;
                 }
             }
@@ -301,7 +305,8 @@ public class TaskServiceSession {
     }
 
     public void taskOperation(final Operation operation, final long taskId, final String userId,
-                              final String targetEntityId, final ContentData data) throws TaskException {
+                              final String targetEntityId, final ContentData data,
+                              List<String> groupIds) throws TaskException {
         OrganizationalEntity targetEntity = null;
 
         if (targetEntityId != null) {
@@ -316,7 +321,7 @@ public class TaskServiceSession {
 
             beginOrUseExistingTransaction();
 
-            evalCommand(operation, commands, task, user, targetEntity);
+            evalCommand(operation, commands, task, user, targetEntity, groupIds);
 
             switch (operation) {
                 case Claim: {
@@ -599,17 +604,20 @@ public class TaskServiceSession {
 
     public static boolean isAllowed(final User user, final List<OrganizationalEntity>[] people) {
         for (List<OrganizationalEntity> list : people) {
-            if (isAllowed(user, list)) {
+            if (isAllowed(user, null, list)) {
                 return true;
             }
         }
         return false;
     }
 
-    static boolean isAllowed(final User user, final List<OrganizationalEntity> entities) {
+    static boolean isAllowed(final User user, final List<String> groupIds, final List<OrganizationalEntity> entities) {
         // for now just do a contains, I'll figure out group membership later.
         for (OrganizationalEntity entity : entities) {
-            if (entity.equals(user)) {
+            if (entity instanceof User && entity.equals(user)) {
+                return true;
+            }
+            if (entity instanceof Group && groupIds != null && groupIds.contains(entity.getId())) {
                 return true;
             }
         }

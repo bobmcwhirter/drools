@@ -1,7 +1,9 @@
 package org.drools.task.service;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
@@ -172,6 +174,43 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim( taskId, users.get( "darth" ).getId(), responseHandler );        
+        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
+        getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task2 = getTaskResponseHandler.getTask();
+        assertEquals(  Status.Reserved, task2.getTaskData().getStatus() );
+        assertEquals( users.get( "darth" ), task2.getTaskData().getActualOwner() );
+    }
+
+    public void testClaimWithGroupAssignee() throws Exception {
+        Map  vars = new HashedMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [groups['knightsTempler' ]], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        // A Task with multiple potential owners moves to "Ready" state until someone claims it.
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals( Status.Ready , task1.getTaskData().getStatus() );     
+        
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        List<String> groupIds = new ArrayList<String>();
+        groupIds.add("Dummy Group");
+        groupIds.add("Knights Templer");
+        client.claim( taskId, users.get( "darth" ).getId(), groupIds, responseHandler );        
         responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 

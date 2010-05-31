@@ -50,7 +50,7 @@ public abstract class TaskServiceEventMessagingBaseTest extends BaseTest {
         client.registerForEvent( key, true, handler );
         Thread.sleep( 3000 );
         
-        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null );          
+        taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          
         handler.waitTillDone( 5000 );
         
         Payload payload = handler.getPayload();
