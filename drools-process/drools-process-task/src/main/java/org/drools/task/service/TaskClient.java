@@ -180,6 +180,27 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    public void claim(long taskId,
+		  		      String userId,
+		  		      List<String> groupIds,
+		              TaskOperationResponseHandler responseHandler) {
+		List<Object> args = new ArrayList<Object>( 6 );
+		args.add( Operation.Claim );
+		args.add( taskId );
+		args.add( userId );
+		args.add( null );
+		args.add( null );
+		args.add( groupIds );
+		Command cmd = new Command( counter.getAndIncrement(),
+		                           CommandName.OperationRequest,
+		                           args );
+		
+		handler.addResponseHandler( cmd.getId(),
+		                            responseHandler );
+		
+		connector.write( cmd );
+	}
+
     public void start(long taskId,
                       String userId,
                       TaskOperationResponseHandler responseHandler) {
