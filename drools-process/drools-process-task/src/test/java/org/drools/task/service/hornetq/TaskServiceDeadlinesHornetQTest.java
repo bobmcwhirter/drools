@@ -20,14 +20,14 @@ public class TaskServiceDeadlinesHornetQTest extends TaskServiceDeadlinesBaseTes
 		getConf().setProperty("replyTo", "replyTo@domain.com");
 		getConf().setProperty("defaultLanguage", "en-UK");
 
-		server = new HornetQTaskServer(taskService, 5445);
+		server = new HornetQTaskServer(taskService, 5446);
 		Thread thread = new Thread(server);
 		thread.start();
 		Thread.sleep(500);
 
 		client = new TaskClient(new HornetQTaskClientConnector("client 1",
 								new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-		client.connect("127.0.0.1", 5445);
+		client.connect("127.0.0.1", 5446);
 
 		setWiser(new Wiser());
 		getWiser().setHostname(getConf().getProperty("mail.smtp.host"));

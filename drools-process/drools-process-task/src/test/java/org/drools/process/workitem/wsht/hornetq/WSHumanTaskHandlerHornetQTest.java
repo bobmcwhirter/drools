@@ -16,13 +16,13 @@ public class WSHumanTaskHandlerHornetQTest extends WSHumanTaskHandlerBaseTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		server = new HornetQTaskServer(taskService, 5445);
+		server = new HornetQTaskServer(taskService, 5446);
 		Thread thread = new Thread(server);
 		thread.start();
 		Thread.sleep(500);
 		setClient(new TaskClient(new HornetQTaskClientConnector("client 1",
 								new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
-		getClient().connect("127.0.0.1", 5445);
+		getClient().connect("127.0.0.1", 5446);
 		WSHumanTaskHandler handler = new WSHumanTaskHandler();
 		handler.setClient(getClient());
 		setHandler(handler);
