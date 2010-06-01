@@ -1,11 +1,14 @@
 package org.drools.process.audit;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class NodeInstanceLog {
+public class NodeInstanceLog implements Serializable {
     
 	public static final int TYPE_ENTER = 0;
 	public static final int TYPE_EXIT = 1;
+	
+	private static final long serialVersionUID = 4L;
 	
 	private long id;
     private int type;

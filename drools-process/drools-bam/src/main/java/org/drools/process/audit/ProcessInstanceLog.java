@@ -1,9 +1,12 @@
 package org.drools.process.audit;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ProcessInstanceLog {
+public class ProcessInstanceLog implements Serializable {
     
+	private static final long serialVersionUID = 4L;
+	
 	private long id;
     private long processInstanceId;
     private String processId;
