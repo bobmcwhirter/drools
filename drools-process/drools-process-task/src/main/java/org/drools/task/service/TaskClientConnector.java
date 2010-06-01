@@ -6,7 +6,7 @@ public interface TaskClientConnector {
 	
 	public boolean connect();
 	public boolean connect(String address, int port);
-	public void disconnect();
+	public void disconnect() throws Exception;
 	
 	public void write(Object message);
 	public BaseHandler getHandler();

@@ -140,12 +140,21 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 	public void stop() throws Exception {
 		if (running) {
 			running = false;
-			consumer.close();
-			session.stop();
+			closeAll();
 		}
 		if (embeddedServerRunning) {
 			embeddedServerRunning = false;
+			closeAll();
 			server.stop();
+		}
+	}
+	
+	private void closeAll() throws HornetQException {
+		if (!session.isClosed()) {
+			session.close();
+		}
+		if (!consumer.isClosed()) {
+			consumer.close();
 		}
 	}
 }

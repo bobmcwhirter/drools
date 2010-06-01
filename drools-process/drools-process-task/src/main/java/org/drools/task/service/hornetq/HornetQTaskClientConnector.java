@@ -132,14 +132,12 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 		}
 	}
 
-	public void disconnect() {
+	public void disconnect() throws Exception {
 		if (session!= null && !session.isClosed()) {
-			try {
-				producer.close();
+			session.close();
+			producer.close();
+			if (consumer!=null) {
 				consumer.close();
-				session.close();
-			} catch (HornetQException e) {
-				e.printStackTrace();
 			}
 		}
 	}

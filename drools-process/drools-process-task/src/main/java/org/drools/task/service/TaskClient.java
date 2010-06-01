@@ -555,7 +555,7 @@ public class TaskClient  {
     	return connector.connect(address, port);
     }
     
-    public void disconnect() {
+    public void disconnect() throws Exception {
     	connector.disconnect();
     }
 

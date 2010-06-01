@@ -174,7 +174,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		client.addTask(task, content, null);
 	}
 	
-	public void dispose() {
+	public void dispose() throws Exception {
 		if (client != null) {
 			client.disconnect();
 		}
