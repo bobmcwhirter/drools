@@ -1,4 +1,4 @@
-package org.drools.runtime.pipeline.impl;
+package org.drools.pipeline.impl;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -98,12 +98,10 @@ public class DroolsJaxbHelperProviderImpl
 														FlatQueryResults.class.getName()
 														};
 	
-    public String[] addXsdModel(Resource resource,
-                             KnowledgeBuilder kbuilder,
-                             Options xjcOpts,
-                             String systemId) throws IOException {
-        PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl) kbuilder).pkgBuilder;
-
+    public static String[] addXsdModel(Resource resource,
+                                PackageBuilder pkgBuilder,
+                                Options xjcOpts,
+                                String systemId) throws IOException {
         InputSource source = new InputSource( new CachingRewindableReader( resource.getReader() ) );
         source.setSystemId( systemId.trim().startsWith( "." ) ? systemId : "." + systemId );
 
@@ -131,7 +129,7 @@ public class DroolsJaxbHelperProviderImpl
         for ( Entry<String, byte[]> entry : codeWriter.getMap().entrySet() ) {
             String name = entry.getKey();
             //if (name.endsWith("ObjectFactory.java")) {
-            //	continue;
+            //  continue;
             //}
             
             String pkgName = null;
@@ -164,6 +162,14 @@ public class DroolsJaxbHelperProviderImpl
         pkgBuilder.updateResults();
 
         return classNames.toArray( new String[classNames.size()] );
+    }
+	
+    public String[] addXsdModel(Resource resource,
+                                KnowledgeBuilder kbuilder,
+                                Options xjcOpts,
+                                String systemId) throws IOException {
+        PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl) kbuilder).pkgBuilder;
+        return addXsdModel( resource, pkgBuilder, xjcOpts, systemId );
     }
 
     public JAXBContext newJAXBContext(String[] classNames,
