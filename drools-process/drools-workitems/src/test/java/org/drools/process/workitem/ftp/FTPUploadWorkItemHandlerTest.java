@@ -2,21 +2,7 @@ package org.drools.process.workitem.ftp;
 
 
 
-import java.io.File;
 import junit.framework.TestCase;
-
-import org.apache.ftpserver.ConnectionConfig;
-import org.apache.ftpserver.ConnectionConfigFactory;
-import org.apache.ftpserver.FtpServer;
-import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.ftplet.UserManager;
-import org.apache.ftpserver.listener.ListenerFactory;
-import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
-import org.apache.ftpserver.usermanager.ClearTextPasswordEncryptor;
-import org.drools.process.instance.impl.DefaultWorkItemManager;
-import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.WorkItemManager;
-import org.drools.util.ChainedProperties;
 
 
 
