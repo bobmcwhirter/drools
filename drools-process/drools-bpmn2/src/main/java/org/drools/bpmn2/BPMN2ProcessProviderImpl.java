@@ -11,6 +11,9 @@ public class BPMN2ProcessProviderImpl implements BPMN2ProcessProvider {
         PackageBuilderConfiguration conf = packageBuilder.getPackageBuilderConfiguration();
         if (conf.getSemanticModules().getSemanticModule(BPMNSemanticModule.BPMN2_URI) == null) {
         	conf.addSemanticModule(new BPMNSemanticModule());
+        	conf.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
+        	conf.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
+        	conf.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
         }
     }
 
