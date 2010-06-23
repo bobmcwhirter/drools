@@ -125,13 +125,11 @@
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
     </dependency>  
-
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
-    </dependency>  
+       <groupId>org.slf4j</groupId>
+       <artifactId>jcl-over-slf4j</artifactId>
+       <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.geronimo.components</groupId>
       <artifactId>geronimo-transaction</artifactId>
