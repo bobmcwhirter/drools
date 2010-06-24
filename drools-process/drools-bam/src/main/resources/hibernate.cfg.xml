@@ -12,7 +12,7 @@
         <property name="connection.url">jdbc:h2:mem:mydb</property>
         <!--property name="connection.url">jdbc:h2:file:/NotBackedUp/data/mydb</property-->
         <property name="connection.username">sa</property>
-        <property name="connection.password"></property>
+        <property name="connection.password">sasa</property>
 
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">1</property>
