@@ -52,9 +52,26 @@ public class JPAProcessInstanceDbLog {
     @SuppressWarnings("unchecked")
 	public List<NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId) {
     	List<NodeInstanceLog> result = getEntityManager()
-			.createQuery("FROM NodeInstanceLog n WHERE WHERE n.processInstanceId = :processInstanceId AND n.nodeId = :nodeId ORDER BY date")
+			.createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId AND n.nodeId = :nodeId ORDER BY date")
 				.setParameter("processInstanceId", processInstanceId)
 				.setParameter("nodeId", nodeId).getResultList();
+    	return result;
+    }
+
+    @SuppressWarnings("unchecked")
+	public List<VariableInstanceLog> findVariableInstances(long processInstanceId) {
+    	List<VariableInstanceLog> result = getEntityManager()
+			.createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId ORDER BY date")
+				.setParameter("processInstanceId", processInstanceId).getResultList();
+		return result;
+    }
+
+    @SuppressWarnings("unchecked")
+	public List<VariableInstanceLog> findVariableInstances(long processInstanceId, String variableId) {
+    	List<VariableInstanceLog> result = getEntityManager()
+			.createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId AND v.variableId = :variableId ORDER BY date")
+				.setParameter("processInstanceId", processInstanceId)
+				.setParameter("variableId", variableId).getResultList();
     	return result;
     }
 

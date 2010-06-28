@@ -12,46 +12,35 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class NodeInstanceLog implements Serializable {
+public class VariableInstanceLog implements Serializable {
     
-	public static final int TYPE_ENTER = 0;
-	public static final int TYPE_EXIT = 1;
-	
 	private static final long serialVersionUID = 4L;
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-    private int type;
     private long processInstanceId;
     private String processId;
-    private String nodeInstanceId;
-    private String nodeId;
+    private String variableInstanceId;
+    private String variableId;
+    private String value;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "log_date")
     private Date date;
     
-    NodeInstanceLog() {
+    VariableInstanceLog() {
     }
     
-	public NodeInstanceLog(int type, long processInstanceId, String processId,
-			               String nodeInstanceId, String nodeId) {
-		this.type = type;
+	public VariableInstanceLog(long processInstanceId, String processId,
+			               	   String variableInstanceId, String variableId, String value) {
         this.processInstanceId = processInstanceId;
         this.processId = processId;
-		this.nodeInstanceId = nodeInstanceId;
-		this.nodeId = nodeId;
+		this.variableInstanceId = variableInstanceId;
+		this.variableId = variableId;
+		this.value = value;
         this.date = new Date();
     }
 	
-	public int getType() {
-		return type;
-	}
-	
-	void setType(int type) {
-		this.type = type;
-	}
-    
     public long getId() {
     	return id;
     }
@@ -76,20 +65,28 @@ public class NodeInstanceLog implements Serializable {
 		this.processId = processId;
 	}
 
-    public String getNodeInstanceId() {
-		return nodeInstanceId;
+	public String getVariableInstanceId() {
+		return variableInstanceId;
 	}
 
-	void setNodeInstanceId(String nodeInstanceId) {
-		this.nodeInstanceId = nodeInstanceId;
+	public void setVariableInstanceId(String variableInstanceId) {
+		this.variableInstanceId = variableInstanceId;
 	}
 
-	public String getNodeId() {
-		return nodeId;
+	public String getVariableId() {
+		return variableId;
 	}
 
-	void setNodeId(String nodeId) {
-		this.nodeId = nodeId;
+	public void setVariableId(String variableId) {
+		this.variableId = variableId;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public Date getDate() {
@@ -101,8 +98,8 @@ public class NodeInstanceLog implements Serializable {
 	}
 
     public String toString() {
-        return (type == 0 ? "Triggered " : "Left ") + "Node Instance '" + 
-        	processId + "#" + nodeId + "' [" + processInstanceId + "#" + nodeInstanceId + "]";
+        return "Change variable '" + 
+        	processId + "#" + variableId + "' to '" + value + "' [" + processInstanceId + "#" + variableInstanceId + "]";
     }
     
 }

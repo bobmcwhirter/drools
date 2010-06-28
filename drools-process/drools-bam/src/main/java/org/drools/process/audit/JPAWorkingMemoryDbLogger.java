@@ -10,6 +10,7 @@ import org.drools.audit.WorkingMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
+import org.drools.audit.event.RuleFlowVariableLogEvent;
 import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.runtime.Environment;
@@ -62,6 +63,10 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
             	nodeEvent = (RuleFlowNodeLogEvent) logEvent;
             	addNodeExitLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId());
                 break;
+            case LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED:
+            	RuleFlowVariableLogEvent variableEvent = (RuleFlowVariableLogEvent) logEvent;
+            	addVariableLog(variableEvent.getProcessInstanceId(), variableEvent.getProcessId(), variableEvent.getVariableInstanceId(), variableEvent.getVariableId(), variableEvent.getObjectToString());
+                break;
             default:
                 // ignore all other events
         }
@@ -94,6 +99,12 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
             String processId, String nodeInstanceId, String nodeId) {
         NodeInstanceLog log = new NodeInstanceLog(
             NodeInstanceLog.TYPE_EXIT, processInstanceId, processId, nodeInstanceId, nodeId);
+        getEntityManager().persist(log);
+    }
+
+    private void addVariableLog(long processInstanceId, String processId, String variableInstanceId, String variableId, String objectToString) {
+    	VariableInstanceLog log = new VariableInstanceLog(
+    		processInstanceId, processId, variableInstanceId, variableId, objectToString);
         getEntityManager().persist(log);
     }
 

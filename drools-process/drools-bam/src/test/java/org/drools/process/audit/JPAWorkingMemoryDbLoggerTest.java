@@ -1,6 +1,9 @@
 package org.drools.process.audit;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -18,6 +21,9 @@ import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -170,10 +176,68 @@ public class JPAWorkingMemoryDbLoggerTest extends TestCase {
         log.dispose();
 	}
 	
+	public void testLogger4() throws Exception {
+        // load the process
+        KnowledgeBase kbase = createKnowledgeBase();
+        // create a new session
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                 emf );
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
+                 TransactionManagerServices.getTransactionManager() );
+        StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+        new JPAWorkingMemoryDbLogger(session);
+        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog();
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+				Map<String, Object> results = new HashMap<String, Object>();
+				results.put("Result", "ResultValue");
+				manager.completeWorkItem(workItem.getId(), results);
+			}
+			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+			}
+		});
+        
+        // start process instance
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<String> list = new ArrayList<String>();
+		list.add("One");
+		list.add("Two");
+		list.add("Three");
+		params.put("list", list);
+		long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
+        
+        System.out.println("Checking process instances for process 'com.sample.ruleflow3'");
+        List<ProcessInstanceLog> processInstances =
+        	log.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(1, processInstances.size());
+        ProcessInstanceLog processInstance = processInstances.get(0);
+        System.out.print(processInstance);
+        System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        assertNotNull(processInstance.getStart());
+        assertNotNull(processInstance.getEnd());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
+        List<VariableInstanceLog> variableInstances = log.findVariableInstances(processInstanceId);
+        assertEquals(6, variableInstances.size());
+        for (VariableInstanceLog variableInstance: variableInstances) {
+        	System.out.println(variableInstance);
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
+            assertNotNull(variableInstance.getDate());
+        }
+        log.clear();
+        processInstances = log.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(0, processInstances.size());
+        log.dispose();
+	}
+	
     private KnowledgeBase createKnowledgeBase() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
     	kbuilder.add(new ClassPathResource("ruleflow.rf"), ResourceType.DRF);
     	kbuilder.add(new ClassPathResource("ruleflow2.rf"), ResourceType.DRF);
+    	kbuilder.add(new ClassPathResource("ruleflow3.rf"), ResourceType.DRF);
     	KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
     	kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         return kbase;
