@@ -79,7 +79,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
 	}
 
-	public void testTaskMultipleActors() throws Exception {
+	public void FIXME_testTaskMultipleActors() throws Exception {
 		TestWorkItemManager manager = new TestWorkItemManager();
 		WorkItemImpl workItem = new WorkItemImpl();
 		workItem.setName("Human Task");
