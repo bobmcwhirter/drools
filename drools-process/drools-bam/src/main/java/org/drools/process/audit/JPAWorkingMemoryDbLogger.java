@@ -112,7 +112,7 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
     }
 
     protected EntityManager getEntityManager() {
-        return (EntityManager) env.get(EnvironmentName.ENTITY_MANAGER);
+        return (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
     }
 
 }
