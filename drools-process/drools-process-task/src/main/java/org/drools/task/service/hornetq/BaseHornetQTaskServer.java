@@ -75,9 +75,6 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 				break;
 			default:
 				logger.error(e.getMessage());
-				if (logger.isDebugEnabled()) {
-					e.printStackTrace();
-				}
  				break;
 			}
 		}
@@ -86,13 +83,19 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 		}
 	}
 
-	private Object readMessage(ClientMessage msgReceived) throws IOException, ClassNotFoundException {
+	private Object readMessage(ClientMessage msgReceived) throws IOException {
 		int bodySize = msgReceived.getBodySize();
 		byte[] message = new byte[bodySize];
 		msgReceived.getBodyBuffer().readBytes(message);
 		ByteArrayInputStream bais = new ByteArrayInputStream(message);
-		ObjectInputStream ois = new ObjectInputStream(bais);
-		return ois.readObject();
+		try {
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return ois.readObject();
+		} catch (IOException e) {
+			throw new IOException("Error reading message");
+		} catch (ClassNotFoundException e) {
+			throw new IOException("Error creating message");
+		}
 	}
 
 	public void start() throws Exception {

@@ -20,7 +20,7 @@ public class HornetQSessionWriter implements SessionWriter {
 		this.producer = producer;
 	}
 
-	public void write(Object message) {
+	public void write(Object message) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oout;
 		try {
@@ -30,9 +30,9 @@ public class HornetQSessionWriter implements SessionWriter {
 			clientMessage.getBodyBuffer().writeBytes(baos.toByteArray());
 			producer.send(clientMessage);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IOException("Error creating message");
 		} catch (HornetQException e) {
-			e.printStackTrace();
+			throw new IOException("Unable to create message");
 		}
 	}
 

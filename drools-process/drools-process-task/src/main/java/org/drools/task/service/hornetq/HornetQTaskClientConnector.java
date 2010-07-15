@@ -96,8 +96,6 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 						logger.info(e.getMessage());
 					}
 					catch (Exception e) {
-						// TODO: remove this printStackTrace()
-						e.printStackTrace();
 						throw new RuntimeException("Client Exception with class " + getClass() + " using port " + port, e);
 					}
 				}
@@ -106,7 +104,7 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 			session.start();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return false;
 		}
 	}
@@ -153,9 +151,9 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 			message.putStringProperty("producerId", name);
 			producer.send(message);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Error creating message", e);
 		} catch (HornetQException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Error writing message", e);
 		}
 	}
 

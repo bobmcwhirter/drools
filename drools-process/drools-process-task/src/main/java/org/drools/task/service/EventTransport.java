@@ -1,5 +1,6 @@
 package org.drools.task.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,11 @@ public class EventTransport implements EventTriggerTransport {
 		List<Object> args = new ArrayList<Object>( 1 );
 		args.add(payload);
 		Command cmd = new Command(responseId, CommandName.EventTriggerResponse, args);             
-		session.write(cmd);        
+		try {
+			session.write(cmd);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}       
 	}
 
 	public boolean isRemove() {
