@@ -1,12 +1,12 @@
-format = new java.text.SimpleDateFormat( "dd/MMM/yyyy" );
+format = new java.text.SimpleDateFormat( "dd/MM/yyyy" );
 
 tasks = [
 	(with ( new Task() ) { 
 	    priority = 20,
 	    taskData = (with ( new TaskData() ) {
 	        actualOwner = users[ 'peter' ],
-	        createdOn = format.parse( "15/Jan/2008" ),	        
-	        activationTime = format.parse( "20/Jan/2008" ),
+	        createdOn = format.parse( "15/01/2008" ),	        
+	        activationTime = format.parse( "20/01/2008" ),
 	        status = Status.Created,
 	    }),
 	    peopleAssignments = (with ( new PeopleAssignments() ) {        
@@ -33,8 +33,8 @@ tasks = [
 	    taskData = (with ( new TaskData() ) {
 	        actualOwner = users[ 'steve' ],
 	        createdBy = users[ 'tony' ],
-	        createdOn = format.parse( "15/Feb/2008" ),
-	        activationTime = format.parse( "20/Feb/2008" ),
+	        createdOn = format.parse( "15/02/2008" ),
+	        activationTime = format.parse( "20/02/2008" ),
 	        status = Status.Created,
 	    }),
         names = [ new I18NText( "en-UK", "This is my task name Feb" ),
@@ -53,8 +53,8 @@ tasks = [
 	    taskData = (with ( new TaskData() ) {
 	        actualOwner = users[ 'peter' ],
 	        createdBy = users[ 'steve' ],
-	        createdOn = format.parse( "15/Mar/2008" ),	        
-	        activationTime = format.parse( "20/Mar/2008" ),
+	        createdOn = format.parse( "15/03/2008" ),	        
+	        activationTime = format.parse( "20/03/2008" ),
 	        status = Status.Created,
 	    }),
         names = [ new I18NText( "en-UK", "This is my task name Mar" ),
@@ -69,8 +69,8 @@ tasks = [
 	    taskData = (with ( new TaskData() ) {
 	        actualOwner = users[ 'darth' ],
 	        createdBy = users[ 'bobba' ],
-	        createdOn = format.parse( "15/Apr/2008" ),	        
-	        activationTime = format.parse( "20/Apr/2008" ),
+	        createdOn = format.parse( "15/04/2008" ),	        
+	        activationTime = format.parse( "20/04/2008" ),
 	        status = Status.Created,
 	    }),
         names = [ new I18NText( "en-UK", "This is my task name Apr" ),
@@ -85,8 +85,8 @@ tasks = [
 	    taskData = (with ( new TaskData() ) {
 	        actualOwner = users[ 'peter' ],
 	        createdBy = users[ 'steve' ],
-	        createdOn = format.parse( "15/May/2008" ),	        
-	        activationTime = format.parse( "20/May/2008" ),
+	        createdOn = format.parse( "15/05/2008" ),	        
+	        activationTime = format.parse( "20/05/2008" ),
 	        status = Status.Created,
 	    }),
         names = [ new I18NText( "en-UK", "This is my task name May" ),
@@ -101,8 +101,8 @@ tasks = [
 	    taskData = (with ( new TaskData() ) {
 	        actualOwner = users[ 'steve' ],
 	        createdBy = users[ 'steve' ],
-	        createdOn = format.parse( "15/Jun/2008" ),	        
-	        activationTime = format.parse( "20/Jun/2008" ),
+	        createdOn = format.parse( "15/06/2008" ),	        
+	        activationTime = format.parse( "20/06/2008" ),
 	        status = Status.Created,
 	    }),
         names = [ new I18NText( "en-UK", "This is my task name Jun" ),

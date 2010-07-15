@@ -25,8 +25,8 @@ public abstract class TaskServiceEscalationBaseTest extends BaseTest {
     public void testDummy() {
         assertTrue( true );
     }
-
-    public void FIXME_testUnescalatedDeadlines() throws Exception {
+    
+    public void testUnescalatedDeadlines() throws Exception {
         Map vars = new HashedMap();
         vars.put( "users", users );
         vars.put( "groups", groups );
@@ -35,7 +35,7 @@ public abstract class TaskServiceEscalationBaseTest extends BaseTest {
         taskService.setEscalatedDeadlineHandler( handler );  
         
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
+        Reader reader = new InputStreamReader( TaskServiceEscalationBaseTest.class.getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         long now = ((Date)vars.get( "now" )).getTime();
@@ -63,13 +63,13 @@ public abstract class TaskServiceEscalationBaseTest extends BaseTest {
                       item2.getDeadline().getDate().getTime() );        
     }
     
-    public void FIXME_testUnescalatedDeadlinesOnStartup() throws Exception {
+    public void testUnescalatedDeadlinesOnStartup() throws Exception {
         Map vars = new HashedMap();
         vars.put( "users", users );
         vars.put( "groups", groups );
 
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
+        Reader reader = new InputStreamReader( TaskServiceEscalationBaseTest.class.getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         long now = ((Date)vars.get( "now" )).getTime();
