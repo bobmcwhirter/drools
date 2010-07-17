@@ -15,7 +15,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <plugin>
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-surefire-plugin</artifactId>
-             <version>2.5</version>
              <configuration>
                <!--argLine>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</argLine-->
 	           <excludes>
@@ -39,27 +38,22 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>org.drools</groupId>
          <artifactId>drools-workitems</artifactId>
-         <version>5.1.0.SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>org.apache.mina</groupId>
          <artifactId>mina-core</artifactId>
-         <version>2.0.0-RC1</version>
       </dependency>
       <dependency>
          <groupId>org.hornetq</groupId>
          <artifactId>hornetq-core</artifactId>
-         <version>2.0.0.GA</version>
       </dependency>
       <dependency>
          <groupId>org.hornetq</groupId>
          <artifactId>hornetq-transports</artifactId>
-         <version>2.0.0.GA</version>
       </dependency>
       <dependency>
          <groupId>org.jboss.netty</groupId>
          <artifactId>netty</artifactId>
-         <version>3.1.5.GA</version>
       </dependency>
       <dependency>
          <groupId>org.slf4j</groupId>
@@ -79,30 +73,25 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>antlr</groupId>
          <artifactId>antlr</artifactId>
-         <version>2.7.6</version>
       </dependency>
       <dependency>
          <groupId>commons-collections</groupId>
          <artifactId>commons-collections</artifactId>
-         <version>3.1</version>
       </dependency>
       <!-- HSQLDB -->
       <dependency>
          <groupId>com.h2database</groupId>
          <artifactId>h2</artifactId>
-         <version>1.1.117</version>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.jboss.seam</groupId>
          <artifactId>jboss-seam</artifactId>
-         <version>2.1.1.GA</version>
       </dependency>
       <!-- PGSQL -->
       <dependency>
          <groupId>postgresql</groupId>
          <artifactId>postgresql</artifactId>
-         <version>8.3-603.jdbc3</version>
          <scope>test</scope>
       </dependency>
       <dependency>
@@ -117,7 +106,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>org.subethamail</groupId>
          <artifactId>subethasmtp-wiser</artifactId>
-         <version>1.2</version>
          <scope>test</scope>
       </dependency>
    </dependencies>

@@ -36,62 +36,51 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>javax.mail</groupId>
          <artifactId>mail</artifactId>
-         <version>1.4</version>
       </dependency>
       <dependency>
          <groupId>javax.activation</groupId>
          <artifactId>activation</artifactId>
-         <version>1.1</version>
       </dependency>
       <dependency>
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-finder</artifactId>
-         <version>1.0-20080905.033643-1</version>
       </dependency>
       <dependency>
          <groupId>commons-io</groupId>
          <artifactId>commons-io</artifactId>
-         <version>1.4</version>
       </dependency>
       <dependency>
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-compress</artifactId>
-         <version>1.0</version>
       </dependency>
       <dependency>
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-exec</artifactId>
-         <version>1.0.1</version>
       </dependency>
       <!-- External test dependencies -->
       <dependency>
          <groupId>org.subethamail</groupId>
          <artifactId>subethasmtp-wiser</artifactId>
-         <version>1.2</version>
          <scope>test</scope>
       </dependency>
       <!-- Smack Jabber LIB -->
       <dependency>
          <groupId>jivesoftware</groupId>
          <artifactId>smack</artifactId>
-         <version>3.0.4</version>
       </dependency>
       <!-- Rome RSS Feeds LIB -->
       <dependency>
          <groupId>rome</groupId>
          <artifactId>rome</artifactId>
-         <version>0.9</version>
       </dependency>
       <!-- FTP Client LIB -->
       <dependency>
          <groupId>commons-net</groupId>
          <artifactId>commons-net</artifactId>
-         <version>2.0</version>
       </dependency>
       <dependency>
          <groupId>org.apache.ftpserver</groupId>
          <artifactId>ftpserver-core</artifactId>
-         <version>1.0.3</version>
          <scope>test</scope>
       </dependency>
       <dependency>
