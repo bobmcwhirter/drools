@@ -302,8 +302,12 @@ public class XmlBPMNProcessDumper {
                 }
             } else if (node instanceof ForEachNode) {
             	ForEachNode forEachNode = (ForEachNode) node;
+            	String type = null;
+            	if (forEachNode.getVariableType() instanceof ObjectDataType) {
+            		type = ((ObjectDataType) forEachNode.getVariableType()).getClassName(); 
+            	}
                 xmlDump.append(
-                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\" structureRef=\"" + XmlDumper.replaceIllegalChars(((ObjectDataType) forEachNode.getVariableType()).getClassName()) + "\"/>" + EOL + EOL);
+                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\" " + (type == null ? "" : "structureRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"") + "/>" + EOL + EOL);
             }
             if (node instanceof CompositeNode) {
             	visitInterfaces(((CompositeNode) node).getNodes(), xmlDump);
