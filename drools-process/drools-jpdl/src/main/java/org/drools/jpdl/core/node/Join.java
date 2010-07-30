@@ -22,7 +22,7 @@ import org.jbpm.graph.action.Script;
 
 public class Join extends JpdlNode {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     private String parentLockMode;
     private boolean isDiscriminator = false;

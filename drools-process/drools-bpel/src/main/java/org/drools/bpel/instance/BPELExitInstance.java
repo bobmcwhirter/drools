@@ -21,7 +21,7 @@ import org.drools.workflow.instance.node.EndNodeInstance;
 
 public class BPELExitInstance extends EndNodeInstance {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
     public void internalTrigger(NodeInstance from, String type) {
         if (BPELLinkManager.checkActivityEnabled(this)) {

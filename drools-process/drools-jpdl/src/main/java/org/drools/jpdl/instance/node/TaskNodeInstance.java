@@ -32,7 +32,7 @@ import org.jbpm.taskmgmt.def.Task;
 
 public class TaskNodeInstance extends JpdlNodeInstance {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
     private List<WorkItemImpl> workItems = new ArrayList<WorkItemImpl>();
     

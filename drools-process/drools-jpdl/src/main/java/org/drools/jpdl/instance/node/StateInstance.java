@@ -21,7 +21,7 @@ import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
 
 public class StateInstance extends JpdlNodeInstance implements EventBasedNodeInstanceInterface {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	public void execute(NodeInstance from, String type) {
 		// Do nothing

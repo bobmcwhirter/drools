@@ -32,7 +32,7 @@ import org.drools.workflow.instance.node.CompositeNodeInstance;
  */
 public class BPELFlowInstance extends CompositeNodeInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private List<String> activatedLinks = new ArrayList<String>();
     private Map<String, NodeInstance> waitingActivityInstances = new HashMap<String, NodeInstance>();

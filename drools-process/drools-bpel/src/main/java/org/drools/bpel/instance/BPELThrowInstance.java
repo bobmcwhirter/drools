@@ -26,7 +26,7 @@ import org.drools.workflow.instance.node.FaultNodeInstance;
  */
 public class BPELThrowInstance extends FaultNodeInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     public void internalTrigger(NodeInstance from, String type) {
         if (BPELLinkManager.checkActivityEnabled(this)) {

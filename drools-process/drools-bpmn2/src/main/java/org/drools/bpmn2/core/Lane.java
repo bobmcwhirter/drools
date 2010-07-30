@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Lane implements Serializable {
     
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
     private String id;
     private String name;

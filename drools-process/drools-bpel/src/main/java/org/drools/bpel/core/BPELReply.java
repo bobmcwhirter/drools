@@ -26,7 +26,7 @@ import org.drools.workflow.core.node.WorkItemNode;
  */
 public class BPELReply extends WorkItemNode implements BPELActivity {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private static final String PARTNER_LINK = "PartnerLink";
     private static final String PORT_TYPE = "PortType";

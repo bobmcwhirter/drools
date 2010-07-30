@@ -22,7 +22,7 @@ import org.jbpm.taskmgmt.def.Task;
 
 public class TaskNode extends JpdlNode {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	private Set<Task> tasks;
 	private int signal = org.jbpm.graph.node.TaskNode.SIGNAL_LAST;

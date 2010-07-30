@@ -26,7 +26,7 @@ import org.jbpm.jpdl.el.impl.JbpmExpressionEvaluator;
 
 public class DecisionInstance extends JpdlNodeInstance {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
     public Decision getDecision() {
         return (Decision) getNode();

@@ -26,7 +26,7 @@ import org.jbpm.graph.action.Script;
 
 public class ForkInstance extends JpdlNodeInstance {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     public Fork getFork() {
         return (Fork) getNode();

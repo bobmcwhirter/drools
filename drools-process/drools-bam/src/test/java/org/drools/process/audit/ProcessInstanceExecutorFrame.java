@@ -34,7 +34,7 @@ import org.drools.WorkingMemory;
 
 public class ProcessInstanceExecutorFrame extends JFrame {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private WorkingMemory workingMemory;
     private JTextField processIdTextField;

@@ -25,7 +25,7 @@ import com.opensymphony.workflow.loader.FunctionDescriptor;
 
 public class OSWorkflowConnection extends ConnectionImpl {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     private List<FunctionDescriptor> preFunctions;
     private List<FunctionDescriptor> postFunctions;

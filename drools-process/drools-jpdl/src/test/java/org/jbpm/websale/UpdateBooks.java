@@ -23,7 +23,7 @@ public class UpdateBooks implements ActionHandler {
   
     String msg;
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
 
     public void execute(ExecutionContext executionContext) throws Exception {
         System.out.println("###############################################");

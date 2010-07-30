@@ -29,7 +29,7 @@ import org.drools.workflow.core.node.Split;
  */
 public class BPELWhile extends CompositeNode implements BPELActivity {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private Join join;
     private Split split;

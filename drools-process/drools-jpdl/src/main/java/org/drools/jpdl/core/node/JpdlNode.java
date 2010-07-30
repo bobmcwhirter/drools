@@ -29,7 +29,7 @@ import org.jbpm.graph.def.ExceptionHandler;
 
 public class JpdlNode extends NodeImpl {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	private Map<String, Event> events;
 	private Action action;

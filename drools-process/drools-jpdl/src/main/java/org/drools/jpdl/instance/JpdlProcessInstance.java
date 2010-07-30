@@ -21,7 +21,7 @@ import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 public class JpdlProcessInstance extends WorkflowProcessInstanceImpl {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	public JpdlProcess getJpdlProcess() {
 		return (JpdlProcess) getProcess();

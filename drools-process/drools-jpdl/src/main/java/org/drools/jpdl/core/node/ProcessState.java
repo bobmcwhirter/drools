@@ -22,7 +22,7 @@ import org.jbpm.context.def.VariableAccess;
 
 public class ProcessState extends JpdlNode {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	private Set<VariableAccess> variableAccesses;
 	private String subProcessName;

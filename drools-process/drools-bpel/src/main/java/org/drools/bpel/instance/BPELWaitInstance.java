@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  */
 public class BPELWaitInstance extends TimerNodeInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     public BPELWait getBPELWait() {
     	return (BPELWait) getNode();

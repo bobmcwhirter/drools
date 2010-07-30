@@ -20,7 +20,7 @@ import org.jbpm.graph.action.Script;
 
 public class Fork extends JpdlNode {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     private Script script;
 

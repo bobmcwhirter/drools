@@ -30,7 +30,7 @@ import org.jbpm.taskmgmt.def.Task;
 
 public class StartStateInstance extends StateInstance {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     private long workItemId = -1;
     private transient WorkItem workItem;

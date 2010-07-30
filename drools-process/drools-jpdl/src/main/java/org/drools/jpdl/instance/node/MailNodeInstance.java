@@ -23,7 +23,7 @@ import org.drools.workflow.instance.NodeInstance;
 
 public class MailNodeInstance extends JpdlNodeInstance {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	public MailNode getMailNode() {
 		return (MailNode) getNode();

@@ -20,7 +20,7 @@ import org.drools.workflow.core.Connection;
 
 public class EndState extends JpdlNode {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(

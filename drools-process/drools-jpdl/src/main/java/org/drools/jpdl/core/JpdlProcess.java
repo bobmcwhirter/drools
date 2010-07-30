@@ -26,7 +26,7 @@ public class JpdlProcess extends WorkflowProcessImpl {
 
     public static final String JPDL_TYPE = "jPDL";
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	private Node startState;
 

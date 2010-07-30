@@ -54,7 +54,7 @@ import com.opensymphony.workflow.spi.WorkflowStore;
 
 public class OSWorkflowProcessInstance extends WorkflowProcessInstanceImpl implements WorkflowEntry {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     private List<Step> history = new ArrayList<Step>();
 

@@ -29,7 +29,7 @@ import org.drools.workflow.core.node.EventNodeInterface;
  */
 public class BPELReceive extends NodeImpl implements BPELActivity, EventNodeInterface {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private String partnerLink;
     private String portType;

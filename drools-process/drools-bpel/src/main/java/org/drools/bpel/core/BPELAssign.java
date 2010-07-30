@@ -29,7 +29,7 @@ import org.drools.workflow.core.impl.NodeImpl;
  */
 public class BPELAssign extends NodeImpl implements BPELActivity {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private List<Copy> copies = new ArrayList<Copy>();
     private SourceLink[] sourceLinks;

@@ -27,7 +27,7 @@ import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
  */
 public class BPELProcessInstance extends WorkflowProcessInstanceImpl {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public BPELProcess getBPELProcess() {
         return (BPELProcess) getProcess();

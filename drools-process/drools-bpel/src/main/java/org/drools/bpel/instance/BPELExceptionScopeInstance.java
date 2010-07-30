@@ -24,7 +24,7 @@ import org.drools.workflow.instance.context.WorkflowContextInstance;
 
 public class BPELExceptionScopeInstance extends ExceptionScopeInstance implements WorkflowContextInstance {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private NodeInstanceContainer nodeInstanceContainer;
 

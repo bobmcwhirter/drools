@@ -28,7 +28,7 @@ import org.jbpm.graph.def.ExceptionHandler;
 
 public class JpdlConnection extends ConnectionImpl {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
 
     protected String condition;
     private Map<String, Event> events;

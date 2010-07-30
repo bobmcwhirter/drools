@@ -29,7 +29,7 @@ public class BPELFaultHandlerScope extends CompositeContextNode {
 	public static final String INTERNAL_FAULT_DATA_VARIABLE = "DroolsInternalFaultDataVariable";
 	public static final String INTERNAL_FAULT_NAME_VARIABLE = "DroolsInternalFaultNameVariable";
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	public BPELFaultHandlerScope() {
 		VariableScope variableScope = new VariableScope();

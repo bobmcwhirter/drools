@@ -28,7 +28,7 @@ import org.jbpm.graph.exe.Token;
 
 public class JoinInstance extends JpdlNodeInstance {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     private Map<Long, Integer> triggers = new HashMap<Long, Integer>();
     

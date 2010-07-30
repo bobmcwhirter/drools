@@ -33,7 +33,7 @@ public class BPELExample {
             WorkingMemory workingMemory = ruleBase.newStatefulSession();
             final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
             UIWorkItemHandler uiHandler = new UIWorkItemHandler() {
-				private static final long serialVersionUID = 4L;
+				private static final long serialVersionUID = 510l;
 				public void dispose() {
             		super.dispose();
             		logger.writeToDisk();

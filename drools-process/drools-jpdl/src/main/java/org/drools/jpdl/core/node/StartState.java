@@ -21,7 +21,7 @@ import org.jbpm.taskmgmt.def.Task;
 
 public class StartState extends State {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	private Task task;
 

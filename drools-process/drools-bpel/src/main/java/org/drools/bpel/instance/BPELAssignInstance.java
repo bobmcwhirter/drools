@@ -51,7 +51,7 @@ import org.w3c.dom.NodeList;
  */
 public class BPELAssignInstance extends NodeInstanceImpl {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     public BPELAssign getBPELAssign() {
     	return (BPELAssign) getNode();

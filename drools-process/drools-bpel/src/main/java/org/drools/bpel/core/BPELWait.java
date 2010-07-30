@@ -24,7 +24,7 @@ import org.drools.workflow.core.node.TimerNode;
  */
 public class BPELWait extends TimerNode implements BPELActivity {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
 	private String forExpression;
 	private String untilExpression;

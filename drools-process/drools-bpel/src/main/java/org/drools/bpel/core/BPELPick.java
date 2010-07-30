@@ -28,7 +28,7 @@ import org.drools.workflow.core.node.Split;
  */
 public class BPELPick extends CompositeNode implements BPELActivity {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private boolean createInstance;
     private Split split;

@@ -37,7 +37,7 @@ import org.drools.workflow.core.node.StartNode;
  */
 public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandlerContainer {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     public static final String BPEL_TYPE = "BPEL";
     

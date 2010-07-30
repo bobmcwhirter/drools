@@ -33,7 +33,7 @@ public class NodeInstanceLog implements Serializable {
 	public static final int TYPE_ENTER = 0;
 	public static final int TYPE_EXIT = 1;
 	
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -37,7 +37,7 @@ import org.jbpm.graph.def.Event;
 
 public class ProcessStateInstance extends JpdlNodeInstance implements RuleFlowEventListener {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	
 	private long processInstanceId;
 

@@ -23,7 +23,7 @@ import org.jbpm.instantiation.Delegation;
 
 public class Decision extends JpdlNode {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 
 	private List<DecisionCondition> decisionConditions;
 	private Delegation decisionDelegation;

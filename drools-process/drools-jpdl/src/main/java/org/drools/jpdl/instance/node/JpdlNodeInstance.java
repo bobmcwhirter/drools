@@ -54,7 +54,7 @@ import org.jbpm.scheduler.def.CreateTimerAction;
 
 public class JpdlNodeInstance extends NodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 510l;
 	private static final BusinessCalendar BUSINESS_CALENDAR = new BusinessCalendar();
 	
     private Map<Long, Action> timerActions = new HashMap<Long, Action>();

@@ -28,7 +28,7 @@ import org.drools.workflow.core.node.CompositeNode;
  */
 public class BPELSequence extends CompositeNode implements BPELActivity {
     
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private SourceLink[] sourceLinks;
     private TargetLink[] targetLinks;

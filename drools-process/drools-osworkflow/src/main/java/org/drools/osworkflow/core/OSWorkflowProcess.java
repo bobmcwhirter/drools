@@ -30,7 +30,7 @@ public class OSWorkflowProcess extends WorkflowProcessImpl {
 
     public static final String OSWORKFLOW_TYPE = "OSWorkflow";
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     public Map<Integer, ActionDescriptor> initialActions = 
         new HashMap<Integer, ActionDescriptor>();

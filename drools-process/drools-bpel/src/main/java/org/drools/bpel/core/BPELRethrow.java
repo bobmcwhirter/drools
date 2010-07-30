@@ -24,7 +24,7 @@ import org.drools.workflow.core.node.FaultNode;
  */
 public class BPELRethrow extends FaultNode implements BPELActivity {
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 
     private SourceLink[] sourceLinks;
     private TargetLink[] targetLinks;

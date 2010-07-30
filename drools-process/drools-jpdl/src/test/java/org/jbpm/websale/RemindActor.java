@@ -21,7 +21,7 @@ import org.jbpm.graph.exe.ExecutionContext;
 
 public class RemindActor implements ActionHandler {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
   
     String swimlaneName;
 

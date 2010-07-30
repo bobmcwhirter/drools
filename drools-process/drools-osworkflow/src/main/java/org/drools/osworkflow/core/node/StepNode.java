@@ -33,7 +33,7 @@ public class StepNode extends NodeImpl {
     private List<FunctionDescriptor> preFunctions;
     private List<FunctionDescriptor> postFunctions;
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     public void addAction(ActionDescriptor action) {
         this.actions.put(action.getId(), action);

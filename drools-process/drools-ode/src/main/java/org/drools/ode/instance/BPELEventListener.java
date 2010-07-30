@@ -106,7 +106,7 @@ public class BPELEventListener implements BpelEventListener {
 		result.setNodeInstanceContainer(new NodeInstanceContainer() {
 			public NodeContainer getNodeContainer() {
 				return new NodeContainerImpl() {
-					private static final long serialVersionUID = 4L;
+					private static final long serialVersionUID = 510l;
 					public Node internalGetNode(long nodeId) {
 						BPELNode node = new BPELNode();
 						node.setId(nodeId);

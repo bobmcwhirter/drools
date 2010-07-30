@@ -26,7 +26,7 @@ import org.drools.process.instance.ProcessInstance;
 
 public class JpdlProcessInstanceFactory extends AbstractProcessInstanceFactory implements Externalizable {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
 
     public ProcessInstance createProcessInstance() {
         return new JpdlProcessInstance();

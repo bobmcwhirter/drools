@@ -45,7 +45,7 @@ import com.opensymphony.workflow.util.DefaultVariableResolver;
 
 public class StepNodeInstance extends NodeInstanceImpl implements Step {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
     
     private String status;
     private String owner;

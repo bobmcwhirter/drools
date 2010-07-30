@@ -21,7 +21,7 @@ import org.drools.workflow.instance.NodeInstanceContainer;
 
 public class EndStateInstance extends JpdlNodeInstance {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 510l;
 
     public void leave() {
         ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);

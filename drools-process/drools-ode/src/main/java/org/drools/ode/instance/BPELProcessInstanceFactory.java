@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
 
 public class BPELProcessInstanceFactory implements ProcessInstanceFactory, Externalizable {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 510l;
 
     private synchronized EmbeddedBPELServer initServer(WorkingMemory workingMemory) {
     	EmbeddedBPELServer server = (EmbeddedBPELServer)

@@ -24,7 +24,7 @@ public class BPELProcess extends WorkflowProcessImpl {
 
     public static final String ODE_TYPE = "ODE";
 
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
 	private byte[] bpelJar;
 	private transient ProcessConf processConf;

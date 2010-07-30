@@ -30,7 +30,7 @@ import org.drools.workflow.instance.node.EventNodeInstanceInterface;
  */
 public class BPELReceiveInstance extends NodeInstanceImpl implements EventNodeInstanceInterface {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     private boolean triggered = false;
     private boolean event = false;

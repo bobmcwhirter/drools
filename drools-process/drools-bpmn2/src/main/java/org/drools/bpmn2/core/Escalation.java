@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 public class Escalation implements Serializable {
     
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
     private String id;
     private String escalationCode;

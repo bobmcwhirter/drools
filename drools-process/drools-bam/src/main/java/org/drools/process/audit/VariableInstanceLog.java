@@ -30,7 +30,7 @@ import javax.persistence.TemporalType;
 @Entity
 public class VariableInstanceLog implements Serializable {
     
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 510l;
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

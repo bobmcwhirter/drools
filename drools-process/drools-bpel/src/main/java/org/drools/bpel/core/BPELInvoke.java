@@ -26,7 +26,7 @@ import org.drools.workflow.core.node.WorkItemNode;
  */
 public class BPELInvoke extends WorkItemNode implements BPELActivity, BPELFaultHandlerContainer {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
     
     private static final String PARTNER_LINK = "PartnerLink";
     private static final String PORT_TYPE = "PortType";
