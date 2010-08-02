@@ -21,11 +21,13 @@ import org.drools.task.service.IcalBaseTest;
 import org.drools.task.service.TaskClient;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.subethamail.wiser.Wiser;
 
 public class IcalHornetQTest extends IcalBaseTest {
 
-    @Override
+    @Override @BeforeClass
     protected void setUp() throws Exception {
         super.setUp();
         
@@ -36,7 +38,11 @@ public class IcalHornetQTest extends IcalBaseTest {
         server = new HornetQTaskServer(taskService, 5446);
         Thread thread = new Thread(server);
         thread.start();
-        Thread.sleep(500);
+		System.out.println("Waiting for the HornetQTask Server to come up");
+        while (!server.isRunning()) {
+        	System.out.print(".");
+        	Thread.sleep( 50 );
+        }
 
         client = new TaskClient(new HornetQTaskClientConnector("client 1",
         					new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
@@ -48,6 +54,7 @@ public class IcalHornetQTest extends IcalBaseTest {
         getWiser().start();
     }
 
+    @AfterClass
     protected void tearDown() throws Exception {
         super.tearDown();
         client.disconnect();

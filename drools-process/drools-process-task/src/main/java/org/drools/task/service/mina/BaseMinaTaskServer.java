@@ -56,8 +56,7 @@ public class BaseMinaTaskServer extends TaskServer {
     }
 
     public void start() throws IOException {
-        running = true;
-
+        
         acceptor = new NioSocketAcceptor();
 
         acceptor.getFilterChain().addLast( "logger",
@@ -69,6 +68,7 @@ public class BaseMinaTaskServer extends TaskServer {
         acceptor.getSessionConfig().setReadBufferSize( 2048 );
         acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
         acceptor.bind( new InetSocketAddress( "127.0.0.1", port ) );
+        running = true;
     }
     
     public IoAcceptor getIoAcceptor() {
@@ -76,7 +76,11 @@ public class BaseMinaTaskServer extends TaskServer {
     }
 
     public void stop() {
+    	running = false;
         acceptor.dispose();
-        running = false;
     }
+    
+    public boolean isRunning() {
+		return running;
+	}
 }

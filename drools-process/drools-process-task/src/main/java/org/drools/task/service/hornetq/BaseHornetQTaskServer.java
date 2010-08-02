@@ -176,4 +176,8 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 			consumer.close();
 		}
 	}
+	
+	public boolean isRunning() {
+		return running;
+	}
 }

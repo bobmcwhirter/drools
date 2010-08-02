@@ -28,7 +28,11 @@ public class TaskServiceLifeCycleHornetQTest extends TaskServiceLifeCycleBaseTes
 		server = new HornetQTaskServer(taskService, 5446);
 		Thread thread = new Thread(server);
 		thread.start();
-		Thread.sleep(500);
+		System.out.println("Waiting for the HornetQTask Server to come up");
+        while (!server.isRunning()) {
+        	System.out.print(".");
+        	Thread.sleep( 50 );
+        }
 
 		client = new TaskClient(new HornetQTaskClientConnector("client 1",
 								new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));

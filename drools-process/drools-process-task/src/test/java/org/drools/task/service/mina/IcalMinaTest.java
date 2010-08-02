@@ -39,7 +39,11 @@ public class IcalMinaTest extends IcalBaseTest {
 		server = new MinaTaskServer(taskService);
 		Thread thread = new Thread(server);
 		thread.start();
-		Thread.sleep(500);
+		System.out.println("Waiting for the MinaTask Server to come up");
+        while (!server.isRunning()) {
+        	System.out.print(".");
+        	Thread.sleep( 50 );
+        }
 
 		client = new TaskClient(new MinaTaskClientConnector("client 1",
 						new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));

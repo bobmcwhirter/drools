@@ -35,7 +35,11 @@ public class WSHumanTaskHandlerMinaTest extends WSHumanTaskHandlerBaseTest {
 		server = new MinaTaskServer(taskService);
 		Thread thread = new Thread(server);
 		thread.start();
-		Thread.sleep(500);
+		System.out.println("Waiting for the Mina Server to come up");
+		while (!server.isRunning()) {
+        	System.out.print(".");
+        	Thread.sleep( 50 );
+        }
 		setClient(new TaskClient(new MinaTaskClientConnector("client 1",
 								new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
 		getClient().connect("127.0.0.1", 9123);
