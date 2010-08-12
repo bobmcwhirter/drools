@@ -126,15 +126,17 @@ public class StartEventHandler extends AbstractNodeHandler {
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, StartNode startNode) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        if ("sourceRef".equals(subNode.getNodeName())) {
+            subNode = subNode.getNextSibling();
+        }
         // targetRef
-        subNode = subNode.getNextSibling();
         String to = subNode.getTextContent();
         startNode.setMetaData("TriggerMapping", to);
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		StartNode startNode = (StartNode) node;
-		writeNode("startEvent", startNode, xmlDump, includeMeta);
+		writeNode("startEvent", startNode, xmlDump, metaDataType);
 		List<Trigger> triggers = startNode.getTriggers();
 		if (triggers != null) {
 		    xmlDump.append(">" + EOL);

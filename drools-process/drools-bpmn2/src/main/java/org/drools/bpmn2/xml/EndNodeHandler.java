@@ -36,9 +36,9 @@ public class EndNodeHandler extends AbstractNodeHandler {
         return EndNode.class;
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		EndNode endNode = (EndNode) node;
-		writeNode("endEvent", endNode, xmlDump, includeMeta);
+		writeNode("endEvent", endNode, xmlDump, metaDataType);
 		if (endNode.isTerminate()) {
     		xmlDump.append(">" + EOL);
             xmlDump.append("        <terminateEventDefinition/>" + EOL);

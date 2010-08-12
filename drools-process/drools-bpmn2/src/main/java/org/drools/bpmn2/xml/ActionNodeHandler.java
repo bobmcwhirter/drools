@@ -34,13 +34,13 @@ public class ActionNodeHandler extends AbstractNodeHandler {
         return ActionNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		ActionNode actionNode = (ActionNode) node;
 		DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
 		if (action != null) {
 		    String s = action.getConsequence();
 		    if (s.startsWith("org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();")) {
-                writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+                writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 String variable = (String) actionNode.getMetaData("MappingVariable");
                 if (variable != null) {
@@ -57,7 +57,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 xmlDump.append("      <messageEventDefinition messageRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Message\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
-                writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+                writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 s = s.substring(44);
                 String type = s.substring(0, s.indexOf("\""));
@@ -82,26 +82,26 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 }
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith("kcontext.getProcessInstance().signalEvent(\"")) {
-                writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+                writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 s = s.substring(43);
                 String type = s.substring(0, s.indexOf("\""));
                 xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlDumper.replaceIllegalChars(type.substring(11)) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith("org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
-                writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+                writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 s = s.substring(327);
                 String type = s.substring(0, s.indexOf("\""));
                 xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if ("IntermediateThrowEvent-None".equals(actionNode.getMetaData("NodeType"))) {
-            	writeNode("intermediateThrowEvent", actionNode, xmlDump, includeMeta);
+            	writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 endNode(xmlDump);
             } else {
-                writeNode("scriptTask", actionNode, xmlDump, includeMeta);
+                writeNode("scriptTask", actionNode, xmlDump, metaDataType);
                 if (JavaDialect.ID.equals(action.getDialect())) {
-                    xmlDump.append("scriptLanguage=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\" ");
+                    xmlDump.append("scriptFormat=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\" ");
                 }
                 if (action.getConsequence() != null) {
                     xmlDump.append(">" + EOL + 
@@ -112,7 +112,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 }
             }
 		} else {
-		    writeNode("scriptTask", actionNode, xmlDump, includeMeta);
+		    writeNode("scriptTask", actionNode, xmlDump, metaDataType);
 	        endNode(xmlDump);
 		}
 	}

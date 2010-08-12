@@ -30,7 +30,8 @@ public class Activator
     BundleActivator {
     private ServiceRegistration bpmn2ProcessReg;
 
-    public void start(BundleContext bc) throws Exception {
+    @SuppressWarnings("unchecked")
+	public void start(BundleContext bc) throws Exception {
         System.out.println( "registering BPMN2 process drools services" );
         this.bpmn2ProcessReg = bc.registerService( new String[]{ BPMN2ProcessProvider.class.getName(), Service.class.getName()},
                                                    new BPMN2ProcessProviderImpl(),

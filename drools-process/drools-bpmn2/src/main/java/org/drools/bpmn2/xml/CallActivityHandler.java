@@ -107,9 +107,9 @@ public class CallActivityHandler extends AbstractNodeHandler {
 		subProcessNode.addOutMapping(dataOutputs.get(from), to);
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		SubProcessNode subProcessNode = (SubProcessNode) node;
-		writeNode("callActivity", subProcessNode, xmlDump, includeMeta);
+		writeNode("callActivity", subProcessNode, xmlDump, metaDataType);
 		if (subProcessNode.getProcessId() != null) {
 			xmlDump.append("calledElement=\"" + XmlDumper.replaceIllegalChars(subProcessNode.getProcessId()) + "\" ");
 		}

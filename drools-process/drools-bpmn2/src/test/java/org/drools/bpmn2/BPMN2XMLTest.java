@@ -49,7 +49,7 @@ public class BPMN2XMLTest extends XMLTestCase {
 			String original = slurp(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
 			RuleFlowProcess p = (RuleFlowProcess)
 		    	processReader.read(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
-			String result = XmlBPMNProcessDumper.INSTANCE.dump(p);
+			String result = XmlBPMNProcessDumper.INSTANCE.dump(p, XmlBPMNProcessDumper.META_DATA_AS_NODE_PROPERTY);
 			System.out.println(original);
 			System.out.println("---------------------------------------------------------------");
 			System.out.println(result);

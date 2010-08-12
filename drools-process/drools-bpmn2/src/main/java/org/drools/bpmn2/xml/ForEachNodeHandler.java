@@ -37,9 +37,9 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
         return ForEachNode.class;
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
     	ForEachNode forEachNode = (ForEachNode) node;
-    	writeNode("subProcess", forEachNode, xmlDump, includeMeta);
+    	writeNode("subProcess", forEachNode, xmlDump, metaDataType);
 		xmlDump.append(" >" + EOL);
 		// ioSpecification and dataInputAssociation 
         xmlDump.append(
@@ -73,13 +73,13 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
 		List<Node> subNodes = getSubNodes(forEachNode);
     	xmlDump.append("    <!-- nodes -->" + EOL);
         for (Node subNode: subNodes) {
-    		XmlBPMNProcessDumper.INSTANCE.visitNode(subNode, xmlDump, includeMeta);
+    		XmlBPMNProcessDumper.INSTANCE.visitNode(subNode, xmlDump, metaDataType);
         }
         // connections
         List<Connection> connections = getSubConnections(forEachNode);
     	xmlDump.append("    <!-- connections -->" + EOL);
         for (Connection connection: connections) {
-        	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, includeMeta);
+        	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, metaDataType);
         }
 		endNode("subProcess", xmlDump);
 	}

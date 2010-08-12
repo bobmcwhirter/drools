@@ -118,7 +118,7 @@ public class TaskHandler extends AbstractNodeHandler {
     }
 
     @Override
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         throw new IllegalArgumentException(
             "Writing out should be handled by the WorkItemNodeHandler");
     }

@@ -24,7 +24,7 @@ import org.drools.xml.DefaultSemanticModule;
 public class BPMNDISemanticModule extends DefaultSemanticModule {
 	
 	public BPMNDISemanticModule() {
-		super("http://www.omg.org/spec/BPMN/20100524/BPMNDI");
+		super("http://www.omg.org/spec/BPMN/20100524/DI");
 		
 		addHandler("BPMNPlane", new BPMNPlaneHandler());
 		addHandler("BPMNShape", new BPMNShapeHandler());

@@ -44,7 +44,13 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlProcessReader;
+import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.process.ProcessNodeLeftEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.ProcessStartedEvent;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -126,6 +132,13 @@ public class SimpleBPMNProcessTest extends TestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
+    public void testScriptTask() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ScriptTask.xml");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+
     public void testDataObject() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataObject.xml");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -178,6 +191,30 @@ public class SimpleBPMNProcessTest extends TestCase {
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    public void testLane() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-Lane.xml");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("ActorId", "mary");
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("mary", workItem.getParameter("ActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
@@ -731,17 +768,60 @@ public class SimpleBPMNProcessTest extends TestCase {
     public void testTimerStart() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStart.xml");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        Thread.sleep(600);
+		final List<Long> list = new ArrayList<Long>();
+		ksession.addEventListener(new ProcessEventListener() {
+			public void beforeProcessStarted(ProcessStartedEvent event) {
+			}
+			public void beforeProcessCompleted(ProcessCompletedEvent event) {
+			}
+			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+			}
+			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+			}
+			public void afterProcessStarted(ProcessStartedEvent event) {
+				list.add(event.getProcessInstance().getId());
+			}
+			public void afterProcessCompleted(ProcessCompletedEvent event) {
+			}
+			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+			}
+			public void afterNodeLeft(ProcessNodeLeftEvent event) {
+			}
+		});
+		Thread.sleep(250);
+		assertEquals(0, list.size());
         for (int i = 0; i < 5; i++) {
-//	        ksession.fireAllRules();
+	        ksession.fireAllRules();
 	        Thread.sleep(500);
         }
+        assertEquals(5, list.size());
     }
     
     public void testSignalStart() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalStart.xml");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		final List<Long> list = new ArrayList<Long>();
+		ksession.addEventListener(new ProcessEventListener() {
+			public void beforeProcessStarted(ProcessStartedEvent event) {
+			}
+			public void beforeProcessCompleted(ProcessCompletedEvent event) {
+			}
+			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+			}
+			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+			}
+			public void afterProcessStarted(ProcessStartedEvent event) {
+				list.add(event.getProcessInstance().getId());
+			}
+			public void afterProcessCompleted(ProcessCompletedEvent event) {
+			}
+			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+			}
+			public void afterNodeLeft(ProcessNodeLeftEvent event) {
+			}
+		});
         ksession.signalEvent("MyStartSignal", "NewValue");
+		assertEquals(1, list.size());
     }
     
     public void testSignalEnd() throws Exception {

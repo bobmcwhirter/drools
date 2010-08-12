@@ -69,9 +69,9 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     	ProcessHandler.linkBoundaryEvents(dynamicNode);
     }
     
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         DynamicNode dynamicNode = (DynamicNode) node;
-		writeNode("adHocSubProcess", dynamicNode, xmlDump, includeMeta);
+		writeNode("adHocSubProcess", dynamicNode, xmlDump, metaDataType);
 		if (!dynamicNode.isCancelRemainingInstances()) {
 			xmlDump.append(" cancelRemainingInstances=\"false\"");
 		}
@@ -80,13 +80,13 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
 		List<Node> subNodes = getSubNodes(dynamicNode);
     	xmlDump.append("    <!-- nodes -->" + EOL);
         for (Node subNode: subNodes) {
-    		XmlBPMNProcessDumper.INSTANCE.visitNode(subNode, xmlDump, includeMeta);
+    		XmlBPMNProcessDumper.INSTANCE.visitNode(subNode, xmlDump, metaDataType);
         }
         // connections
         List<Connection> connections = getSubConnections(dynamicNode);
     	xmlDump.append("    <!-- connections -->" + EOL);
         for (Connection connection: connections) {
-        	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, includeMeta);
+        	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, metaDataType);
         }
         if (dynamicNode.isAutoComplete()) {
         	xmlDump.append("    <completionCondition xs:type=\"tFormalExpression\">getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0</completionCondition>" + EOL);

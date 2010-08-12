@@ -32,9 +32,9 @@ public class FaultNodeHandler extends AbstractNodeHandler {
         return FaultNode.class;
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         FaultNode faultNode = (FaultNode) node;
-		writeNode("endEvent", faultNode, xmlDump, includeMeta);
+		writeNode("endEvent", faultNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
         if (faultNode.getFaultVariable() != null) {
             xmlDump.append("      <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(faultNode) + "_Input\" name=\"error\" />" + EOL);

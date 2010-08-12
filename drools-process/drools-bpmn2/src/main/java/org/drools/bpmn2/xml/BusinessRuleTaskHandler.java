@@ -45,9 +45,9 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		}
 	}
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		RuleSetNode ruleSetNode = (RuleSetNode) node;
-		writeNode("businessRuleTask", ruleSetNode, xmlDump, includeMeta);
+		writeNode("businessRuleTask", ruleSetNode, xmlDump, metaDataType);
 		if (ruleSetNode.getRuleFlowGroup() != null) {
 			xmlDump.append("g:ruleFlowGroup=\"" + XmlDumper.replaceIllegalChars(ruleSetNode.getRuleFlowGroup()) + "\" ");
 		}

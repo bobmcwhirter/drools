@@ -33,11 +33,11 @@ public class EventNodeHandler extends AbstractNodeHandler {
         return EventNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		EventNode eventNode = (EventNode) node;
 		String attachedTo = (String) eventNode.getMetaData("AttachedTo");
 		if (attachedTo == null) {
-    		writeNode("intermediateCatchEvent", eventNode, xmlDump, includeMeta);
+    		writeNode("intermediateCatchEvent", eventNode, xmlDump, metaDataType);
     		xmlDump.append(">" + EOL);
     		if (eventNode.getVariableName() != null) {
     			xmlDump.append("      <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output\" name=\"event\" />" + EOL);
@@ -65,7 +65,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
 		    if (type.startsWith("Escalation-")) {
     		    type = type.substring(attachedTo.length() + 12);
     		    boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
-                writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
     		    xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
     		    if (!cancelActivity) {
     		        xmlDump.append("cancelActivity=\"false\" ");
@@ -75,7 +75,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
     		    endNode("boundaryEvent", xmlDump);
 		    } else if (type.startsWith("Error-")) {
                 type = type.substring(attachedTo.length() + 7);
-                writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 xmlDump.append(">" + EOL);
                 xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
@@ -83,7 +83,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
             } else if (type.startsWith("Timer-")) {
                 type = type.substring(attachedTo.length() + 7);
                 boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
-                writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 if (!cancelActivity) {
                     xmlDump.append("cancelActivity=\"false\" ");
@@ -96,7 +96,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Compensate-")) {
                 type = type.substring(attachedTo.length() + 7);
-                writeNode("boundaryEvent", eventNode, xmlDump, includeMeta);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 xmlDump.append(">" + EOL);
                 xmlDump.append("      <compensateEventDefinition/>" + EOL);

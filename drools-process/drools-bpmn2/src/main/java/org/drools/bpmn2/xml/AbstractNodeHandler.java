@@ -134,20 +134,20 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
     
     public abstract void writeNode(final Node node, final StringBuilder xmlDump,
-    		                       final boolean includeMeta);
+    		                       final int metaDataType);
     
     protected void writeNode(final String name, final Node node, 
-    		                 final StringBuilder xmlDump, boolean includeMeta) {
+    		                 final StringBuilder xmlDump, int metaDataType) {
     	xmlDump.append("    <" + name + " "); 
         xmlDump.append("id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "\" ");
         if (node.getName() != null) {
             xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
         }
-        if (includeMeta) {
-            Integer x = (Integer) node.getMetaData("x");
-            Integer y = (Integer) node.getMetaData("y");
-            Integer width = (Integer) node.getMetaData("width");
-            Integer height = (Integer) node.getMetaData("height");
+        if (metaDataType == XmlBPMNProcessDumper.META_DATA_AS_NODE_PROPERTY) {
+            Integer x = (Integer) node.getMetaData().get("x");
+            Integer y = (Integer) node.getMetaData().get("y");
+            Integer width = (Integer) node.getMetaData().get("width");
+            Integer height = (Integer) node.getMetaData().get("height");
             if (x != null && x != 0) {
                 xmlDump.append("g:x=\"" + x + "\" ");
             }

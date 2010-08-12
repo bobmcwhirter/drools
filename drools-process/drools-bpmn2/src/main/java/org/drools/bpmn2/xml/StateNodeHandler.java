@@ -32,10 +32,10 @@ public class StateNodeHandler extends AbstractNodeHandler {
         return StateNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 	    StateNode stateNode = (StateNode) node;
 		String condition = (String) stateNode.getMetaData("Condition");
-		writeNode("intermediateCatchEvent", stateNode, xmlDump, includeMeta);
+		writeNode("intermediateCatchEvent", stateNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
         xmlDump.append("      <conditionalEventDefinition>" + EOL);
         xmlDump.append("        <condition xs:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + XmlDumper.replaceIllegalChars(condition) + "</condition>" + EOL);

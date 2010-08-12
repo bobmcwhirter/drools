@@ -42,7 +42,7 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
     	CompositeContextNode compositeNode = (CompositeContextNode) node;
     	String nodeType = "subProcess";
-    	if (node.getMetaData("Transaction") != null) {
+    	if (node.getMetaData().get("Transaction") != null) {
     		nodeType = "transaction";
     	}
 		writeNode(nodeType, compositeNode, xmlDump, includeMeta);

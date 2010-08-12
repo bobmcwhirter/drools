@@ -151,8 +151,8 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 	
-	<xsd:element name="callChoreographyActivity" type="tCallChoreographyActivity" substitutionGroup="flowElement"/>
-	<xsd:complexType name="tCallChoreographyActivity">
+	<xsd:element name="callChoreography" type="tCallChoreography" substitutionGroup="flowElement"/>
+	<xsd:complexType name="tCallChoreography">
 		<xsd:complexContent>
 			<xsd:extension base="tChoreographyActivity">
 				<xsd:sequence>
@@ -258,7 +258,7 @@
 		<xsd:complexContent>
 			<xsd:extension base="tChoreographyActivity">
 				<xsd:sequence>
-					<xsd:element name="messageFlowRef" type="xsd:QName" maxOccurs="unbounded"/>
+					<xsd:element name="messageFlowRef" type="xsd:QName" minOccurs="1" maxOccurs="2"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -342,8 +342,8 @@
 	<xsd:complexType name="tConversationAssociation">
 		<xsd:complexContent>
 			<xsd:extension base="tBaseElement">
-				<xsd:attribute name="innerMessageFlowRef" type="xsd:QName" use="required"/>
-				<xsd:attribute name="outerMessageFlowRef" type="xsd:QName" use="required"/>
+				<xsd:attribute name="innerConversationNodeRef" type="xsd:QName" use="required"/>
+				<xsd:attribute name="outerConversationNodeRef" type="xsd:QName" use="required"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -1530,7 +1530,7 @@
 	<xsd:complexType name="tTransaction">
 		<xsd:complexContent>
 			<xsd:extension base="tSubProcess">
-				<xsd:attribute name="method" type="tTransactionMethod" default="Compensate"/>
+				<xsd:attribute name="method" type="tTransactionMethod" default="##Compensate"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

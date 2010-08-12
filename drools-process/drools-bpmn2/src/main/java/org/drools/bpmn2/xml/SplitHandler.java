@@ -35,14 +35,14 @@ public class SplitHandler extends AbstractNodeHandler {
         return Split.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		Split split = (Split) node;
 		switch (split.getType()) {
 			case Split.TYPE_AND:
-				writeNode("parallelGateway", node, xmlDump, includeMeta);
+				writeNode("parallelGateway", node, xmlDump, metaDataType);
 				break;
 			case Split.TYPE_XOR:
-				writeNode("exclusiveGateway", node, xmlDump, includeMeta);
+				writeNode("exclusiveGateway", node, xmlDump, metaDataType);
 				for (Map.Entry<ConnectionRef, Constraint> entry: split.getConstraints().entrySet()) {
 					if (entry.getValue().isDefault()) {
 						xmlDump.append("default=\"" +
@@ -54,7 +54,7 @@ public class SplitHandler extends AbstractNodeHandler {
 				}
 				break;
 			case Split.TYPE_OR:
-                writeNode("inclusiveGateway", node, xmlDump, includeMeta);
+                writeNode("inclusiveGateway", node, xmlDump, metaDataType);
 				for (Map.Entry<ConnectionRef, Constraint> entry: split.getConstraints().entrySet()) {
 					if (entry.getValue().isDefault()) {
 						xmlDump.append("default=\"" +
@@ -66,10 +66,10 @@ public class SplitHandler extends AbstractNodeHandler {
 				}
                 break;
 			case Split.TYPE_XAND:
-				writeNode("eventBasedGateway", node, xmlDump, includeMeta);
+				writeNode("eventBasedGateway", node, xmlDump, metaDataType);
 				break;
             default:
-				writeNode("complexGateway", node, xmlDump, includeMeta);
+				writeNode("complexGateway", node, xmlDump, metaDataType);
 		}
 		xmlDump.append("gatewayDirection=\"Diverging\" ");
 		endNode(xmlDump);

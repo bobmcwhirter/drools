@@ -92,7 +92,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
     
     private boolean processNodeInfo(NodeInfo nodeInfo, Node[] nodes) {
         for (Node node: nodes) {
-            String id = (String) node.getMetaData("UniqueId");
+            String id = (String) node.getMetaData().get("UniqueId");
             if (nodeInfo.getNodeRef().equals(id)) {
                 ((org.drools.workflow.core.Node) node).setMetaData("x", nodeInfo.getX());
                 ((org.drools.workflow.core.Node) node).setMetaData("y", nodeInfo.getY());
@@ -112,11 +112,11 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
     
     private void postProcessNodeOffset(Node[] nodes, int xOffset, int yOffset) {
     	for (Node node: nodes) {
-    		Integer x = (Integer) node.getMetaData("x");
+    		Integer x = (Integer) node.getMetaData().get("x");
     		if (x != null) {
     			((org.drools.workflow.core.Node) node).setMetaData("x", x - xOffset);
     		}
-    		Integer y = (Integer) node.getMetaData("y");
+    		Integer y = (Integer) node.getMetaData().get("y");
     		if (y != null) {
     			((org.drools.workflow.core.Node) node).setMetaData("y", y - yOffset);
     		}
@@ -130,7 +130,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
         for (Node node: nodes) {
         	for (List<Connection> connections: node.getOutgoingConnections().values()) {
         		for (Connection connection: connections) {
-                    String id = (String) connection.getMetaData("UniqueId");
+                    String id = (String) connection.getMetaData().get("UniqueId");
                     if (id != null && id.equals(connectionInfo.getElementRef())) {
                         ((ConnectionImpl) connection).setMetaData(
                             "bendpoints", connectionInfo.getBendpoints());

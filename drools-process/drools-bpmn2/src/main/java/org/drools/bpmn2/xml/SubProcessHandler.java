@@ -67,6 +67,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
 				for (org.drools.definition.process.Node subNode: ((CompositeContextNode) node).getNodes()) {
 					forEachNode.addNode(subNode);
 				}
+				forEachNode.setMetaData("UniqueId", ((CompositeContextNode) node).getMetaData("UniqueId"));
 				forEachNode.setMetaData(ProcessHandler.CONNECTIONS, ((CompositeContextNode) node).getMetaData(ProcessHandler.CONNECTIONS));
 				node = forEachNode;
 				handleForEachNode(node, element, uri, localName, parser);
@@ -153,7 +154,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         throw new IllegalArgumentException("Writing out should be handled by specific handlers");
     }
 

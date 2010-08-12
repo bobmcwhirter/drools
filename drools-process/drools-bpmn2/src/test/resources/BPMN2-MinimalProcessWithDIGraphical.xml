@@ -6,10 +6,9 @@
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
              xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
-             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/BPMNDI"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-             xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:tns="http://www.example.org/MinimalExample">
 
   <process id="Minimal" name="Minimal Process">

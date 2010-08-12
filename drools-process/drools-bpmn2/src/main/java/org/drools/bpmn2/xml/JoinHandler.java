@@ -31,17 +31,17 @@ public class JoinHandler extends AbstractNodeHandler {
         return Join.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		Join join = (Join) node;
 		switch (join.getType()) {
 			case Join.TYPE_AND:
-				writeNode("parallelGateway", node, xmlDump, includeMeta);
+				writeNode("parallelGateway", node, xmlDump, metaDataType);
 				break;
 			case Join.TYPE_XOR:
-				writeNode("exclusiveGateway", node, xmlDump, includeMeta);
+				writeNode("exclusiveGateway", node, xmlDump, metaDataType);
 				break;
 			default:
-				writeNode("complexGateway", node, xmlDump, includeMeta);
+				writeNode("complexGateway", node, xmlDump, metaDataType);
 		}
 		xmlDump.append("gatewayDirection=\"Converging\" ");
 		endNode(xmlDump);

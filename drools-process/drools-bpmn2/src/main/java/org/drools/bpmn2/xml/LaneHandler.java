@@ -78,7 +78,7 @@ public class LaneHandler extends BaseAbstractHandler implements Handler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("flowElementRef".equals(nodeName)) {
+            if ("flowNodeRef".equals(nodeName)) {
                 String flowElementRef = xmlNode.getTextContent();
                 lane.addFlowElement(flowElementRef);
             }

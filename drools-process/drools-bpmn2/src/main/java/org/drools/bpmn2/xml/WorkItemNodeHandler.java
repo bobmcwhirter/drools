@@ -34,16 +34,16 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         return WorkItemNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		WorkItemNode workItemNode = (WorkItemNode) node;
 		String type = workItemNode.getWork().getName();
 		if ("Manual Task".equals(type)) {
-		    writeNode("manualTask", workItemNode, xmlDump, includeMeta);
+		    writeNode("manualTask", workItemNode, xmlDump, metaDataType);
 	        endNode(xmlDump);
 	        return;
 		} 
         if ("Service Task".equals(type)) {
-            writeNode("serviceTask", workItemNode, xmlDump, includeMeta);
+            writeNode("serviceTask", workItemNode, xmlDump, metaDataType);
             xmlDump.append("operationRef=\"" + 
                 XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_ServiceOperation\" implementation=\"Other\" >" + EOL);
             xmlDump.append(
@@ -77,7 +77,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             return;
         } 
         if ("Send Task".equals(type)) {
-            writeNode("sendTask", workItemNode, xmlDump, includeMeta);
+            writeNode("sendTask", workItemNode, xmlDump, metaDataType);
             xmlDump.append("messageRef=\"" + 
                     XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
                 xmlDump.append(
@@ -100,7 +100,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             return;
         } 
         if ("Receive Task".equals(type)) {
-            writeNode("receiveTask", workItemNode, xmlDump, includeMeta);
+            writeNode("receiveTask", workItemNode, xmlDump, metaDataType);
             String messageId = (String) workItemNode.getWork().getParameter("MessageId");
             xmlDump.append("messageRef=\"" + 
                     messageId + "\" implementation=\"Other\" >" + EOL);
@@ -123,7 +123,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             endNode("receiveTask", xmlDump);
             return;
         } 
-		writeNode("task", workItemNode, xmlDump, includeMeta);
+		writeNode("task", workItemNode, xmlDump, metaDataType);
 		xmlDump.append("tns:taskName=\"" + XmlDumper.replaceIllegalChars(type) + "\" >" + EOL);
 		writeIO(workItemNode, xmlDump);
 		endNode("task", xmlDump);

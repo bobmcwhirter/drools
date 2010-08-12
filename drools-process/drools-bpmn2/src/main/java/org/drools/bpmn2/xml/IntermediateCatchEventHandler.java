@@ -68,7 +68,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 TimerNode timerNode = new TimerNode();
                 timerNode.setId(node.getId());
                 timerNode.setName(node.getName());
-                timerNode.setMetaData("UniqueId", node.getMetaData("UniqueId"));
+                timerNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
                 node = timerNode;
                 handleTimerNode(node, element, uri, localName, parser);
                 break;
@@ -77,7 +77,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 StateNode stateNode = new StateNode();
                 stateNode.setId(node.getId());
                 stateNode.setName(node.getName());
-                stateNode.setMetaData("UniqueId", node.getMetaData("UniqueId"));
+                stateNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
                 node = stateNode;
                 handleStateNode(node, element, uri, localName, parser);
                 break;
@@ -201,7 +201,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
 		eventNode.setVariableName(to);
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 	    throw new IllegalArgumentException("Writing out should be handled by specific handlers");
     }
 

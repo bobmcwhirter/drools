@@ -2,10 +2,10 @@
 <xsd:schema elementFormDefault="qualified" attributeFormDefault="unqualified"	
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/BPMNDI"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
 	targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
 
-	<xsd:import namespace="http://www.omg.org/spec/BPMN/20100524/BPMNDI" schemaLocation="BPMNDI.xsd"/>
+	<xsd:import namespace="http://www.omg.org/spec/BPMN/20100524/DI" schemaLocation="BPMNDI.xsd"/>
 	<xsd:include schemaLocation="Semantic.xsd"/>
 
 	<xsd:element name="definitions" type="tDefinitions"/>

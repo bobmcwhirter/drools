@@ -39,13 +39,13 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
         return CompositeContextNode.class;
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
     	CompositeContextNode compositeNode = (CompositeContextNode) node;
     	String nodeType = "subProcess";
-    	if (node.getMetaData("Transaction") != null) {
+    	if (node.getMetaData().get("Transaction") != null) {
     		nodeType = "transaction";
     	}
-		writeNode(nodeType, compositeNode, xmlDump, includeMeta);
+		writeNode(nodeType, compositeNode, xmlDump, metaDataType);
 		xmlDump.append(" >" + EOL);
         // variables
 		VariableScope variableScope = (VariableScope) 
@@ -65,13 +65,13 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
 		List<Node> subNodes = getSubNodes(compositeNode);
     	xmlDump.append("    <!-- nodes -->" + EOL);
         for (Node subNode: subNodes) {
-    		XmlBPMNProcessDumper.INSTANCE.visitNode(subNode, xmlDump, includeMeta);
+    		XmlBPMNProcessDumper.INSTANCE.visitNode(subNode, xmlDump, metaDataType);
         }
         // connections
         List<Connection> connections = getSubConnections(compositeNode);
     	xmlDump.append("    <!-- connections -->" + EOL);
         for (Connection connection: connections) {
-        	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, includeMeta);
+        	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, metaDataType);
         }
 		endNode(nodeType, xmlDump);
 	}

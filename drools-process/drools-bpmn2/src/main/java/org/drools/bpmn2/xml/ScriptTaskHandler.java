@@ -47,7 +47,7 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         	action = new DroolsConsequenceAction();
         	actionNode.setAction(action);
         }
-		String language = element.getAttribute("scriptLanguage");
+		String language = element.getAttribute("scriptFormat");
 		if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
 			action.setDialect(JavaDialect.ID);
 		}
@@ -59,7 +59,7 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         }
 	}
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 	    throw new IllegalArgumentException("Writing out should be handled by action node handler");
 	}
 

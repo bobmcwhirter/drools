@@ -79,9 +79,9 @@ public class UserTaskHandler extends TaskHandler {
 		return xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
     }
     
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		HumanTaskNode humanTaskNode = (HumanTaskNode) node;
-		writeNode("userTask", humanTaskNode, xmlDump, includeMeta);
+		writeNode("userTask", humanTaskNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
 		writeIO(humanTaskNode, xmlDump);
 		String ownerString = (String) humanTaskNode.getWork().getParameter("ActorId");
