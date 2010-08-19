@@ -73,6 +73,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <groupId>rome</groupId>
          <artifactId>rome</artifactId>
       </dependency>
+      <!-- FTP Client LIB -->
+      <dependency>
+         <groupId>commons-net</groupId>
+         <artifactId>commons-net</artifactId>
+         <version>2.0</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.ftpserver</groupId>
+         <artifactId>ftpserver-core</artifactId>
+         <scope>test</scope>
+      </dependency>
       <dependency>
       	<groupId>jdom</groupId>
       	<artifactId>jdom</artifactId>
