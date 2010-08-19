@@ -74,6 +74,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <artifactId>rome</artifactId>
       </dependency>
       <dependency>
+      	<groupId>jdom</groupId>
+      	<artifactId>jdom</artifactId>
+      	<version>1.0</version>
+      </dependency>
+      <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-api</artifactId>
       </dependency>
