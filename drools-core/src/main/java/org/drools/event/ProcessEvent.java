@@ -18,6 +18,8 @@ package org.drools.event;
 
 import java.util.EventObject;
 
+import org.drools.common.InternalWorkingMemory;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.ProcessInstance;
 
 /**
@@ -26,13 +28,20 @@ import org.drools.runtime.process.ProcessInstance;
 public class ProcessEvent extends EventObject {
 
     private static final long serialVersionUID = 510l;
+    
+    private KnowledgeRuntime kruntime;
 
-    public ProcessEvent(final ProcessInstance instance) {
+    public ProcessEvent(final ProcessInstance instance, KnowledgeRuntime kruntime) {
         super( instance );
+        this.kruntime = kruntime;
     }
 
     public ProcessInstance getProcessInstance() {
         return (ProcessInstance) getSource();
+    }
+    
+    public KnowledgeRuntime getKnowledgeRuntime() {
+    	return kruntime;
     }
 
 }

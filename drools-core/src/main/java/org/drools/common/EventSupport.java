@@ -19,7 +19,6 @@ package org.drools.common;
 import java.util.List;
 
 import org.drools.event.AgendaEventSupport;
-import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 
 public interface EventSupport {
@@ -27,13 +26,9 @@ public interface EventSupport {
     List getAgendaEventListeners();
 
     List getWorkingMemoryEventListeners();
-    
-    List getRuleFlowEventListeners();
 
     AgendaEventSupport getAgendaEventSupport();
     
     WorkingMemoryEventSupport getWorkingMemoryEventSupport();
-
-    RuleFlowEventSupport getRuleFlowEventSupport();
 
 }
