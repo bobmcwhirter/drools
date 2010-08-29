@@ -39,12 +39,12 @@ with ( new Task() ) {
              })
         ],
         comments = [ 
-            (with ( new Comment ) {
+            (with ( new Comment() ) {
                 addedBy = users['peter' ],
                 addedAt = new Date( 10000000 ),
                 text = "this is a short comment"
              }),
-             (with ( new Comment ) {
+             (with ( new Comment() ) {
                  addedBy = users['steve' ],
                  addedAt = new Date( 10000000 ),
                  text = "this is a loooooooooooooooooooooooooooooooooooooooooooooooong comment"
