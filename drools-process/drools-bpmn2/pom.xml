@@ -40,7 +40,7 @@
                <instructions>
                   <Bundle-SymbolicName>org.drools.bpmn2;singleton:=true</Bundle-SymbolicName>
                   <_removeheaders>Ignore-Package</_removeheaders> 
-                  <Require-Bundle>org.drools.core;bundle-version="${project.version}", org.drools.compiler;bundle-version="${project.version}", org.drools.persistence-jpa;optional="true";bundle-version="${project.version}"</Require-Bundle>
+                  <Require-Bundle>org.drools.flow.compiler;bundle-version="${project.version}", org.drools.persistence-jpa;optional="true";bundle-version="${project.version}"</Require-Bundle>
                   <Import-Package>!org.drools.*, *</Import-Package>
                   <Export-Package> org.drools.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>
@@ -60,15 +60,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-flow-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
+      <artifactId>drools-flow-compiler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
