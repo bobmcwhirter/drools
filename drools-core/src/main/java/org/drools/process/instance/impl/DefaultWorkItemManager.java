@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.WorkingMemory;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.runtime.process.WorkItemHandler;
