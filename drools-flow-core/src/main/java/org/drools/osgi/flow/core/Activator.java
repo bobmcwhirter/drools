@@ -31,20 +31,25 @@ public class Activator
     implements
     BundleActivator {
     private ServiceRegistration processRuntimeReg;
-
+    
+    private ServiceRegistration processRuntimeReg2;
+    
     public void start(BundleContext bc) throws Exception {
         System.out.println( "registering flow core services" );
         this.processRuntimeReg = bc.registerService( new String[]{ ProcessRuntimeFactoryService.class.getName(), Service.class.getName()},
                                                                    new ProcessRuntimeFactoryServiceImpl(),
                                                                    new Hashtable() );
-        this.processRuntimeReg = bc.registerService( new String[]{ ProcessMarshallerFactoryService.class.getName(), Service.class.getName()},
+        this.processRuntimeReg2 = bc.registerService( new String[]{ ProcessMarshallerFactoryService.class.getName(), Service.class.getName()},
                                                                    new ProcessMarshallerFactoryServiceImpl(),
                                                                    new Hashtable() );
+        
         System.out.println( "flow core services registered" );
     }
 
     public void stop(BundleContext bc) throws Exception {
         this.processRuntimeReg.unregister();
+        this.processRuntimeReg2.unregister();
+        
     }
 
 }
