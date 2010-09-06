@@ -1,5 +1,3 @@
-package org.drools.process.core.datatype.impl.type;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +13,7 @@ package org.drools.process.core.datatype.impl.type;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.process.core.datatype.impl.type;
 
 import java.io.IOException;
 import java.io.ObjectInput;
