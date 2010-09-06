@@ -51,11 +51,13 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
 		if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
 			action.setDialect(JavaDialect.ID);
 		}
+		action.setConsequence("");
         org.w3c.dom.Node xmlNode = element.getFirstChild();
-        if (xmlNode instanceof Element) {
-    		action.setConsequence(xmlNode.getTextContent());
-        } else {
-            action.setConsequence("");
+        while (xmlNode != null) {
+        	if (xmlNode instanceof Element && "script".equals(xmlNode.getNodeName())) {
+        		action.setConsequence(xmlNode.getTextContent());
+        	}
+        	xmlNode = xmlNode.getNextSibling();
         }
 	}
 
