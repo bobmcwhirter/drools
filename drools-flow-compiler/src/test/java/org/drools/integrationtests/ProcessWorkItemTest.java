@@ -2,10 +2,8 @@ package org.drools.integrationtests;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -14,7 +12,6 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
@@ -96,10 +93,8 @@ public class ProcessWorkItemTest extends TestCase {
             "\n" +
             "</process>");
         kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
-        
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kpkgs );        
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );        
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     	
         TestWorkItemHandler handler = new TestWorkItemHandler();

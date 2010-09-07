@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.workflow.instance.impl;
+package org.drools.process.instance.impl;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Connection;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ProcessContext;
-import org.drools.spi.ReturnValueEvaluator;
 import org.drools.spi.Wireable;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.instance.node.SplitInstance;
@@ -126,10 +123,9 @@ public class ReturnValueConstraintEvaluator
                             Constraint constraint) {
         Object value;
         try {
-            ProcessContext context = new ProcessContext(((InternalWorkingMemory) instance.getProcessInstance().getWorkingMemory()).getKnowledgeRuntime());
+            ProcessContext context = new ProcessContext(instance.getProcessInstance().getKnowledgeRuntime());
             context.setNodeInstance( instance );
-            value = this.evaluator.evaluate( ((ProcessInstance) instance.getProcessInstance()).getWorkingMemory(),
-                                             context );
+            value = this.evaluator.evaluate( context );
         } catch ( Exception e ) {
             throw new RuntimeException( "unable to execute ReturnValueEvaluator",
                                         e );

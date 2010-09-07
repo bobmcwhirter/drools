@@ -20,9 +20,9 @@ package org.drools.bpmn2.xpath;
 //import javax.script.ScriptEngine;
 //import javax.script.SimpleBindings;
 
-import org.drools.WorkingMemory;
+import org.drools.process.instance.impl.ReturnValueEvaluator;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.ProcessContext;
-import org.drools.spi.ReturnValueEvaluator;
 
 public class XPathReturnValueEvaluator implements ReturnValueEvaluator {
     
@@ -34,7 +34,7 @@ public class XPathReturnValueEvaluator implements ReturnValueEvaluator {
 //        this.expression = expression;
     }
 
-    public Object evaluate(WorkingMemory workingMemory, ProcessContext processContext) throws Exception {
+    public Object evaluate(ProcessContext processContext) throws Exception {
 //        ScriptEngine engine = FACTORY.getScriptEngine();
 //        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 //            ((ProcessInstance) processContext.getProcessInstance())

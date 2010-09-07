@@ -11,13 +11,13 @@ import org.drools.definition.process.Process;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.builder.dialect.ProcessDialect;
 import org.drools.process.builder.dialect.ProcessDialectRegistry;
+import org.drools.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.drools.process.instance.impl.RuleConstraintEvaluator;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.Split;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
-import org.drools.workflow.instance.impl.RuleConstraintEvaluator;
 
 public class SplitNodeBuilder implements ProcessNodeBuilder {
 

@@ -25,9 +25,9 @@ import org.drools.compiler.ReturnValueDescr;
 import org.drools.process.builder.ProcessBuildContext;
 import org.drools.process.builder.ReturnValueEvaluatorBuilder;
 import org.drools.process.core.ContextResolver;
+import org.drools.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 /**
  * @author etirelli

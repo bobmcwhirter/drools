@@ -18,23 +18,21 @@ package org.drools.workflow.instance.node;
 
 import java.util.Map;
 
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.event.ProcessEventSupport;
 import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.runtime.process.ProcessRuntime;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.WorkItem;
 import org.drools.workflow.instance.WorkflowProcessInstance;
-
 
 public class DynamicUtils {
 	
 	public static void addDynamicWorkItem(
-			DynamicNodeInstance dynamicContext, ProcessRuntime ksession,
+			DynamicNodeInstance dynamicContext, KnowledgeRuntime ksession,
 			String workItemName, Map<String, Object> parameters) {
 		WorkflowProcessInstance processInstance = dynamicContext.getProcessInstance();
 		WorkItemImpl workItem = new WorkItemImpl();
@@ -47,34 +45,32 @@ public class DynamicUtils {
 		workItemNodeInstance.setProcessInstance(processInstance);
 		workItemNodeInstance.internalSetWorkItem(workItem);
     	workItemNodeInstance.addEventListeners();
-		InternalWorkingMemory workingMemory = ((StatefulKnowledgeSessionImpl) ksession).session;
-		((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-			.getProcessEventSupport().fireBeforeNodeTriggered(workItemNodeInstance, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+		ProcessEventSupport eventSupport = ((InternalProcessRuntime)
+			((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();
+		eventSupport.fireBeforeNodeTriggered(workItemNodeInstance, ksession);
 		((WorkItemManager) ksession.getWorkItemManager()).internalExecuteWorkItem(workItem);
-		((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-			.getProcessEventSupport().fireAfterNodeTriggered(workItemNodeInstance, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+		eventSupport.fireAfterNodeTriggered(workItemNodeInstance, ksession);
 	}
 
 	public static void addDynamicSubProcess(
-			DynamicNodeInstance dynamicContext, ProcessRuntime ksession,
+			DynamicNodeInstance dynamicContext, KnowledgeRuntime ksession,
 			String processId, Map<String, Object> parameters) {
 		WorkflowProcessInstance processInstance = dynamicContext.getProcessInstance();
 		SubProcessNodeInstance subProcessNodeInstance = new SubProcessNodeInstance();
     	subProcessNodeInstance.setNodeInstanceContainer(dynamicContext);
 		subProcessNodeInstance.setProcessInstance(processInstance);
-		InternalWorkingMemory workingMemory = ((StatefulKnowledgeSessionImpl) ksession).session;
-		Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess(processId);
+		Process process = ksession.getKnowledgeBase().getProcess(processId);
         if (process == null) {
         	System.err.println("Could not find process " + processId);
         	System.err.println("Aborting process");
         	processInstance.setState(ProcessInstance.STATE_ABORTED);
         } else {
-        	((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-        		.getProcessEventSupport().fireBeforeNodeTriggered(subProcessNodeInstance, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+        	ProcessEventSupport eventSupport = ((InternalProcessRuntime)
+    			((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();
+    		eventSupport.fireBeforeNodeTriggered(subProcessNodeInstance, ksession);
     		ProcessInstance subProcessInstance = (ProcessInstance)
-	    		workingMemory.startProcess(processId, parameters);
-    		((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-    			.getProcessEventSupport().fireAfterNodeTriggered(subProcessNodeInstance, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+	    		ksession.startProcess(processId, parameters);
+    		eventSupport.fireAfterNodeTriggered(subProcessNodeInstance, ksession);
     		if (subProcessInstance.getState() == ProcessInstance.STATE_COMPLETED) {
 	    		subProcessNodeInstance.triggerCompleted();
 	    	} else {

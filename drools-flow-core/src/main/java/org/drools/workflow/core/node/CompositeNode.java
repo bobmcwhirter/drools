@@ -64,6 +64,10 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     	}
     	return subNodes.toArray(new Node[subNodes.size()]);
     }
+    
+    public Node[] internalGetNodes() {
+    	return getNodes();
+    }
 
     public void addNode(Node node) {
     	// TODO find a more elegant solution for this
@@ -96,7 +100,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     }
     
 	public boolean acceptsEvent(String type, Object event) {
-		for (Node node: getNodes()) {
+		for (Node node: internalGetNodes()) {
 			if (node instanceof EventNodeInterface) {
 				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
 					return true;

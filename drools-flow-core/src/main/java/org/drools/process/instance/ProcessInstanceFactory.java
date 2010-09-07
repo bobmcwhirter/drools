@@ -18,7 +18,7 @@ package org.drools.process.instance;
 
 import java.util.Map;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
 
 /**
@@ -27,6 +27,6 @@ import org.drools.definition.process.Process;
  */
 public interface ProcessInstanceFactory {
     
-    ProcessInstance createProcessInstance(Process process, WorkingMemory workingMemory, Map<String, Object> parameters);
+    ProcessInstance createProcessInstance(Process process, InternalKnowledgeRuntime kruntime, Map<String, Object> parameters);
 
 }

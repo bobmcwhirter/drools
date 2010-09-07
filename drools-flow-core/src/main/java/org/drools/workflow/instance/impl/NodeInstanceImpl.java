@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
@@ -112,15 +113,15 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
     	if (getNode().getMetaData().get("hidden") != null) {
     		hidden = true;
     	}
-    	WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
+    	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	if (!hidden) {
-    		((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-    			.getProcessEventSupport().fireBeforeNodeTriggered(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+    		((InternalProcessRuntime) kruntime.getProcessRuntime())
+    			.getProcessEventSupport().fireBeforeNodeTriggered(this, kruntime);
     	}
         internalTrigger(from, type);
         if (!hidden) {
-        	((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-        		.getProcessEventSupport().fireAfterNodeTriggered(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+        	((InternalProcessRuntime) kruntime.getProcessRuntime())
+        		.getProcessEventSupport().fireAfterNodeTriggered(this, kruntime);
         }
     }
     
@@ -155,10 +156,10 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
     	if (getNode().getMetaData().get("hidden") != null) {
     		hidden = true;
     	}
-    	WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
+    	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	if (!hidden) {
-    		((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-    			.getProcessEventSupport().fireBeforeNodeLeft(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+    		((InternalProcessRuntime) kruntime.getProcessRuntime())
+    			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
     	}
     	// check for exclusive group first
     	NodeInstanceContainer parent = getNodeInstanceContainer();
@@ -183,8 +184,8 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
         ((org.drools.workflow.instance.NodeInstance) ((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
         	.getNodeInstance(connection.getTo())).trigger(this, connection.getToType());
         if (!hidden) {
-        	((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-        		.getProcessEventSupport().fireAfterNodeLeft(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+        	((InternalProcessRuntime) kruntime.getProcessRuntime())
+        		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
         }
     }
     

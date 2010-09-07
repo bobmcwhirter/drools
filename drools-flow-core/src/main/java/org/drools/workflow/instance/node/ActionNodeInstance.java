@@ -16,15 +16,8 @@
 
 package org.drools.workflow.instance.node;
 
-import org.drools.WorkingMemory;
-import org.drools.base.DefaultKnowledgeHelper;
-import org.drools.base.SequentialKnowledgeHelper;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.impl.Action;
 import org.drools.runtime.process.NodeInstance;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -49,10 +42,9 @@ public class ActionNodeInstance extends NodeInstanceImpl {
         }
 		Action action = (Action) getActionNode().getAction().getMetaData("Action");
 		try {
-		    KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
-		    ProcessContext context = new ProcessContext(((InternalWorkingMemory) getProcessInstance().getWorkingMemory()).getKnowledgeRuntime());
+		    ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
 		    context.setNodeInstance(this);
-	        action.execute(knowledgeHelper, ((ProcessInstance) getProcessInstance()).getWorkingMemory(), context);		    
+	        action.execute(context);		    
 		} catch (Exception e) {
 		    throw new RuntimeException("unable to execute Action", e);
 		}
@@ -63,13 +55,4 @@ public class ActionNodeInstance extends NodeInstanceImpl {
         triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
-    private KnowledgeHelper createKnowledgeHelper() {
-        WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
-        if ( ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
-            return new SequentialKnowledgeHelper( workingMemory );
-        } else {
-            return new DefaultKnowledgeHelper( workingMemory );
-        }
-    }
-
 }

@@ -3,31 +3,32 @@ package org.drools.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderErrors;
-import org.drools.rule.Package;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.io.impl.ReaderResource;
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.runtime.rule.FactHandle;
 
 public class ProcessActionTest extends TestCase {
     
     public void testOnEntryExit() {
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -77,28 +78,26 @@ public class ProcessActionTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.actions");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance =
+            ksession.startProcess("org.drools.actions");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals(1, list.size());
-        workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertEquals(3, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     public void testActionContextJava() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -125,12 +124,10 @@ public class ProcessActionTest extends TestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
-			"String myVariable = (String) context.getVariable(\"variable\");\n" +
-			"System.out.println(drools.getWorkingMemory());\n" +
+			"String myVariable = (String) kcontext.getVariable(\"variable\");\n" +
+			"System.out.println(kcontext.getKnowledgeRuntime());\n" +
 			"list.add(myVariable);\n" +
-			"String nodeName = context.getNodeInstance().getNodeName();\n" +
-			"list.add(nodeName);\n" +
-			"nodeName = kcontext.getNodeInstance().getNodeName();\n" +
+			"String nodeName = kcontext.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
@@ -144,37 +141,27 @@ public class ProcessActionTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        PackageBuilderErrors errors = builder.getErrors();
-        if (!errors.isEmpty()) {
-        	for (DroolsError error: errors.getErrors()) {
-        		System.err.println(error);
-        	}
-        	fail("Errors while building package");
-        }
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.actions");
-        assertEquals(3, list.size());
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance =
+            ksession.startProcess("org.drools.actions");
+        assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
-        assertEquals("MyActionNode", list.get(2));
-        Iterator<?> iterator = workingMemory.iterateObjects(new ObjectFilter() {
+        Collection<FactHandle> factHandles = ksession.getFactHandles(new ObjectFilter() {
 			public boolean accept(Object object) {
 				return object instanceof Message;
 			}
         });
-        assertTrue(iterator.hasNext());
+        assertFalse(factHandles.isEmpty());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
 	public void testActionContextMVEL() {
-        PackageBuilder builder = new PackageBuilder();
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -201,12 +188,10 @@ public class ProcessActionTest extends TestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Triggered\");\n" +
-			"System.out.println(drools.getWorkingMemory());\n" +
-			"String myVariable = (String) context.getVariable(\"variable\");\n" +
+			"System.out.println(kcontext.getKnowledgeRuntime());\n" +
+			"String myVariable = (String) kcontext.getVariable(\"variable\");\n" +
 			"list.add(myVariable);\n" +
-			"String nodeName = context.getNodeInstance().getNodeName();\n" +
-			"list.add(nodeName);\n" +
-			"nodeName = kcontext.getNodeInstance().getNodeName();\n" +
+			"String nodeName = kcontext.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
@@ -220,37 +205,27 @@ public class ProcessActionTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        PackageBuilderErrors errors = builder.getErrors();
-        if (!errors.isEmpty()) {
-        	for (DroolsError error: errors.getErrors()) {
-        		System.err.println(error);
-        	}
-        	fail("Errors while building package");
-        }
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.actions");
-        assertEquals(3, list.size());
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance =
+            ksession.startProcess("org.drools.actions");
+        assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
-        assertEquals("MyActionNode", list.get(2));
-        Iterator<?> iterator = workingMemory.iterateObjects(new ObjectFilter() {
+        Collection<FactHandle> factHandles = ksession.getFactHandles(new ObjectFilter() {
 			public boolean accept(Object object) {
 				return object instanceof Message;
 			}
         });
-        assertTrue(iterator.hasNext());
+        assertFalse(factHandles.isEmpty());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
 	public void testActionVariableJava() {
-        PackageBuilder builder = new PackageBuilder();
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -288,32 +263,23 @@ public class ProcessActionTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        PackageBuilderErrors errors = builder.getErrors();
-        if (!errors.isEmpty()) {
-        	for (DroolsError error: errors.getErrors()) {
-        		System.err.println(error);
-        	}
-        	fail("Errors while building package");
-        }
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
+        ksession.setGlobal("list", list);
         TestVariable person = new TestVariable("John Doe");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
         ProcessInstance processInstance =
-            workingMemory.startProcess("org.drools.actions", params);
+            ksession.startProcess("org.drools.actions", params);
         assertEquals(1, list.size());
         assertEquals("John Doe", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 	
 	public void testActionVariableMVEL() {
-        PackageBuilder builder = new PackageBuilder();
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -351,32 +317,23 @@ public class ProcessActionTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        PackageBuilderErrors errors = builder.getErrors();
-        if (!errors.isEmpty()) {
-        	for (DroolsError error: errors.getErrors()) {
-        		System.err.println(error);
-        	}
-        	fail("Errors while building package");
-        }
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
+        ksession.setGlobal("list", list);
         TestVariable person = new TestVariable("John Doe");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
         ProcessInstance processInstance =
-            workingMemory.startProcess("org.drools.actions", params);
+            ksession.startProcess("org.drools.actions", params);
         assertEquals(1, list.size());
         assertEquals("John Doe", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 	
     public void testActionNameConflict() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -404,7 +361,7 @@ public class ProcessActionTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
         source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -432,27 +389,18 @@ public class ProcessActionTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        PackageBuilderErrors errors = builder.getErrors();
-        if (!errors.isEmpty()) {
-        	for (DroolsError error: errors.getErrors()) {
-        		System.err.println(error);
-        	}
-        	fail("Errors while building package");
-        }
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.actions1");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance =
+            ksession.startProcess("org.drools.actions1");
         assertEquals(1, list.size());
         assertEquals("Action1", list.get(0));
         list.clear();
-        processInstance = ( ProcessInstance )
-        	workingMemory.startProcess("org.drools.actions2");
+        processInstance =
+        	ksession.startProcess("org.drools.actions2");
         assertEquals(1, list.size());
         assertEquals("Action2", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

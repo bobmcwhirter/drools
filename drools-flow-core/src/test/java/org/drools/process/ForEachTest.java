@@ -23,18 +23,17 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.ListDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.process.instance.impl.Action;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
@@ -92,7 +91,7 @@ public class ForEachTest extends TestCase {
         actionNode.setName("Print child");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
             	System.out.println("Executed action for child " + ((Person) context.getVariable("child")).getName());
                 myList.add("Executed action");
             }
@@ -107,16 +106,17 @@ public class ForEachTest extends TestCase {
             Node.CONNECTION_DEFAULT_TYPE);
         forEachNode.setVariable("child", personDataType);
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        
         Map<String, Object> parameters = new HashMap<String, Object>();
         List<Person> persons = new ArrayList<Person>();
         persons.add(new Person("John Doe"));
         persons.add(new Person("Jane Doe"));
         persons.add(new Person("Jack"));
         parameters.put("persons", persons);
-        workingMemory.startProcess("org.drools.process.foreach", parameters);
+        ksession.startProcess("org.drools.process.foreach", parameters);
         assertEquals(3, myList.size());
     }
 

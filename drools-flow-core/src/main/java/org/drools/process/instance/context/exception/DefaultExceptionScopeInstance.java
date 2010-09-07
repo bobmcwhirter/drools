@@ -16,17 +16,11 @@
 
 package org.drools.process.instance.context.exception;
 
-import org.drools.WorkingMemory;
-import org.drools.base.DefaultKnowledgeHelper;
-import org.drools.base.SequentialKnowledgeHelper;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.instance.ContextInstanceContainer;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.process.instance.impl.Action;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.instance.NodeInstance;
 
@@ -39,20 +33,19 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 		if (handler instanceof ActionExceptionHandler) {
 			Action action = (Action) ((ActionExceptionHandler) handler).getAction().getMetaData("Action");
 			try {
-			    KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
-			    ProcessContext context = new ProcessContext(((InternalWorkingMemory) getProcessInstance().getWorkingMemory()).getKnowledgeRuntime());
 		    	ProcessInstance processInstance = getProcessInstance();
+			    ProcessContext processContext = new ProcessContext(processInstance.getKnowledgeRuntime());
 			    ContextInstanceContainer contextInstanceContainer = getContextInstanceContainer();
 			    if (contextInstanceContainer instanceof NodeInstance) {
-			    	context.setNodeInstance((NodeInstance) contextInstanceContainer);
+			    	processContext.setNodeInstance((NodeInstance) contextInstanceContainer);
 			    } else {
-			    	context.setProcessInstance(processInstance);
+			    	processContext.setProcessInstance(processInstance);
 			    }
 			    String faultVariable = handler.getFaultVariable();
 			    if (faultVariable != null) {
-			    	context.setVariable(faultVariable, params);
+			    	processContext.setVariable(faultVariable, params);
 			    }
-		        action.execute(knowledgeHelper, ((ProcessInstance) processInstance).getWorkingMemory(), context);
+		        action.execute(processContext);
 			} catch (Exception e) {
 			    throw new RuntimeException("unable to execute Action", e);
 			}
@@ -60,14 +53,5 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 			throw new IllegalArgumentException("Unknown exception handler " + handler);
 		}
 	}
-
-    private KnowledgeHelper createKnowledgeHelper() {
-        WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
-        if ( ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
-            return new SequentialKnowledgeHelper( workingMemory );
-        } else {
-            return new DefaultKnowledgeHelper( workingMemory );
-        }
-    }
 
 }

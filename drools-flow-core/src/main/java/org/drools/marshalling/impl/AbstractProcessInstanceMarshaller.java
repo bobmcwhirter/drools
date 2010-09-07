@@ -364,7 +364,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         }
         processInstance.setState(stream.readInt());
         long nodeInstanceCounter = stream.readLong();
-        processInstance.setWorkingMemory(wm);
+        processInstance.setKnowledgeRuntime(wm.getKnowledgeRuntime());
         if (includeVariables) {
             int nbVariables = stream.readInt();
             if (nbVariables > 0) {

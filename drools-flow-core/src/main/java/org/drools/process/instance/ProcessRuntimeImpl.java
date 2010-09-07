@@ -8,8 +8,7 @@ import java.util.Map;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
@@ -32,26 +31,37 @@ import org.drools.workflow.core.node.Trigger;
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
 	private AbstractWorkingMemory workingMemory;
+	private InternalKnowledgeRuntime kruntime;
 	
 	private ProcessInstanceManager processInstanceManager;
 	private SignalManager signalManager;
 	private TimerManager timerManager;
 	private ProcessEventSupport processEventSupport;
+
+	public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
+		this.kruntime = kruntime;
+		initProcessInstanceManager();
+		initSignalManager();
+		timerManager = new TimerManager(workingMemory, kruntime.getTimerService());
+        processEventSupport = new ProcessEventSupport();
+        initProcessEventListeners();
+	}
 	
 	public ProcessRuntimeImpl(AbstractWorkingMemory workingMemory) {
 		this.workingMemory = workingMemory;
+		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
 		initProcessInstanceManager();
 		initSignalManager();
-		timerManager = new TimerManager(workingMemory, workingMemory.getTimerService());
+		timerManager = new TimerManager(workingMemory, kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
         initProcessEventListeners();
         initProcessActivationListener();
 	}
 	
 	private void initProcessInstanceManager() {
-		String processInstanceManagerClass = ((SessionConfiguration) workingMemory.getSessionConfiguration()).getProcessInstanceManagerFactory();
+		String processInstanceManagerClass = ((SessionConfiguration) kruntime.getSessionConfiguration()).getProcessInstanceManagerFactory();
 		try {
-			processInstanceManager = ((ProcessInstanceManagerFactory) Class.forName(processInstanceManagerClass).newInstance()).createProcessInstanceManager(workingMemory);
+			processInstanceManager = ((ProcessInstanceManagerFactory) Class.forName(processInstanceManagerClass).newInstance()).createProcessInstanceManager(kruntime);
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -62,9 +72,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	}
 	
 	private void initSignalManager() {
-		String signalManagerClass = ((SessionConfiguration) workingMemory.getSessionConfiguration()).getSignalManagerFactory();
+		String signalManagerClass = ((SessionConfiguration) kruntime.getSessionConfiguration()).getSignalManagerFactory();
 		try {
-			signalManager = ((SignalManagerFactory) Class.forName(signalManagerClass).newInstance()).createSignalManager(workingMemory);
+			signalManager = ((SignalManagerFactory) Class.forName(signalManagerClass).newInstance()).createSignalManager(kruntime);
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -81,11 +91,11 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
         try {
-            workingMemory.startOperation();
-            if ( !workingMemory.getActionQueue().isEmpty() ) {
-            	workingMemory.executeQueuedActions();
+            kruntime.startOperation();
+            if ( !kruntime.getActionQueue().isEmpty() ) {
+            	kruntime.executeQueuedActions();
             }
-            final Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess( processId );
+            final Process process = kruntime.getKnowledgeBase().getProcess( processId );
             if ( process == null ) {
                 throw new IllegalArgumentException( "Unknown process ID: " + processId );
             }
@@ -93,13 +103,13 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
             if ( processInstance != null ) {
                 // start process instance
-                getProcessEventSupport().fireBeforeProcessStarted( processInstance, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() );
+                getProcessEventSupport().fireBeforeProcessStarted( processInstance, kruntime );
                 ((org.drools.process.instance.ProcessInstance) processInstance).start();
-                getProcessEventSupport().fireAfterProcessStarted( processInstance, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() );
+                getProcessEventSupport().fireAfterProcessStarted( processInstance, kruntime );
             }
             return processInstance;
         } finally {
-            workingMemory.endOperation();
+        	kruntime.endOperation();
         }
     }
 
@@ -110,7 +120,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }
         return conf.createProcessInstance( process,
-        								   workingMemory,
+        								   kruntime,
                                            parameters );
     }
 
@@ -139,7 +149,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     }
     
     private void initProcessEventListeners() {
-        for ( Process process : ((InternalRuleBase) workingMemory.getRuleBase()).getProcesses() ) {
+        for ( Process process : kruntime.getKnowledgeBase().getProcesses() ) {
             if ( process instanceof RuleFlowProcess ) {
                 StartNode startNode = ((RuleFlowProcess) process).getStart();
                 List<Trigger> triggers = startNode.getTriggers();
@@ -264,7 +274,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	}
 
 	public WorkItemManager getWorkItemManager() {
-		return workingMemory.getWorkItemManager();
+		return kruntime.getWorkItemManager();
 	}
 
 	public void signalEvent(String type, Object event) {

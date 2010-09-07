@@ -107,15 +107,15 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         	processId = processId.replace("#{" + replacement.getKey() + "}", replacement.getValue());
         }
         // start process instance
-        Process process = ((InternalRuleBase) ((ProcessInstance) getProcessInstance())
-    		.getWorkingMemory().getRuleBase()).getProcess(processId);
+        Process process = ((ProcessInstance) getProcessInstance())
+    		.getKnowledgeRuntime().getKnowledgeBase().getProcess(processId);
         if (process == null) {
         	System.err.println("Could not find process " + processId);
         	System.err.println("Aborting process");
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         } else {
 	    	ProcessInstance processInstance = ( ProcessInstance )
-	    		((ProcessInstance) getProcessInstance()).getWorkingMemory()
+	    		((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
 	    			.startProcess(processId, parameters);
 	    	if (!getSubProcessNode().isWaitForCompletion()) {
 	    		triggerCompleted();
@@ -133,7 +133,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
             ProcessInstance processInstance = (ProcessInstance)
-                ((ProcessInstance) getProcessInstance()).getWorkingMemory()
+                ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
                     .getProcessInstance(processInstanceId);
             if (processInstance != null) {
             	processInstance.setState(ProcessInstance.STATE_ABORTED);

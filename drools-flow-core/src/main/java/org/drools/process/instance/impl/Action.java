@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.spi;
+package org.drools.process.instance.impl;
 
-import org.drools.WorkingMemory;
+import org.drools.spi.ProcessContext;
 
-public interface ReturnValueEvaluator {
+public interface Action {
     
-    public Object evaluate(WorkingMemory workingMemory, ProcessContext processContext) throws Exception;
+    void execute(ProcessContext context) throws Exception;
+    
 }

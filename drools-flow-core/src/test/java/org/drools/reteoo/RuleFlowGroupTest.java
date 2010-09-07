@@ -23,18 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
-import org.drools.RuleBaseFactory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.base.SalienceInteger;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalAgenda;
+import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
+import org.drools.impl.InternalKnowledgeBase;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.impl.ConstraintEvaluator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.WorkingMemory;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
@@ -46,26 +55,27 @@ import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
-import org.drools.workflow.instance.impl.ConstraintEvaluator;
 
 /**
  * @author mproctor
  */
 
 public class RuleFlowGroupTest extends DroolsTestCase {
-    private ReteooRuleBase ruleBase;
-    private BuildContext   buildContext;
+    private KnowledgeBase kbase;
+    private BuildContext  buildContext;
 
     protected void setUp() throws Exception {
-        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ReteooRuleBase ruleBase = (ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase();
         buildContext = new BuildContext( ruleBase,
-                                         ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
+                                         ruleBase.getReteooBuilder().getIdGenerator() );
     }
 
     public void testRuleFlowGroup() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalWorkingMemory workingMemory = ((StatefulKnowledgeSessionImpl) ksession).session;
 
-        final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = ((AgendaImpl) ksession.getAgenda()).getAgenda();
 
         final List list = new ArrayList();
 
@@ -214,7 +224,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         // proces instance
         final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setWorkingMemory( workingMemory );
+        processInstance.setKnowledgeRuntime( (InternalKnowledgeRuntime) ksession );
         processInstance.setProcess( process );
         assertEquals( ProcessInstance.STATE_PENDING,
                       processInstance.getState() );
@@ -348,7 +358,8 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
     /** XOR split and join */
     public void testRuleFlowGroup2() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalWorkingMemory workingMemory = ((StatefulKnowledgeSessionImpl) ksession).session;
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
 
@@ -484,11 +495,11 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                             Node.CONNECTION_DEFAULT_TYPE,
                             end,
                             Node.CONNECTION_DEFAULT_TYPE );
-        ConstraintEvaluator constraint1 = new org.drools.workflow.instance.impl.RuleConstraintEvaluator();
+        ConstraintEvaluator constraint1 = new org.drools.process.instance.impl.RuleConstraintEvaluator();
         constraint1.setPriority( 1 );
         split.setConstraint( out1,
                              constraint1 );
-        ConstraintEvaluator constraint2 = new org.drools.workflow.instance.impl.RuleConstraintEvaluator();
+        ConstraintEvaluator constraint2 = new org.drools.process.instance.impl.RuleConstraintEvaluator();
         constraint2.setPriority( 2 );
         split.setConstraint( out2,
                              constraint2 );
@@ -528,7 +539,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         // proces instance
         final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setWorkingMemory( workingMemory );
+        processInstance.setKnowledgeRuntime( workingMemory.getKnowledgeRuntime() );
         processInstance.setProcess( process );
         assertEquals( ProcessInstance.STATE_PENDING,
                       processInstance.getState() );

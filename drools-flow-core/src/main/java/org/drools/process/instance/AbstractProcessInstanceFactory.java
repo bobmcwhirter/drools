@@ -18,8 +18,7 @@ package org.drools.process.instance;
 
 import java.util.Map;
 
-import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.core.context.variable.VariableScope;
@@ -28,10 +27,10 @@ import org.drools.process.instance.context.variable.VariableScopeInstance;
 public abstract class AbstractProcessInstanceFactory implements ProcessInstanceFactory {
 	
 	public ProcessInstance createProcessInstance(Process process,
-			                                     WorkingMemory workingMemory,
+			                                     InternalKnowledgeRuntime kruntime,
 			                                     Map<String, Object> parameters) {
 		ProcessInstance processInstance = (ProcessInstance) createProcessInstance();
-		processInstance.setWorkingMemory( (InternalWorkingMemory) workingMemory );
+		processInstance.setKnowledgeRuntime( kruntime );
         processInstance.setProcess( process );
         
         // set variable default values
@@ -50,7 +49,7 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
             }
         }
         
-        ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime()).getProcessInstanceManager()
+        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager()
         	.addProcessInstance( processInstance );
         return processInstance;
 	}

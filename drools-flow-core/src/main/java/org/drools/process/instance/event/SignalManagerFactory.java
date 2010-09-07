@@ -16,10 +16,10 @@
 
 package org.drools.process.instance.event;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 
 public interface SignalManagerFactory {
 	
-	SignalManager createSignalManager(WorkingMemory workingMemory);
+	SignalManager createSignalManager(InternalKnowledgeRuntime kruntime);
 
 }

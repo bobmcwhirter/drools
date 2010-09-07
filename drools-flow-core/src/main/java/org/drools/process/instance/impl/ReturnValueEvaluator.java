@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.workflow.instance.impl;
+package org.drools.process.instance.impl;
 
-import org.drools.definition.process.Connection;
-import org.drools.workflow.core.Constraint;
-import org.drools.workflow.instance.node.SplitInstance;
+import org.drools.spi.ProcessContext;
 
-public interface ConstraintEvaluator extends Constraint {
+public interface ReturnValueEvaluator {
     
-    // TODO: make this work for more than only splits
-    public boolean evaluate(SplitInstance instance,
-                            Connection connection,
-                            Constraint constraint);
+    public Object evaluate(ProcessContext processContext) throws Exception;
 }

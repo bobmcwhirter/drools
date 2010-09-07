@@ -9,18 +9,18 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.DefaultKnowledgeHelper;
-import org.drools.base.mvel.MVELAction;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.process.builder.dialect.mvel.MVELActionBuilder;
+import org.drools.process.instance.impl.Action;
+import org.drools.process.instance.impl.MVELAction;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
@@ -64,9 +64,9 @@ public class MVELDecisionBuilderTest extends TestCase {
         List list = new  ArrayList();
         wm.setGlobal( "list", list );        
         
-        KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper();
+        ProcessContext processContext = new ProcessContext( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
         ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( Thread.currentThread().getContextClassLoader() );
-        ((Action)actionNode.getAction().getMetaData("Action")).execute( knowledgeHelper, wm, null );
+        ((Action)actionNode.getAction().getMetaData("Action")).execute( processContext );
         
         assertEquals("hello world", list.get(0) );
     }    

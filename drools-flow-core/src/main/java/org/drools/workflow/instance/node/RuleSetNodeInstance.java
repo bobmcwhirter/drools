@@ -16,9 +16,9 @@
 
 package org.drools.workflow.instance.node;
 
-import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.workflow.core.node.RuleSetNode;
 
 /**
@@ -39,7 +39,8 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
         addRuleSetListener();
-        ((ProcessInstance) getProcessInstance()).getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
+        ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+        	.activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
     }
 
     public void addEventListeners() {
@@ -62,7 +63,8 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     public void cancel() {
         super.cancel();
-        ((ProcessInstance) getProcessInstance()).getAgenda().deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+        ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+        	.deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
     }
 
 	public void signalEvent(String type, Object event) {

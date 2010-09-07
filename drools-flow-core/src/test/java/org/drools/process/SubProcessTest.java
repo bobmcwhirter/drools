@@ -18,19 +18,18 @@ package org.drools.process;
 
 import junit.framework.TestCase;
 
-import org.drools.RuleBaseFactory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.common.AbstractRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.process.instance.impl.Action;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
-import org.drools.WorkingMemory;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
@@ -79,8 +78,8 @@ public class SubProcessTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
         process.setId("org.drools.process.subprocess");
@@ -98,7 +97,7 @@ public class SubProcessTest extends TestCase {
         actionNode.setName("Action");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
             	System.out.println("Executed action");
             	executed = true;
             }
@@ -114,12 +113,12 @@ public class SubProcessTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        ruleBase.addProcess(process);
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        workingMemory.startProcess("org.drools.process.process");
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.startProcess("org.drools.process.process");
         assertTrue(executed);
-        assertEquals(0, workingMemory.getProcessInstances().size());
+        assertEquals(0, ksession.getProcessInstances().size());
     }
 
     public void testAsynchronousSubProcess() {
@@ -149,8 +148,8 @@ public class SubProcessTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
         process.setId("org.drools.process.subprocess");
@@ -179,10 +178,10 @@ public class SubProcessTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        ruleBase.addProcess(process);
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        workingMemory.getWorkItemManager().registerWorkItemHandler("MyWork", new WorkItemHandler() {
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.getWorkItemManager().registerWorkItemHandler("MyWork", new WorkItemHandler() {
 			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 				System.out.println("Executing work item");
 				SubProcessTest.this.workItem = workItem;
@@ -190,12 +189,12 @@ public class SubProcessTest extends TestCase {
 			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 			}
         });
-        workingMemory.startProcess("org.drools.process.process");
+        ksession.startProcess("org.drools.process.process");
         assertNotNull(workItem);
-        assertEquals(2, workingMemory.getProcessInstances().size());
+        assertEquals(2, ksession.getProcessInstances().size());
         
-        workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(0, workingMemory.getProcessInstances().size());
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertEquals(0, ksession.getProcessInstances().size());
     }
     
 }

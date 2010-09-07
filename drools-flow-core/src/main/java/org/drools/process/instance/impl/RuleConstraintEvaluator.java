@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.workflow.instance.impl;
+package org.drools.process.instance.impl;
 
 import java.io.Serializable;
 
-import org.drools.common.InternalAgenda;
 import org.drools.definition.process.Connection;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
+import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.node.SplitInstance;
@@ -99,7 +99,7 @@ public class RuleConstraintEvaluator implements Constraint,
                             Connection connection,
                             Constraint constraint) {
         WorkflowProcessInstance processInstance = instance.getProcessInstance();
-        InternalAgenda agenda = (InternalAgenda) ((ProcessInstance) processInstance).getAgenda();
+        InternalAgenda agenda = (InternalAgenda) ((ProcessInstance) processInstance).getKnowledgeRuntime().getAgenda();
         String rule = "RuleFlow-Split-" + processInstance.getProcessId() + "-" + 
         	((Node) instance.getNode()).getUniqueId() + "-" + 
         	((Node) connection.getTo()).getId() + "-" + connection.getToType();

@@ -57,7 +57,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <nodes>" +
             "    <actionNode id=\"2\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >insert(context.getProcessInstance());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >insert(kcontext.getProcessInstance());</action>" +
             "    </actionNode>" +
             "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
             "      <constraints>" +
@@ -68,7 +68,7 @@ public class ProcessSplitTest extends TestCase {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -231,17 +231,17 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <nodes>" +
             "    <actionNode id=\"2\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >insert(context.getProcessInstance());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >insert(kcontext.getProcessInstance());</action>" +
             "    </actionNode>" +
             "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
             "      <constraints>" +
             "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"mvel\" >return true;</constraint>" +
-            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return context.getVariable(\"person\") != null &amp;&amp; ((Person) context.getVariable(\"person\")).name != null;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return kcontext.getVariable(\"person\") != null &amp;&amp; ((Person) kcontext.getVariable(\"person\")).name != null;</constraint>" +
             "      </constraints>" +
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +

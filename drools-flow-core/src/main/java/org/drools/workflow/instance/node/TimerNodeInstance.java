@@ -16,7 +16,6 @@
 
 package org.drools.workflow.instance.node;
 
-import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.ProcessInstance;
@@ -54,9 +53,8 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         if (getTimerInstances() == null) {
         	addTimerListener();
         }
-        ((InternalProcessRuntime) ((InternalWorkingMemory) ((ProcessInstance) 
-			getProcessInstance()).getWorkingMemory()).getProcessRuntime()).getTimerManager()
-            	.registerTimer(timer, (ProcessInstance) getProcessInstance());
+        ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime())
+        	.getTimerManager().registerTimer(timer, (ProcessInstance) getProcessInstance());
         timerId = timer.getId();
     }
     
@@ -91,9 +89,8 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     }
     
     public void cancel() {
-    	((InternalProcessRuntime) ((InternalWorkingMemory) ((ProcessInstance) 
-			getProcessInstance()).getWorkingMemory()).getProcessRuntime())
-				.getTimerManager().cancelTimer(timerId);
+    	((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime()
+			.getProcessRuntime()).getTimerManager().cancelTimer(timerId);
         super.cancel();
     }
     

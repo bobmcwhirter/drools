@@ -55,7 +55,7 @@ public class TimerTest extends TestCase {
         		}
         	}
         };
-        processInstance.setWorkingMemory((InternalWorkingMemory) workingMemory);
+        processInstance.setKnowledgeRuntime(((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
         processInstance.setId(1234);
         ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime()).getProcessInstanceManager()
         	.internalAddProcessInstance(processInstance);

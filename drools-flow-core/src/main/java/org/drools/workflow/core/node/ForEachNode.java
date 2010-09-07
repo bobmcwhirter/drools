@@ -126,6 +126,10 @@ public class ForEachNode extends CompositeNode {
     	return getCompositeNode().getNodes();
     }
     
+    public Node[] internalGetNodes() {
+    	return super.getNodes();
+    }
+    
     public void removeNode(Node node) {
     	getCompositeNode().removeNode(node);
     }

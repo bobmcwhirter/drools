@@ -19,16 +19,16 @@ package org.drools.workflow.instance.node;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Connection;
 import org.drools.event.ActivationCreatedEvent;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Declaration;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.spi.Activation;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
@@ -57,7 +57,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
 	            	getStateNode().getUniqueId() + "-" + 
 	            	connection.getTo().getId() + "-" + 
 	            	connection.getToType();
-		        boolean isActive = ((InternalAgenda) getProcessInstance().getAgenda())
+		        boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
 		            .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
 		        if (isActive) {
 		            selected = connection;
@@ -145,7 +145,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             Declaration declaration = (Declaration) it.next();
             if ("processInstance".equals(declaration.getIdentifier())) {
             	Object value = declaration.getValue(
-        			(InternalWorkingMemory) getProcessInstance().getWorkingMemory(),
+        			((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).session,
         			((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
             	if (value instanceof ProcessInstance) {
             		return ((ProcessInstance) value).getId() == getProcessInstance().getId();
@@ -168,8 +168,8 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             }
         }
         if (selected != null) {
-    		if ( !((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).getActionQueue().isEmpty() ) {
-    			((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).executeQueuedActions();
+    		if ( !((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).getActionQueue().isEmpty() ) {
+    			((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
             }
         	removeEventListeners();
         	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);

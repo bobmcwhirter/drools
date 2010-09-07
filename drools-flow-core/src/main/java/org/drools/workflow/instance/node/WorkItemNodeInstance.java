@@ -16,15 +16,12 @@
 
 package org.drools.workflow.instance.node;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.WorkingMemory;
-import org.drools.common.InternalRuleBase;
 import org.drools.definition.process.Node;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.VariableScope;
@@ -33,6 +30,7 @@ import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.WorkItemNode;
@@ -60,7 +58,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public WorkItem getWorkItem() {
     	if (workItem == null && workItemId >= 0) {
     		workItem = ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-				.getWorkingMemory().getWorkItemManager()).getWorkItem(workItemId);
+				.getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
     	}
         return workItem;
     }
@@ -78,8 +76,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
     
     public boolean isInversionOfControl() {
-        return ((InternalRuleBase) ((ProcessInstance) getProcessInstance())
-    		.getWorkingMemory().getRuleBase()).getConfiguration().isAdvancedProcessRuleIntegration();
+    	// TODO
+        return false;
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
@@ -95,11 +93,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 		    addWorkItemListener();
         }
 		if (isInversionOfControl()) {
-			((ProcessInstance) getProcessInstance()).getWorkingMemory()
-				.update(((ProcessInstance) getProcessInstance()).getWorkingMemory().getFactHandle(this), this);
+			((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
+				.update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);
 		} else {
 		    ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-	    		.getWorkingMemory().getWorkItemManager()).internalExecuteWorkItem(workItem);
+	    		.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
 		}
         if (!workItemNode.isWaitForCompletion()) {
             triggerCompleted();
@@ -195,8 +193,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 	        }
     	}
         if (isInversionOfControl()) {
-            WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
-            workingMemory.update(workingMemory.getFactHandle(this), this);
+            KnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+            kruntime.update(kruntime.getFactHandle(this), this);
         } else {
             triggerCompleted();
         }
@@ -208,7 +206,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     			workItem.getState() != WorkItem.COMPLETED && 
     			workItem.getState() != WorkItem.ABORTED) {
     		((WorkItemManager) ((ProcessInstance) getProcessInstance())
-				.getWorkingMemory().getWorkItemManager()).internalAbortWorkItem(workItemId);
+				.getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItemId);
     	}
         super.cancel();
     }

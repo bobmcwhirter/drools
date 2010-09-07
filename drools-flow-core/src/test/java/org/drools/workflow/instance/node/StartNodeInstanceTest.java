@@ -21,13 +21,13 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.node.StartNode;
@@ -37,8 +37,8 @@ public class StartNodeInstanceTest extends TestCase {
     
     public void testStartNode() {
         
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        StatefulSession session = ruleBase.newStatefulSession();        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
         MockNode mockNode = new MockNode();
         MockNodeInstanceFactory mockNodeFactory = new MockNodeInstanceFactory( new MockNodeInstance( mockNode ) );
@@ -60,7 +60,7 @@ public class StartNodeInstanceTest extends TestCase {
                 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();   
         processInstance.setProcess( process );
-        processInstance.setWorkingMemory( (InternalWorkingMemory) session );              
+        processInstance.setKnowledgeRuntime( (InternalKnowledgeRuntime) ksession );              
         
         assertEquals(  ProcessInstance.STATE_PENDING, processInstance.getState() );
         processInstance.start();        

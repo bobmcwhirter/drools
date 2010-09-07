@@ -1,30 +1,24 @@
 @declare{"actionInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.Action, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.process.instance.impl.Action, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.WorkingMemory workingMemory) throws Exception {
-        execute(knowledgeHelper, workingMemory, null);
-    }
+    public void execute(org.drools.spi.ProcessContext context) throws Exception {
 
-    public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.WorkingMemory workingMemory, org.drools.spi.ProcessContext context ) throws Exception {
-
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) context.getKnowledgeRuntime().getGlobal( "@{identifier}" );
         @end{}
 
         @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
         @end{}
 
         @{processClassName}.@{methodName} (
-	        knowledgeHelper@if{globals != empty},@end{}
+	        context@if{globals != empty},@end{}
 	        @foreach{identifier : globals} @{identifier}
 	        @end{","}@if{variables != empty},@end{}
 	        @foreach{identifier : variables} @{identifier}
-	        @end{","}, context );
+	        @end{","} );
     }
     
     public java.util.List getMethodBytecode() {
@@ -36,13 +30,13 @@ public class @{invokerClassName} implements org.drools.spi.Action, org.drools.sp
 @declare{"returnValueEvaluatorInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.process.instance.impl.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.drools.WorkingMemory workingMemory, org.drools.spi.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.drools.spi.ProcessContext processContext) throws Exception {
 
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) processContext.getKnowledgeRuntime().getGlobal( "@{identifier}" );
         @end{}
 
         @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );

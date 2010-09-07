@@ -66,7 +66,7 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
                                                analysis.getNotBoundedIdentifiers(),
                                                contextResolver);
         map.put( "text",
-                 dialect.getKnowledgeHelperFixer().fix( actionDescr.getText() ));
+                 ProcessKnowledgeHelperFixer.fix( actionDescr.getText() ));
 
         generatTemplates( "actionMethod",
                           "actionInvoker",

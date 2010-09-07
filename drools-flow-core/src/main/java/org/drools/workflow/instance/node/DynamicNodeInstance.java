@@ -18,6 +18,8 @@ package org.drools.workflow.instance.node;
 
 import org.drools.definition.process.Node;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.rule.impl.AgendaImpl;
+import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.DynamicNode;
 
@@ -34,8 +36,9 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 	}
 	
     public void internalTrigger(NodeInstance from, String type) {
-    	getProcessInstance().getWorkingMemory().getAgenda().getRuleFlowGroup(getRuleFlowGroupName()).setAutoDeactivate(false);
-    	getProcessInstance().getWorkingMemory().getAgenda().activateRuleFlowGroup(
+    	InternalAgenda agenda =  (InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda();
+    	((AgendaImpl) agenda).getAgenda().getRuleFlowGroup(getRuleFlowGroupName()).setAutoDeactivate(false);
+    	agenda.activateRuleFlowGroup(
 			getRuleFlowGroupName(), getProcessInstance().getId(), getUniqueId());
 //    	if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
 //    		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
@@ -51,7 +54,8 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 	}
 	
     public void triggerCompleted(String outType) {
-    	getProcessInstance().getWorkingMemory().getAgenda().deactivateRuleFlowGroup(getRuleFlowGroupName());
+    	((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+    		.deactivateRuleFlowGroup(getRuleFlowGroupName());
     	super.triggerCompleted(outType);
     }
 

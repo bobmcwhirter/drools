@@ -18,17 +18,10 @@ package org.drools.workflow.instance.impl;
 
 import java.util.List;
 
-import org.drools.WorkingMemory;
-import org.drools.base.DefaultKnowledgeHelper;
-import org.drools.base.SequentialKnowledgeHelper;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.context.exception.ExceptionScope;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
+import org.drools.process.instance.impl.Action;
 import org.drools.runtime.process.NodeInstance;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
@@ -61,30 +54,18 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 		}
 		List<DroolsAction> actions = extendedNode.getActions(type);
 		if (actions != null) {
-			KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
 			for (DroolsAction droolsAction: actions) {
-				executeAction(droolsAction, knowledgeHelper);
+				executeAction(droolsAction);
 			}
 		}
 	}
 	
-	protected KnowledgeHelper createKnowledgeHelper() {
-		KnowledgeHelper knowledgeHelper = null;
-		WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
-		if (((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential()) {
-			knowledgeHelper = new SequentialKnowledgeHelper(workingMemory);
-        } else {
-        	knowledgeHelper = new DefaultKnowledgeHelper(workingMemory);
-        }
-		return knowledgeHelper;
-	}
-	
-	protected void executeAction(DroolsAction droolsAction, KnowledgeHelper knowledgeHelper) {
+	protected void executeAction(DroolsAction droolsAction) {
 		Action action = (Action) droolsAction.getMetaData("Action");
-		ProcessContext context = new ProcessContext(((InternalWorkingMemory) getProcessInstance().getWorkingMemory()).getKnowledgeRuntime());
+		ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
 		context.setNodeInstance(this);
 		try {
-			action.execute(knowledgeHelper, ((ProcessInstance) getProcessInstance()).getWorkingMemory(), context);
+			action.execute(context);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			String exceptionName = exception.getClass().getName();

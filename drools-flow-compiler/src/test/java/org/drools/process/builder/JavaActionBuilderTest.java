@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -17,10 +17,10 @@ import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.builder.dialect.ProcessDialect;
 import org.drools.process.builder.dialect.ProcessDialectRegistry;
+import org.drools.process.instance.impl.Action;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
@@ -73,8 +73,8 @@ public class JavaActionBuilderTest extends TestCase {
         List list = new  ArrayList();
         wm.setGlobal( "list", list );        
         
-        KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper();
-        ((Action) actionNode.getAction().getMetaData("Action")).execute( knowledgeHelper, wm, null );
+        ProcessContext processContext = new ProcessContext( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
+        ((Action) actionNode.getAction().getMetaData("Action")).execute( processContext );
        
         assertEquals("hello world", list.get(0) );
     }    

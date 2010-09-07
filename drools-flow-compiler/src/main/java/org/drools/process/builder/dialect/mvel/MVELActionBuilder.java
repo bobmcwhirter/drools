@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.mvel.MVELAction;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
@@ -12,10 +11,10 @@ import org.drools.lang.descr.ActionDescr;
 import org.drools.process.builder.ActionBuilder;
 import org.drools.process.core.ContextResolver;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.impl.MVELAction;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.mvel2.Macro;
@@ -30,37 +29,31 @@ public class MVELActionBuilder
         macros.put( "insert",
                     new Macro() {
                         public String doMacro() {
-                            return "drools.insert";
+                            return "kcontext.getKnowledgeRuntime().insert";
                         }
                     } );
 
-        macros.put( "insertLogical",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.insertLogical";
-                        }
-                    } );
+//        macros.put( "insertLogical",
+//                    new Macro() {
+//                        public String doMacro() {
+//                            return "kcontext.getKnowledgeRuntime()..insertLogical";
+//                        }
+//                    } );
 
-        macros.put( "modify",
-                    new Macro() {
-                        public String doMacro() {
-                            return "@Modify with";
-                        }
-                    } );
 
-        macros.put( "update",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.update";
-                        }
-                    } );
+//        macros.put( "update",
+//                    new Macro() {
+//                        public String doMacro() {
+//                            return "kcontext.getKnowledgeRuntime().update";
+//                        }
+//                    } );
 
-        macros.put( "retract",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.retract";
-                        }
-                    } );;
+//        macros.put( "retract",
+//                    new Macro() {
+//                        public String doMacro() {
+//                            return "kcontext.getKnowledgeRuntime().retract";
+//                        }
+//                    } );;
     }
     
     public MVELActionBuilder() {
@@ -78,9 +71,8 @@ public class MVELActionBuilder
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
             Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
+            variables.put("kcontext", ProcessContext.class);
             variables.put("context", ProcessContext.class);
-            variables.put("kcontext", org.drools.runtime.process.ProcessContext.class);
-            variables.put("drools", KnowledgeHelper.class);
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     actionDescr,
                                                                     dialect.getInterceptors(),

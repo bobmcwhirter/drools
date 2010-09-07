@@ -1,23 +1,28 @@
 package org.drools.process.builder;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.base.mvel.MVELReturnValueEvaluator;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ReturnValueDescr;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.process.builder.dialect.mvel.MVELReturnValueEvaluatorBuilder;
+import org.drools.process.instance.impl.MVELReturnValueEvaluator;
+import org.drools.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.workflow.instance.node.SplitInstance;
 
 public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
@@ -54,14 +59,16 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
                        descr,
                        null );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkgBuilder.getPackage() );
-        final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        List<KnowledgePackage> packages = new ArrayList<KnowledgePackage>();
+        packages.add( new KnowledgePackageImp(pkgBuilder.getPackage()) );
+        kbase.addKnowledgePackages( packages );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        wm.setGlobal( "value", true );        
+        ksession.setGlobal( "value", true );        
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setWorkingMemory( wm );
+        processInstance.setKnowledgeRuntime( (InternalKnowledgeRuntime) ksession );
 
         SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance( processInstance );
@@ -72,7 +79,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
                                    null,
                                    null ) );
         
-        wm.setGlobal( "value", false );     
+        ksession.setGlobal( "value", false );     
         
         assertFalse( node.evaluate( splitInstance,
                                    null,

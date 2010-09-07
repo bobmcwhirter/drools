@@ -19,8 +19,8 @@ package org.drools.bpmn2.xpath;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.process.builder.ReturnValueEvaluatorBuilder;
 import org.drools.process.core.ContextResolver;
+import org.drools.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.drools.rule.builder.PackageBuildContext;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class XPathReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
 

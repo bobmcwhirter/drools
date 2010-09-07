@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.ProcessInstance;
@@ -28,7 +27,6 @@ import org.drools.process.instance.timer.TimerInstance;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.time.TimeUtils;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.node.StateBasedNode;
@@ -52,8 +50,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 		if (timers != null) {
 			addTimerListener();
 			timerInstances = new ArrayList<Long>(timers.size());
-			TimerManager timerManager = ((InternalProcessRuntime) ((InternalWorkingMemory) ((ProcessInstance) 
-				getProcessInstance()).getWorkingMemory()).getProcessRuntime()).getTimerManager();
+			TimerManager timerManager = ((InternalProcessRuntime) 
+				getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
 			for (Timer timer: timers.keySet()) {
 				TimerInstance timerInstance = createTimerInstance(timer); 
 				timerManager.registerTimer(timerInstance, (ProcessInstance) getProcessInstance());
@@ -86,8 +84,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     private void triggerTimer(TimerInstance timerInstance) {
     	for (Map.Entry<Timer, DroolsAction> entry: getEventBasedNode().getTimers().entrySet()) {
     		if (entry.getKey().getId() == timerInstance.getTimerId()) {
-    			KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
-    			executeAction(entry.getValue(), knowledgeHelper);
+    			executeAction(entry.getValue());
     			return;
     		}
     	}
@@ -137,8 +134,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	private void cancelTimers() {
 		// deactivate still active timers
 		if (timerInstances != null) {
-			TimerManager timerManager = ((InternalProcessRuntime) ((InternalWorkingMemory) ((ProcessInstance) 
-					getProcessInstance()).getWorkingMemory()).getProcessRuntime()).getTimerManager();
+			TimerManager timerManager = ((InternalProcessRuntime)
+				getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
 			for (Long id: timerInstances) {
 				timerManager.cancelTimer(id);
 			}

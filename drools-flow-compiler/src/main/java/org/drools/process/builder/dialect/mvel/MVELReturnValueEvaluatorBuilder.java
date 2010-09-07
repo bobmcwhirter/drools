@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELReturnValueEvaluator;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.process.builder.ReturnValueEvaluatorBuilder;
 import org.drools.process.core.ContextResolver;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.impl.MVELReturnValueEvaluator;
+import org.drools.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class MVELReturnValueEvaluatorBuilder
     implements

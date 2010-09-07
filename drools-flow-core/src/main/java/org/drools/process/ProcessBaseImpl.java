@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.impl;
+package org.drools.process;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -31,9 +31,6 @@ import java.util.Map;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.command.CommandService;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
@@ -71,15 +68,16 @@ import org.drools.event.knowlegebase.impl.BeforeKnowledgePackageAddedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeKnowledgePackageRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Package;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
-public class KnowledgeBaseImpl
+public class ProcessBaseImpl
     implements
     InternalKnowledgeBase,
     Externalizable {
@@ -90,11 +88,11 @@ public class KnowledgeBaseImpl
 
     public Map<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
 
-    public KnowledgeBaseImpl() {
+    public ProcessBaseImpl() {
 
     }
 
-    public KnowledgeBaseImpl(RuleBase ruleBase) {
+    public ProcessBaseImpl(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.mappedKnowledgeBaseListeners = new HashMap<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper>();
     }
@@ -157,75 +155,42 @@ public class KnowledgeBaseImpl
     }
     
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
-        // NOTE if you update here, you'll also need to update the JPAService
-        if ( conf == null ) {
-            conf = new SessionConfiguration();
-        }
-        
-        if ( environment == null ) {
-            environment = EnvironmentFactory.newEnvironment();
-        }
-        
-    	CommandService commandService = ((SessionConfiguration) conf).getCommandService(this, environment);
-    	if (commandService != null) {
-			return new CommandBasedStatefulKnowledgeSession(commandService);
-    	} else {
-    		ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, 
-    		                                                                                          environment );
-    		return new StatefulKnowledgeSessionImpl( session, this );
-    	}
+        return new StatefulProcessSession(this, conf, environment);
     }  
     
-    public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions()
-    {
-    	Collection<StatefulKnowledgeSession> c = new ArrayList<StatefulKnowledgeSession>();
-    	StatefulSession[] sss = this.ruleBase.getStatefulSessions();
-    	if (sss != null) {
-    		for (StatefulSession ss : sss) {
-    			if (ss instanceof ReteooStatefulSession) {
-	    			c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
-    			}
-    		}
-    	}
-    	return c;
+    public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions() {
+        throw new UnsupportedOperationException("Getting stateful sessions not supported");
     }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession() {
-        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, null );
+        throw new UnsupportedOperationException("Stateless sessions not supported");
     }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {        
-        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, conf );
+        throw new UnsupportedOperationException("Stateless sessions not supported");
     } 
 
     public void removeKnowledgePackage(String packageName) {
         this.ruleBase.removePackage( packageName );
     }
 
-    public void removeRule(String packageName,
-                           String ruleName) {
-        this.ruleBase.removeRule( packageName,
-                                  ruleName );
+    public void removeRule(String packageName, String ruleName) {
+        this.ruleBase.removeRule( packageName, ruleName );
     }
     
-    public void removeQuery(String packageName,
-                            String queryName) {
-        this.ruleBase.removeQuery( packageName,
-                                   queryName );
+    public void removeQuery(String packageName, String queryName) {
+        this.ruleBase.removeQuery( packageName, queryName );
     }    
 
-    public void removeFunction(String packageName,
-                           String ruleName) {
-        this.ruleBase.removeFunction( packageName,
-                                  ruleName );
+    public void removeFunction(String packageName, String ruleName) {
+        this.ruleBase.removeFunction( packageName, ruleName );
     }
 
     public void removeProcess(String processId) {
         this.ruleBase.removeProcess( processId );
     }
     
-    public FactType getFactType(String packageName,
-                                String typeName) {
+    public FactType getFactType(String packageName, String typeName) {
         return this.ruleBase.getFactType( packageName + "." + typeName );
     }
 
@@ -241,25 +206,23 @@ public class KnowledgeBaseImpl
     public Process getProcess(String processId) {
         return ((InternalRuleBase) this.ruleBase).getProcess(processId);
     }
-
+    
     public Collection<Process> getProcesses() {
     	return Arrays.asList(((InternalRuleBase) this.ruleBase).getProcesses());
     }
 
-    public Rule getRule(String packageName,
-                        String ruleName) {
+    public Rule getRule(String packageName, String ruleName) {
         return this.ruleBase.getPackage( packageName ).getRule( ruleName );
     }
     
-    public Query getQuery(String packageName,
-                          String queryName) {
+    public Query getQuery(String packageName, String queryName) {
         return this.ruleBase.getPackage( packageName ).getRule( queryName );
     }
     
 
     public static class KnowledgeBaseEventListenerWrapper
-        implements
-        org.drools.event.RuleBaseEventListener {
+        implements org.drools.event.RuleBaseEventListener {
+    	
         private KnowledgeBaseEventListener listener;
         private KnowledgeBase              kbase;
 

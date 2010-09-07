@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.spi;
+package org.drools.process.instance.impl;
 
-import org.drools.WorkingMemory;
+import org.drools.definition.process.Connection;
+import org.drools.workflow.core.Constraint;
+import org.drools.workflow.instance.node.SplitInstance;
 
-public interface Action {
+public interface ConstraintEvaluator extends Constraint {
     
-    void execute(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory, ProcessContext context) throws Exception;
-    
+    // TODO: make this work for more than only splits
+    public boolean evaluate(SplitInstance instance,
+                            Connection connection,
+                            Constraint constraint);
 }

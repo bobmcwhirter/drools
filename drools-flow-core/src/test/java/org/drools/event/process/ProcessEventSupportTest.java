@@ -25,11 +25,10 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.process.instance.impl.Action;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
@@ -59,9 +58,7 @@ public class ProcessEventSupportTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-			public void execute(KnowledgeHelper knowledgeHelper,
-					org.drools.WorkingMemory workingMemory,
-					ProcessContext context) throws Exception {
+			public void execute(ProcessContext context) throws Exception {
             	System.out.println("Executed action");
 			}
         });

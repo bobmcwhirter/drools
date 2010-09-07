@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
@@ -75,8 +75,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	public void removeNodeInstance(final NodeInstance nodeInstance) {
 		if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
-			getWorkingMemory().retract(
-					getWorkingMemory().getFactHandle(nodeInstance));
+			getKnowledgeRuntime().retract(
+					getKnowledgeRuntime().getFactHandle(nodeInstance));
 		}
 		this.nodeInstances.remove(nodeInstance);
 	}
@@ -163,7 +163,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 					+ node.getClass());
 		}
 		if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
-			getWorkingMemory().insert(nodeInstance);
+			getKnowledgeRuntime().insert(nodeInstance);
 		}
 		return nodeInstance;
 	}
@@ -185,7 +185,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		// for disconnected process instances, try going through the variable scope instances
 		// (as the default variable scope cannot be retrieved as the link to the process could
 		// be null and the associated working memory is no longer accessible)
-		if (getWorkingMemory() == null) {
+		if (getKnowledgeRuntime() == null) {
 			List<ContextInstance> variableScopeInstances = 
 				getContextInstances(VariableScope.VARIABLE_SCOPE);
 			if (variableScopeInstances != null && variableScopeInstances.size() == 1) {
@@ -211,7 +211,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         // for disconnected process instances, try going through the variable scope instances
         // (as the default variable scope cannot be retrieved as the link to the process could
         // be null and the associated working memory is no longer accessible)
-        if (getWorkingMemory() == null) {
+        if (getKnowledgeRuntime() == null) {
             List<ContextInstance> variableScopeInstances = 
                 getContextInstances(VariableScope.VARIABLE_SCOPE);
             if (variableScopeInstances == null) {
@@ -248,9 +248,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		// TODO move most of this to ProcessInstanceImpl
 		if (state == ProcessInstance.STATE_COMPLETED
 				|| state == ProcessInstance.STATE_ABORTED) {
-			InternalWorkingMemory workingMemory = (InternalWorkingMemory) getWorkingMemory();
-			((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-				.getProcessEventSupport().fireBeforeProcessCompleted(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+			InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
+			InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
+			processRuntime.getProcessEventSupport().fireBeforeProcessCompleted(this, kruntime);
 			// deactivate all node instances of this process instance
 			while (!nodeInstances.isEmpty()) {
 				NodeInstance nodeInstance = nodeInstances.get(0);
@@ -258,13 +258,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 						.cancel();
 			}
 			removeEventListeners();
-			((InternalProcessRuntime) workingMemory.getProcessRuntime()).getProcessInstanceManager().removeProcessInstance(this);
-			((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-				.getProcessEventSupport().fireAfterProcessCompleted(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+			processRuntime.getProcessInstanceManager().removeProcessInstance(this);
+			processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
 
-			String type = "processInstanceCompleted:" + getId();
-			((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-				.getSignalManager().signalEvent(type, this);
+			processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
 		}
 	}
 
@@ -364,16 +361,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	public void addEventListener(String type, EventListener listener,
 			boolean external) {
-		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners
-				: this.eventListeners;
+		Map<String, List<EventListener>> eventListeners = 
+			external ? this.externalEventListeners : this.eventListeners;
 		List<EventListener> listeners = eventListeners.get(type);
 		if (listeners == null) {
 			listeners = new CopyOnWriteArrayList<EventListener>();
 			eventListeners.put(type, listeners);
 			if (external) {
-				((InternalProcessRuntime) ((InternalWorkingMemory) getWorkingMemory()).getProcessRuntime())
-					.getSignalManager().addEventListener(type,
-						this);
+				((InternalProcessRuntime) getKnowledgeRuntime().getProcessRuntime())
+					.getSignalManager().addEventListener(type, this);
 			}
 		}
 		listeners.add(listener);
@@ -389,7 +385,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			if (listeners.isEmpty()) {
 				eventListeners.remove(type);
 				if (external) {
-					((InternalProcessRuntime) ((InternalWorkingMemory) getWorkingMemory()).getProcessRuntime())
+					((InternalProcessRuntime) getKnowledgeRuntime().getProcessRuntime())
 						.getSignalManager().removeEventListener(type, this);
 				}
 			}
@@ -402,7 +398,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	private void removeEventListeners() {
 		for (String type : externalEventListeners.keySet()) {
-			((InternalProcessRuntime) ((InternalWorkingMemory) getWorkingMemory()).getProcessRuntime())
+			((InternalProcessRuntime) getKnowledgeRuntime().getProcessRuntime())
 				.getSignalManager().removeEventListener(type, this);
 		}
 	}

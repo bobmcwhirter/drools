@@ -19,23 +19,24 @@ package org.drools.workflow.instance.node;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaEventListener;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.rule.ActivationCancelledEvent;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.AgendaGroupPoppedEvent;
+import org.drools.event.rule.AgendaGroupPushedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Declaration;
+import org.drools.rule.Rule;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.spi.Activation;
 import org.drools.workflow.core.node.MilestoneNode;
 
@@ -60,7 +61,7 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         }
         String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
         	+ "-" + getMilestoneNode().getUniqueId();
-        boolean isActive = ((InternalAgenda) getProcessInstance().getAgenda())
+        boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
 			.isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
         if (isActive) {
         	triggerCompleted();
@@ -75,7 +76,7 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
             Declaration declaration = (Declaration) it.next();
             if ("processInstance".equals(declaration.getIdentifier())) {
             	Object value = declaration.getValue(
-        			(InternalWorkingMemory) getProcessInstance().getWorkingMemory(),
+        			((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).session,
         			((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
             	if (value instanceof ProcessInstance) {
             		return ((ProcessInstance) value).getId() == getProcessInstance().getId();
@@ -91,31 +92,25 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
     }
     
     private void addActivationListener() {
-    	((ProcessInstance) getProcessInstance()).getWorkingMemory().addEventListener(this);
+    	getProcessInstance().getKnowledgeRuntime().addEventListener(this);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((ProcessInstance) getProcessInstance()).getWorkingMemory().removeEventListener(this);
+        getProcessInstance().getKnowledgeRuntime().removeEventListener(this);
     }
 
-    public void activationCancelled(ActivationCancelledEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void activationCreated(ActivationCreatedEvent event,
-            WorkingMemory workingMemory) {
+    public void activationCreated(ActivationCreatedEvent event) {
         // check whether this activation is from the DROOLS_SYSTEM agenda group
-        String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
+        String ruleFlowGroup = ((Rule) event.getActivation().getRule()).getRuleFlowGroup();
         if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
             // new activations of the rule associate with a milestone node
             // trigger node instances of that milestone node
             String ruleName = event.getActivation().getRule().getName();
             String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getNodeId();
-            if (milestoneName.equals(ruleName) && checkProcessInstance(event.getActivation())) {
-        		if ( !((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).getActionQueue().isEmpty() ) {
-        			((AbstractWorkingMemory) getProcessInstance().getWorkingMemory()).executeQueuedActions();
+            if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getActivation())) {
+        		if ( !((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).getActionQueue().isEmpty() ) {
+        			((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
                 }
             	synchronized(getProcessInstance()) {
 	                removeEventListeners();
@@ -125,40 +120,36 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         }
     }
 
-    public void afterActivationFired(AfterActivationFiredEvent event,
-            WorkingMemory workingMemory) {
+    public void activationCancelled(ActivationCancelledEvent event) {
         // Do nothing
     }
 
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-            WorkingMemory workingMemory) {
+    public void afterActivationFired(AfterActivationFiredEvent event) {
         // Do nothing
     }
 
-    public void agendaGroupPushed(AgendaGroupPushedEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
         // Do nothing
     }
 
-    public void beforeActivationFired(BeforeActivationFiredEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
         // Do nothing
     }
 
-	public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-			WorkingMemory workingMemory) {
+    public void beforeActivationFired(BeforeActivationFiredEvent event) {
+        // Do nothing
+    }
+
+	public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
 	}
 
-	public void afterRuleFlowGroupDeactivated(
-			RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+	public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
 	}
 
-	public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-			WorkingMemory workingMemory) {
+	public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
 	}
 
-	public void beforeRuleFlowGroupDeactivated(
-			RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+	public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
 	}
 
 }

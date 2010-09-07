@@ -21,19 +21,21 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.event.EventTypeFilter;
+import org.drools.process.instance.impl.Action;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
@@ -91,7 +93,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -127,10 +129,11 @@ public class EventTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.process.event");
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -190,7 +193,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -213,10 +216,11 @@ public class EventTest extends TestCase {
             endNode2, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.process.event");
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -260,7 +264,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -285,7 +289,7 @@ public class EventTest extends TestCase {
         actionNode2.setName("Print");
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
             	System.out.println("Detected other event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -325,10 +329,11 @@ public class EventTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.process.event");
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -376,7 +381,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
                 myList.add("Executed action");
             }
         });
@@ -399,7 +404,7 @@ public class EventTest extends TestCase {
         actionNode2.setName("Print");
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
                 myList.add("Executed action");
             }
         });
@@ -438,10 +443,11 @@ public class EventTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.process.event");
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         processInstance.signalEvent("myEvent", null);
         assertEquals(2, myList.size());
@@ -494,7 +500,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
+            public void execute(ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -529,10 +535,11 @@ public class EventTest extends TestCase {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ruleBase.addProcess(process);
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.process.event");
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        
+        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");

@@ -8,22 +8,23 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.StateNodeInstance;
 
 public class ProcessStateTest extends TestCase {
     
     public void testManualSignalState() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -56,14 +57,12 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         // start process
-        RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance)
-            workingMemory.startProcess("org.drools.state");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
+            ksession.startProcess("org.drools.state");
         // should be in state A
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
@@ -104,7 +103,7 @@ public class ProcessStateTest extends TestCase {
     }
 
     public void testImmediateStateConstraint1() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -149,21 +148,19 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.state");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("1", list.get(0));
     }
     
     public void testImmediateStateConstraintPriorities1() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -208,21 +205,19 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.state");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("1", list.get(0));
     }
     
     public void testImmediateStateConstraintPriorities2() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -267,21 +262,19 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.state");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("2", list.get(0));
     }
     
     public void testDelayedStateConstraint() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -329,25 +322,23 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.state");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 30);
-        workingMemory.insert(person);
+        ksession.insert(person);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("1", list.get(0));
     }
     
     public void testDelayedStateConstraint2() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -395,25 +386,23 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.state");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 20);
-        workingMemory.insert(person);
+        ksession.insert(person);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("2", list.get(0));
     }
     
     public void FIXMEtestDelayedStateConstraintPriorities1() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -461,25 +450,23 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.state");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 30);
-        workingMemory.insert(person);
+        ksession.insert(person);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("1", list.get(0));
     }
     
     public void FIXMEtestDelayedStateConstraintPriorities2() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -527,25 +514,23 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = workingMemory.startProcess("org.drools.state");
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.state");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 30);
-        workingMemory.insert(person);
+        ksession.insert(person);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("2", list.get(0));
     }
     
     public void testActionState() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -586,16 +571,14 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
+        ksession.setGlobal("list", list);
         // start process
-        RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance)
-            workingMemory.startProcess("org.drools.state");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
+            ksession.startProcess("org.drools.state");
         // should be in state A
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
@@ -615,7 +598,7 @@ public class ProcessStateTest extends TestCase {
     }
     
     public void testTimerState() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -656,21 +639,19 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        final StatefulSession workingMemory = ruleBase.newStatefulSession();
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
+        ksession.setGlobal("list", list);
         new Thread(new Runnable() {
 			public void run() {
-				workingMemory.fireUntilHalt();
+				ksession.fireUntilHalt();
 			}
         }).start();
         // start process
-        RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance)
-            workingMemory.startProcess("org.drools.state");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
+            ksession.startProcess("org.drools.state");
         // should be in state A
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
@@ -695,7 +676,7 @@ public class ProcessStateTest extends TestCase {
 		} catch (InterruptedException e) {
 		}
         assertEquals(4, list.size());
-        workingMemory.halt();
+        ksession.halt();
     }
     
 }

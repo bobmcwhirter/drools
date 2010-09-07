@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -36,14 +36,14 @@ import org.drools.runtime.process.ProcessInstance;
 public class DefaultSignalManager implements SignalManager {
 	
 	private Map<String, List<EventListener>> processEventListeners;
-	private WorkingMemory workingMemory;
+	private InternalKnowledgeRuntime kruntime;
 	
-	public DefaultSignalManager(WorkingMemory workingMemory) {
-		this.workingMemory = workingMemory;
+	public DefaultSignalManager(InternalKnowledgeRuntime kruntime) {
+		this.kruntime = kruntime;
 	}
 	
-	public WorkingMemory getWorkingMemory() {
-		return workingMemory;
+	public InternalKnowledgeRuntime getKnowledgeRuntime() {
+		return kruntime;
 	}
 
 	public void addEventListener(String type, EventListener eventListener) {
@@ -68,8 +68,8 @@ public class DefaultSignalManager implements SignalManager {
 	}
 	
 	public void signalEvent(String type, Object event) {
-		((InternalWorkingMemory) workingMemory).queueWorkingMemoryAction(new SignalAction(type, event));
-		((InternalWorkingMemory) workingMemory).executeQueuedActions();
+		kruntime.queueWorkingMemoryAction(new SignalAction(type, event));
+		kruntime.executeQueuedActions();
 	}
 	
 	public void internalSignalEvent(String type, Object event) {
@@ -83,10 +83,10 @@ public class DefaultSignalManager implements SignalManager {
 		}
 	}
 	public void signalEvent(long processInstanceId, String type, Object event) {
-		ProcessInstance processInstance = workingMemory.getProcessInstance(processInstanceId);
+		ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
 		if (processInstance != null) {
-			((InternalWorkingMemory) workingMemory).queueWorkingMemoryAction(new SignalProcessInstanceAction(processInstanceId, type, event));
-			((InternalWorkingMemory) workingMemory).executeQueuedActions();
+			kruntime.queueWorkingMemoryAction(new SignalProcessInstanceAction(processInstanceId, type, event));
+			kruntime.executeQueuedActions();
 		}
 	}
 	

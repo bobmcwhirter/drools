@@ -22,9 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
-import org.drools.common.EventSupport;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.process.core.context.exclusive.ExclusiveGroup;
@@ -32,10 +30,10 @@ import org.drools.process.instance.ContextInstanceContainer;
 import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exclusive.ExclusiveGroupInstance;
+import org.drools.process.instance.impl.ConstraintEvaluator;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.instance.NodeInstanceContainer;
-import org.drools.workflow.instance.impl.ConstraintEvaluator;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
@@ -176,19 +174,19 @@ public class SplitInstance extends NodeInstanceImpl {
         	        		return;
         	        	}
         	        	boolean hidden = false;
-        	        	if (getNode().getMetaData("hidden") != null) {
+        	        	if (getNode().getMetaData().get("hidden") != null) {
         	        		hidden = true;
         	        	}
-        	        	WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
+        	        	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
         	        	if (!hidden) {
-        	        		((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-        	        			.getProcessEventSupport().fireBeforeNodeLeft(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+        	        		((InternalProcessRuntime) kruntime.getProcessRuntime())
+        	        			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
         	        	}
         	            ((org.drools.workflow.instance.NodeInstance) entry.getKey())
         	        		.trigger(this, entry.getValue());
         	            if (!hidden) {
-        	            	((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
-        	            		.getProcessEventSupport().fireAfterNodeLeft(this, ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+        	            	((InternalProcessRuntime) kruntime.getProcessRuntime())
+        	            		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
         	            }
         	        }
                 }

@@ -22,16 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.Agenda;
-import org.drools.WorkingMemory;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.rule.Agenda;
 
 /**
  * Default implementation of a process instance.
@@ -48,7 +46,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private int state = STATE_PENDING;
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
-    private transient InternalWorkingMemory workingMemory;
+    private transient InternalKnowledgeRuntime kruntime;
 
     public void setId(final long id) {
         this.id = id;
@@ -65,8 +63,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 
     public Process getProcess() {
         if (this.process == null) {
-            this.process = ( Process ) ((InternalRuleBase) workingMemory.getRuleBase())
-                .getProcess(processId);
+            this.process = kruntime.getKnowledgeBase().getProcess(processId);
         }
         return this.process;
     }
@@ -95,22 +92,22 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         return this.state;
     }
     
-    public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
-        if ( this.workingMemory != null ) {
-            throw new IllegalArgumentException( "A working memory can only be set once." );
+    public void setKnowledgeRuntime(final InternalKnowledgeRuntime kruntime) {
+        if ( this.kruntime != null ) {
+            throw new IllegalArgumentException( "Runtime can only be set once." );
         }
-        this.workingMemory = workingMemory;
+        this.kruntime = kruntime;
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return this.workingMemory;
+    public InternalKnowledgeRuntime getKnowledgeRuntime() {
+        return this.kruntime;
     }
     
 	public Agenda getAgenda() {
-		if (getWorkingMemory() == null) {
+		if (getKnowledgeRuntime() == null) {
 			return null;
 		}
-		return getWorkingMemory().getAgenda();
+		return getKnowledgeRuntime().getAgenda();
 	}
 
     public ContextContainer getContextContainer() {
@@ -194,13 +191,13 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     protected abstract void internalStart();
     
     public void disconnect() {
-        ((InternalProcessRuntime) workingMemory.getProcessRuntime()).getProcessInstanceManager().internalRemoveProcessInstance(this);
+        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalRemoveProcessInstance(this);
         process = null;
-        workingMemory = null;
+        kruntime = null;
     }
     
     public void reconnect() {
-    	((InternalProcessRuntime) workingMemory.getProcessRuntime()).getProcessInstanceManager().internalAddProcessInstance(this);
+    	((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalAddProcessInstance(this);
     }
 
     public String[] getEventTypes() {

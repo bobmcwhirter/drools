@@ -16,10 +16,10 @@
 
 package org.drools.process.instance;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 
 public interface ProcessInstanceManagerFactory {
 	
-	ProcessInstanceManager createProcessInstanceManager(WorkingMemory workingMemory);
+	ProcessInstanceManager createProcessInstanceManager(InternalKnowledgeRuntime kruntime);
 
 }
