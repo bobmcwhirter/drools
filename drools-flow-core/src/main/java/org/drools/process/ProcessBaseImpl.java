@@ -151,7 +151,7 @@ public class ProcessBaseImpl
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession() {
-    	return newStatefulKnowledgeSession(new SessionConfiguration(), EnvironmentFactory.newEnvironment() );
+    	return newStatefulKnowledgeSession(new SessionConfiguration(), EnvironmentFactory.newEnvironment());
     }
     
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {

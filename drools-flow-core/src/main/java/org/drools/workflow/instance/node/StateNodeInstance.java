@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Connection;
-import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Declaration;
@@ -162,7 +162,8 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             if (constraint != null) {
 	            String constraintName =  getActivationEventType() + "-"
 	            	+ connection.getTo().getId() + "-" + connection.getToType();
-	            if (constraintName.equals(event.getActivation().getRule().getName()) && checkProcessInstance(event.getActivation())) {
+	            if (constraintName.equals(event.getActivation().getRule().getName())
+	            		&& checkProcessInstance((Activation) event.getActivation())) {
 	            	selected = connection;
 	            }
             }

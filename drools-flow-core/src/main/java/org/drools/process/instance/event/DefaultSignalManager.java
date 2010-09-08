@@ -118,6 +118,13 @@ public class DefaultSignalManager implements SignalManager {
 			}
 		}
 
+		public void execute(InternalKnowledgeRuntime kruntime) {
+			ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
+			if (processInstance != null) {
+				processInstance.signalEvent(type, event);
+			}
+		}
+
 		public void write(MarshallerWriteContext context) throws IOException {
 			context.writeInt( WorkingMemoryAction.SignalProcessInstanceAction );
 			context.writeLong(processInstanceId);
@@ -168,6 +175,9 @@ public class DefaultSignalManager implements SignalManager {
 			((DefaultSignalManager) ((InternalProcessRuntime) workingMemory.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
 		}
 
+        public void execute(InternalKnowledgeRuntime kruntime) {
+        	((DefaultSignalManager) ((InternalProcessRuntime) kruntime.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
+        }
 		public void write(MarshallerWriteContext context) throws IOException {
 			context.writeInt( WorkingMemoryAction.SignalAction );
 			context.writeUTF(type);

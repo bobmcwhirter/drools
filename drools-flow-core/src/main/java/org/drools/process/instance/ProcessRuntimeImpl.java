@@ -10,16 +10,17 @@ import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.DefaultAgendaEventListener;
 import org.drools.event.ProcessEventSupport;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.process.ProcessEventListener;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.event.SignalManagerFactory;
 import org.drools.process.instance.timer.TimerManager;
+import org.drools.rule.Rule;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.ProcessInstance;
@@ -42,7 +43,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		this.kruntime = kruntime;
 		initProcessInstanceManager();
 		initSignalManager();
-		timerManager = new TimerManager(workingMemory, kruntime.getTimerService());
+		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
         initProcessEventListeners();
 	}
@@ -52,7 +53,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
 		initProcessInstanceManager();
 		initSignalManager();
-		timerManager = new TimerManager(workingMemory, kruntime.getTimerService());
+		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
         initProcessEventListeners();
         initProcessActivationListener();
@@ -235,10 +236,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	}
 
     private void initProcessActivationListener() {
-        workingMemory.addEventListener( new DefaultAgendaEventListener() {
-            public void activationCreated(ActivationCreatedEvent event,
-                                          WorkingMemory workingMemory) {
-                String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
+    	kruntime.addEventListener(new DefaultAgendaEventListener() {
+			public void activationCreated(ActivationCreatedEvent event) {
+                String ruleFlowGroup = ((Rule) event.getActivation().getRule()).getRuleFlowGroup();
                 if ( "DROOLS_SYSTEM".equals( ruleFlowGroup ) ) {
                     // new activations of the rule associate with a state node
                     // signal process instances of that state node
@@ -254,9 +254,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                                                    event );
                     }
                 }
-            }
-        } );
-        workingMemory.addEventListener( new DefaultAgendaEventListener() {
+			}
+    	});
+        workingMemory.addEventListener( new org.drools.event.DefaultAgendaEventListener() {
             public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
                                                       final WorkingMemory workingMemory) {
                 signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),

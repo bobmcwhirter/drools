@@ -9,6 +9,7 @@ import org.drools.KnowledgeBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.command.Command;
+import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.process.ProcessEventListener;
@@ -26,6 +27,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
@@ -47,14 +49,14 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	private Environment environment;
 	private TimerService timerService;
 	protected Queue<WorkingMemoryAction> actionQueue;
+	private int id;
 	
 	public StatefulProcessSession(KnowledgeBase kbase, KnowledgeSessionConfiguration sessionConfiguration, Environment environment) {
 		this.kbase = kbase;
 		this.sessionConfiguration = sessionConfiguration;
 		this.environment = environment;
-		processRuntime = new ProcessRuntimeImpl(this);
-		workItemManager = new DefaultWorkItemManager(null);
 		timerService = TimerServiceFactory.getTimerService((SessionConfiguration) sessionConfiguration);
+		processRuntime = new ProcessRuntimeImpl(this);
 		actionQueue = new LinkedList<WorkingMemoryAction>();
 	}
 	
@@ -103,7 +105,16 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	}
 
 	public WorkItemManager getWorkItemManager() {
-		return workItemManager;
+        if ( workItemManager == null ) {
+            workItemManager = ((SessionConfiguration) sessionConfiguration).getWorkItemManagerFactory().createWorkItemManager(this);
+            Map<String, WorkItemHandler> workItemHandlers = ((SessionConfiguration) sessionConfiguration).getWorkItemHandlers();
+            if (workItemHandlers != null) {
+                for (Map.Entry<String, WorkItemHandler> entry: workItemHandlers.entrySet()) {
+                    workItemManager.registerWorkItemHandler(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        return workItemManager;
 	}
 
 	public Environment getEnvironment() {
@@ -123,22 +134,20 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	}
 
 	public void startOperation() {
-		// Do nothing
 	}
 
 	public void endOperation() {
-		// Do nothing
 	}
 
 	public void executeQueuedActions() {
         try {
             startOperation();
-            if ( !this.actionQueue.isEmpty() ) {
+            if (!this.actionQueue.isEmpty()) {
                 WorkingMemoryAction action = null;
-                while ( (action = actionQueue.poll()) != null ) {
+                while ((action = actionQueue.poll()) != null) {
                     try {
-//                        action.execute( null );
-                    } catch ( Exception e ) {
+                        action.execute(this);
+                    } catch (Exception e) {
                         throw new RuntimeDroolsException( "Unexpected exception executing action " + action.toString(), e );
                     }
                 }
@@ -158,9 +167,17 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	
 	public void dispose() {
 	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public int getId() {
-		throw new UnsupportedOperationException();
+		return id;
+	}
+	
+	public void setEndOperationListener(EndOperationListener listener) {
+		
 	}
 
 	public int fireAllRules() {
@@ -320,6 +337,10 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	}
 
 	public void removeEventListener(AgendaEventListener listener) {
+		throw new UnsupportedOperationException();
+	}
+
+	public long getLastIdleTimestamp() {
 		throw new UnsupportedOperationException();
 	}
 
