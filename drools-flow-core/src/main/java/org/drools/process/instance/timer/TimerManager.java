@@ -21,8 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.time.Job;
@@ -38,14 +37,14 @@ import org.drools.time.impl.IntervalTrigger;
 public class TimerManager {
     private long                     timerId    = 0;
 
-    private WorkingMemory            workingMemory;
+    private InternalKnowledgeRuntime kruntime;
     private TimerService             timerService;
     private Map<Long, TimerInstance> timers     = new HashMap<Long, TimerInstance>();
     private Job                      processJob = new ProcessJob();
 
-    public TimerManager(WorkingMemory workingMemory,
+    public TimerManager(InternalKnowledgeRuntime kruntime,
                         TimerService timerService) {
-        this.workingMemory = workingMemory;
+        this.kruntime = kruntime;
         this.timerService = timerService;
     }
 
@@ -57,7 +56,7 @@ public class TimerManager {
 
         ProcessJobContext ctx = new ProcessJobContext( timer,
                                                        processInstance.getId(),
-                                                       this.workingMemory );
+                                                       this.kruntime );
 
         JobHandle jobHandle = this.timerService.scheduleJob( processJob,
                                                              ctx,
@@ -77,7 +76,7 @@ public class TimerManager {
     public void internalAddTimer(final TimerInstance timer) {
         ProcessJobContext ctx = new ProcessJobContext( timer,
                                                        timer.getProcessInstanceId(),
-                                                       this.workingMemory );
+                                                       this.kruntime );
 
         long delay;
         Date lastTriggered = timer.getLastTriggered();
@@ -154,7 +153,7 @@ public class TimerManager {
             ProcessJobContext ctx = (ProcessJobContext) c;
 
             Long processInstanceId = ctx.getProcessInstanceId();
-            WorkingMemory workingMemory = ctx.getWorkingMemory();
+            InternalKnowledgeRuntime kruntime = ctx.getKnowledgeRuntime();
 
             if ( processInstanceId == null ) {
                 throw new IllegalArgumentException( "Could not find process instance for timer " );
@@ -162,7 +161,7 @@ public class TimerManager {
 
             ctx.getTimer().setLastTriggered( new Date() );
 
-            ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime())
+            ((InternalProcessRuntime) kruntime.getProcessRuntime())
             	.getSignalManager().signalEvent( processInstanceId,
                                                  "timerTriggered",
                                                   ctx.getTimer() );
@@ -177,26 +176,26 @@ public class TimerManager {
     public static class ProcessJobContext
         implements
         JobContext {
-        private Long          processInstanceId;
-        private WorkingMemory workingMemory;
-        private TimerInstance timer;
+        private Long                     processInstanceId;
+        private InternalKnowledgeRuntime kruntime;
+        private TimerInstance            timer;
 
         private JobHandle     jobHandle;
 
         public ProcessJobContext(final TimerInstance timer,
                                  final Long processInstanceId,
-                                 final WorkingMemory workingMemory) {
+                                 final InternalKnowledgeRuntime kruntime) {
             this.timer = timer;
             this.processInstanceId = processInstanceId;
-            this.workingMemory = workingMemory;
+            this.kruntime = kruntime;
         }
 
         public Long getProcessInstanceId() {
             return processInstanceId;
         }
 
-        public WorkingMemory getWorkingMemory() {
-            return workingMemory;
+        public InternalKnowledgeRuntime getKnowledgeRuntime() {
+            return kruntime;
         }
 
         public JobHandle getJobHandle() {
