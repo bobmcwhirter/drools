@@ -8,9 +8,9 @@
     <version>5.2.0.SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-persistence-jpa</artifactId>
+  <artifactId>drools-flow-persistence-jpa</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: Persistence :: JPA</name> 
+  <name>Drools Flow :: Persistence :: JPA</name> 
     
    <build>
       <plugins>
@@ -63,7 +63,22 @@
        
     	<dependency>
     		<groupId>org.drools</groupId>
+    		<artifactId>drools-flow-core</artifactId>
+    	</dependency>         		  
+       
+    	<dependency>
+    		<groupId>org.drools</groupId>
     		<artifactId>drools-compiler</artifactId>
+    	</dependency>         		  
+
+    	<dependency>
+    		<groupId>org.drools</groupId>
+    		<artifactId>drools-flow-compiler</artifactId>
+    	</dependency>         		  
+
+    	<dependency>
+    		<groupId>org.drools</groupId>
+    		<artifactId>drools-persistence-jpa</artifactId>
     	</dependency>         		  
 
     	<dependency>

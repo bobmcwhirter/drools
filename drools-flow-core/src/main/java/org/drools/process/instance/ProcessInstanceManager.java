@@ -33,5 +33,7 @@ public interface ProcessInstanceManager {
     void removeProcessInstance(ProcessInstance processInstance);
 
     void internalRemoveProcessInstance(ProcessInstance processInstance);
+    
+    void clearProcessInstances();
 
 }

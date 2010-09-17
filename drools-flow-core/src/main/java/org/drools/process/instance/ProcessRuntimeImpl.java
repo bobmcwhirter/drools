@@ -294,4 +294,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         this.timerManager.dispose();
 	}
 
+	public void clearProcessInstances() {
+		this.processInstanceManager.clearProcessInstances();
+	}
+
 }

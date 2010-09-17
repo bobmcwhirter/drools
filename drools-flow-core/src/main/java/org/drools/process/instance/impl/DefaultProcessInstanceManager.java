@@ -53,4 +53,8 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     public void internalRemoveProcessInstance(ProcessInstance processInstance) {
         processInstances.remove(((ProcessInstance)processInstance).getId());
     }
+
+	public void clearProcessInstances() {
+		processInstances.clear();
+	}
 }

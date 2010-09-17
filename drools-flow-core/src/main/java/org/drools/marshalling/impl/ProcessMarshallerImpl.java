@@ -8,13 +8,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.process.instance.timer.TimerInstance;
 import org.drools.process.instance.timer.TimerManager;
 
@@ -98,33 +96,9 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
                           } );
         for ( WorkItem workItem : workItems ) {
             stream.writeShort( PersisterEnums.WORK_ITEM );
-            writeWorkItem( context,
-                           workItem );
+            OutputMarshaller.writeWorkItem( context, workItem );
         }
         stream.writeShort( PersisterEnums.END );
-    }
-
-    public static void writeWorkItem(MarshallerWriteContext context,
-                                     WorkItem workItem) throws IOException {
-         writeWorkItem(context, workItem, true);
-    }
-
-    public static void writeWorkItem(MarshallerWriteContext context,
-                                     WorkItem workItem, boolean includeVariables) throws IOException {
-        ObjectOutputStream stream = context.stream;
-        stream.writeLong( workItem.getId() );
-        stream.writeLong( workItem.getProcessInstanceId() );
-        stream.writeUTF( workItem.getName() );
-        stream.writeInt( workItem.getState() );
-
-        if(includeVariables){
-	        Map<String, Object> parameters = workItem.getParameters();
-	        stream.writeInt( parameters.size() );
-	        for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
-	            stream.writeUTF( entry.getKey() );
-	            stream.writeObject( entry.getValue() );
-	        }
-	    }
     }
 
     public void readProcessInstances(MarshallerReaderContext context) throws IOException {
@@ -139,40 +113,9 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
         InternalWorkingMemory wm = context.wm;
         ObjectInputStream stream = context.stream;
         while ( stream.readShort() == PersisterEnums.WORK_ITEM ) {
-            WorkItem workItem = readWorkItem( context );
+            WorkItem workItem = InputMarshaller.readWorkItem( context );
             ((WorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( workItem );
         }
-    }
-
-    public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
-       return readWorkItem(context, true);
-    }
-
-    public static WorkItem readWorkItem(MarshallerReaderContext context, boolean includeVariables) throws IOException {
-        ObjectInputStream stream = context.stream;
-
-        WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setId( stream.readLong() );
-        workItem.setProcessInstanceId( stream.readLong() );
-        workItem.setName( stream.readUTF() );
-        workItem.setState( stream.readInt() );
-
-        if(includeVariables){
-        int nbParameters = stream.readInt();
-
-        for ( int i = 0; i < nbParameters; i++ ) {
-            String name = stream.readUTF();
-            try {
-                Object value = stream.readObject();
-                workItem.setParameter( name,
-                                       value );
-            } catch ( ClassNotFoundException e ) {
-                throw new IllegalArgumentException( "Could not reload parameter " + name );
-            }
-        }
-        }
-
-        return workItem;
     }
 
     public void readProcessTimers(MarshallerReaderContext context) throws IOException {
