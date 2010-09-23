@@ -16,8 +16,6 @@
 
 package org.drools.process;
 
-import junit.framework.TestCase;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.common.AbstractRuleBase;
@@ -40,17 +38,22 @@ import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.WorkItemNode;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class SubProcessTest extends TestCase {
+public class SubProcessTest {
 
 	private boolean executed = false;
 	private WorkItem workItem;
 	
+	@Before
 	public void setUp() {
 		executed = false;
 		workItem = null;
 	}
     
+	@Test
     public void testSynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.process");
@@ -121,6 +124,7 @@ public class SubProcessTest extends TestCase {
         assertEquals(0, ksession.getProcessInstances().size());
     }
 
+	@Test
     public void testAsynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.process");
@@ -195,6 +199,48 @@ public class SubProcessTest extends TestCase {
         
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertEquals(0, ksession.getProcessInstances().size());
+    }
+    
+	@Test
+    public void testNonExistentSubProcess() {
+	    String nonExistentSubProcessName = "nonexistent.process";
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.process.process");
+        process.setName("Process");
+        StartNode startNode = new StartNode();
+        startNode.setName("Start");
+        startNode.setId(1);
+        SubProcessNode subProcessNode = new SubProcessNode();
+        subProcessNode.setName("SubProcessNode");
+        subProcessNode.setId(2);
+        subProcessNode.setProcessId(nonExistentSubProcessName);
+        EndNode endNode = new EndNode();
+        endNode.setName("End");
+        endNode.setId(3);
+        
+        connect(startNode, subProcessNode);
+        connect(subProcessNode, endNode);
+        
+        process.addNode( startNode );
+        process.addNode( subProcessNode );
+        process.addNode( endNode );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        try{
+            ksession.startProcess("org.drools.process.process");
+            fail("should throw exception");
+        } catch (RuntimeException re){
+            assertTrue(re.getMessage().contains( nonExistentSubProcessName ));
+        }
+    }
+
+    private void connect(Node sourceNode,
+                         Node targetNode) {
+        new ConnectionImpl (sourceNode, Node.CONNECTION_DEFAULT_TYPE,
+                            targetNode, Node.CONNECTION_DEFAULT_TYPE);
     }
     
 }
