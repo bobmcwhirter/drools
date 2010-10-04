@@ -30,7 +30,7 @@
       <version>2.1</version>
     </dependency>
     
-    <!-- Fix for JDK5 bug that needs this dependency --> 	
+    <!-- Fix for JDK5 bug that needs this dependency -->
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>

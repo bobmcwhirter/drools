@@ -14,74 +14,74 @@
     
       <dependencies>
             
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-api</artifactId>
-    	</dependency>
-    	         		  
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-core</artifactId>
-    	</dependency>         		  
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-api</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core</artifactId>
+      </dependency>
        
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-compiler</artifactId>
-    		<scope>test</scope>
-    	</dependency>         		  
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
+        <scope>test</scope>
+      </dependency>
        
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-flow-persistence-jpa</artifactId>
-    		<scope>test</scope>
-    	</dependency>         		  
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-flow-persistence-jpa</artifactId>
+        <scope>test</scope>
+      </dependency>
        
-    	<!-- Hibernate -->
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-entitymanager</artifactId>
-    	</dependency>
-     	  
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-annotations</artifactId>
-    	</dependency>
+      <!-- Hibernate -->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-commons-annotations</artifactId>
-    	</dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-annotations</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-core</artifactId>
-    	</dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+      </dependency>
 
-    	<!-- H2 -->
-    	<dependency>
-    		<groupId>com.h2database</groupId>
-    		<artifactId>h2</artifactId>
-    		<scope>test</scope>
-    	</dependency>  
-    	
-    	<dependency>
-    		<groupId>org.slf4j</groupId>
-    		<artifactId>slf4j-log4j12</artifactId>
-    		<scope>test</scope>
-    	</dependency>     	       	
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>org.slf4j</groupId>
-    		<artifactId>slf4j-api</artifactId>
-    		<scope>test</scope>
-    	</dependency>          	 
-   	
-    	<dependency>
-		    <groupId>org.codehaus.btm</groupId>
-		    <artifactId>btm</artifactId>
-		    <scope>test</scope>
-    	</dependency>    	
-    	
+      <!-- H2 -->
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.btm</groupId>
+        <artifactId>btm</artifactId>
+        <scope>test</scope>
+      </dependency>
+
       </dependencies>              
                   
 </project>

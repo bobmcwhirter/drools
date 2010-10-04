@@ -82,12 +82,12 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
-   	<dependency>
+     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
     </dependency>
-   	<dependency>
+     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-annotations</artifactId>
       <scope>test</scope>
@@ -102,7 +102,7 @@
       <artifactId>hibernate-core</artifactId>
       <scope>test</scope>
     </dependency>
-  	<dependency>
+    <dependency>
       <groupId>javax.persistence</groupId>
       <artifactId>persistence-api</artifactId>
       <scope>test</scope>
@@ -111,7 +111,7 @@
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
       <scope>test</scope>
-    </dependency>    	
+    </dependency>
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
@@ -17,10 +17,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
              <artifactId>maven-surefire-plugin</artifactId>
              <configuration>
                <!--argLine>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</argLine-->
-	           <excludes>
-	             <exclude>**/mina/**</exclude>
-	             <exclude>**/SimpleTest.java</exclude>
-	           </excludes>
+             <excludes>
+               <exclude>**/mina/**</exclude>
+               <exclude>**/SimpleTest.java</exclude>
+             </excludes>
                
              </configuration>
          </plugin>

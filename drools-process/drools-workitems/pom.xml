@@ -1,105 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <modelVersion>4.0.0</modelVersion>
-   <parent>
-      <artifactId>drools</artifactId>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.2.0.SNAPSHOT</version>
+  </parent>
+  <artifactId>drools-workitems</artifactId>
+  <packaging>jar</packaging>
+  <name>Drools :: Process :: WorkItems</name>
+  <!--build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                <argLine>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</argLine>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build-->
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
       <groupId>org.drools</groupId>
-      <version>5.2.0.SNAPSHOT</version>
-   </parent>
-   <artifactId>drools-workitems</artifactId>
-   <packaging>jar</packaging>
-   <name>Drools :: Process :: WorkItems</name>
-   <!--build>
-     <plugins>
-         <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-surefire-plugin</artifactId>
-             <version>2.5</version>
-             <configuration>
-               <argLine>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</argLine>
-             </configuration>
-         </plugin>
-     </plugins>
- </build-->
-   <dependencies>
-      <!-- Internal dependencies -->
-      <dependency>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-core</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-flow-core</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-compiler</artifactId>
-      </dependency>
-      <!-- External dependencies -->
-      <dependency>
-         <groupId>javax.mail</groupId>
-         <artifactId>mail</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>javax.activation</groupId>
-         <artifactId>activation</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.commons</groupId>
-         <artifactId>commons-finder</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>commons-io</groupId>
-         <artifactId>commons-io</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.commons</groupId>
-         <artifactId>commons-compress</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.commons</groupId>
-         <artifactId>commons-exec</artifactId>
-      </dependency>
-      <!-- External test dependencies -->
-      <dependency>
-         <groupId>org.subethamail</groupId>
-         <artifactId>subethasmtp-wiser</artifactId>
-         <scope>test</scope>
-      </dependency>
-      <!-- Smack Jabber LIB -->
-      <dependency>
-         <groupId>jivesoftware</groupId>
-         <artifactId>smack</artifactId>
-      </dependency>
-      <!-- Rome RSS Feeds LIB -->
-      <dependency>
-         <groupId>rome</groupId>
-         <artifactId>rome</artifactId>
-      </dependency>
-      <!-- FTP Client LIB -->
-      <dependency>
-         <groupId>commons-net</groupId>
-         <artifactId>commons-net</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.ftpserver</groupId>
-         <artifactId>ftpserver-core</artifactId>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-      	<groupId>jdom</groupId>
-      	<artifactId>jdom</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-log4j12</artifactId>
-         <scope>test</scope>
-      </dependency>
-      <!-- END FTP Client LIB -->
-   </dependencies>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-flow-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <!-- External dependencies -->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-finder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-exec</artifactId>
+    </dependency>
+    <!-- External test dependencies -->
+    <dependency>
+      <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Smack Jabber LIB -->
+    <dependency>
+      <groupId>jivesoftware</groupId>
+      <artifactId>smack</artifactId>
+    </dependency>
+    <!-- Rome RSS Feeds LIB -->
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome</artifactId>
+    </dependency>
+    <!-- FTP Client LIB -->
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ftpserver</groupId>
+      <artifactId>ftpserver-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- END FTP Client LIB -->
+  </dependencies>
 </project>
