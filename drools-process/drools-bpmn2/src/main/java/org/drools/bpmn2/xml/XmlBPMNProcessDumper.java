@@ -552,7 +552,7 @@ public class XmlBPMNProcessDumper {
     					"      <conditionExpression xs:type=\"tFormalExpression\" />");
         		} else {
                     if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
-            			xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
+            			xmlDump.append("name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(constraint.getName()) + "\" ");
             		}
             		xmlDump.append(">" + EOL +
     				"      <conditionExpression xs:type=\"tFormalExpression\" ");
@@ -661,6 +661,36 @@ public class XmlBPMNProcessDumper {
     		nodeContainer = composite.getNodeContainer();
     	}
     	return "_" + result;
+    }
+    
+    public static String replaceIllegalCharsAttribute(final String code) {
+        final StringBuilder sb = new StringBuilder();
+        if ( code != null ) {
+            final int n = code.length();
+            for ( int i = 0; i < n; i++ ) {
+                final char c = code.charAt( i );
+                switch ( c ) {
+	                case '<' :
+	                    sb.append( "&lt;" );
+	                    break;
+	                case '>' :
+	                    sb.append( "&gt;" );
+	                    break;
+	                case '&' :
+	                    sb.append( "&amp;" );
+	                    break;
+                    case '"' :
+                        sb.append( "&quot;" );
+                        break;
+                    default :
+                        sb.append( c );
+                        break;
+                }
+            }
+        } else {
+            sb.append( "null" );
+        }
+        return sb.toString();
     }
     
 }
