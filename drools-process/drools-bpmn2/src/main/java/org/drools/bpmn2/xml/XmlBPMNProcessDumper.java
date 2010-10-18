@@ -487,6 +487,23 @@ public class XmlBPMNProcessDumper {
     	        y = y + offsetY;
     	        height = 48;
     		}
+    		int parentOffsetX = 0;
+    		int parentOffsetY = 0;
+    		NodeContainer nodeContainer = node.getNodeContainer();
+    		while (nodeContainer instanceof CompositeNode) {
+    			CompositeNode parent = (CompositeNode) nodeContainer;
+    			Integer parentX = (Integer) parent.getMetaData().get("x");
+    			if (parentX != null) {
+    				parentOffsetX += parentX;
+    			}
+    			Integer parentY = (Integer) parent.getMetaData().get("y");
+    			if (parentY != null) {
+    				parentOffsetY += (Integer) parent.getMetaData().get("y");
+    			}
+    			nodeContainer = parent.getNodeContainer();
+    		}
+    		x += parentOffsetX;
+    		y += parentOffsetY;
 			xmlDump.append(
 				"      <bpmndi:BPMNShape bpmnElement=\"" + getUniqueNodeId(node) + "\" >" + EOL +
 				"        <dc:Bounds x=\"" + x + "\" " + "y=\"" + y + "\" " + 
