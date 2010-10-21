@@ -26,10 +26,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.drools.common.AbstractWorkingMemory;
 
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Process;
+import org.drools.marshalling.MarshallerFactory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.core.Context;
 import org.drools.process.core.context.exclusive.ExclusiveGroup;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
@@ -68,13 +71,10 @@ public abstract class AbstractProcessInstanceMarshaller implements
         ProcessInstanceMarshaller {
 
     // Output methods
-    public void writeProcessInstance(MarshallerWriteContext context,
-            ProcessInstance processInstance) throws IOException {
-        writeProcessInstance(context, processInstance, true);
-    }
+   
 
     public void writeProcessInstance(MarshallerWriteContext context,
-            ProcessInstance processInstance, boolean includeVariables) throws IOException {
+            ProcessInstance processInstance) throws IOException {
 
         WorkflowProcessInstanceImpl workFlow = (WorkflowProcessInstanceImpl) processInstance;
         ObjectOutputStream stream = context.stream;
@@ -82,24 +82,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         stream.writeUTF(workFlow.getProcessId());
         stream.writeInt(workFlow.getState());
         stream.writeLong(workFlow.getNodeInstanceCounter());
-        if (includeVariables) {
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) workFlow.getContextInstance(VariableScope.VARIABLE_SCOPE);
-            Map<String, Object> variables = variableScopeInstance.getVariables();
-            List<String> keys = new ArrayList<String>(variables.keySet());
-            Collections.sort(keys,
-                    new Comparator<String>() {
 
-                        public int compare(String o1,
-                                String o2) {
-                            return o1.compareTo(o2);
-                        }
-                    });
-            stream.writeInt(keys.size());
-            for (String key : keys) {
-                stream.writeUTF(key);
-                stream.writeObject(variables.get(key));
-            }
-        }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance(SwimlaneContext.SWIMLANE_SCOPE);
         if (swimlaneContextInstance != null) {
@@ -144,6 +127,50 @@ public abstract class AbstractProcessInstanceMarshaller implements
         		}
         	}
         }
+        
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) workFlow.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        Map<String, Object> variables = variableScopeInstance.getVariables();
+        List<String> keys = new ArrayList<String>(variables.keySet());
+        Collection<Object> values = variables.values();
+        
+        Collections.sort(keys,
+                new Comparator<String>() {
+
+                    public int compare(String o1,
+                            String o2) {
+                        return o1.compareTo(o2);
+                    }
+                });
+        // Process Variables
+                // - Number of non null Variables = nonnullvariables.size()
+                // For Each Variable
+                    // - Variable Key
+                    // - Marshalling Strategy Index
+                    // - Marshalled Object
+        
+        Collection<Object> notNullValues = new ArrayList<Object>();
+        for(Object value: values){
+            if(value != null){
+                notNullValues.add(value);
+            }
+        }
+                
+        stream.writeInt(notNullValues.size());
+        for (String key : keys) {
+            Object object = variables.get(key); 
+            if(object != null){
+                stream.writeUTF(key);
+                int index = context.objectMarshallingStrategyStore.getStrategy(object);
+                stream.writeInt(index);
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy(index);
+                if(strategy.accept(object)){
+                    strategy.write(stream, object);
+                }
+            }
+            
+        }
+        
+        
     }
 
     public void writeNodeInstance(MarshallerWriteContext context,
@@ -345,11 +372,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
     }
 
     // Input methods
-    public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
-        return readProcessInstance(context, true);
-    }
+   
 
-    public ProcessInstance readProcessInstance(MarshallerReaderContext context, boolean includeVariables) throws IOException {
+    public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -365,23 +390,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         processInstance.setState(stream.readInt());
         long nodeInstanceCounter = stream.readLong();
         processInstance.setKnowledgeRuntime(wm.getKnowledgeRuntime());
-        if (includeVariables) {
-            int nbVariables = stream.readInt();
-            if (nbVariables > 0) {
-                Context variableScope = ((org.drools.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance(variableScope);
-                for (int i = 0; i < nbVariables; i++) {
-                    String name = stream.readUTF();
-                    try {
-                        Object value = stream.readObject();
-                        variableScopeInstance.setVariable(name, value);
-                    } catch (ClassNotFoundException e) {
-                        throw new IllegalArgumentException(
-                                "Could not reload variable " + name);
-                    }
-                }
-            }
-        }
+
 
         int nbSwimlanes = stream.readInt();
         if (nbSwimlanes > 0) {
@@ -412,6 +421,30 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 exclusiveGroupInstance.addNodeInstance(nodeInstance);
             }
     	}
+        // Process Variables
+                // - Number of Variables = keys.size()
+                // For Each Variable
+                    // - Variable Key
+                    // - Marshalling Strategy Index
+                    // - Marshalled Object
+          int nbVariables = stream.readInt();
+            if (nbVariables > 0) {
+                Context variableScope = ((org.drools.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance(variableScope);
+                for (int i = 0; i < nbVariables; i++) {
+                    String name = stream.readUTF();
+                    try {
+                        int index = stream.readInt();
+                        ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy(index);
+                        
+                        Object value = strategy.read(stream);
+                        variableScopeInstance.setVariable(name, value);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalArgumentException(
+                                "Could not reload variable " + name);
+                    }
+                }
+            }
 
         processInstance.internalSetNodeInstanceCounter(nodeInstanceCounter);
         if (wm != null) {

@@ -1,9 +1,14 @@
 package org.drools.persistence.session;
 
+import javax.naming.NamingException;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -28,9 +33,6 @@ import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.processinstance.VariablePersistenceStrategyFactory;
-import org.drools.persistence.processinstance.persisters.JPAVariablePersister;
-import org.drools.persistence.processinstance.variabletypes.VariableInstanceInfo;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
@@ -60,6 +62,14 @@ import org.slf4j.LoggerFactory;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
+import org.drools.SessionConfiguration;
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 
 public class VariablePersistenceStrategyTest {
 
@@ -83,13 +93,6 @@ public class VariablePersistenceStrategyTest {
                                        "jdbc:h2:mem:mydb" );
         ds1.init();
         
-        VariablePersistenceStrategyFactory.getVariablePersistenceStrategy()
-        	.setPersister("javax.persistence.Entity",
-				"org.drools.persistence.processinstance.persisters.JPAVariablePersister");
-        VariablePersistenceStrategyFactory.getVariablePersistenceStrategy()
-	    	.setPersister("java.io.Serializable",
-				"org.drools.persistence.processinstance.persisters.SerializableVariablePersister");
-        
         emf = Persistence.createEntityManagerFactory("org.drools.persistence.jpa");
 
     }
@@ -102,18 +105,16 @@ public class VariablePersistenceStrategyTest {
 
     @Test
     public void testExtendingInterfaceVariablePersistence(){
+        Environment env = createEnvironment();
         String processId = "extendingInterfaceVariablePersistence";
         String variableText = "my extending serializable variable text";
         KnowledgeBase kbase = getKnowledgeBaseForExtendingInterfaceVariablePersistence(processId,
                                                                                        variableText);
-        StatefulKnowledgeSession ksession = createSession( kbase );
+        StatefulKnowledgeSession ksession = createSession( kbase , env );
         Map<String, Object> initialParams = new HashMap<String, Object>();
         initialParams.put( "x", new MyVariableExtendingSerializable( variableText ) );
         long processInstanceId = ksession.startProcess( processId, initialParams ).getId();
-        ksession = reloadSession( ksession, kbase );
-        
-        List<?> variables = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        Assert.assertEquals( 1, variables.size() );
+        ksession = reloadSession( ksession, kbase, env );
         
         long workItemId = TestWorkItemHandler.getInstance().getWorkItem().getId();
         ksession.getWorkItemManager().completeWorkItem( workItemId, null );
@@ -175,28 +176,50 @@ public class VariablePersistenceStrategyTest {
     }
     
     @Test
-    public void testPersistenceVariables() {
+    public void testPersistenceVariables() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+        MyEntity myEntity = new MyEntity("This is a test Entity with annotation in fields");
+        MyEntityMethods myEntityMethods = new MyEntityMethods("This is a test Entity with annotations in methods");
+        MyEntityOnlyFields myEntityOnlyFields = new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods");
+        MyVariableSerializable myVariableSerializable = new MyVariableSerializable("This is a test SerializableObject");
+        EntityManager em = emf.createEntityManager();
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        utx.begin();
+        em.joinTransaction();
+        em.persist(myEntity);
+        em.persist(myEntityMethods);
+        em.persist(myEntityOnlyFields);
+        utx.commit();
+        em.close();
+        Environment env =  createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase( "VariablePersistenceStrategyProcess.rf" );
-        StatefulKnowledgeSession ksession = createSession( kbase );
+        StatefulKnowledgeSession ksession = createSession( kbase, env );
 
+       
+       
+        
+        
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
-        parameters.put("y", new MyEntity("This is a test Entity with annotation in fields"));
-        parameters.put("m", new MyEntityMethods("This is a test Entity with annotations in methods"));
-        parameters.put("f", new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods"));
-        parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
+        parameters.put("y", myEntity);
+        parameters.put("m", myEntityMethods);
+        parameters.put("f", myEntityOnlyFields);
+        parameters.put("z", myVariableSerializable);
         long processInstanceId = ksession.startProcess( "com.sample.ruleflow", parameters ).getId();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
         assertNotNull( workItem );
         
-        List<?> result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        assertEquals(5, result.size());
+        List<?> result = emf.createEntityManager().createQuery("select i from MyEntity i").getResultList();
+        assertEquals(1, result.size());
+        result = emf.createEntityManager().createQuery("select i from MyEntityMethods i").getResultList();
+        assertEquals(1, result.size());
+        result = emf.createEntityManager().createQuery("select i from MyEntityOnlyFields i").getResultList();
+        assertEquals(1, result.size());
 
         logger.info("### Retrieving process instance ###");
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) 
         	ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
@@ -214,16 +237,10 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNotNull( workItem );
         
-        logger.info("### Retrieving variable instance infos ###");
-        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        assertEquals(8, result.size());
-        for (Object o: result) {
-        	assertTrue(VariableInstanceInfo.class.isAssignableFrom(o.getClass()));
-        	logger.info(o.toString());
-        }
+
         
         logger.info("### Retrieving process instance ###");
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase , env );
 		processInstance = (WorkflowProcessInstance)
 			ksession.getProcessInstance(processInstanceId);
 		assertNotNull(processInstance);
@@ -241,11 +258,9 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         
-        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        assertEquals(8, result.size());
-        
+
         logger.info("### Retrieving process instance ###");
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env);
         processInstance = (WorkflowProcessInstance)
         	ksession.getProcessInstance(processInstanceId);
         assertNotNull(processInstance);
@@ -263,35 +278,48 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNull(workItem);
         
-        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        //This was 6.. but I change it to 0 because all the variables will go away with the process instance..
-        //we need to change that to leave the variables there??? 
-        assertEquals(0, result.size());
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = (WorkflowProcessInstance)
 			ksession.getProcessInstance(processInstanceId);
         assertNull(processInstance);
     }
     
     @Test
-    public void testPersistenceVariablesWithTypeChange() {
+    public void testPersistenceVariablesWithTypeChange() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+        MyEntity myEntity = new MyEntity("This is a test Entity with annotation in fields");
+        MyEntityMethods myEntityMethods = new MyEntityMethods("This is a test Entity with annotations in methods");
+        MyEntityOnlyFields myEntityOnlyFields = new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods");
+        MyVariableSerializable myVariableSerializable = new MyVariableSerializable("This is a test SerializableObject");
+        EntityManager em = emf.createEntityManager();
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        utx.begin();
+        em.joinTransaction();
+        em.persist(myEntity);
+        em.persist(myEntityMethods);
+        em.persist(myEntityOnlyFields);
+        utx.commit();
+        em.close();
+        Environment env = createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase( "VariablePersistenceStrategyProcessTypeChange.rf" );
-        StatefulKnowledgeSession ksession = createSession( kbase );
-
+        StatefulKnowledgeSession ksession = createSession( kbase, env );
+        
+        
+        
+        
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
-        parameters.put("y", new MyEntity("This is a test Entity with annotation in fields"));
-        parameters.put("m", new MyEntityMethods("This is a test Entity with annotations in methods"));
-        parameters.put("f", new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods"));
-        parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
+        parameters.put("y", myEntity);
+        parameters.put("m", myEntityMethods );
+        parameters.put("f", myEntityOnlyFields);
+        parameters.put("z", myVariableSerializable);
         long processInstanceId = ksession.startProcess( "com.sample.ruleflow", parameters ).getId();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         ProcessInstance processInstance = ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
         ksession.getWorkItemManager().completeWorkItem( workItem.getId(), null );
@@ -299,7 +327,7 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
         ksession.getWorkItemManager().completeWorkItem( workItem.getId(), null );
@@ -307,29 +335,47 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNull( workItem );
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = ksession.getProcessInstance( processInstanceId );
         assertNull( processInstance );
     }
     
     @Test
-    public void testPersistenceVariablesSubProcess() {
+    public void testPersistenceVariablesSubProcess() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+        
+        MyEntity myEntity = new MyEntity("This is a test Entity with annotation in fields");
+        MyEntityMethods myEntityMethods = new MyEntityMethods("This is a test Entity with annotations in methods");
+        MyEntityOnlyFields myEntityOnlyFields = new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods");
+        MyVariableSerializable myVariableSerializable = new MyVariableSerializable("This is a test SerializableObject");
+        EntityManager em = emf.createEntityManager();
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        utx.begin();
+        em.joinTransaction();
+        em.persist(myEntity);
+        em.persist(myEntityMethods);
+        em.persist(myEntityOnlyFields);
+        utx.commit();
+        em.close();
+        Environment env = createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase( "VariablePersistenceStrategySubProcess.rf" );
-        StatefulKnowledgeSession ksession = createSession( kbase );
-
+        StatefulKnowledgeSession ksession = createSession( kbase, env );
+       
+        
+        
+        
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
-        parameters.put("y", new MyEntity("This is a test Entity with annotation in fields"));
-        parameters.put("m", new MyEntityMethods("This is a test Entity with annotations in methods"));
-        parameters.put("f", new MyEntityOnlyFields("This is a test Entity with annotations in fields and without accesors methods"));
-        parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
+        parameters.put("y", myEntity);
+        parameters.put("m", myEntityMethods);
+        parameters.put("f", myEntityOnlyFields);
+        parameters.put("z", myVariableSerializable);
         long processInstanceId = ksession.startProcess( "com.sample.ruleflow", parameters ).getId();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         ProcessInstance processInstance = ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
         ksession.getWorkItemManager().completeWorkItem( workItem.getId(), null );
@@ -337,7 +383,7 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
         ksession.getWorkItemManager().completeWorkItem( workItem.getId(), null );
@@ -345,7 +391,7 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
         ksession.getWorkItemManager().completeWorkItem( workItem.getId(), null );
@@ -353,33 +399,44 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNull( workItem );
 
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = ksession.getProcessInstance( processInstanceId );
         assertNull( processInstance );
     }
     
     @Test
     public void testWorkItemWithVariablePersistence() throws Exception{
+        MyEntity myEntity = new MyEntity("This is a test Entity");
+        MyVariableSerializable myVariableSerializable = new MyVariableSerializable("This is a test SerializableObject");
+        EntityManager em = emf.createEntityManager();
+        UserTransaction utx = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        utx.begin();
+        
+        em.joinTransaction();
+        em.persist(myEntity);
+        utx.commit();
+        em.close();
+        Environment env = createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase( "VPSProcessWithWorkItems.rf" );
-        StatefulKnowledgeSession ksession = createSession( kbase );
-
+        StatefulKnowledgeSession ksession = createSession( kbase , env);
+        
+        
+       
+       
+        
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
-        parameters.put("y", new MyEntity("This is a test Entity"));
-        parameters.put("z", new MyVariableSerializable("This is a test SerializableObject"));
+        parameters.put("y", myEntity);
+        parameters.put("z", myVariableSerializable);
         long processInstanceId = ksession.startProcess( "com.sample.ruleflow", parameters ).getId();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        List<?> result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-
-        assertEquals(5, result.size());
-
         logger.info("### Retrieving process instance ###");
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase , env);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
         	ksession.getProcessInstance( processInstanceId );
         assertNotNull( processInstance );
@@ -400,16 +457,8 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        logger.info("### Retrieving variable instance infos ###");
-        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        //6 Variables from the process and 2 variables from the workitems
-        assertEquals(8, result.size());
-        for (Object o: result) {
-        	logger.info(((VariableInstanceInfo) o).toString());
-        }
-
         logger.info("### Retrieving process instance ###");
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
 		processInstance = (WorkflowProcessInstance)
 			ksession.getProcessInstance(processInstanceId);
 		assertNotNull(processInstance);
@@ -430,11 +479,8 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
 
-        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
-        assertEquals(8, result.size());
-
         logger.info("### Retrieving process instance ###");
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = (WorkflowProcessInstance)
         	ksession.getProcessInstance(processInstanceId);
         assertNotNull(processInstance);
@@ -453,11 +499,8 @@ public class VariablePersistenceStrategyTest {
         workItem = handler.getWorkItem();
         assertNull(workItem);
 
-        result = emf.createEntityManager().createQuery("select i from VariableInstanceInfo i").getResultList();
 
-        assertEquals(0, result.size());
-
-        ksession = reloadSession( ksession, kbase );
+        ksession = reloadSession( ksession, kbase, env );
         processInstance = (WorkflowProcessInstance)
 			ksession.getProcessInstance(processInstanceId);
         assertNull(processInstance);
@@ -467,24 +510,24 @@ public class VariablePersistenceStrategyTest {
     public void testEntityWithSuperClassAnnotationField() throws Exception {
     	MySubEntity subEntity = new MySubEntity();
     	subEntity.setId(3L);
-    	assertEquals(3L, JPAVariablePersister.getClassIdValue(subEntity));
+    	assertEquals(3L, JPAPlaceholderResolverStrategy.getClassIdValue(subEntity));
     }
     
     @Test
     public void testEntityWithSuperClassAnnotationMethod() throws Exception {
     	MySubEntityMethods subEntity = new MySubEntityMethods();
     	subEntity.setId(3L);
-    	assertEquals(3L, JPAVariablePersister.getClassIdValue(subEntity));
+    	assertEquals(3L, JPAPlaceholderResolverStrategy.getClassIdValue(subEntity));
     }
     
-    private StatefulKnowledgeSession createSession(KnowledgeBase kbase){
-        return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment() );
+    private StatefulKnowledgeSession createSession(KnowledgeBase kbase, Environment env){
+        return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
     }
     
-    private StatefulKnowledgeSession reloadSession(StatefulKnowledgeSession ksession, KnowledgeBase kbase){
+    private StatefulKnowledgeSession reloadSession(StatefulKnowledgeSession ksession, KnowledgeBase kbase, Environment env){
         int sessionId = ksession.getId();
         ksession.dispose();
-        return JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, createEnvironment() );
+        return JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env);
     }
 
     private KnowledgeBase createKnowledgeBase(String flowFile) {
@@ -510,8 +553,11 @@ public class VariablePersistenceStrategyTest {
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
-                env.set( EnvironmentName.TRANSACTION_MANAGER,
-         TransactionManagerServices.getTransactionManager() );
+        env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                                    new JPAPlaceholderResolverStrategy(env),
+                                    new SerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  )
+                                     });
         return env;
     }
     
