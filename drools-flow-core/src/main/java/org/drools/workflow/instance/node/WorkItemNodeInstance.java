@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.definition.process.Node;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.VariableScope;
@@ -96,8 +97,13 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 			((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
 				.update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);
 		} else {
+		    try{
 		    ((WorkItemManager) ((ProcessInstance) getProcessInstance())
 	    		.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
+		    } catch (WorkItemHandlerNotFoundException wihnfe){
+		        getProcessInstance().setState( ProcessInstance.STATE_ABORTED );
+		        throw wihnfe;
+		    }
 		}
         if (!workItemNode.isWaitForCompletion()) {
             triggerCompleted();
@@ -205,8 +211,13 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     	if (workItem != null &&
     			workItem.getState() != WorkItem.COMPLETED && 
     			workItem.getState() != WorkItem.ABORTED) {
-    		((WorkItemManager) ((ProcessInstance) getProcessInstance())
-				.getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItemId);
+    	    try{
+        		((WorkItemManager) ((ProcessInstance) getProcessInstance())
+    				.getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItemId);
+    	    } catch (WorkItemHandlerNotFoundException wihnfe){
+                getProcessInstance().setState( ProcessInstance.STATE_ABORTED );
+                throw wihnfe;
+    	    }
     	}
         super.cancel();
     }
