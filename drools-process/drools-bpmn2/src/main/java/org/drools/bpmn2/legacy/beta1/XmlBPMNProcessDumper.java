@@ -33,6 +33,7 @@ import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.workflow.core.Constraint;
@@ -344,12 +345,15 @@ public class XmlBPMNProcessDumper {
                         "  <message id=\"" + getUniqueNodeId(node) + "_Message\" structureRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                 }
             } else if (node instanceof EventNode) {
-                String messageRef = ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).getType();
-                messageRef = messageRef.substring(8);
-                String messageType = (String) node.getMetaData().get("MessageType");
-                xmlDump.append(
-                    "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                    "  <message id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" />" + EOL + EOL);
+            	List<EventFilter> filters = ((EventNode) node).getEventFilters();
+            	if (filters.size() > 0) {
+	                String messageRef = ((EventTypeFilter) filters.get(0)).getType();
+	                messageRef = messageRef.substring(8);
+	                String messageType = (String) node.getMetaData().get("MessageType");
+	                xmlDump.append(
+	                    "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
+	                    "  <message id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" />" + EOL + EOL);
+            	}
             } else if (node instanceof StartNode) {
                 StartNode startNode = (StartNode) node;
                 if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {
