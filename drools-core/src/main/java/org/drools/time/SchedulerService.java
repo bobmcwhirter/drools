@@ -14,21 +14,32 @@
  * limitations under the License.
  * under the License.
  */
-
-package org.drools.grid.timer;
-
-import org.drools.grid.timer.impl.ScheduledJob;
-
-
-
+package org.drools.time;
 
 /**
  *
  * @author salaboy
  */
-public interface Scheduler {
-    public String getId();
-    public void scheduleJob(ScheduledJob job);
-    public void removeJob(String jobId);
-    
+public interface SchedulerService {
+
+    /**
+     * Schedule a job for later execution
+     * 
+     * @param job
+     * @param ctx
+     * @param trigger
+     * 
+     * @return
+     */
+    public JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger);
+
+    /**
+     * Remove the job identified by the given job handle from the 
+     * scheduled queue
+     * 
+     * @param jobHandle the job identity handle
+     * 
+     * @return
+     */
+    public boolean removeJob(JobHandle jobHandle);
 }
