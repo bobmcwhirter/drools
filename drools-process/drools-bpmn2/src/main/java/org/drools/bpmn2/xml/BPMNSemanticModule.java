@@ -76,6 +76,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("inMessageRef", new InMessageRefHandler());
         addHandler("escalation", new EscalationHandler());
         addHandler("error", new ErrorHandler());
+        addHandler("dataStore", new DataStoreHandler());
         
         handlersByClass.put(Split.class, new SplitHandler());
         handlersByClass.put(Join.class, new JoinHandler());

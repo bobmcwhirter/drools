@@ -16,9 +16,14 @@
 
 package org.drools.bpmn2.core;
 
+import java.util.List;
+
+import org.drools.bpmn2.xml.DataStore;
+
 public class Definitions {
 	
 	private String targetNamespace;
+	private List<DataStore> dataStores;
 
 	public String getTargetNamespace() {
 		return targetNamespace;
@@ -26,6 +31,14 @@ public class Definitions {
 
 	public void setTargetNamespace(String targetNamespace) {
 		this.targetNamespace = targetNamespace;
+	}
+
+	public void setDataStores(List<DataStore> dataStores) {
+		this.dataStores = dataStores;
+	}
+	
+	public List<DataStore> getDataStores() {
+		return this.dataStores;
 	}
 
 }

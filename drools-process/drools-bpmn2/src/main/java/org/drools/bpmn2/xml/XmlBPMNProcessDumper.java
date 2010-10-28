@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.bpmn2.core.Definitions;
 import org.drools.bpmn2.xpath.XPathDialect;
 import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.process.Connection;
@@ -117,6 +118,8 @@ public class XmlBPMNProcessDumper {
         		"             xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"" + EOL : "") +
             "             xmlns:tns=\"http://www.jboss.org/drools\">" + EOL + EOL);
 
+    	
+    	
     	// item definitions
     	VariableScope variableScope = (VariableScope)
     		((org.drools.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
@@ -128,6 +131,14 @@ public class XmlBPMNProcessDumper {
 	    visitEscalations(process.getNodes(), xmlDump, new ArrayList<String>());
 	    visitErrors(process.getNodes(), xmlDump, new ArrayList<String>());
 	       
+	    //data stores
+    	Definitions def = (Definitions) process.getMetaData().get("Definitions");
+    	if (def.getDataStores() != null) {
+    		for (DataStore dataStore : def.getDataStores()) {
+    			visitDataStore(dataStore, xmlDump);
+    		}
+    	}
+    	
 	    // the process itself
 		xmlDump.append("  <process processType=\"Private\" isExecutable=\"true\" ");
         if (process.getId() != null) {
@@ -160,7 +171,22 @@ public class XmlBPMNProcessDumper {
         xmlDump.append("</definitions>");
     }
     
-    private void visitVariableScope(VariableScope variableScope, String prefix, StringBuilder xmlDump) {
+    private void visitDataStore(DataStore dataStore, StringBuilder xmlDump) {
+    	String itemSubjectRef = dataStore.getItemSubjectRef();
+    	String itemDefId = itemSubjectRef.substring(itemSubjectRef.indexOf(':') + 1);
+    	xmlDump.append("  <itemDefinition id=\"" + itemDefId + "\" ");
+    	if (dataStore.getType() != null) {
+    		xmlDump.append("structureRef=\"" + XmlDumper.replaceIllegalChars(dataStore.getType().getStringType()) + "\" ");
+    	}
+    	xmlDump.append("/>" + EOL);
+    	
+    	xmlDump.append("  <dataStore name=\"" + XmlDumper.replaceIllegalChars(dataStore.getName()) + "\"");
+    	xmlDump.append(" id=\"" + XmlDumper.replaceIllegalChars(dataStore.getId()) + "\"");
+    	xmlDump.append(" itemSubjectRef=\"" + XmlDumper.replaceIllegalChars(dataStore.getItemSubjectRef()) + "\"");
+    	xmlDump.append("/>" + EOL);
+	}
+
+	private void visitVariableScope(VariableScope variableScope, String prefix, StringBuilder xmlDump) {
         if (variableScope != null && !variableScope.getVariables().isEmpty()) {
             for (Variable variable: variableScope.getVariables()) {
                 xmlDump.append(

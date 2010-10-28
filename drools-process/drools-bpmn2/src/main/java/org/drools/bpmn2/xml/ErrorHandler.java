@@ -48,6 +48,7 @@ public class ErrorHandler extends BaseAbstractHandler implements Handler {
             this.validPeers.add(Interface.class);
             this.validPeers.add(Escalation.class);
             this.validPeers.add(Error.class);
+            this.validPeers.add(DataStore.class);
 
 			this.allowNesting = false;
 		}

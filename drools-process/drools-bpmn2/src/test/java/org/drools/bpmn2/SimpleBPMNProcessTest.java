@@ -30,11 +30,13 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.bpmn2.core.Definitions;
 import org.drools.bpmn2.handler.ReceiveTaskHandler;
 import org.drools.bpmn2.handler.SendTaskHandler;
 import org.drools.bpmn2.handler.ServiceTaskHandler;
 import org.drools.bpmn2.xml.BPMNDISemanticModule;
 import org.drools.bpmn2.xml.BPMNSemanticModule;
+import org.drools.bpmn2.xml.DataStore;
 import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
@@ -50,6 +52,7 @@ import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -144,6 +147,19 @@ public class SimpleBPMNProcessTest extends TestCase {
         params.put("employee", "UserId-12345");
         ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+    
+    public void testDataStore() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataStore.xml");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Evaluation");
+        Definitions def = (Definitions) processInstance.getProcess().getMetaData().get("Definitions");
+        assertNotNull(def.getDataStores());
+        assertTrue(def.getDataStores().size() == 1);
+        DataStore dataStore = def.getDataStores().get(0);
+        assertEquals("employee", dataStore.getId());
+        assertEquals("employeeStore", dataStore.getName());
+        assertEquals(String.class.getCanonicalName(), ((ObjectDataType) dataStore.getType()).getClassName());
     }
 
 	public void testEvaluationProcess() throws Exception {

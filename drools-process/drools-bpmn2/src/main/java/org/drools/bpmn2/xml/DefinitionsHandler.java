@@ -17,6 +17,7 @@
 package org.drools.bpmn2.xml;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.bpmn2.core.Definitions;
 import org.drools.compiler.xml.ProcessBuildData;
@@ -31,7 +32,7 @@ import org.xml.sax.SAXException;
 public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 	
 	public static final String CONNECTIONS = "BPMN.Connections";
-
+	
 	@SuppressWarnings("unchecked")
 	public DefinitionsHandler() {
 		if ((this.validParents == null) && (this.validPeers == null)) {
@@ -61,11 +62,15 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 		String namespace = element.getAttribute("targetNamespace");
 		process.setMetaData("TargetNamespace", namespace);
 		definitions.setTargetNamespace(namespace);
+		
+		// register the definitions object as metadata of process.
+		process.setMetaData("Definitions", definitions);
+		
 		return definitions;
 	}
 
 	public Class<?> generateNodeFor() {
-		return null;
+		return Definitions.class;
 	}
 	
 }

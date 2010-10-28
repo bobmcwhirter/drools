@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 JBoss Inc
+ * Copyright 2010 Intalio Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.bpmn2.xml;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.bpmn2.core.Definitions;
@@ -26,16 +26,23 @@ import org.drools.bpmn2.core.Interface;
 import org.drools.bpmn2.core.ItemDefinition;
 import org.drools.bpmn2.core.Message;
 import org.drools.compiler.xml.ProcessBuildData;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class MessageHandler extends BaseAbstractHandler implements Handler {
-	
-	@SuppressWarnings("unchecked")
-	public MessageHandler() {
+/**
+ * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
+ *
+ */
+public class DataStoreHandler extends BaseAbstractHandler implements Handler {
+
+	@SuppressWarnings("rawtypes")
+	public DataStoreHandler() {
 		if ((this.validParents == null) && (this.validPeers == null)) {
 			this.validParents = new HashSet();
 			this.validParents.add(Definitions.class);
@@ -47,52 +54,55 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
             this.validPeers.add(Interface.class);
             this.validPeers.add(Escalation.class);
             this.validPeers.add(Error.class);
-            this.validPeers.add(DataStore.class);
-            
+
 			this.allowNesting = false;
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-    public Object start(final String uri, final String localName,
-			            final Attributes attrs, final ExtensibleXmlParser parser)
+	
+	public Object start(final String uri, final String localName, 
+			final Attributes attrs, final ExtensibleXmlParser parser) 
 			throws SAXException {
 		parser.startElementBuilder(localName, attrs);
-
-		String id = attrs.getValue("id");
-		String itemRef = attrs.getValue("itemRef");
-		
+		DataStore store = new DataStore();
+		store.setId(attrs.getValue("id"));
+		store.setName(attrs.getValue("name"));
+		final String itemSubjectRef = attrs.getValue("itemSubjectRef");
+		store.setItemSubjectRef(itemSubjectRef);
 		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-            ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-        if (itemDefinitions == null) {
-            throw new IllegalArgumentException("No item definitions found");
-        }
-        ItemDefinition itemDefinition = itemDefinitions.get(itemRef);
-        if (itemDefinition == null) {
-            throw new IllegalArgumentException("Could not find itemDefinition " + itemRef);
-        }
-        
-        ProcessBuildData buildData = (ProcessBuildData) parser.getData();
-		Map<String, Message> messages = (Map<String, Message>)
-            ((ProcessBuildData) parser.getData()).getMetaData("Messages");
-        if (messages == null) {
-            messages = new HashMap<String, Message>();
-            buildData.setMetaData("Messages", messages);
-        }
-        Message message = new Message(id); 
-        message.setType(itemDefinition.getStructureRef());
-        messages.put(id, message);
-		return message;
+		((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+		// retrieve type from item definition
+		//FIXME we bypass namespace resolving here. That's not a good idea
+		// when we start having several documents, with imports.
+		String localItemSubjectRef = itemSubjectRef.substring(
+				itemSubjectRef.indexOf(":") +1);
+		DataType dataType = new ObjectDataType();
+		if (itemDefinitions != null) {
+			ItemDefinition itemDefinition = itemDefinitions.get(localItemSubjectRef);
+			if (itemDefinition != null) {
+				dataType = new ObjectDataType(itemDefinition.getStructureRef());
+			}
+		}
+		store.setType(dataType);
+		
+		Definitions parent = (Definitions) parser.getParent();
+		List<DataStore> dataStores = parent.getDataStores();
+		if (dataStores == null) {
+			dataStores = new ArrayList<DataStore>();
+			parent.setDataStores(dataStores);
+		}
+		dataStores.add(store);
+		return store;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object end(final String uri, final String localName,
-			          final ExtensibleXmlParser parser) throws SAXException {
+			final ExtensibleXmlParser parser) throws SAXException {
 		parser.endElementBuilder();
 		return parser.getCurrent();
 	}
 
 	public Class<?> generateNodeFor() {
-		return Message.class;
+		return DataStore.class;
 	}
 
 }
