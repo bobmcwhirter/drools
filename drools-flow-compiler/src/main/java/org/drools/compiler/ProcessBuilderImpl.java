@@ -175,7 +175,7 @@ public class ProcessBuilderImpl implements ProcessBuilder {
 			} else {
 				// invalid package registry..there is an issue with the package
 				// name of the process
-				throw new RuntimeDroolsException("invalid package name");
+				throw new RuntimeDroolsException("invalid package id");
 			}
 		}
 	}
