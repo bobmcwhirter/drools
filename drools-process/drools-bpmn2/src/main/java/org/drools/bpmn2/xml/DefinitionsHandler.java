@@ -63,9 +63,6 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 		process.setMetaData("TargetNamespace", namespace);
 		definitions.setTargetNamespace(namespace);
 		
-		// register the definitions object as metadata of process.
-		process.setMetaData("Definitions", definitions);
-		
 		return definitions;
 	}
 

@@ -34,6 +34,7 @@ import org.drools.bpmn2.core.Definitions;
 import org.drools.bpmn2.handler.ReceiveTaskHandler;
 import org.drools.bpmn2.handler.SendTaskHandler;
 import org.drools.bpmn2.handler.ServiceTaskHandler;
+import org.drools.bpmn2.xml.Association;
 import org.drools.bpmn2.xml.BPMNDISemanticModule;
 import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.bpmn2.xml.DataStore;
@@ -160,6 +161,19 @@ public class SimpleBPMNProcessTest extends TestCase {
         assertEquals("employee", dataStore.getId());
         assertEquals("employeeStore", dataStore.getName());
         assertEquals(String.class.getCanonicalName(), ((ObjectDataType) dataStore.getType()).getClassName());
+    }
+    
+    public void testAssociation() throws Exception {
+    	KnowledgeBase kbase = createKnowledgeBase("BPMN2-Association.xml");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Evaluation");
+        Definitions def = (Definitions) processInstance.getProcess().getMetaData().get("Definitions");
+        assertNotNull(def.getAssociations());
+        assertTrue(def.getAssociations().size() == 1);
+        Association assoc = def.getAssociations().get(0);
+        assertEquals("_1234", assoc.getId());
+        assertEquals("_1", assoc.getSourceRef());
+        assertEquals("_2", assoc.getTargetRef());
     }
 
 	public void testEvaluationProcess() throws Exception {

@@ -157,6 +157,11 @@ public class XmlBPMNProcessDumper {
         visitHeader(process, xmlDump, metaDataType);
         visitNodes(process, xmlDump, metaDataType);
         visitConnections(process.getNodes(), xmlDump, metaDataType);
+        if (def.getAssociations() != null) {
+        	for (Association association : def.getAssociations()) {
+        		visitAssociation(association, xmlDump);
+        	}
+        }
         xmlDump.append("  </process>" + EOL + EOL);
         if (metaDataType == META_DATA_USING_DI) {
         	xmlDump.append(
@@ -171,7 +176,14 @@ public class XmlBPMNProcessDumper {
         xmlDump.append("</definitions>");
     }
     
-    private void visitDataStore(DataStore dataStore, StringBuilder xmlDump) {
+    private void visitAssociation(Association association, StringBuilder xmlDump) {
+    	xmlDump.append("  <association id=\"" + association.getId() + "\" ");
+    	xmlDump.append(" sourceRef=\"" + association.getSourceRef() + "\" ");
+    	xmlDump.append(" targetRef=\"" + association.getTargetRef() + "\" ");
+    	xmlDump.append("/>" + EOL);
+	}
+
+	private void visitDataStore(DataStore dataStore, StringBuilder xmlDump) {
     	String itemSubjectRef = dataStore.getItemSubjectRef();
     	String itemDefId = itemSubjectRef.substring(itemSubjectRef.indexOf(':') + 1);
     	xmlDump.append("  <itemDefinition id=\"" + itemDefId + "\" ");

@@ -44,10 +44,10 @@ public class DataStoreHandler extends BaseAbstractHandler implements Handler {
 	@SuppressWarnings("rawtypes")
 	public DataStoreHandler() {
 		if ((this.validParents == null) && (this.validPeers == null)) {
-			this.validParents = new HashSet();
+			this.validParents = new HashSet<Class<?>>();
 			this.validParents.add(Definitions.class);
 
-			this.validPeers = new HashSet();
+			this.validPeers = new HashSet<Class<?>>();
 			this.validPeers.add(null);
             this.validPeers.add(ItemDefinition.class);
             this.validPeers.add(Message.class);

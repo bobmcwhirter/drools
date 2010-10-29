@@ -103,6 +103,10 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		process.setPackageName(packageName);
 
 		((ProcessBuildData) parser.getData()).setProcess(process);
+		
+		// register the definitions object as metadata of process.
+		process.setMetaData("Definitions", parser.getParent());
+		
 		return process;
 	}
 

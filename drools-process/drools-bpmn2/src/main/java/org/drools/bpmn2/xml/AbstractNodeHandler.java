@@ -54,6 +54,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         this.validPeers.add(Variable.class);
         this.validPeers.add(Node.class);
         this.validPeers.add(SequenceFlow.class);
+        this.validPeers.add(Association.class);
     }
 
     public Object start(final String uri, final String localName, final Attributes attrs,
