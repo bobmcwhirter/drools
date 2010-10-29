@@ -15,14 +15,18 @@
  */
 package org.drools.bpmn2.xml;
 
+import java.io.Serializable;
+
 import org.drools.process.core.datatype.DataType;
 
 /**
  * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
  *
  */
-public class DataStore {
+public class DataStore implements Serializable {
 
+	private static final long serialVersionUID = -7426082902430070625L;
+	
 	private String id;
 	private String name;
 	private DataType type;
