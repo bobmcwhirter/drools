@@ -150,6 +150,13 @@ public class SimpleBPMNProcessTest extends TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
     
+    public void testUserTaskWithDataStoreScenario() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-userTaskWithDataStore.xml");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.startProcess("UserProcess");
+        // we can't test further as user tasks are asynchronous.
+    }
+    
     public void testDataStore() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataStore.xml");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
