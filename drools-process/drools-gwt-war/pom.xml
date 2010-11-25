@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>5.2.0.SNAPSHOT</version>
+    <version>5.2.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -19,9 +19,9 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console</artifactId>
-      <classifier>drools</classifier>
-      <version>2.1</version>
       <type>war</type>
+      <version>2.1</version>
+      <classifier>drools</classifier>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
