@@ -46,6 +46,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlProcessReader;
+import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
@@ -805,23 +806,9 @@ public class SimpleBPMNProcessTest extends TestCase {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStart.xml");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		final List<Long> list = new ArrayList<Long>();
-		ksession.addEventListener(new ProcessEventListener() {
-			public void beforeProcessStarted(ProcessStartedEvent event) {
-			}
-			public void beforeProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-			}
+		ksession.addEventListener(new DefaultProcessEventListener() {
 			public void afterProcessStarted(ProcessStartedEvent event) {
 				list.add(event.getProcessInstance().getId());
-			}
-			public void afterProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void afterNodeLeft(ProcessNodeLeftEvent event) {
 			}
 		});
 		Thread.sleep(250);
@@ -837,23 +824,9 @@ public class SimpleBPMNProcessTest extends TestCase {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalStart.xml");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		final List<Long> list = new ArrayList<Long>();
-		ksession.addEventListener(new ProcessEventListener() {
-			public void beforeProcessStarted(ProcessStartedEvent event) {
-			}
-			public void beforeProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-			}
+		ksession.addEventListener(new DefaultProcessEventListener() {
 			public void afterProcessStarted(ProcessStartedEvent event) {
 				list.add(event.getProcessInstance().getId());
-			}
-			public void afterProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void afterNodeLeft(ProcessNodeLeftEvent event) {
 			}
 		});
         ksession.signalEvent("MyStartSignal", "NewValue");

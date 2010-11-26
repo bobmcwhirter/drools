@@ -34,6 +34,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
@@ -126,6 +127,13 @@ public class ProcessEventListenerTest extends TestCase{
                 processEventList.add(event);
 			}
 
+			public void afterVariableChanged(ProcessVariableChangedEvent event) {
+				processEventList.add(event);
+			}
+
+			public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+				processEventList.add(event);
+			}
         };
 
         ((InternalWorkingMemory)session).getProcessRuntime().addEventListener(listener);

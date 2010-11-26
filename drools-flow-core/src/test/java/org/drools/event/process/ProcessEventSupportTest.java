@@ -120,6 +120,13 @@ public class ProcessEventSupportTest extends TestCase {
 				processEventList.add(event);
 			}
 
+			public void afterVariableChanged(ProcessVariableChangedEvent event) {
+				processEventList.add(event);
+			}
+
+			public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+				processEventList.add(event);
+			}
         };
         session.addEventListener( processEventListener );
 
