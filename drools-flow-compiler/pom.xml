@@ -92,7 +92,7 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.drools.flow.compiler;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.flow.core;bundle-version="${pom.version}", org.drools.compiler;bundle-version="${project.version}"</Require-Bundle>
+            <Require-Bundle>org.drools.flow.core;bundle-version="5.2.0.SNAPSHOT", org.drools.compiler;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
             <Import-Package>!org.drools.*, *</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>

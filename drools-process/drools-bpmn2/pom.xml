@@ -41,7 +41,7 @@
                <instructions>
                   <Bundle-SymbolicName>org.drools.bpmn2;singleton:=true</Bundle-SymbolicName>
                   <_removeheaders>Ignore-Package</_removeheaders> 
-                  <Require-Bundle>org.drools.flow.compiler;bundle-version="${project.version}", org.drools.persistence-jpa;optional="true";bundle-version="${project.version}"</Require-Bundle>
+                  <Require-Bundle>org.drools.flow.compiler;bundle-version="5.2.0.SNAPSHOT", org.drools.persistence-jpa;optional="true";bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
                   <Import-Package>!org.drools.*, *</Import-Package>
                   <Export-Package> org.drools.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>
