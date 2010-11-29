@@ -18,7 +18,6 @@ package org.drools.process.instance;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
-import org.drools.runtime.KnowledgeRuntime;
 
 /**
  * A process instance is the representation of a process during its execution.
