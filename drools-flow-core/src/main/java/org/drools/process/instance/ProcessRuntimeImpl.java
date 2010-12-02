@@ -27,6 +27,7 @@ import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.util.CompositeClassLoader;
 import org.drools.workflow.core.node.EventTrigger;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.Trigger;
@@ -53,6 +54,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	public ProcessRuntimeImpl(AbstractWorkingMemory workingMemory) {
 		this.workingMemory = workingMemory;
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
+		((CompositeClassLoader)getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
+		
 		initProcessInstanceManager();
 		initSignalManager();
 		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
@@ -61,9 +64,10 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         initProcessActivationListener();
 	}
 	
-	private void initProcessInstanceManager() {
+	private void initProcessInstanceManager() {	   
 		String processInstanceManagerClass = ((SessionConfiguration) kruntime.getSessionConfiguration()).getProcessInstanceManagerFactory();
 		try {
+		    Object o =  loadClass(processInstanceManagerClass).newInstance();
 			processInstanceManager = ((ProcessInstanceManagerFactory) loadClass(processInstanceManagerClass)
 			        .newInstance())
 			        .createProcessInstanceManager(kruntime);

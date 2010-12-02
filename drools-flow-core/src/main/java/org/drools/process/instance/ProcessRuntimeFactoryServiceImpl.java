@@ -6,8 +6,7 @@ import org.drools.runtime.process.ProcessRuntimeFactoryService;
 
 public class ProcessRuntimeFactoryServiceImpl implements ProcessRuntimeFactoryService {
 
-	public InternalProcessRuntime newProcessRuntime(
-			AbstractWorkingMemory workingMemory) {
+	public InternalProcessRuntime newProcessRuntime(AbstractWorkingMemory workingMemory) {
 		return new ProcessRuntimeImpl(workingMemory);
 	}
 	
