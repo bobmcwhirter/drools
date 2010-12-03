@@ -12,31 +12,16 @@
   <packaging>pom</packaging>
   <name>Drools :: Process</name>
 
-   <profiles>
-      <profile>
-          <id>cibuild</id>
-          <activation>
-              <property>
-                  <name>cibuild</name>
-              </property>
-          </activation>
-          <modules>
-              <module>drools-bpel</module>
-              <module>drools-jpdl</module>
-          </modules>
-      </profile>
-  </profiles>
-  
   <modules>
-      <module>drools-process-task</module>
-      <module>drools-workitems</module>
-      <module>drools-bam</module>
-      <module>drools-bpmn2</module>
-      <module>drools-gwt-console</module>
-      <module>drools-gwt-form</module>
-      <module>drools-gwt-graph</module>
-      <module>drools-gwt-war</module>
-      <module>drools-gwt-server-war</module>
+    <module>drools-process-task</module>
+    <module>drools-workitems</module>
+    <module>drools-bam</module>
+    <module>drools-bpmn2</module>
+    <module>drools-gwt-console</module>
+    <module>drools-gwt-form</module>
+    <module>drools-gwt-graph</module>
+    <module>drools-gwt-war</module>
+    <module>drools-gwt-server-war</module>
   </modules>
-  
+
 </project>
