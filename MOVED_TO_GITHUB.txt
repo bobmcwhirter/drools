@@ -1,0 +1,6 @@
+The Drools source code is no longer in Subversion.
+We now use git.
+
+Consequently, the source code has been moved to github:
+  https://github.com/droolsjbpm/droolsjbpm
+More information on our dev mailing list.
